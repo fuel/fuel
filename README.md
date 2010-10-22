@@ -4,6 +4,9 @@ Carbon is a fast, lightweight PHP5 framework.  In an age where frameworks are a 
 
 Carbon is very early in its development.  In-fact at the time of writing this, I only have about 200 lines written.  I have big plans for Carbon, but I want your input.  I want Carbon to be all about the community.  After all, you are the people that use it.  Let me know what you would like to see in Carbon at [http://carbon.uservoice.com](http://carbon.uservoice.com).
 
+##Development Branch
+
+This is the development branch.  The code contained in this branch may not be stable, and should not be used in a production environment.
 
 ##Requirements
 
