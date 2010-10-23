@@ -12,7 +12,17 @@
  */
 
 return array(
-	
+
+	/**
+	 * Your environment.  Can be set to any of the following:
+	 *
+	 * Env::TEST
+	 * Env::DEVELOPMENT
+	 * Env::QA
+	 * Env::PRODUCTION
+	 */
+	'environment'	=> Env::DEVELOPMENT,
+
 	/**
 	 * index_file - The name of the main bootstrap file.
 	 *
