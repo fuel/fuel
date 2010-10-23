@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Carbon
+ * Thrust
  *
- * Carbon is a fast, lightweight, community driven PHP5 framework.
+ * Thrust is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Carbon
+ * @package		Thrust
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
  * @copyright	2010 Dan Horrigan
  */
 
-class Carbon_Config {
+class Thrust_Config {
 	
 	public static $items = array();
 	
@@ -20,9 +20,9 @@ class Carbon_Config {
 	public static function load($file, $group = NULL)
 	{
 		$config = array();
-		if ($path = Carbon::find_file('config', $file))
+		if ($path = Thrust::find_file('config', $file))
 		{
-			$config = Carbon::load($path);
+			$config = Thrust::load($path);
 		}
 		if ($group === NULL)
 		{

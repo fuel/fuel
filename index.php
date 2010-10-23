@@ -1,10 +1,10 @@
 <?php
 /**
- * Carbon
+ * Thrust
  *
- * Carbon is a fast, lightweight, community driven PHP5 framework.
+ * Thrust is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Carbon
+ * @package		Thrust
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
@@ -15,10 +15,10 @@
  * Change these paths to point to the correct location.
  * The paths are relative to your index.php
  */
-$carbon_paths = array(
-	'application'	=> './carbon/application',	// The path to the application folder
-	'modules'		=> './carbon/modules',		// The path to the modules folder
-	'system'		=> './carbon/system'		// The path to the system folder
+$thrust_paths = array(
+	'application'	=> './thrust/application',	// The path to the application folder
+	'modules'		=> './thrust/modules',		// The path to the modules folder
+	'system'		=> './thrust/system'		// The path to the system folder
 );
 
 /**
@@ -39,7 +39,7 @@ ini_set('display_errors', TRUE);
 define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 
 // Loop through the paths and check if they are absolute or relative.
-foreach ($carbon_paths as &$folder)
+foreach ($thrust_paths as &$folder)
 {
 	if ( ! is_dir($folder) AND is_dir(DOCROOT.$folder))
 	{
@@ -48,32 +48,32 @@ foreach ($carbon_paths as &$folder)
 }
 
 // Define the global path constants
-define('APPPATH', realpath($carbon_paths['application']).DIRECTORY_SEPARATOR);
-define('MODPATH', realpath($carbon_paths['modules']).DIRECTORY_SEPARATOR);
-define('SYSPATH', realpath($carbon_paths['system']).DIRECTORY_SEPARATOR);
+define('APPPATH', realpath($thrust_paths['application']).DIRECTORY_SEPARATOR);
+define('MODPATH', realpath($thrust_paths['modules']).DIRECTORY_SEPARATOR);
+define('SYSPATH', realpath($thrust_paths['system']).DIRECTORY_SEPARATOR);
 
 // save a bit of memory by unsetting the path array
-unset($carbon_paths);
+unset($thrust_paths);
 
 // Load the base, low-level functions
 require SYSPATH.'base'.EXT;
 
 // Load in the core class
-require SYSPATH.'classes/carbon/core'.EXT;
+require SYSPATH.'classes/thrust/core'.EXT;
 
-// If the Carbon class is overrided in the application folder
+// If the Thrust class is overrided in the application folder
 // load that, else load the core class.
-if (is_file(APPPATH.'classes/carbon'.EXT))
+if (is_file(APPPATH.'classes/thrust'.EXT))
 {
-	require APPPATH.'classes/carbon'.EXT;
+	require APPPATH.'classes/thrust'.EXT;
 }
 else
 {
-	require SYSPATH.'classes/carbon'.EXT;
+	require SYSPATH.'classes/thrust'.EXT;
 }
 
 // Initialize the framework
-Carbon::init();
+Thrust::init();
 
 $request = Request::instance();
 $request->execute();

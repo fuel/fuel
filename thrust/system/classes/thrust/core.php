@@ -1,10 +1,10 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Carbon
+ * Thrust
  *
- * Carbon is a fast, lightweight, community driven PHP5 framework.
+ * Thrust is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Carbon
+ * @package		Thrust
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
@@ -14,11 +14,11 @@
 /**
  * The core of the framework.
  *
- * @package		Carbon
+ * @package		Thrust
  * @subpackage	Core
  * @category	Core
  */
-class Carbon_Core {
+class Thrust_Core {
 
 	public static $initialized = FALSE;
 
@@ -35,11 +35,11 @@ class Carbon_Core {
 	public static function init()
 	{
 		// TODO: Replace die() and throw an exception.
-		Carbon::$initialized AND die('Can only initialize Carbon once.');
+		Thrust::$initialized AND die('Can only initialize Thrust once.');
 
-		Carbon::$_paths = array(APPPATH, SYSPATH);
+		Thrust::$_paths = array(APPPATH, SYSPATH);
 
-		spl_autoload_register(array('Carbon', 'autoload'));
+		spl_autoload_register(array('Thrust', 'autoload'));
 
 		Config::load('config');
 		Config::load('routes', 'routes');
@@ -52,7 +52,7 @@ class Carbon_Core {
 			}
 		}
 
-		Carbon::$initialized = TRUE;
+		Thrust::$initialized = TRUE;
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Carbon_Core {
 		$folder = array_pop($parts);
 
 		// If the class is not a Controller, or is a Core Class, then look in 'classes'
-		if (($folder != 'controller' AND $folder != 'model') OR empty($parts) OR $parts[0] == 'carbon')
+		if (($folder != 'controller' AND $folder != 'model') OR empty($parts) OR $parts[0] == 'thrust')
 		{
 			$file = str_replace('_', DIRECTORY_SEPARATOR, $class);
 			$folder = 'classes';
@@ -81,7 +81,7 @@ class Carbon_Core {
 			$file = implode(DIRECTORY_SEPARATOR, $parts);
 		}
 
-		if ($path = Carbon::find_file($folder, $file))
+		if ($path = Thrust::find_file($folder, $file))
 		{
 			if (is_array($path))
 			{
@@ -115,7 +115,7 @@ class Carbon_Core {
 		$path = $directory.DIRECTORY_SEPARATOR.$file.$ext;
 
 		$found = FALSE;
-		foreach (Carbon::$_paths as $dir)
+		foreach (Thrust::$_paths as $dir)
 		{
 			if (is_file($dir.$path))
 			{

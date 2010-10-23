@@ -1,16 +1,16 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Carbon
+ * Thrust
  *
- * Carbon is a fast, lightweight, community driven PHP5 framework.
+ * Thrust is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Carbon
+ * @package		Thrust
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
  * @copyright	2010 Dan Horrigan
  */
 
-class Arr extends Carbon_Arr { }
+class Controller extends Thrust_Controller { }
 
-/* End of file arr.php */
+/* End of file controller.php */

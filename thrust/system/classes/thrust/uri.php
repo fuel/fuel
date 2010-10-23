@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Carbon
+ * Thrust
  *
- * Carbon is a fast, lightweight, community driven PHP5 framework.
+ * Thrust is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Carbon
+ * @package		Thrust
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
  * @copyright	2010 Dan Horrigan
  */
 
-class Carbon_URI {
+class Thrust_URI {
 
 	public static function detect()
 	{
@@ -38,7 +38,7 @@ class Carbon_URI {
 			}
 			else
 			{
-				throw new Carbon_Exception('Unable to detect the URI.');
+				throw new Thrust_Exception('Unable to detect the URI.');
 			}
 
 			// Remove the base URL from the URI
