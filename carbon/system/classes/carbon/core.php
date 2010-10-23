@@ -40,7 +40,7 @@ class Carbon_Core {
 		Carbon::$_paths = array(APPPATH, SYSPATH);
 
 		spl_autoload_register(array('Carbon', 'autoload'));
-		
+
 		Config::load('config');
 		Config::load('routes', 'routes');
 
@@ -64,9 +64,24 @@ class Carbon_Core {
 	 */
 	public static function autoload($class)
 	{
-		$file = str_replace('_', '/', strtolower($class));
+		$parts = explode('_',  strtolower($class));
+		$folder = array_pop($parts);
 
-		if ($path = Carbon::find_file('classes', $file))
+		// If the class is not a Controller, or is a Core Class, then look in 'classes'
+		if (($folder != 'controller' AND $folder != 'model') OR empty($parts) OR $parts[0] == 'carbon')
+		{
+			$file = str_replace('_', DIRECTORY_SEPARATOR, $class);
+			$folder = 'classes';
+		}
+		
+		// If it is a controller or model, then look in 'controllers' or 'models'
+		else
+		{
+			$folder .= 's';
+			$file = implode(DIRECTORY_SEPARATOR, $parts);
+		}
+
+		if ($path = Carbon::find_file($folder, $file))
 		{
 			if (is_array($path))
 			{
@@ -99,32 +114,13 @@ class Carbon_Core {
 	{
 		$path = $directory.DIRECTORY_SEPARATOR.$file.$ext;
 
-		if(in_array($directory, array('i18n')))
+		$found = FALSE;
+		foreach (Carbon::$_paths as $dir)
 		{
-			$paths = array_reverse(Carbon::$_paths);
-			$found = array();
-
-			foreach ($paths as $dir)
+			if (is_file($dir.$path))
 			{
-				if (is_file($dir.$path))
-				{
-					// This path has a file, add it to the list
-					$found[] = $dir.$path;
-				}
-			}
-
-		}
-		else
-		{
-			$found = FALSE;
-			foreach (Carbon::$_paths as $dir)
-			{
-				if (is_file($dir.$path))
-				{
-					$found = $dir.$path;
-
-					break;
-				}
+				$found = $dir.$path;
+				break;
 			}
 		}
 		return $found;
