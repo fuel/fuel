@@ -22,10 +22,6 @@ class Carbon_Core {
 
 	public static $initialized = FALSE;
 
-	public static $base_url = '';
-	
-	public static $index_file = FALSE;
-
 	protected static $_paths = array();
 
 	final private function __construct() { }
@@ -45,23 +41,15 @@ class Carbon_Core {
 
 		spl_autoload_register(array('Carbon', 'autoload'));
 		
-		$config = Carbon::load(APPPATH.'config/config.php');
+		Config::load('config');
+		Config::load('routes', 'routes');
 
-		if (isset($config['base_url']))
-		{
-			Carbon::$base_url = $config['base_url'];
-		}
-		else
+		if (Config::get('base_url') === FALSE)
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
-				Carbon::$base_url = dirname($_SERVER['SCRIPT_NAME']).'/';
+				Config::set('base_url', dirname($_SERVER['SCRIPT_NAME']).'/');
 			}
-		}
-
-		if (isset($config['index_file']))
-		{
-			Carbon::$index_file = $config['index_file'];
 		}
 
 		Carbon::$initialized = TRUE;

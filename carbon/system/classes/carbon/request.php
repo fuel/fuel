@@ -163,7 +163,7 @@ class Carbon_Request {
 				// Some servers require 'index.php?' as the index page
 				// if we are using mod_rewrite or the server does not require
 				// the question mark, then parse the url.
-				if (Carbon::$index_file != 'index.php?')
+				if (Config::get('index_file') != 'index.php?')
 				{
 					$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 				}
@@ -178,17 +178,19 @@ class Carbon_Request {
 			}
 
 			// Remove the base URL from the URI
-			$base_url = parse_url(Carbon::$base_url, PHP_URL_PATH);
-			if (strpos($uri, $base_url) === 0)
+			$base_url = parse_url(Config::get('base_url'), PHP_URL_PATH);
+
+			if ($uri != '' AND strpos($uri, $base_url) === 0)
 			{
 				$uri = substr($uri, strlen($base_url));
 			}
 
+			$index_file = Config::get('index_file');
+
 			// If we are using an index file (not mod_rewrite) then remove it
-			if (Carbon::$index_file AND strpos($uri, Carbon::$index_file) === 0)
+			if ($index_file AND strpos($uri, $index_file) === 0)
 			{
-				// Remove the index file from the URI
-				$uri = substr($uri, strlen(Carbon::$index_file));
+				$uri = substr($uri, strlen($index_file));
 			}
 
 			// Lets split the URI up in case it containes a ?.  This would
@@ -238,20 +240,82 @@ class Carbon_Request {
 	}
 
 	/**
+	 * Generates a new request.  This is used for HMVC.
+	 *
+	 * @access	public
+	 * @param	string	The URI of the request
+	 * @return	object	The new request
+	 */
+	public static function factory($uri)
+	{
+		return new Request($uri);
+	}
+
+	/**
 	 * @var	string	Holds the response of the request.
 	 */
-	public $response = NULL;
+	public $output = NULL;
 
 	/**
 	 * @var	string	The Request's URI
 	 */
 	public $uri = '';
 
+	/**
+	 * @var	string	The Request's Routed URI
+	 */
+	public $routed_uri = '';
+
+	/**
+	 * @var	array	The URI segments
+	 */
+	public $segments = array();
+
+	/**
+	 * @var	array	The routed URI segments
+	 */
+	public $routed_segments = array();
+
+	public $controller = '';
+	
+	public $action = 'index';
+
 	public function __construct($uri)
 	{
 		$uri = trim($uri, '/');
 		
 		$this->uri = $uri;
+		$this->segments = explode('/', $uri);
+	}
+
+	public function execute()
+	{
+		// TODO: Write the Route class and parse the routes.
+		$this->routed_uri = 'welcome/index';
+		$this->routed_segments = explode('/', $this->routed_uri);
+
+		list($controller, $action) = array_pad($this->routed_segments, 2, FALSE);
+		
+		$controller AND $this->controller = $controller;
+		$action AND $this->action = $action;
+
+		$class = 'controller_'.$this->controller;
+		$method = 'action_'.$this->action;
+
+		//TODO: Do error checking and implement some sort of 404 handling
+		$controller = new $class($this);
+		$controller->{$method}();
+		return $this;
+	}
+
+	public function segment($segment_num)
+	{
+		if ( ! isset($this->segments[$segment_num - 1]))
+		{
+			throw new Carbon_Exception('Invalid segment number \''.$segment_num.'\'.');
+		}
+
+		return $this->segments[$segment_num - 1];
 	}
 }
 

@@ -32,6 +32,9 @@ define('EXT', '.php');
  */
 error_reporting(E_ALL);
 
+ini_set('display_errors', TRUE);
+
+
 // The full path to this file
 define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 
@@ -72,6 +75,8 @@ else
 // Initialize the framework
 Carbon::init();
 
-// TODO: Write the logic to execute the request
+$request = Request::instance();
+$request->execute();
+echo $request->output;
 
 /* End of file index.php */
