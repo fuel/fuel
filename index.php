@@ -1,10 +1,10 @@
 <?php
 /**
- * Thrust
+ * Fuel
  *
- * Thrust is a fast, lightweight, community driven PHP5 framework.
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Thrust
+ * @package		Fuel
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
@@ -15,10 +15,10 @@
  * Change these paths to point to the correct location.
  * The paths are relative to your index.php
  */
-$thrust_paths = array(
-	'application'	=> './thrust/application',	// The path to the application folder
-	'modules'		=> './thrust/modules',		// The path to the modules folder
-	'system'		=> './thrust/system'		// The path to the system folder
+$fuel_paths = array(
+	'application'	=> './fuel/application',	// The path to the application folder
+	'modules'		=> './fuel/modules',		// The path to the modules folder
+	'system'		=> './fuel/system'		// The path to the system folder
 );
 
 /**
@@ -39,7 +39,7 @@ ini_set('display_errors', TRUE);
 define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 
 // Loop through the paths and check if they are absolute or relative.
-foreach ($thrust_paths as &$folder)
+foreach ($fuel_paths as &$folder)
 {
 	if ( ! is_dir($folder) AND is_dir(DOCROOT.$folder))
 	{
@@ -48,32 +48,32 @@ foreach ($thrust_paths as &$folder)
 }
 
 // Define the global path constants
-define('APPPATH', realpath($thrust_paths['application']).DIRECTORY_SEPARATOR);
-define('MODPATH', realpath($thrust_paths['modules']).DIRECTORY_SEPARATOR);
-define('SYSPATH', realpath($thrust_paths['system']).DIRECTORY_SEPARATOR);
+define('APPPATH', realpath($fuel_paths['application']).DIRECTORY_SEPARATOR);
+define('MODPATH', realpath($fuel_paths['modules']).DIRECTORY_SEPARATOR);
+define('SYSPATH', realpath($fuel_paths['system']).DIRECTORY_SEPARATOR);
 
 // save a bit of memory by unsetting the path array
-unset($thrust_paths);
+unset($fuel_paths);
 
 // Load the base, low-level functions
 require SYSPATH.'base'.EXT;
 
 // Load in the core class
-require SYSPATH.'classes/thrust/core'.EXT;
+require SYSPATH.'classes/fuel/core'.EXT;
 
-// If the Thrust class is overrided in the application folder
+// If the Fuel class is overrided in the application folder
 // load that, else load the core class.
-if (is_file(APPPATH.'classes/thrust'.EXT))
+if (is_file(APPPATH.'classes/fuel'.EXT))
 {
-	require APPPATH.'classes/thrust'.EXT;
+	require APPPATH.'classes/fuel'.EXT;
 }
 else
 {
-	require SYSPATH.'classes/thrust'.EXT;
+	require SYSPATH.'classes/fuel'.EXT;
 }
 
 // Initialize the framework
-Thrust::init();
+Fuel::init();
 
 $request = Request::instance();
 $request->execute();

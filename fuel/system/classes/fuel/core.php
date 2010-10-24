@@ -1,10 +1,10 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Thrust
+ * Fuel
  *
- * Thrust is a fast, lightweight, community driven PHP5 framework.
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Thrust
+ * @package		Fuel
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
@@ -14,11 +14,11 @@
 /**
  * The core of the framework.
  *
- * @package		Thrust
+ * @package		Fuel
  * @subpackage	Core
  * @category	Core
  */
-class Thrust_Core {
+class Fuel_Core {
 
 	public static $initialized = FALSE;
 
@@ -35,11 +35,11 @@ class Thrust_Core {
 	public static function init()
 	{
 		// TODO: Replace die() and throw an exception.
-		Thrust::$initialized AND die('Can only initialize Thrust once.');
+		Fuel::$initialized AND die('Can only initialize Fuel once.');
 
-		Thrust::$_paths = array(APPPATH, SYSPATH);
+		Fuel::$_paths = array(APPPATH, SYSPATH);
 
-		spl_autoload_register(array('Thrust', 'autoload'));
+		spl_autoload_register(array('Fuel', 'autoload'));
 
 		Config::load('config');
 		Config::load('routes', 'routes');
@@ -52,7 +52,7 @@ class Thrust_Core {
 			}
 		}
 
-		Thrust::$initialized = TRUE;
+		Fuel::$initialized = TRUE;
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Thrust_Core {
 		$folder = array_pop($parts);
 
 		// If the class is not a Controller, or is a Core Class, then look in 'classes'
-		if (($folder != 'controller' AND $folder != 'model') OR empty($parts) OR $parts[0] == 'thrust')
+		if (($folder != 'controller' AND $folder != 'model') OR empty($parts) OR $parts[0] == 'fuel')
 		{
 			$file = str_replace('_', DIRECTORY_SEPARATOR, $class);
 			$folder = 'classes';
@@ -81,7 +81,7 @@ class Thrust_Core {
 			$file = implode(DIRECTORY_SEPARATOR, $parts);
 		}
 
-		if ($path = Thrust::find_file($folder, $file))
+		if ($path = Fuel::find_file($folder, $file))
 		{
 			if (is_array($path))
 			{
@@ -115,7 +115,7 @@ class Thrust_Core {
 		$path = $directory.DIRECTORY_SEPARATOR.$file.$ext;
 
 		$found = FALSE;
-		foreach (Thrust::$_paths as $dir)
+		foreach (Fuel::$_paths as $dir)
 		{
 			if (is_file($dir.$path))
 			{

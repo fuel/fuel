@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Thrust
+ * Fuel
  *
- * Thrust is a fast, lightweight, community driven PHP5 framework.
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Thrust
+ * @package		Fuel
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
  * @copyright	2010 Dan Horrigan
  */
 
-class Thrust_Model {
+class Fuel_Model {
 
 
 	protected function _pre_find($query) { }
@@ -31,4 +31,4 @@ class Thrust_Model {
 
 }
 
-/* End of file thrust_model.php */
+/* End of file fuel_model.php */

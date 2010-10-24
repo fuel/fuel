@@ -1,17 +1,17 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Thrust
+ * Fuel
  *
- * Thrust is a fast, lightweight, community driven PHP5 framework.
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Thrust
+ * @package		Fuel
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
  * @copyright	2010 Dan Horrigan
  */
 
-class Thrust_Config {
+class Fuel_Config {
 	
 	public static $items = array();
 	
@@ -20,9 +20,9 @@ class Thrust_Config {
 	public static function load($file, $group = NULL)
 	{
 		$config = array();
-		if ($path = Thrust::find_file('config', $file))
+		if ($path = Fuel::find_file('config', $file))
 		{
-			$config = Thrust::load($path);
+			$config = Fuel::load($path);
 		}
 		if ($group === NULL)
 		{

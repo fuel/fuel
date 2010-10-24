@@ -1,25 +1,25 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Thrust
+ * Fuel
  *
- * Thrust is a fast, lightweight, community driven PHP5 framework.
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Thrust
+ * @package		Fuel
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
  * @license		Apache License v2.0
  * @copyright	2010 Dan Horrigan
  */
 
-class Thrust_Controller {
+class Fuel_Controller {
 
 	public $request;
 
-	public function __construct(Thrust_Request $request)
+	public function __construct(Fuel_Request $request)
 	{
 		$this->request = $request;
 	}
 
 }
 
-/* End of file thrust_controller.php */
+/* End of file fuel_controller.php */
