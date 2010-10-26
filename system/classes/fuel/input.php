@@ -92,40 +92,40 @@ class Fuel_Input {
 	}
 
 	/**
-	* Fetch an item from the GET array
-	*
-	* @access	public
-	* @param	string
-	* @param	bool
-	* @return	string
-	*/
-	public static function get($index = '')
+	 * Fetch an item from the GET array
+	 *
+	 * @access	public
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	public static function get($index = '', $default = FALSE)
 	{
-		return Input::_fetch_from_array($_GET, $index);
+		return Input::_fetch_from_array($_GET, $index, $default);
 	}
 
 	/**
-	* Fetch an item from the POST array
-	*
-	* @access	public
-	* @param	string
-	* @param	bool
-	* @return	string
-	*/
-	public static function post($index = '')
+	 * Fetch an item from the POST array
+	 *
+	 * @access	public
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	public static function post($index = '', $default = FALSE)
 	{
-		return Input::_fetch_from_array($_POST, $index);
+		return Input::_fetch_from_array($_POST, $index, $default);
 	}
 
 	/**
-	* Fetch an item from the php://input for put arguments
-	*
-	* @access	public
-	* @param	string
-	* @param	bool
-	* @return	string
-	*/
-	public static function put($index = '')
+	 * Fetch an item from the php://input for put arguments
+	 *
+	 * @access	public
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	public static function put($index = '', $default = FALSE)
 	{
 		if (Input::method() !== 'PUT')
 		{
@@ -138,18 +138,18 @@ class Fuel_Input {
 			parse_str(file_get_contents('php://input'), $_PUT);
 		}
 
-		return Input::_fetch_from_array($_PUT, $index);
+		return Input::_fetch_from_array($_PUT, $index, $default);
 	}
 
 	/**
-	* Fetch an item from the php://input for delete arguments
-	*
-	* @access	public
-	* @param	string
-	* @param	bool
-	* @return	string
-	*/
-	public static function delete($index = '')
+	 * Fetch an item from the php://input for delete arguments
+	 *
+	 * @access	public
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	public static function delete($index = '', $default = FALSE)
 	{
 		if (Input::method() !== 'DELETE')
 		{
@@ -162,62 +162,63 @@ class Fuel_Input {
 			parse_str(file_get_contents('php://input'), $_DELETE);
 		}
 
-		return Input::_fetch_from_array($_DELETE, $index);
+		return Input::_fetch_from_array($_DELETE, $index, $default);
 	}
 
 	/**
-	* Fetch an item from either the GET array or the POST
-	*
-	* @access	public
-	* @param	string	The index key
-	* @param	bool	XSS cleaning
-	* @return	string
-	*/
-	public static function get_post($index = '')
+	 * Fetch an item from either the GET array or the POST
+	 *
+	 * @access	public
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	public static function get_post($index = '', $default = FALSE)
 	{
-		return isset($_POST[$index]) ? Input::post($index) : Input::get($index);
+		return isset($_POST[$index]) ? Input::post($index, $default) : Input::get($index, $default);
 	}
 
 	/**
-	* Fetch an item from the COOKIE array
-	*
-	* @access	public
-	* @param	string
-	* @param	bool
-	* @return	string
-	*/
-	function cookie($index = '')
+	 * Fetch an item from the COOKIE array
+	 *
+	 * @access	public
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	function cookie($index = '', $default = FALSE)
 	{
-		return Input::_fetch_from_array($_COOKIE, $index);
+		return Input::_fetch_from_array($_COOKIE, $index, $default);
 	}
 
 	/**
-	* Fetch an item from the SERVER array
-	*
-	* @access	public
-	* @param	string
-	* @param	bool
-	* @return	string
-	*/
-	function server($index = '')
+	 * Fetch an item from the SERVER array
+	 *
+	 * @access	public
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	function server($index = '', $default = FALSE)
 	{
-		return Input::_fetch_from_array($_SERVER, $index);
+		return Input::_fetch_from_array($_SERVER, $index, $default);
 	}
 
 	/**
-	* Fetch from array
-	*
-	* This is a helper function to retrieve values from global arrays
-	*
-	* @access	private
-	* @param	array
-	* @param	string
-	* @param	bool
-	* @return	string
-	*/
-	private function _fetch_from_array(&$array, $index = '')
+	 * Retrieve values from global arrays
+	 *
+	 * @access	private
+	 * @param	array	The array
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	private function _fetch_from_array(&$array, $index = '', $default = FALSE)
 	{
-		if ( ! isset($array[$index])) return NULL;
+		if ( ! isset($array[$index]))
+		{
+			return $default;
+		}
 
 		return $array[$index];
 	}
