@@ -104,6 +104,46 @@ class Fuel_Request {
 		return Request::$active;
 	}
 
+	/**
+	 * Shows a 404.  Checks to see if a 404_override route is set, if not show a default 404.
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public static function show_404()
+	{
+		if (Config::get('routes.404_override') === FALSE)
+		{
+			// TODO: Create a standard 404 view and show it here.
+			die('Page not found.');
+		}
+		else
+		{
+			list($controller, $action) = array_pad(explode('/', Config::get('routes.404_override')), 2, FALSE);
+
+			( ! $action) AND $action = 'index';
+
+			$class = 'Controller_'.$controller;
+			$method = 'action_'.$action;
+
+			if (class_exists($class))
+			{
+				$controller = new $class(Request::active());
+				if (method_exists($controller, $method))
+				{
+					$controller->{$method}();
+				}
+				else
+				{
+					throw new Fuel_Exception('404 Action not found.');
+				}
+			}
+			else
+			{
+				throw new Fuel_Exception('404 Controller not found.');
+			}
+		}
+	}
 
 	/**
 	 * Generates a new request.  This is used for HMVC.
@@ -153,9 +193,29 @@ class Fuel_Request {
 		$class = 'Controller_'.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
-		//TODO: Do error checking and implement some sort of 404 handling
-		$controller = new $class($this);
-		$controller->{$method}();
+		try
+		{
+			if (class_exists($class))
+			{
+				$controller = new $class($this);
+				if (method_exists($controller, $method))
+				{
+					$controller->{$method}();
+				}
+				else
+				{
+					throw new Fuel_Exception('Action not found.');
+				}
+			}
+			else
+			{
+				throw new Fuel_Exception('Controller not found.');
+			}
+		}
+		catch (Fuel_Exception $e)
+		{
+			Request::show_404();
+		}
 		return $this;
 	}
 
