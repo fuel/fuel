@@ -6,9 +6,10 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Dan Horrigan <http://dhorrigan.com>
- * @license		Apache License v2.0
+ * @author		Fuel Development Team
+ * @license		MIT License
  * @copyright	2010 Dan Horrigan
+ * @link		http://fuelphp.com
  */
 
 class Fuel_Env {
