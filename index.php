@@ -16,9 +16,9 @@
  * The paths are relative to your index.php
  */
 $fuel_paths = array(
-	'application'	=> './fuel/application',	// The path to the application folder
-	'modules'		=> './fuel/modules',		// The path to the modules folder
-	'system'		=> './fuel/system'		// The path to the system folder
+	'application'	=> './application',	// The path to the application folder
+	'modules'		=> './modules',		// The path to the modules folder
+	'system'		=> './system'		// The path to the system folder
 );
 
 /**
