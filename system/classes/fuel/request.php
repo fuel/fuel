@@ -112,14 +112,14 @@ class Fuel_Request {
 	 */
 	public static function show_404()
 	{
-		if (Config::get('routes.404_override') === FALSE)
+		if (Config::get('routes.404') === FALSE)
 		{
 			// TODO: Create a standard 404 view and show it here.
 			die('Page not found.');
 		}
 		else
 		{
-			list($controller, $action) = array_pad(explode('/', Config::get('routes.404_override')), 2, FALSE);
+			list($controller, $action) = array_pad(explode('/', Config::get('routes.404')), 2, FALSE);
 
 			( ! $action) AND $action = 'index';
 
@@ -131,7 +131,19 @@ class Fuel_Request {
 				$controller = new $class(Request::active());
 				if (method_exists($controller, $method))
 				{
+					// Call the before method if it exists
+					if (method_exists($controller, 'before'))
+					{
+						$controller->before();
+					}
+
 					$controller->{$method}();
+
+					// Call the after method if it exists
+					if (method_exists($controller, 'after'))
+					{
+						$controller->after();
+					}
 				}
 				else
 				{
@@ -200,7 +212,19 @@ class Fuel_Request {
 				$controller = new $class($this);
 				if (method_exists($controller, $method))
 				{
+					// Call the before method if it exists
+					if (method_exists($controller, 'before'))
+					{
+						$controller->before();
+					}
+
 					$controller->{$method}();
+
+					// Call the after method if it exists
+					if (method_exists($controller, 'after'))
+					{
+						$controller->after();
+					}
 				}
 				else
 				{

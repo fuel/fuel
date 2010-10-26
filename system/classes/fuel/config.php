@@ -26,7 +26,7 @@ class Fuel_Config {
 		}
 		if ($group === NULL)
 		{
-			Config::$items = array_merge(Config::$items, $config);
+			Config::$items = Config::$items + $config;
 		}
 		else
 		{
@@ -34,10 +34,8 @@ class Fuel_Config {
 			{
 				Config::$items[$group] = array();
 			}
-			Config::$items[$group] = array_merge(Config::$items[$group], $config);
+			Config::$items[$group] = Config::$items[$group] + $config;
 		}
-
-		Config::$flat_items = Arr::flatten_assoc(Config::$items, '.');
 	}
 	
 	public static function get($item, $group = FALSE)
