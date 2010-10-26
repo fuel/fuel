@@ -112,14 +112,14 @@ class Fuel_Request {
 	 */
 	public static function show_404()
 	{
-		if (Config::get('routes.404_override') === FALSE)
+		if (Config::get('routes.404') === FALSE)
 		{
 			// TODO: Create a standard 404 view and show it here.
 			die('Page not found.');
 		}
 		else
 		{
-			list($controller, $action) = array_pad(explode('/', Config::get('routes.404_override')), 2, FALSE);
+			list($controller, $action) = array_pad(explode('/', Config::get('routes.404')), 2, FALSE);
 
 			( ! $action) AND $action = 'index';
 

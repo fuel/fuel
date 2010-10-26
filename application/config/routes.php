@@ -13,7 +13,7 @@
 
 return array(
 	'default'		=> 'welcome',
-	'404_override'	=> 'welcome/404',
+	'404'	=> 'welcome/404',
 );
 
 /* End of file routes.php */
