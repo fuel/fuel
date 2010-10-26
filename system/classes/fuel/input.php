@@ -12,6 +12,7 @@
  */
 
 class Fuel_Input {
+	
 	/**
 	 * Get the real ip address of the user.  Even if they are using a proxy.
 	 *
@@ -76,7 +77,7 @@ class Fuel_Input {
 	 */
 	public static function method()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+		return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
 	}
 
 	/**
@@ -89,6 +90,138 @@ class Fuel_Input {
 	{
 		return isset($_SERVER['HTTP_USER_AGENT']) ? isset($_SERVER['HTTP_USER_AGENT']) : '';
 	}
+
+	/**
+	* Fetch an item from the GET array
+	*
+	* @access	public
+	* @param	string
+	* @param	bool
+	* @return	string
+	*/
+	public static function get($index = '')
+	{
+		return Input::_fetch_from_array($_GET, $index);
+	}
+
+	/**
+	* Fetch an item from the POST array
+	*
+	* @access	public
+	* @param	string
+	* @param	bool
+	* @return	string
+	*/
+	public static function post($index = '')
+	{
+		return Input::_fetch_from_array($_POST, $index);
+	}
+
+	/**
+	* Fetch an item from the php://input for put arguments
+	*
+	* @access	public
+	* @param	string
+	* @param	bool
+	* @return	string
+	*/
+	public static function put($index = '')
+	{
+		if (Input::method() !== 'PUT')
+		{
+			return NULL;
+		}
+		
+		if ( ! isset($_PUT))
+		{
+			static $_PUT;
+			parse_str(file_get_contents('php://input'), $_PUT);
+		}
+
+		return Input::_fetch_from_array($_PUT, $index);
+	}
+
+	/**
+	* Fetch an item from the php://input for delete arguments
+	*
+	* @access	public
+	* @param	string
+	* @param	bool
+	* @return	string
+	*/
+	public static function delete($index = '')
+	{
+		if (Input::method() !== 'DELETE')
+		{
+			return NULL;
+		}
+
+		if ( ! isset($_DELETE))
+		{
+			static $_DELETE;
+			parse_str(file_get_contents('php://input'), $_DELETE);
+		}
+
+		return Input::_fetch_from_array($_DELETE, $index);
+	}
+
+	/**
+	* Fetch an item from either the GET array or the POST
+	*
+	* @access	public
+	* @param	string	The index key
+	* @param	bool	XSS cleaning
+	* @return	string
+	*/
+	public static function get_post($index = '')
+	{
+		return isset($_POST[$index]) ? Input::post($index) : Input::get($index);
+	}
+
+	/**
+	* Fetch an item from the COOKIE array
+	*
+	* @access	public
+	* @param	string
+	* @param	bool
+	* @return	string
+	*/
+	function cookie($index = '')
+	{
+		return Input::_fetch_from_array($_COOKIE, $index);
+	}
+
+	/**
+	* Fetch an item from the SERVER array
+	*
+	* @access	public
+	* @param	string
+	* @param	bool
+	* @return	string
+	*/
+	function server($index = '')
+	{
+		return Input::_fetch_from_array($_SERVER, $index);
+	}
+
+	/**
+	* Fetch from array
+	*
+	* This is a helper function to retrieve values from global arrays
+	*
+	* @access	private
+	* @param	array
+	* @param	string
+	* @param	bool
+	* @return	string
+	*/
+	private function _fetch_from_array(&$array, $index = '')
+	{
+		if ( ! isset($array[$index])) return NULL;
+
+		return $array[$index];
+	}
+	
 }
 
 /* End of file input.php */
