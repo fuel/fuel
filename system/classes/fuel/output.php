@@ -109,7 +109,7 @@ class Fuel_Output {
 		{
 			Output::set_header('Location', $url);
 		}
-		elseif ($method = 'refresh')
+		elseif ($method == 'refresh')
 		{
 			Output::set_header('Refresh', '0;url='.$url);
 		}
