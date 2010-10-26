@@ -150,7 +150,7 @@ class Fuel_Request {
 		$controller AND $this->controller = $controller;
 		$action AND $this->action = $action;
 
-		$class = $this->controller.'_controller';
+		$class = 'Controller_'.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
 		//TODO: Do error checking and implement some sort of 404 handling
