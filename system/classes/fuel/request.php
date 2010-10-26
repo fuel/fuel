@@ -131,7 +131,19 @@ class Fuel_Request {
 				$controller = new $class(Request::active());
 				if (method_exists($controller, $method))
 				{
+					// Call the before method if it exists
+					if (method_exists($controller, 'before'))
+					{
+						$controller->before();
+					}
+
 					$controller->{$method}();
+
+					// Call the after method if it exists
+					if (method_exists($controller, 'after'))
+					{
+						$controller->after();
+					}
 				}
 				else
 				{
@@ -200,7 +212,19 @@ class Fuel_Request {
 				$controller = new $class($this);
 				if (method_exists($controller, $method))
 				{
+					// Call the before method if it exists
+					if (method_exists($controller, 'before'))
+					{
+						$controller->before();
+					}
+
 					$controller->{$method}();
+
+					// Call the after method if it exists
+					if (method_exists($controller, 'after'))
+					{
+						$controller->after();
+					}
 				}
 				else
 				{

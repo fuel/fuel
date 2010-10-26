@@ -20,6 +20,22 @@ class Fuel_Controller {
 		$this->request = $request;
 	}
 
+	/**
+	 * This method gets called before the action is called
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function before() { }
+
+	/**
+	 * This method gets called after the action is called
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function after() { }
+
 }
 
 /* End of file fuel_controller.php */
