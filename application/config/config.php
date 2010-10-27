@@ -30,6 +30,14 @@ return array(
 	 * Set this to FALSE or remove if you using mod_rewrite.
 	 */
 	'index_file'	=> 'index.php',
+
+	'log_path'		=> APPPATH . 'logs/',
+
+	'log_threshold'	=> 4,
+
+	'log_date_format' => 'Y-m-d H:i:s',
+
+
 );
 
 /* End of file config.php */
