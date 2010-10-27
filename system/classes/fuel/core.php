@@ -113,7 +113,7 @@ class Fuel_Core {
 	 */
 	public static function find_file($directory, $file, $ext = EXT)
 	{
-		$path = $directory.DIRECTORY_SEPARATOR.$file.$ext;
+		$path = $directory.DIRECTORY_SEPARATOR.strtolower($file).$ext;
 
 		$found = FALSE;
 		foreach (Fuel::$_paths as $dir)
