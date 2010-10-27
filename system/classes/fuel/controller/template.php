@@ -43,7 +43,7 @@ abstract class Fuel_Controller_Template extends Controller {
 		if ($this->auto_render === TRUE)
 		{
 			// Load the template
-			$this->template = new View($this->template);
+			$this->template = View::factory($this->template);
 		}
 
 		return parent::before();

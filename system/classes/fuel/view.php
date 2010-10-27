@@ -17,12 +17,20 @@
 /**
  * View class
  *
- * This class has been taken from the Kohana framework and slightly modified, but on
- * the whole all credit goes to them. Over time this will be worked on
+ * NOTE: This class has been taken from the Kohana framework and slightly modified,
+ * but on the whole all credit goes to them. Over time this will be worked on.
+ */
+
+/**
+ * Acts as an object wrapper for HTML pages with embedded PHP, called "views".
+ * Variables can be assigned with the view object and referenced locally within
+ * the view.
  *
- * @package		Fuel
- * @category	Core
- * @author		Kohana Development Team
+ * @package    Kohana
+ * @category   Base
+ * @author     Kohana Team
+ * @copyright  (c) 2008-2010 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
 
 class Fuel_View {
@@ -35,6 +43,21 @@ class Fuel_View {
 
 	// Array of local variables
 	protected $_data = array();
+
+	/**
+	 * Returns a new View object. If you do not define the "file" parameter,
+	 * you must call [View::set_filename].
+	 *
+	 *     $view = View::factory($file);
+	 *
+	 * @param   string  view filename
+	 * @param   array   array of values
+	 * @return  View
+	 */
+	public static function factory($file = NULL, array $data = NULL)
+	{
+		return new View($file, $data);
+	}
 
 	/**
 	 * Sets the initial view filename and local data.
