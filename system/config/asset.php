@@ -26,7 +26,7 @@ return array(
 	* URL to your CodeIgniter root. Typically this will be your base URL,
 	* WITH a trailing slash:
 	*
-	* config_item('base_url')
+	* Config::get('base_url')
 	*/
 
 	'url' => Config::get('base_url'),
