@@ -35,6 +35,12 @@ error_reporting(E_ALL);
 
 ini_set('display_errors', TRUE);
 
+/**
+ * Do we have access to mbstring?
+ * We need this in order to work with UTF-8 strings
+ */
+define('MBSTRING', function_exists('mb_get_info'));
+define('INTERNAL_ENC', 'ISO-8859-1');
 
 // The full path to this file
 define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
