@@ -139,8 +139,8 @@ class Fuel_Output {
 
 			foreach (Output::$headers as $name => $value)
 			{
-				is_string($name) AND $value = "{$name}: {$value}";
-				header($value, TRUE);
+				is_string($name) and $value = "{$name}: {$value}";
+				header($value, true);
 			}
 		}
 	}

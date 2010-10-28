@@ -53,24 +53,24 @@ class Fuel_Lang {
 		$str = Lang::line($line, $params);
 
 		// Fail? Try translating based on locale
-		$str === NULL AND $str = Lang::parse_params(gettext($line), $params);
+		$str === NULL and $str = Lang::parse_params(gettext($line), $params);
 
 		// Well f**k you, I'll just return the line then
-		empty($str) AND $str = $line;
+		empty($str) and $str = $line;
 
 		return $str;
 	}
 
 	public static function line($line, $params = array())
 	{
-		if (strpos($line, '.') !== FALSE)
+		if (strpos($line, '.') !== false)
 		{
 			$parts = explode('.', $line);
 
-			$return = FALSE;
+			$return = false;
 			foreach ($parts as $part)
 			{
-				if ($return === FALSE AND isset(Lang::$lines[$part]))
+				if ($return === false and isset(Lang::$lines[$part]))
 				{
 					$return = Lang::$lines[$part];
 				}
@@ -80,7 +80,7 @@ class Fuel_Lang {
 				}
 				else
 				{
-					return FALSE;
+					return false;
 				}
 			}
 			return  Lang::parse_params($return, $params);
@@ -111,14 +111,14 @@ class Fuel_Lang {
 		if ($group === NULL)
 		{
 			Lang::$lines[$line] = $value;
-			return TRUE;
+			return true;
 		}
 		elseif (isset(Lang::$lines[$group][$line]))
 		{
 			Lang::$lines[$group][$line] = $value;
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 }
 

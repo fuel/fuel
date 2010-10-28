@@ -93,7 +93,7 @@ class Fuel_View {
 	 *
 	 * @param   string  variable name
 	 * @return  mixed
-	 * @throws  Kohana_Exception
+	 * @throws  Fuel_Exception
 	 */
 	public function & __get($key)
 	{
@@ -107,8 +107,8 @@ class Fuel_View {
 		}
 		else
 		{
-			throw new Kohana_Exception('View variable is not set: :var',
-				array(':var' => $key));
+//			throw new Fuel_Exception('View variable is not set: :var',
+//				array(':var' => $key));
 		}
 	}
 
@@ -138,7 +138,7 @@ class Fuel_View {
 	 */
 	public function __isset($key)
 	{
-		return (isset($this->_data[$key]) OR isset(View::$_global_data[$key]));
+		return (isset($this->_data[$key]) or isset(View::$_global_data[$key]));
 	}
 
 	/**
@@ -169,7 +169,7 @@ class Fuel_View {
 		catch (Exception $e)
 		{
 			// Display the exception message
-			Kohana::exception_handler($e);
+			// TODO: Write the exception Handler
 
 			return '';
 		}
@@ -186,10 +186,10 @@ class Fuel_View {
 	 * @param   array   variables
 	 * @return  string
 	 */
-	protected static function capture($kohana_view_filename, array $kohana_view_data)
+	protected static function capture($fuel_view_filename, array $kohana_view_data)
 	{
 		// Import the view variables to local namespace
-		extract($kohana_view_data, EXTR_SKIP);
+		extract($fuel_view_data, EXTR_SKIP);
 
 		if (View::$_global_data)
 		{
@@ -203,7 +203,7 @@ class Fuel_View {
 		try
 		{
 			// Load the view within the current scope
-			include $kohana_view_filename;
+			include $fuel_view_filename;
 		}
 		catch (Exception $e)
 		{
@@ -269,7 +269,7 @@ class Fuel_View {
 	 */
 	public function set_filename($file)
 	{
-		if (($path = Fuel::find_file('views', $file)) === FALSE)
+		if (($path = Fuel::find_file('views', $file)) === false)
 		{
 			throw new Fuel_View_Exception(strpos('The requested view %s could not be found', $file));
 		}
@@ -344,7 +344,7 @@ class Fuel_View {
 	 *
 	 * @param    string  view filename
 	 * @return   string
-	 * @throws   Kohana_View_Exception
+	 * @throws   Fuel_View_Exception
 	 * @uses     View::capture
 	 */
 	public function render($file = NULL)

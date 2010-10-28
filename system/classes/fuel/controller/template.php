@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR exit('No direct script access allowed');
+<?php defined('SYSPATH') or exit('No direct script access allowed');
 
 /**
  * Fuel
@@ -35,12 +35,12 @@ abstract class Fuel_Controller_Template extends Controller {
 	/**
 	* @var boolean auto render template
 	**/
-	public $auto_render = TRUE;
+	public $auto_render = true;
 
 	// Load the template and create the $this->template object
 	public function before()
 	{
-		if ($this->auto_render === TRUE)
+		if ($this->auto_render === true)
 		{
 			// Load the template
 			$this->template = View::factory($this->template);
@@ -52,7 +52,7 @@ abstract class Fuel_Controller_Template extends Controller {
 	// After contorller method has run output the template
 	public function after()
 	{
-		if ($this->auto_render === TRUE)
+		if ($this->auto_render === true)
 		{
 			$this->request->output = $this->template;
 		}

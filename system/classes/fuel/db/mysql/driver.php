@@ -31,7 +31,7 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 			}
 			else
 			{
-				$this->_conn = mysql_connect($hostname, $username, $password, TRUE);
+				$this->_conn = mysql_connect($hostname, $username, $password, true);
 			}
 		}
 		catch (Fuel_Exception $e)
@@ -53,7 +53,7 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 
 	public function disconnect()
 	{
-		$result = TRUE;
+		$result = true;
 
 		try
 		{
@@ -73,9 +73,9 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 		return $result;
 	}
 
-	public function query($type, $sql, $as_object = TRUE)
+	public function query($type, $sql, $as_object = true)
 	{
-		if (($result = mysql_query($sql, $this->_conn)) === FALSE)
+		if (($result = mysql_query($sql, $this->_conn)) === false)
 		{
 			throw new Fuel_Exception(mysql_error($this->_conn), mysql_errno($this->_conn));
 		}

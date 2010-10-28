@@ -34,7 +34,7 @@ class Fuel_DB {
 		{
 			if (empty($config))
 			{
-				if (($config = Config::get('db.'.$name)) === FALSE)
+				if (($config = Config::get('db.'.$name)) === false)
 				{
 					Config::load('db', 'db');
 					$config = Config::get('db.'.$name);
@@ -70,11 +70,11 @@ class Fuel_DB {
 		{
 			return 'NULL';
 		}
-		elseif ($value === TRUE)
+		elseif ($value === true)
 		{
 			return "'1'";
 		}
-		elseif ($value === FALSE)
+		elseif ($value === false)
 		{
 			return "'0'";
 		}
@@ -138,7 +138,7 @@ class Fuel_DB {
 			$table =& $value;
 		}
 
-		if (is_string($table) AND strpos($table, '.') === FALSE)
+		if (is_string($table) and strpos($table, '.') === false)
 		{
 			// Add the table prefix for tables
 			$table = $this->table_prefix().$table;
@@ -199,12 +199,12 @@ class Fuel_DB {
 			return $this->quote_identifier($value).' AS '.$this->quote_identifier($alias);
 		}
 
-		if (strpos($value, '"') !== FALSE)
+		if (strpos($value, '"') !== false)
 		{
 			// Quote the column in FUNC("ident") identifiers
 			return preg_replace('/"(.+?)"/e', '$this->quote_identifier("$1")', $value);
 		}
-		elseif (strpos($value, '.') !== FALSE)
+		elseif (strpos($value, '.') !== false)
 		{
 			// Split the identifier into the individual parts
 			$parts = explode('.', $value);
@@ -237,7 +237,7 @@ class Fuel_DB {
 	 * @param   string   value to quote
 	 * @return  string
 	 */
-//	abstract public function escape($value);
+	abstract public function escape($value);
 }
 
 /* End of file db.php */

@@ -23,15 +23,15 @@
  */
 class Fuel_Ftp
 {
-	public static $initialized = FALSE;
+	public static $initialized = false;
 	
 	protected $_hostname		= '';
 	protected $_username		= '';
 	protected $_password		= '';
 	protected $_port			= 21;
-	protected $_passive		= TRUE;
-	protected $_debug		= FALSE;
-	protected $_conn_id		= FALSE;
+	protected $_passive		= true;
+	protected $_debug		= false;
+	protected $_conn_id		= false;
 
 	/**
 	 * Returns a new Ftp object. If you do not define the "file" parameter,
@@ -67,7 +67,7 @@ class Fuel_Ftp
 			$config_arr = Config::get('ftp.'.$config);
 
 			// Check that it exists
-			if ( ! is_array($config_arr) OR $config_arr === array())
+			if ( ! is_array($config_arr) or $config_arr === array())
 			{
 				throw new Fuel_Exception('You have specified an invalid ftp connection group: '.$config);
 			}
@@ -84,7 +84,7 @@ class Fuel_Ftp
 		$this->_ssl_mode = (bool) $config['ssl_mode'];
 		$this->_debug = (bool) $config['debug'];
 
-		Ftp::$initialized = TRUE;
+		Ftp::$initialized = true;
 	}
 
 	// --------------------------------------------------------------------
@@ -98,7 +98,7 @@ class Fuel_Ftp
 	 */
 	function connect()
 	{
-		if($this->_ssl_mode === TRUE)
+		if($this->_ssl_mode === true)
 		{
 //			if( ! function_exists('ftp_ssl_connect'))
 //			{
@@ -113,27 +113,27 @@ class Fuel_Ftp
 			$this->_conn_id = @ftp_connect($this->_hostname, $this->_port);
 		}
 
-		if ($this->_conn_id === FALSE)
+		if ($this->_conn_id === false)
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_connect');
 			}
-			return FALSE;
+			return false;
 		}
 
 		if ( ! $this->_login())
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_login');
 			}
 		}
 
 		// Set passive mode if needed
-		if ($this->_passive == TRUE)
+		if ($this->_passive == true)
 		{
-			ftp_pasv($this->_conn_id, TRUE);
+			ftp_pasv($this->_conn_id, true);
 		}
 
 		return $this;
@@ -164,13 +164,13 @@ class Fuel_Ftp
 	{
 		if ( ! is_resource($this->_conn_id))
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_no_connection');
 			}
-			return FALSE;
+			return false;
 		}
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -190,25 +190,25 @@ class Fuel_Ftp
 	 * @param	bool
 	 * @return	bool
 	 */
-	function change_dir($path = '', $supress_debug = FALSE)
+	function change_dir($path = '', $supress_debug = false)
 	{
-		if ($path == '' OR ! $this->_is_conn())
+		if ($path == '' or ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = @ftp_chdir($this->_conn_id, $path);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			if ($this->_debug == TRUE AND $supress_debug == FALSE)
+			if ($this->_debug == true and $supress_debug == false)
 			{
 				throw new Fuel_Exception('ftp_unable_to_change_dir');
 			}
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -222,20 +222,20 @@ class Fuel_Ftp
 	 */
 	function mkdir($path = '', $permissions = NULL)
 	{
-		if ($path == '' OR ! $this->_is_conn())
+		if ($path == '' or ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = ftp_mkdir($this->_conn_id, $path);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_makdir');
 			}
-			return FALSE;
+			return false;
 		}
 
 		// Set file permissions if needed
@@ -244,7 +244,7 @@ class Fuel_Ftp
 			$this->chmod($path, (int)$permissions);
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -262,13 +262,13 @@ class Fuel_Ftp
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		if ( ! file_exists($locpath))
 		{
 			throw new Fuel_Exception('ftp_no_source_file');
-			return FALSE;
+			return false;
 		}
 
 		// Set the mode if not specified
@@ -283,13 +283,13 @@ class Fuel_Ftp
 
 		$result = @ftp_put($this->_conn_id, $rempath, $locpath, $mode);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_upload');
 			}
-			return FALSE;
+			return false;
 		}
 
 		// Set file permissions if needed
@@ -298,7 +298,7 @@ class Fuel_Ftp
 			$this->chmod($rempath, (int)$permissions);
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -316,7 +316,7 @@ class Fuel_Ftp
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		// Set the mode if not specified
@@ -331,16 +331,16 @@ class Fuel_Ftp
 
 		$result = @ftp_get($this->_conn_id, $locpath, $rempath, $mode);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			if ($this->_debug === TRUE)
+			if ($this->_debug === true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_download');
 			}
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
     }
 
 	// --------------------------------------------------------------------
@@ -354,27 +354,27 @@ class Fuel_Ftp
 	 * @param	bool
 	 * @return	bool
 	 */
-	function rename($old_file, $new_file, $move = FALSE)
+	function rename($old_file, $new_file, $move = false)
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = @ftp_rename($this->_conn_id, $old_file, $new_file);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
-				$msg = ($move == FALSE) ? 'ftp_unable_to_rename' : 'ftp_unable_to_move';
+				$msg = ($move == false) ? 'ftp_unable_to_rename' : 'ftp_unable_to_move';
 
 				throw new Fuel_Exception($msg);
 			}
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -389,7 +389,7 @@ class Fuel_Ftp
 	 */
 	function move($old_file, $new_file)
 	{
-		return $this->rename($old_file, $new_file, TRUE);
+		return $this->rename($old_file, $new_file, true);
 	}
 
 	// --------------------------------------------------------------------
@@ -405,21 +405,21 @@ class Fuel_Ftp
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		$result = @ftp_delete($this->_conn_id, $filepath);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_delete');
 			}
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -436,7 +436,7 @@ class Fuel_Ftp
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		// Add a trailing slash to the file path if needed
@@ -444,7 +444,7 @@ class Fuel_Ftp
 
 		$list = $this->list_files($filepath);
 
-		if ($list !== FALSE AND count($list) > 0)
+		if ($list !== false and count($list) > 0)
 		{
 			foreach ($list as $item)
 			{
@@ -459,16 +459,16 @@ class Fuel_Ftp
 
 		$result = @ftp_rmdir($this->_conn_id, $filepath);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_delete');
 			}
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -485,31 +485,31 @@ class Fuel_Ftp
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		// Permissions can only be set when running PHP 5
 		if ( ! function_exists('ftp_chmod'))
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_chmod');
 			}
-			return FALSE;
+			return false;
 		}
 
 		$result = @ftp_chmod($this->_conn_id, $perm, $path);
 
-		if ($result === FALSE)
+		if ($result === false)
 		{
-			if ($this->_debug == TRUE)
+			if ($this->_debug == true)
 			{
 				throw new Fuel_Exception('ftp_unable_to_chmod');
 			}
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -524,7 +524,7 @@ class Fuel_Ftp
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		return ftp_nlist($this->_conn_id, $path);
@@ -548,24 +548,24 @@ class Fuel_Ftp
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		// Open the local file path
 		if ($fp = @opendir($locpath))
 		{
 			// Attempt to open the remote file path.
-			if ( ! $this->change_dir($rempath, TRUE))
+			if ( ! $this->change_dir($rempath, true))
 			{
 				// If it doesn't exist we'll attempt to create the direcotory
-				if ( ! $this->mkdir($rempath) OR ! $this->change_dir($rempath))
+				if ( ! $this->mkdir($rempath) or ! $this->change_dir($rempath))
 				{
-					return FALSE;
+					return false;
 				}
 			}
 
 			// Recursively read the local directory
-			while (FALSE !== ($file = readdir($fp)))
+			while (false !== ($file = readdir($fp)))
 			{
 				if (@is_dir($locpath.$file) && substr($file, 0, 1) != '.')
 				{
@@ -580,10 +580,10 @@ class Fuel_Ftp
 					$this->upload($locpath.$file, $rempath.$file, $mode);
 				}
 			}
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -631,7 +631,7 @@ class Fuel_Ftp
 	{
 		if ( ! $this->_is_conn())
 		{
-			return FALSE;
+			return false;
 		}
 
 		@ftp_close($this->_conn_id);

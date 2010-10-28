@@ -63,16 +63,16 @@ class Fuel_Log
 	 */
 	private static function _write($level, $msg)
 	{
-		if ( ! defined('self::'.strtoupper($level)) OR (constant('self::'.strtoupper($level)) > Config::get('log_threshold')))
+		if ( ! defined('self::'.strtoupper($level)) or (constant('self::'.strtoupper($level)) > Config::get('log_threshold')))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$filepath = Config::get('log_path').date('Y/m').'/';
 
 		if ( ! is_dir($filepath))
 		{
-			mkdir($filepath, 0777, TRUE);
+			mkdir($filepath, 0777, true);
 			chmod($filepath, 0777);
 		}
 
@@ -82,12 +82,12 @@ class Fuel_Log
 
 		if ( ! file_exists($filename))
 		{
-			$message .= "<"."?php defined('SYSPATH') OR exit('No direct script access allowed'); ?".">".PHP_EOL.PHP_EOL;
+			$message .= "<"."?php defined('SYSPATH') or exit('No direct script access allowed'); ?".">".PHP_EOL.PHP_EOL;
 		}
 
 		if ( ! $fp = @fopen($filename, 'a'))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$message .= $level.' '.(($level == 'info') ? ' -' : '-').' '.date(Config::get('log_date_format')). ' --> '.$msg.PHP_EOL;
@@ -98,7 +98,7 @@ class Fuel_Log
 		fclose($fp);
 
 		@chmod($filename, 0666);
-		return TRUE;
+		return true;
 	}
 
 }

@@ -26,7 +26,7 @@ $fuel_paths = array(
  * In a production environment you will want to change these 2 settings.
  */
 error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
+ini_set('display_errors', true);
 
 /**
  * We disable short open tags by default so as to not confuse people.  They
@@ -47,7 +47,7 @@ define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 // Loop through the paths and check if they are absolute or relative.
 foreach ($fuel_paths as &$folder)
 {
-	if ( ! is_dir($folder) AND is_dir(DOCROOT.$folder))
+	if ( ! is_dir($folder) and is_dir(DOCROOT.$folder))
 	{
 		$folder = DOCROOT.$folder;
 	}

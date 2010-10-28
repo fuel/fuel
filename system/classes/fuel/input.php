@@ -100,7 +100,7 @@ class Fuel_Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function get($index = '', $default = FALSE)
+	public static function get($index = '', $default = false)
 	{
 		return Input::_fetch_from_array($_GET, $index, $default);
 	}
@@ -113,7 +113,7 @@ class Fuel_Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function post($index = '', $default = FALSE)
+	public static function post($index = '', $default = false)
 	{
 		return Input::_fetch_from_array($_POST, $index, $default);
 	}
@@ -126,7 +126,7 @@ class Fuel_Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function put($index = '', $default = FALSE)
+	public static function put($index = '', $default = false)
 	{
 		if (Input::method() !== 'PUT')
 		{
@@ -150,7 +150,7 @@ class Fuel_Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function delete($index = '', $default = FALSE)
+	public static function delete($index = '', $default = false)
 	{
 		if (Input::method() !== 'DELETE')
 		{
@@ -174,7 +174,7 @@ class Fuel_Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function get_post($index = '', $default = FALSE)
+	public static function get_post($index = '', $default = false)
 	{
 		return isset($_POST[$index]) ? Input::post($index, $default) : Input::get($index, $default);
 	}
@@ -187,7 +187,7 @@ class Fuel_Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	function cookie($index = '', $default = FALSE)
+	function cookie($index = '', $default = false)
 	{
 		return Input::_fetch_from_array($_COOKIE, $index, $default);
 	}
@@ -200,7 +200,7 @@ class Fuel_Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	function server($index = '', $default = FALSE)
+	function server($index = '', $default = false)
 	{
 		return Input::_fetch_from_array($_SERVER, $index, $default);
 	}
@@ -214,7 +214,7 @@ class Fuel_Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	private function _fetch_from_array(&$array, $index = '', $default = FALSE)
+	private function _fetch_from_array(&$array, $index = '', $default = false)
 	{
 		if ( ! isset($array[$index]))
 		{

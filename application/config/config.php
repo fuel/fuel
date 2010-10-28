@@ -17,7 +17,7 @@ return array(
 	/**
 	 * index_file - The name of the main bootstrap file.
 	 *
-	 * Set this to FALSE or remove if you using mod_rewrite.
+	 * Set this to false or remove if you using mod_rewrite.
 	 */
 	'index_file'	=> 'index.php',
 

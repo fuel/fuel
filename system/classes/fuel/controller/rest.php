@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR exit('No direct script access allowed');
+<?php defined('SYSPATH') or exit('No direct script access allowed');
 
 abstract class Fuel_Controller_Rest extends Controller
 {
@@ -110,22 +110,22 @@ abstract class Fuel_Controller_Rest extends Controller
 		}
 
 		// A format has been passed as an argument in the URL and it is supported
-		if (Input::get_post('format') AND $this->_supported_formats[Input::get_post('format')])
+		if (Input::get_post('format') and $this->_supported_formats[Input::get_post('format')])
 		{
 			return Input::get_post('format');
 		}
 
 		// Otherwise, check the HTTP_ACCEPT (if it exists and we are allowed)
-		if (Config::get('rest.ignore_http_accept') === FALSE AND Input::server('HTTP_ACCEPT'))
+		if (Config::get('rest.ignore_http_accept') === false and Input::server('HTTP_ACCEPT'))
 		{
 			// Check all formats against the HTTP_ACCEPT header
 			foreach(array_keys($this->_supported_formats) as $format)
 			{
 				// Has this format been requested?
-				if (strpos(Input::server('HTTP_ACCEPT'), $format) !== FALSE)
+				if (strpos(Input::server('HTTP_ACCEPT'), $format) !== false)
 				{
 					// If not HTML or XML assume its right and send it on its way
-					if ($format != 'html' AND $format != 'xml')
+					if ($format != 'html' and $format != 'xml')
 					{
 						return $format;
 					}
@@ -134,13 +134,13 @@ abstract class Fuel_Controller_Rest extends Controller
 					else
 					{
 						// If it is truely HTML, it wont want any XML
-						if ($format == 'html' AND strpos(Input::server('HTTP_ACCEPT'), 'xml') === FALSE)
+						if ($format == 'html' and strpos(Input::server('HTTP_ACCEPT'), 'xml') === false)
 						{
 							return $format;
 						}
 
 						// If it is truely XML, it wont want any HTML
-						elseif ($format == 'xml' AND strpos(Input::server('HTTP_ACCEPT'), 'html') === FALSE)
+						elseif ($format == 'xml' and strpos(Input::server('HTTP_ACCEPT'), 'html') === false)
 						{
 							return $format;
 						}
@@ -174,7 +174,7 @@ abstract class Fuel_Controller_Rest extends Controller
 		}
 
 		// They might have sent a few, make it an array
-		if (strpos($lang, ',') !== FALSE)
+		if (strpos($lang, ',') !== false)
 		{
 			$langs = explode(',', $lang);
 
@@ -200,23 +200,23 @@ abstract class Fuel_Controller_Rest extends Controller
 	{
 		if (empty($username))
 		{
-			return FALSE;
+			return false;
 		}
 
 		$valid_logins =& Config::get('rest.valid_logins');
 
 		if ( ! array_key_exists($username, $valid_logins))
 		{
-			return FALSE;
+			return false;
 		}
 
 		// If actually NULL (not empty string) then do not check it
-		if ($password !== NULL AND $valid_logins[$username] != $password)
+		if ($password !== NULL and $valid_logins[$username] != $password)
 		{
-			return FALSE;
+			return false;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	private function _prepare_basic_auth()
@@ -280,7 +280,7 @@ abstract class Fuel_Controller_Rest extends Controller
 		preg_match_all('@(username|nonce|uri|nc|cnonce|qop|response)=[\'"]?([^\'",]+)@', $digest_string, $matches);
 		$digest = array_combine($matches[1], $matches[2]);
 
-		if ( ! array_key_exists('username', $digest) OR !self::_check_login($digest['username']) )
+		if ( ! array_key_exists('username', $digest) or !self::_check_login($digest['username']) )
 		{
 			self::_force_login($uniqid);
 		}
@@ -325,7 +325,7 @@ abstract class Fuel_Controller_Rest extends Controller
 	private function _force_loopable($data)
 	{
 		// Force it to be something useful
-		if ( ! is_array($data) AND ! is_object($data))
+		if ( ! is_array($data) and ! is_object($data))
 		{
 			$data = (array) $data;
 		}
@@ -364,7 +364,7 @@ abstract class Fuel_Controller_Rest extends Controller
 			$key = preg_replace('/[^a-z_]/i', '', $key);
 
 			// if there is another array found recrusively call this function
-			if (is_array($value) OR is_object($value))
+			if (is_array($value) or is_object($value))
 			{
 				$node = $structure->addChild($key);
 				// recrusive call.
@@ -374,7 +374,7 @@ abstract class Fuel_Controller_Rest extends Controller
 			else
 			{
 				// Actual boolean values need to be converted to numbers
-				is_bool($value) AND $value = (int) $value;
+				is_bool($value) and $value = (int) $value;
 
 				// add single node.
 				$value = htmlentities($value, ENT_NOQUOTES, "UTF-8");
@@ -420,7 +420,7 @@ abstract class Fuel_Controller_Rest extends Controller
 			$key = preg_replace('/[^a-z0-9_-]/i', '', $key);
 
 			// if there is another array found recrusively call this function
-			if (is_array($value) OR is_object($value))
+			if (is_array($value) or is_object($value))
 			{
 				$node = $structure->addChild($key);
 				// recrusive call.
@@ -430,7 +430,7 @@ abstract class Fuel_Controller_Rest extends Controller
 			else
 			{
 				// Actual boolean values need to be converted to numbers
-				is_bool($value) AND $value = (int) $value;
+				is_bool($value) and $value = (int) $value;
 
 				// add single node.
 				$value = htmlentities($value, ENT_NOQUOTES, "UTF-8");
@@ -514,7 +514,7 @@ abstract class Fuel_Controller_Rest extends Controller
 	// Encode raw PHP
 	private function _format_php($data = array())
 	{
-		return var_export($data, TRUE);
+		return var_export($data, true);
 	}
 }
 

@@ -17,12 +17,12 @@ class Fuel_Request {
 	/**
 	 * @var	object	Holds the global request instance
 	 */
-	public static $instance = FALSE;
+	public static $instance = false;
 	
 	/**
 	 * @var	object	Holds the global request instance
 	 */
-	public static $active = FALSE;
+	public static $active = false;
 
 	/**
 	 * Returns the a Request object singleton
@@ -61,16 +61,16 @@ class Fuel_Request {
 	 */
 	public static function show_404()
 	{
-		if (Config::get('routes.404') === FALSE)
+		if (Config::get('routes.404') === false)
 		{
 			// TODO: Create a standard 404 view and show it here.
 			die('Page not found.');
 		}
 		else
 		{
-			list($controller, $action) = array_pad(explode('/', Config::get('routes.404')), 2, FALSE);
+			list($controller, $action) = array_pad(explode('/', Config::get('routes.404')), 2, false);
 
-			( ! $action) AND $action = 'index';
+			( ! $action) and $action = 'index';
 
 			$class = 'Controller_'.$controller;
 			$method = 'action_'.$action;
@@ -146,10 +146,10 @@ class Fuel_Request {
 	public function execute()
 	{
 		// TODO: Write the Route class and parse the routes.
-		list($controller, $action) = array_pad($this->uri->segments, 2, FALSE);
+		list($controller, $action) = array_pad($this->uri->segments, 2, false);
 		
-		$controller AND $this->controller = $controller;
-		$action AND $this->action = $action;
+		$controller and $this->controller = $controller;
+		$action and $this->action = $action;
 
 		$class = 'Controller_'.ucfirst($this->controller);
 		$method = 'action_'.$this->action;

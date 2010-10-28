@@ -39,16 +39,16 @@ class Fuel_Config {
 		}
 	}
 	
-	public static function get($item, $group = FALSE)
+	public static function get($item, $group = false)
 	{
-		if (strpos($item, '.') !== FALSE)
+		if (strpos($item, '.') !== false)
 		{
 			$parts = explode('.', $item);
 
-			$return = FALSE;
+			$return = false;
 			foreach ($parts as $part)
 			{
-				if ($return === FALSE AND isset(Config::$items[$part]))
+				if ($return === false and isset(Config::$items[$part]))
 				{
 					$return = Config::$items[$part];
 				}
@@ -58,7 +58,7 @@ class Fuel_Config {
 				}
 				else
 				{
-					return FALSE;
+					return false;
 				}
 			}
 			return $return;
@@ -68,7 +68,7 @@ class Fuel_Config {
 		{
 			return Config::$items[$item];
 		}
-		return FALSE;
+		return false;
 	}
 
 	public static function set($item, $value, $group = NULL)
@@ -76,14 +76,14 @@ class Fuel_Config {
 		if ($group === NULL)
 		{
 			Config::$items[$item] = $value;
-			return TRUE;
+			return true;
 		}
 		elseif (isset(Config::$items[$group][$item]))
 		{
 			Config::$items[$group][$item] = $value;
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 }
 

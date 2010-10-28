@@ -18,9 +18,9 @@ return array(
 		'username'		=>		'',
 		'password'		=>		'',
 		'port'			=>		21,
-		'passive'		=>		TRUE,
-		'ssl_mode'		=>		FALSE,
-		'debug'			=>		FALSE
+		'passive'		=>		true,
+		'ssl_mode'		=>		false,
+		'debug'			=>		false
 	)
 );
 

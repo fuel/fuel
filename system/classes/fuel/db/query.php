@@ -20,7 +20,7 @@ class Fuel_DB_Query {
 
 	protected $_parameters = array();
 
-	protected $_as_object = FALSE;
+	protected $_as_object = false;
 
 	/**
 	 * Creates a new SQL query of the specified type.
@@ -69,7 +69,7 @@ class Fuel_DB_Query {
 	 */
 	public function as_assoc()
 	{
-		$this->_as_object = FALSE;
+		$this->_as_object = false;
 
 		return $this;
 	}
@@ -77,12 +77,12 @@ class Fuel_DB_Query {
 	/**
 	 * Returns results as objects
 	 *
-	 * @param   string  classname or TRUE for stdClass
+	 * @param   string  classname or true for stdClass
 	 * @return  $this
 	 */
 	public function as_object()
 	{
-		$this->_as_object = TRUE;
+		$this->_as_object = true;
 
 		return $this;
 	}

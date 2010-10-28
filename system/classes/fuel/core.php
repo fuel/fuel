@@ -21,7 +21,7 @@
  */
 class Fuel_Core {
 
-	public static $initialized = FALSE;
+	public static $initialized = false;
 
 	protected static $_paths = array();
 
@@ -36,7 +36,7 @@ class Fuel_Core {
 	public static function init()
 	{
 		// TODO: Replace die() and throw an exception.
-		Fuel::$initialized AND die('Can only initialize Fuel once.');
+		Fuel::$initialized and die('Can only initialize Fuel once.');
 
 		Fuel::$_paths = array(APPPATH, SYSPATH);
 
@@ -45,7 +45,7 @@ class Fuel_Core {
 		Config::load('config');
 		Config::load('routes', 'routes');
 
-		if (Config::get('base_url') === FALSE)
+		if (Config::get('base_url') === false)
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
@@ -56,7 +56,7 @@ class Fuel_Core {
 		// Set some server options
 		setlocale(LC_ALL, Config::get('locale'));
 
-		Fuel::$initialized = TRUE;
+		Fuel::$initialized = true;
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Fuel_Core {
 		$folder = array_pop($parts);
 
 		// If the class is not a Controller, or is a Core Class, then look in 'classes'
-		if (($folder != 'controller' AND $folder != 'model') OR empty($parts) OR $parts[0] == 'fuel')
+		if (($folder != 'controller' and $folder != 'model') or empty($parts) or $parts[0] == 'fuel')
 		{
 			$file = str_replace('_', DIRECTORY_SEPARATOR, $class);
 			$folder = 'classes';
@@ -99,11 +99,11 @@ class Fuel_Core {
 			{
 				require $path;
 			}
-			return TRUE;
+			return true;
 		}
 
 		// Class is not in the filesystem
-		return FALSE;
+		return false;
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Fuel_Core {
 	{
 		$path = $directory.DIRECTORY_SEPARATOR.strtolower($file).$ext;
 
-		$found = FALSE;
+		$found = false;
 		foreach (Fuel::$_paths as $dir)
 		{
 			if (is_file($dir.$path))

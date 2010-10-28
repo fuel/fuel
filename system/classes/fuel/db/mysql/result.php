@@ -32,22 +32,22 @@ class Fuel_DB_MySQL_Result extends DB_Result {
 	
 	public function seek($offest)
 	{
-		if ($this->offsetExists($offset) AND mysql_data_seek($this->_result, $offset))
+		if ($this->offsetExists($offset) and mysql_data_seek($this->_result, $offset))
 		{
 			$this->_current_row = $this->_internal_row = $offset;
 
-			return TRUE;
+			return true;
 		}
 		else
 		{
-			return FALSE;
+			return false;
 		}
 	}
 	
 	public function current()
 	{
-		if ($this->_current_row !== $this->_internal_row AND ! $this->seek($this->_current_row))
-		return FALSE;
+		if ($this->_current_row !== $this->_internal_row and ! $this->seek($this->_current_row))
+		return false;
 
 		// Increment internal row for optimization assuming rows are fetched in order
 		$this->_internal_row++;

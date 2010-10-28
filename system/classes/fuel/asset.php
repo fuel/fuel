@@ -41,7 +41,7 @@ class Fuel_Asset {
 	/**
 	 * @var	bool	Get this baby going
 	 */
-	public static $initialized = FALSE;
+	public static $initialized = false;
 
 	// --------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ class Fuel_Asset {
 			'img'	=>	Config::get('asset.img_dir')
 		);
 
-		Asset::$initialized = TRUE;
+		Asset::$initialized = true;
 	}
 
 	// --------------------------------------------------------------------
@@ -110,7 +110,7 @@ class Fuel_Asset {
 	 */
 	public static function remove_path($path)
 	{
-		if (($key = array_search(str_replace('../', '', $path), Asset::$_asset_paths)) !== FALSE)
+		if (($key = array_search(str_replace('../', '', $path), Asset::$_asset_paths)) !== false)
 		{
 			unset(Asset::$_asset_paths[$key]);
 		}
@@ -128,7 +128,7 @@ class Fuel_Asset {
 	 * @param	bool	Whether to return the raw file or not
 	 * @return	string	The group's output
 	 */
-	public static function render($group, $raw = FALSE)
+	public static function render($group, $raw = false)
 	{
 		if (is_string($group))
 		{
@@ -142,7 +142,7 @@ class Fuel_Asset {
 			$filename = $item['file'];
 			$attr = $item['attr'];
 
-			if (strpos($filename, '://') === FALSE)
+			if (strpos($filename, '://') === false)
 			{
 				if ( ! ($file = Asset::find_file($filename, Asset::$_folders[$type])))
 				{
@@ -205,15 +205,15 @@ class Fuel_Asset {
 	 * @param	string	The asset group name
 	 * @return	string
 	 */
-	public static function css($stylesheets = array(), $attr = array(), $group = NULL, $raw = FALSE)
+	public static function css($stylesheets = array(), $attr = array(), $group = NULL, $raw = false)
 	{
 		static $temp_group = 1000000;
 
-		$render = FALSE;
+		$render = false;
 		if ($group === NULL)
 		{
 			$group = (string) (++$temp_group);
-			$render = TRUE;
+			$render = true;
 		}
 
 		Asset::_parse_assets('css', $stylesheets, $attr, $group);
@@ -239,15 +239,15 @@ class Fuel_Asset {
 	 * @param	string	The asset group name
 	 * @return	string
 	 */
-	public static function js($scripts = array(), $attr = array(), $group = NULL, $raw = FALSE)
+	public static function js($scripts = array(), $attr = array(), $group = NULL, $raw = false)
 	{
 		static $temp_group = 2000000;
 
-		$render = FALSE;
+		$render = false;
 		if ( ! isset($group))
 		{
 			$group = (string) $temp_group++;
-			$render = TRUE;
+			$render = true;
 		}
 
 		Asset::_parse_assets('js', $scripts, $attr, $group);
@@ -277,11 +277,11 @@ class Fuel_Asset {
 	{
 		static $temp_group = 3000000;
 
-		$render = FALSE;
+		$render = false;
 		if ( ! isset($group))
 		{
 			$group = (string) $temp_group++;
-			$render = TRUE;
+			$render = true;
 		}
 
 		Asset::_parse_assets('img', $images, $attr, $group);
@@ -368,7 +368,7 @@ class Fuel_Asset {
 	 * @access	public
 	 * @param	string	The filename to locate
 	 * @param	string	The sub-folder to look in
-	 * @return	mixed	Either the path to the file or FALSE if not found
+	 * @return	mixed	Either the path to the file or false if not found
 	 */
 	public static function find_file($file, $folder)
 	{
@@ -380,7 +380,7 @@ class Fuel_Asset {
 			}
 		}
 		
-		return FALSE;
+		return false;
 	}
 }
 

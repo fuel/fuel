@@ -49,12 +49,12 @@ class Fuel_Cookie {
 	/**
 	 * @var  boolean  Only transmit cookies over secure connections
 	 */
-	public static $secure = FALSE;
+	public static $secure = false;
 
 	/**
 	 * @var  boolean  Only transmit cookies over HTTP, disabling Javascript access
 	 */
-	public static $httponly = FALSE;
+	public static $httponly = false;
 
 	/**
 	 * Gets the value of a signed cookie. Cookies without signatures will not

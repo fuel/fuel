@@ -24,7 +24,7 @@ class Fuel_Arr {
 	 * @param	bool	Whether to reset and start over on a new array
 	 * @return	array
 	 */
-	public static function flatten_assoc($array, $glue = ':', $reset = TRUE)
+	public static function flatten_assoc($array, $glue = ':', $reset = true)
 	{
 		static $return = array();
 		static $curr_key = array();
@@ -38,9 +38,9 @@ class Fuel_Arr {
 		foreach ($array as $key => $val)
 		{
 			$curr_key[] = $key;
-			if (is_array($val) AND array_values($val) !== $val)
+			if (is_array($val) and array_values($val) !== $val)
 			{
-				Arr::flatten_assoc($val, $glue, FALSE);
+				Arr::flatten_assoc($val, $glue, false);
 			}
 			else
 			{

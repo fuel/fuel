@@ -44,14 +44,14 @@ class Fuel_URI {
 
 			// Remove the base URL from the URI
 			$base_url = parse_url(Config::get('base_url'), PHP_URL_PATH);
-			if ($uri != '' AND strncmp($uri, $base_url, strlen($base_url)) === 0)
+			if ($uri != '' and strncmp($uri, $base_url, strlen($base_url)) === 0)
 			{
 				$uri = substr($uri, strlen($base_url));
 			}
 
 			// If we are using an index file (not mod_rewrite) then remove it
 			$index_file = Config::get('index_file');
-			if ($index_file AND strncmp($uri, $index_file, strlen($index_file)) === 0)
+			if ($index_file and strncmp($uri, $index_file, strlen($index_file)) === 0)
 			{
 				$uri = substr($uri, strlen($index_file));
 			}
@@ -77,7 +77,7 @@ class Fuel_URI {
 	}
 
 	/**
-	 * Returns the desired segment, or FALSE if it does not exist.
+	 * Returns the desired segment, or false if it does not exist.
 	 *
 	 * @access	public
 	 * @param	int		The segment number
@@ -90,7 +90,7 @@ class Fuel_URI {
 			return Request::active()->uri->segments[$segment - 1];
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	public static function string()

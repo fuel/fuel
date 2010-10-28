@@ -20,12 +20,12 @@ return array(
 			'database'   => 'fuel',
 			'username'   => 'root',
 			'password'   => '',
-			'persistent' => FALSE,
+			'persistent' => false,
 		),
 		'table_prefix' => '',
 		'charset'      => 'utf8',
-		'caching'      => FALSE,
-		'profiling'    => FALSE,
+		'caching'      => false,
+		'profiling'    => false,
 	),
 );
 

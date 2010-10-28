@@ -62,7 +62,7 @@ abstract class Fuel_DB_Driver {
 	 * Perform an SQL query of the given type.
 	 *
 	 * // Make a SELECT query and use objects for results
-	 * $db->query(DB::SELECT, 'SELECT * FROM groups', TRUE);
+	 * $db->query(DB::SELECT, 'SELECT * FROM groups', true);
 	 *
 	 * // Make a SELECT query and use "Model_User" for the results
 	 * $db->query(DB::SELECT, 'SELECT * FROM users LIMIT 1', 'Model_User');
@@ -73,7 +73,7 @@ abstract class Fuel_DB_Driver {
 	 * @return array list (insert id, row count) for INSERT queries
 	 * @return integer number of affected rows for all other queries
 	 */
-	abstract public function query($type, $sql, $as_object = TRUE);
+	abstract public function query($type, $sql, $as_object = true);
 	
 }
 

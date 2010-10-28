@@ -21,7 +21,7 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	protected $_total_rows  = 0;
 	protected $_current_row = 0;
 
-	protected $_as_object = TRUE;
+	protected $_as_object = true;
 
 	/**
 	 * Sets the total number of rows and stores the result locally.
@@ -30,7 +30,7 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 * @param   string  SQL query
 	 * @return  void
 	 */
-	public function __construct($result, $sql, $as_object = TRUE)
+	public function __construct($result, $sql, $as_object = true)
 	{
 		$this->_as_object = $as_object;
 
@@ -81,7 +81,7 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	{
 		$results = array();
 
-		if ($key === NULL AND $value === NULL)
+		if ($key === NULL and $value === NULL)
 		{
 			// Indexed rows
 
@@ -205,7 +205,7 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 */
 	public function offsetExists($offset)
 	{
-		return ($offset >= 0 AND $offset < $this->_total_rows);
+		return ($offset >= 0 and $offset < $this->_total_rows);
 	}
 
 	/**
@@ -229,11 +229,11 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 * [!!] You cannot modify a database result.
 	 *
 	 * @return  void
-	 * @throws  Kohana_Exception
+	 * @throws  Fuel_Exception
 	 */
 	final public function offsetSet($offset, $value)
 	{
-		throw new Kohana_Exception('Database results are read-only');
+		//throw new Fuel_Exception('Database results are read-only');
 	}
 
 	/**
@@ -242,11 +242,11 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 * [!!] You cannot modify a database result.
 	 *
 	 * @return  void
-	 * @throws  Kohana_Exception
+	 * @throws  Fuel_Exception
 	 */
 	final public function offsetUnset($offset)
 	{
-		throw new Kohana_Exception('Database results are read-only');
+		//throw new Fuel_Exception('Database results are read-only');
 	}
 
 	/**
