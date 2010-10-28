@@ -150,7 +150,7 @@ class Fuel_Ftp
 	 */
 	function _login()
 	{
-		return ftp_login($this->_conn_id, $this->_username, $this->_password);
+		return @ftp_login($this->_conn_id, $this->_username, $this->_password);
 	}
 
 	// --------------------------------------------------------------------
