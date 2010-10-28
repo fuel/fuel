@@ -32,7 +32,7 @@ ini_set('display_errors', TRUE);
  * We disable short open tags by default so as to not confuse people.  They
  * also interfere with generating XML documents.
  */
-ini_set('short_open_tag', 1);
+ini_set('short_open_tag', 0);
 
 /**
  * Do we have access to mbstring?
