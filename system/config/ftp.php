@@ -13,18 +13,14 @@
 
 return array(
 
-	'servers' => array(
-
-		'default' => array(
-			'hostname'		=>		'localhost',
-			'username'		=>		'',
-			'password'		=>		'',
-			'port'			=>		21,
-			'passive'		=>		TRUE,
-			'ssl_mode'		=>		FALSE,
-			'debug'			=>		FALSE
-		)
-
+	'default' => array(
+		'hostname'		=>		'localhost',
+		'username'		=>		'',
+		'password'		=>		'',
+		'port'			=>		21,
+		'passive'		=>		TRUE,
+		'ssl_mode'		=>		FALSE,
+		'debug'			=>		FALSE
 	)
 );
 

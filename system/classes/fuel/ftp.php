@@ -64,16 +64,15 @@ class Fuel_Ftp
 		// If it is a string we're looking at a predefined config group
 		if (is_string($config))
 		{
-			$servers = Config::get('ftp.servers');
+			$config_arr = Config::get('ftp.'.$config);
 
 			// Check that it exists
-			if ( ! isset($servers[$config]))
+			if ( ! is_array($config_arr) OR $config_arr === array())
 			{
 				throw new Fuel_Exception('You have specified an invalid ftp connection group: '.$config);
 			}
 
-			// Now we have an array, we dont need the string any more
-			$config = $servers[$config];
+			$config = $config_arr;
 		}
 
 		// Prep the hostname
