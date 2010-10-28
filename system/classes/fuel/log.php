@@ -24,7 +24,11 @@
 
 class Fuel_Log
 {
-	protected static $_levels = array('error' => 1, 'debug' => 2,  'info' => 3, 'all' => 4);
+	const NONE = 0;
+	const ERROR = 1;
+	const DEBUG = 2;
+	const INFO = 3;
+	const ALL = 4;
 
 	public static function info($msg)
 	{
@@ -59,7 +63,7 @@ class Fuel_Log
 	 */
 	private static function _write($level, $msg)
 	{
-		if ( ! isset(self::$_levels[$level]) OR (self::$_levels[$level] > Config::get('log_threshold')))
+		if ( ! defined('self::'.strtoupper($level)) OR (constant('self::'.strtoupper($level)) > Config::get('log_threshold')))
 		{
 			return FALSE;
 		}

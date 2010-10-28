@@ -53,6 +53,9 @@ class Fuel_Core {
 			}
 		}
 
+		// Set some server options
+		setlocale(LC_ALL, Config::get('locale'));
+
 		Fuel::$initialized = TRUE;
 	}
 

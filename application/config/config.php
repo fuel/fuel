@@ -15,28 +15,38 @@
 return array(
 
 	/**
-	 * Your environment.  Can be set to any of the following:
-	 *
-	 * Env::TEST
-	 * Env::DEVELOPMENT
-	 * Env::QA
-	 * Env::PRODUCTION
-	 */
-	'environment'	=> Env::DEVELOPMENT,
-
-	/**
 	 * index_file - The name of the main bootstrap file.
 	 *
 	 * Set this to FALSE or remove if you using mod_rewrite.
 	 */
 	'index_file'	=> 'index.php',
 
+	/**
+	 * Your environment.  Can be set to any of the following:
+	 *
+	 * Env::DEVELOPMENT
+	 * Env::TEST
+	 * Env::QA
+	 * Env::PRODUCTION
+	 */
+	'environment'	=> Env::DEVELOPMENT,
+
+	'locale'		=> 'en_US',
+
+	/**
+	 * Your environment.  Can be set to any of the following:
+	 *
+	 * Log::NONE
+	 * Log::ERROR
+	 * Log::DEBUG
+	 * Log::INFO
+	 * Log::ALL
+	 */
+	'log_threshold'	=> Log::ALL,
+
 	'log_path'		=> APPPATH . 'logs/',
 
-	'log_threshold'	=> 4,
-
 	'log_date_format' => 'Y-m-d H:i:s',
-
 
 );
 
