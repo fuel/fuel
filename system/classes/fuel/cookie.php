@@ -121,23 +121,6 @@ class Fuel_Cookie {
 		return Cookie::set($name, NULL, -86400);
 	}
 
-	/**
-	 * Generates a salt string for a cookie based on the name and value.
-	 *
-	 *     $salt = Cookie::salt('theme', 'red');
-	 *
-	 * @param   string   name of cookie
-	 * @param   string   value of cookie
-	 * @return  string
-	 */
-	public static function salt($name, $value)
-	{
-		// Determine the user agent
-		$agent = Input::server('HTTP_USER_AGENT', 'unknown');
-
-		return sha1($agent.$name.$value.Cookie::$salt);
-	}
-
 }
 
 /* End of file controller.php */
