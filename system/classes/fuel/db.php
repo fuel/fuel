@@ -237,7 +237,7 @@ class Fuel_DB {
 	 * @param   string   value to quote
 	 * @return  string
 	 */
-	abstract public function escape($value);
+//	abstract public function escape($value);
 }
 
 /* End of file db.php */
