@@ -68,7 +68,8 @@ class Fuel_Core {
 	 */
 	public static function autoload($class)
 	{
-		$parts = explode('_',  strtolower($class));
+		$class = (MBSTRING) ? mb_strtolower($class, INTERNAL_ENC) : strtolower($class);
+		$parts = explode('_', $class);
 		$folder = array_pop($parts);
 
 		// If the class is not a Controller, or is a Core Class, then look in 'classes'
