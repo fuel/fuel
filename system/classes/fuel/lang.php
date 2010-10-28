@@ -48,12 +48,12 @@ class Fuel_Lang {
 		}
 	}
 
-	public static function __($line, $group = FALSE)
+	public static function __($line, $params = array())
 	{
-		$str = Lang::line($line, $group);
+		$str = Lang::line($line, $params);
 
 		// Fail? Try translating based on locale
-		$str === NULL AND $str = gettext($line);
+		$str === NULL AND $str = Lang::parse_params(gettext($line), $params);
 
 		// Well f**k you, I'll just return the line then
 		empty($str) AND $str = $line;
@@ -61,7 +61,7 @@ class Fuel_Lang {
 		return $str;
 	}
 
-	public static function line($line, $group = FALSE)
+	public static function line($line, $params = array())
 	{
 		if (strpos($line, '.') !== FALSE)
 		{
@@ -83,15 +83,29 @@ class Fuel_Lang {
 					return FALSE;
 				}
 			}
-			return $return;
+			return  Lang::parse_params($return, $params);
 		}
 
 		if (isset(Lang::$lines[$line]))
 		{
-			return Lang::$lines[$line];
+			return Lang::parse_params(Lang::$lines[$line], $params);
 		}
 		
 		return NULL;
+	}
+
+	public function parse_params($string, $array = array())
+	{
+		$from_arr = array();
+
+		foreach ($array as $from => $to)
+		{
+			$from_arr[] = ':'.$from;
+		}
+
+		Debug::dump($from_arr, $array);
+
+		return str_replace($from_arr, $array, $string);
 	}
 
 	public static function set($line, $value, $group = NULL)
