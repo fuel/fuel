@@ -12,20 +12,7 @@
  */
 
 return array(
-
-	'servers' => array(
-
-		'default' => array(
-			'hostname'		=>		'localhost',
-			'username'		=>		'',
-			'password'		=>		'',
-			'port'			=>		21,
-			'passive'		=>		TRUE,
-			'ssl_mode'		=>		FALSE,
-			'debug'			=>		FALSE
-		)
-
-	)
+	'hello' => 'Hello World!'
 );
 
-/* End of file config/ftp.php */
+/* End of file lang/en/test.php */

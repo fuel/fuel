@@ -31,6 +31,8 @@ return array(
 	 */
 	'environment'	=> Env::DEVELOPMENT,
 
+	'language'		=> 'en',
+	
 	'locale'		=> 'en_US',
 
 	/**
