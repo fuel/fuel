@@ -68,6 +68,9 @@ class Fuel_Core {
 	 */
 	public static function autoload($class)
 	{
+		// This is used later
+		$called_class = $class;
+
 		$class = (MBSTRING) ? mb_strtolower($class, INTERNAL_ENC) : strtolower($class);
 		$parts = explode('_', $class);
 		$folder = array_pop($parts);
@@ -99,6 +102,13 @@ class Fuel_Core {
 			{
 				require $path;
 			}
+			
+			// if it has a static init() method, then call it now.
+			if (is_callable($called_class.'::init'))
+			{
+				call_user_func($called_class.'::init');
+			}
+			
 			return true;
 		}
 
