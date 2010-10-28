@@ -103,8 +103,6 @@ class Fuel_Lang {
 			$from_arr[] = ':'.$from;
 		}
 
-		Debug::dump($from_arr, $array);
-
 		return str_replace($from_arr, $array, $string);
 	}
 
