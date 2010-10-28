@@ -23,17 +23,16 @@ $fuel_paths = array(
 );
 
 /**
- * Change this only if you have configured your server to
- * process PHP files with a different extension.
- */
-define('EXT', '.php');
-
-/**
- * In a production environment you will want to change this.
+ * In a production environment you will want to change these 2 settings.
  */
 error_reporting(E_ALL);
-
 ini_set('display_errors', TRUE);
+
+/**
+ * We disable short open tags by default so as to not confuse people.  They
+ * also interfere with generating XML documents.
+ */
+ini_set('short_open_tag', 1);
 
 /**
  * Do we have access to mbstring?
@@ -63,20 +62,20 @@ define('SYSPATH', realpath($fuel_paths['system']).DIRECTORY_SEPARATOR);
 unset($fuel_paths);
 
 // Load the base, low-level functions
-require SYSPATH.'base'.EXT;
+require SYSPATH.'base.php';
 
 // Load in the core class
-require SYSPATH.'classes/fuel/core'.EXT;
+require SYSPATH.'classes/fuel/core.php';
 
 // If the Fuel class is overrided in the application folder
 // load that, else load the core class.
-if (is_file(APPPATH.'classes/fuel'.EXT))
+if (is_file(APPPATH.'classes/fuel.php'))
 {
-	require APPPATH.'classes/fuel'.EXT;
+	require APPPATH.'classes/fuel.php';
 }
 else
 {
-	require SYSPATH.'classes/fuel'.EXT;
+	require SYSPATH.'classes/fuel.php';
 }
 
 // Initialize the framework

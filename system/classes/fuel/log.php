@@ -76,7 +76,7 @@ class Fuel_Log
 			chmod($filepath, 0777);
 		}
 
-		$filename = $filepath.date('d').EXT;
+		$filename = $filepath.date('d').'.php';
 		
 		$message  = '';
 

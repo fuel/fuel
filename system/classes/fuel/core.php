@@ -115,7 +115,7 @@ class Fuel_Core {
 	 * @param	string	The file extension
 	 * @return	string	The path to the file
 	 */
-	public static function find_file($directory, $file, $ext = EXT)
+	public static function find_file($directory, $file, $ext = '.php')
 	{
 		$path = $directory.DIRECTORY_SEPARATOR.strtolower($file).$ext;
 
