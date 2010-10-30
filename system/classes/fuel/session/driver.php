@@ -6,7 +6,7 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Fuel Development Team
+ * @author		Harro "WanWizard" Verton
  * @license		MIT License
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
@@ -14,116 +14,519 @@
 
 // --------------------------------------------------------------------
 
-/**
- * Session Class
- *
- * @package		Fuel
- * @category	Sessions
- * @author		Harro "WanWizard" Verton
- */
+class Fuel_Session_Driver {
 
-abstract class Fuel_Session_Driver {
+	// session class configuration
+	protected $config = array();
 
-	protected $valid_storage = array('cookie');
+	// session indentification keys
+	protected $keys = array();
+
+	// session variable data
+	protected $data = array();
+
+	// session flash data
+	protected $flash = array();
+
+	// --------------------------------------------------------------------
+	// driver generic methods
+	// --------------------------------------------------------------------
 
 	/**
-	 * Create a new session.
+	 * create a new session
 	 *
-	 * @abstract
 	 * @access	public
 	 * @return	void
 	 */
-	abstract public function create();
+	public function create()
+	{
+		$this->_set_cookie();
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * Read the current session, create one is none exists.
+	 * read the session
 	 *
-	 * @abstract
 	 * @access	public
 	 * @return	void
 	 */
-	abstract public function read();
+	public function read()
+	{
+		// do we need to read
+		if (empty($this->keys))
+		{
+			// fetch the session cookie
+			if( ! $this->_get_cookie())
+			{
+				// create a new session
+				$this->create();
+			}
+
+			// auto expire all flash variables if required
+			if ($this->config['flash_auto_expire'])
+			{
+				$this->_mark_flash();
+			}
+		}
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * Write current session.
+	 * write the session
 	 *
-	 * @abstract
 	 * @access	public
 	 * @return	void
 	 */
-	abstract public function write();
+	public function write()
+	{
+		// load the session
+		$this->read();
+
+		// cleanup any used flash variables
+		$this->_cleanup_flash();
+
+		// write the session cookie
+		$this->_set_cookie($this->keys['session_id']);
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * Destroy the current session.
+	 * destroy the current session
 	 *
-	 * @abstract
 	 * @access	public
 	 * @return	void
 	 */
-	abstract public function destroy();
+	public function destroy()
+	{
+		// load the session
+		$this->read();
+
+		// delete the session cookie
+		Cookie::delete($this->config['cookie_name']);
+
+		// and reset all session storage
+		$this->keys = array();
+		$this->data = array();
+		$this->flash = array();
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * Get a session variable
+	 * set session variables
 	 *
-	 * @abstract
+	 * @param	string	name of the variable to set
+	 * @param	mixed	value
 	 * @access	public
 	 * @return	void
 	 */
-	abstract public function get($name);
+	public function set($name, $value)
+	{
+		// load the session
+		$this->read();
+
+		$this->data[$name] = $value;
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * set a session variable.
+	 * get session variables
 	 *
-	 * @abstract
+	 * @access	public
+	 * @param	string	name of the variable to get
+	 * @return	mixed
+	 */
+	public function get($name)
+	{
+		// load the session
+		$this->read();
+
+		return isset($this->data[$name]) ? $this->data[$name] : false;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * delete session variables
+	 *
+	 * @param	string	name of the variable to delete
+	 * @param	mixed	value
 	 * @access	public
 	 * @return	void
 	 */
-	abstract public function set($name, $value);
+	public function delete($name)
+	{
+		// load the session
+		$this->read();
+
+		if (isset($this->data[$name]))
+		{
+			unset($this->data[$name]);
+		}
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * delete a session variable.
+	 * set session flash variables
 	 *
-	 * @abstract
+	 * @param	string	name of the variable to set
+	 * @param	mixed	value
 	 * @access	public
 	 * @return	void
 	 */
-	abstract public function delete($name);
+	public function set_flash($name, $value)
+	{
+		// load the session
+		$this->read();
+
+		$this->flash[$name] = array('state' => 'new', 'value' => $value);
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * Get a flash session variable
+	 * get session flash variables
 	 *
-	 * @abstract
+	 * @access	public
+	 * @param	string	name of the variable to get
+	 * @return	mixed
+	 */
+	public function get_flash($name)
+	{
+		// load the session
+		$this->read();
+
+		if (isset($this->flash[$name]))
+		{
+			$this->flash[$name]['state'] = '';
+			return $this->flash[$name]['value'];
+		}
+		return FALSE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * keep session flash variables
+	 *
+	 * @access	public
+	 * @param	string	name of the variable to keep
+	 * @return	void
+	 */
+	public function keep_flash($name)
+	{
+		// load the session
+		$this->read();
+
+		if (isset($this->flash[$name]))
+		{
+			$this->flash[$name]['state'] = 'new';
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * delete session flash variables
+	 *
+	 * @param	string	name of the variable to delete
+	 * @param	mixed	value
 	 * @access	public
 	 * @return	void
 	 */
-	abstract public function get_flash($name);
+	public function delete_flash($name)
+	{
+		// load the session
+		$this->read();
+
+		if (isset($this->flash[$name]))
+		{
+			unset($this->flash[$name]);
+		}
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * set a flash session variable.
+	 * get a runtime config value
 	 *
-	 * @abstract
+	 * @param	string	name of the config variable to get
 	 * @access	public
-	 * @return	void
+	 * @return  mixed
 	 */
-	abstract public function set_flash($name, $value);
+	public function get_config($name)
+	{
+		return isset($this->config[$name]) ? $this->config[$name] : null;
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * delete a flash session variable.
+	 * set a runtime config value
 	 *
-	 * @abstract
+	 * @param	string	name of the config variable to set
+	 * @param	mixed	value
 	 * @access	public
-	 * @return	void
+	 * @return  mixed
 	 */
-	abstract public function delete_flash($name);
+	public function set_config($name, $value)
+	{
+		switch ($name)
+		{
+			// booleans
+			case 'match_ip':
+			case 'match_ua':
+			case 'flash_auto_expire':
+				$this->config[$name] = (bool) $value;
+				break;
+			// strings
+			case 'flash_id':
+			case 'cookie_name':
+			case 'cookie_domain':
+			case 'cookie_path':
+				$this->config[$name] = (string) $value;
+				break;
+			// integers
+			case 'expiration_time':
+			case 'rotation_time':
+				$this->config[$name] = (int) $value;
+				break;
+			// arrays
+			case 'config':
+				$this->config[$name] = (array) $value;
+			default:
+				break;
+		}
+	}
+
+	// --------------------------------------------------------------------
 
 	/**
-	 * keep a flash session variable.
+	 * Gets the session cookie
 	 *
-	 * @abstract
-	 * @access	public
-	 * @return	void
+	 * @access	private
+	 * @return  array, cookie payload
 	 */
-	abstract public function keep_flash($name);
+	protected function _get_cookie()
+	{
+		// fetch the session cookie
+		if ($cookie = Cookie::get($this->config['cookie_name'], false))
+		{
+			// fetch the payload
+			$cookie = $this->_unserialize($cookie);
+
+			// validate the cookie
+			if ( ! isset($cookie[0]) )
+			{
+				// not a valid cookie payload
+			}
+			elseif ($this->config['expiration_time'] && $cookie[0]['updated'] + $this->config['expiration_time'] <= $this->_gmttime())
+			{
+				// session has expired
+			}
+			elseif ($this->config['match_ip'] && $cookie[0]['ip_address'] !== Input::real_ip())
+			{
+				// IP address doesn't match
+			}
+			elseif ($this->config['match_ua'] && $cookie[0]['user_agent'] !== Input::user_agent())
+			{
+				// user agent doesn't match
+			}
+			else
+			{
+				// session is valid, retrieve the session keys
+				if (isset($cookie[0])) $this->keys = $cookie[0];
+
+				// and return the cookie payload
+				array_shift($cookie);
+				return $cookie;
+			}
+		}
+
+		// no payload
+		return array();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Sets or creates the session cookie
+	 *
+	 * @access	private
+	 * @return  void
+	 */
+	protected function _set_cookie($session_id = null, array $payload = array())
+	{
+		// do we have a valid session
+		if (is_null($session_id))
+		{
+			// no, create one
+			$this->keys['session_id']	= $this->_new_session_id();
+			$this->keys['previous_id']	= '';
+			$this->keys['ip_address']	= Input::real_ip();
+			$this->keys['user_agent']	= Input::user_agent();
+			$this->keys['created'] 		= $this->_gmttime();
+		}
+		else
+		{
+			// existing session. need to rotate the session id?
+			if ($this->config['rotation_time'] && $this->keys['created'] + $this->config['rotation_time'] <= $this->_gmttime())
+			{
+				// create a new session id, and update the create timestamp
+				$this->keys['previous_id']	= $this->keys['session_id'];
+				$this->keys['session_id']	= $this->_new_session_id();
+				$this->keys['created'] 		= $this->_gmttime();
+			}
+		}
+		// record the last update time of the session
+		$this->keys['updated'] = $this->_gmttime();
+
+		// add the session keys to the payload
+		array_unshift($payload, $this->keys);
+
+		// write the session cookie
+		Cookie::set($this->config['cookie_name'], $this->_serialize($payload),$this->config['expiration_time']);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * removes flash variables marked as old
+	 *
+	 * @access	private
+	 * @return  void
+	 */
+	protected function _cleanup_flash()
+	{
+		foreach($this->flash as $key => $value)
+		{
+			if ($value['state'] === '')
+			{
+				unset($this->flash[$key]);
+			}
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * mark all flash as used so they will be expired
+	 *
+	 * @access	private
+	 * @return  void
+	 */
+	protected function _mark_flash()
+	{
+		foreach($this->flash as $key => $value)
+		{
+			$this->flash[$key]['state'] = '';
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * generate a new session id
+	 *
+	 * @access	private
+	 * @return  void
+	 */
+	protected function _new_session_id()
+	{
+		$session_id = '';
+		while (strlen($session_id) < 32)
+		{
+			$session_id .= mt_rand(0, mt_getrandmax());
+		}
+		return md5(uniqid($session_id, TRUE));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Serialize an array
+	 *
+	 * This function first converts any slashes found in the array to a temporary
+	 * marker, so when it gets unserialized the slashes will be preserved
+	 *
+	 * @access	private
+	 * @param	array
+	 * @return	string
+	 */
+	protected function _serialize($data)
+	{
+		if (is_array($data))
+		{
+			foreach ($data as $key => $val)
+			{
+				if (is_string($val))
+				{
+					$data[$key] = str_replace('\\', '{{slash}}', $val);
+				}
+			}
+		}
+		else
+		{
+			if (is_string($data))
+			{
+				$data = str_replace('\\', '{{slash}}', $data);
+			}
+		}
+
+		return serialize($data);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Unserialize
+	 *
+	 * This function unserializes a data string, then converts any
+	 * temporary slash markers back to actual slashes
+	 *
+	 * @access	private
+	 * @param	array
+	 * @return	string
+	 */
+	protected function _unserialize($data)
+	{
+		$data = @unserialize(stripslashes($data));
+
+		if (is_array($data))
+		{
+			foreach ($data as $key => $val)
+			{
+				if (is_string($val))
+				{
+					$data[$key] = str_replace('{{slash}}', '\\', $val);
+				}
+			}
+
+			return $data;
+		}
+
+		return (is_string($data)) ? str_replace('{{slash}}', '\\', $data) : $data;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * generates a GMT timestamp
+	 *
+	 * @access	private
+	 * @return  void
+	 */
+	protected function _gmttime()
+	{
+		$now = time();
+		return mktime(gmdate("H", $now), gmdate("i", $now), gmdate("s", $now), gmdate("m", $now), gmdate("d", $now), gmdate("Y", $now));
+	}
+
 }
 
 /* End of file driver.php */
