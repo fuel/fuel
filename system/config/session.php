@@ -6,22 +6,25 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Dan Horrigan <http://dhorrigan.com>
- * @license		Apache License v2.0
+ * @author		Harro "WanWizard" Verton
+ * @license		MIT License
  * @copyright	2010 Dan Horrigan
+ * @link		http://fuelphp.com
  */
 
 return array(
-	'type'			=> 'cookie',
-	'config'		=> array(),
-	'expiration'	=> 0,
-	'match_ip'		=> TRUE,
-	'match_ua'		=> TRUE,
-	'cookie_name'	=> 'fuelsession',
-	'cookie_domain' => '',
-	'cookie_path'	=> '/',
-	'rotation'		=> 30,
-	'flash_id'		=> 'flash'
+	'type'						=> 'cookie',					// for now, only 'cookie' and 'file' support
+	'config'					=> array(					// type specific config settings
+									),
+	'match_ip'					=> TRUE,					// check for an IP address match after loading the cookie
+	'match_ua'					=> TRUE,					// check for a user agent match after loading the cookie
+	'cookie_name'				=> 'fuelsession',			// name of the session cookie
+	'cookie_domain' 			=> '',						// cookie domain
+	'cookie_path'				=> '/',						// cookie path
+	'expiration_time'			=> 0,						// cookie expiration time, 0 = until browser close
+	'rotation_time'				=> 300,						// session ID rotation time
+	'flash_id'					=> 'flash',					// default ID for flash variables
+	'flash_auto_expire'			=> FALSE					// if FALSE, expire flash values only after it's used
 );
 
 /* End of file config/session.php */

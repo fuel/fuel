@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-class Session_Cookie_Driver extends Fuel_Session_Cookie_Driver {
+class Session_File_Driver extends Fuel_Session_File_Driver {
 }
 
 /* End of file driver.php */

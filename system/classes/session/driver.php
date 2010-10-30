@@ -6,7 +6,7 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Fuel Development Team
+ * @author		Harro "WanWizard" Verton
  * @license		MIT License
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
