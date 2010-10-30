@@ -19,7 +19,7 @@ class Fuel_Session
 	/*
 	 * loaded session driver instance
 	 */
-	protected static $instance = NULL;
+	protected static $instance = FALSE;
 
 	/*
 	 * list of supported session drivers
@@ -29,12 +29,12 @@ class Fuel_Session
 	// --------------------------------------------------------------------
 
 	/*
-	 * class autoload initialisation, and driver instantiation
+	 * class uses as a static object, automatically read everything
 	 */
 	public static function init()
 	{
-		// do we need to load the driver instance?
-		if (is_null(self::$instance))
+		// If loaded as an instance or first load of static
+		if (isset($this) OR ( ! isset($this) AND self::$instance === FALSE))
 		{
 			// load the session configuration
 			Config::load('session', 'session');
@@ -48,7 +48,7 @@ class Fuel_Session
 
 			// instantiate the driver
 			$driver = 'Session_'.ucfirst($config['type']).'_Driver';
-			self::$instance = new $driver();
+			self::$instance = new $driver;
 
 			// and configure it
 			self::$instance->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : TRUE);
@@ -62,7 +62,22 @@ class Fuel_Session
 			self::$instance->set_config('config', isset($config['config']) ? (array) $config['config'] : array());
 			self::$instance->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : TRUE);
 		}
+		
+		// If static automatically read stuff for simple access
+		if ( ! isset($this))
+		{
+			self::read();
+		}
 	}
+
+	/*
+	 * class autoload initialisation, and driver instantiation
+	 */
+	public function __construct()
+	{
+		self::init();
+	}
+
 
 	// --------------------------------------------------------------------
 	// mapping of the static public methods to the driver instance methods
@@ -78,7 +93,12 @@ class Fuel_Session
 	 */
 	public static function set($name, $value)
 	{
-		return self::$instance->set($name, $value);
+		$return = self::$instance->set($name, $value);
+
+		// Automatically write if status
+		isset($this) OR self::write();
+
+		return $return;
 	}
 
 	// --------------------------------------------------------------------
@@ -107,7 +127,12 @@ class Fuel_Session
 	 */
 	public static function delete($name)
 	{
-		return self::$instance->delete($name);
+		$return = self::$instance->delete($name);
+
+		// Automatically write if status
+		isset($this) OR self::write();
+
+		return $return;
 	}
 
 	// --------------------------------------------------------------------
@@ -122,7 +147,12 @@ class Fuel_Session
 	 */
 	public static function set_flash($name, $value)
 	{
-		return self::$instance->set_flash($name, $value);
+		$return = self::$instance->set_flash($name, $value);
+
+		// Automatically write if status
+		isset($this) OR self::write();
+
+		return $return;
 	}
 
 	// --------------------------------------------------------------------
@@ -150,7 +180,12 @@ class Fuel_Session
 	 */
 	public static function keep_flash($name)
 	{
-		return self::$instance->keep_flash($name);
+		$return = self::$instance->keep_flash($name);
+
+		// Automatically write if status
+		isset($this) OR self::write();
+
+		return $return;
 	}
 
 	// --------------------------------------------------------------------
@@ -165,7 +200,12 @@ class Fuel_Session
 	 */
 	public static function delete_flash($name)
 	{
-		return self::$instance->delete_flash($name);
+		$return = self::$instance->delete_flash($name);
+
+		// Automatically write if status
+		isset($this) OR self::write();
+
+		return $return;
 	}
 
 	// --------------------------------------------------------------------
