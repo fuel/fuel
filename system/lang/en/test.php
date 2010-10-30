@@ -12,7 +12,7 @@
  */
 
 return array(
-	'hello' => 'Hello World!'
+	'hello' => 'Hello there :name!'
 );
 
 /* End of file lang/en/test.php */

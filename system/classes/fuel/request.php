@@ -187,6 +187,7 @@ class Fuel_Request {
 		}
 		catch (Fuel_Exception $e)
 		{
+			exit($e);
 			Request::show_404();
 		}
 		return $this;
