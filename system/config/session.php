@@ -12,8 +12,24 @@
  * @link		http://fuelphp.com
  */
 
+/**
+ * Config information:
+ * - type = cookie
+ * 		- config array is not used
+ *
+ * - type = file
+ * 		- path				path where the session files should be stored.
+ * 		- gc_probablility	probability % (between 0 and 100) for garbage collection
+ *
+ * - type = memcached
+ * 		- servers			array with one or more server definitions, each an array with:
+ * 			- host			name or IP address of the host that runs the memcached service
+ * 			- port			port memcached listens to
+ * 		  	( if not defined, one server will be added as default, host = 127.0.0.1, port = 11211 )
+ */
+
 return array(
-	'type'						=> 'cookie',					// for now, only 'cookie' and 'file' support
+	'type'						=> 'memcached',					// for now, only 'cookie' and 'file' support
 	'config'					=> array(					// type specific config settings
 									),
 	'match_ip'					=> TRUE,					// check for an IP address match after loading the cookie

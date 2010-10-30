@@ -24,7 +24,7 @@ class Fuel_Session
 	/*
 	 * list of supported session drivers
 	 */
-	protected static $valid_storage = array('cookie', 'file');
+	protected static $valid_storage = array('cookie', 'file', 'memcached');
 
 	// --------------------------------------------------------------------
 
@@ -65,6 +65,13 @@ class Fuel_Session
 			self::$instance->set_config('config', isset($config['config']) ? (array) $config['config'] : array());
 			self::$instance->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : TRUE);
 
+			// if the driver has an init method, call it
+			if (method_exists(self::$instance, '_init'))
+			{
+				self::$instance->_init();
+			}
+
+			// and load the session
 			self::read();
 		}
 	}
