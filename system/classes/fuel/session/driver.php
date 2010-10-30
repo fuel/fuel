@@ -81,11 +81,14 @@ class Fuel_Session_Driver {
 	 */
 	public function write()
 	{
-		// load the session
-		$this->read();
-
 		// cleanup any used flash variables
 		$this->_cleanup_flash();
+
+		// create the session if needed
+		if (empty($this->keys))
+		{
+			$this->create();
+		}
 
 		// write the session cookie
 		$this->_set_cookie($this->keys['session_id']);
@@ -101,9 +104,6 @@ class Fuel_Session_Driver {
 	 */
 	public function destroy()
 	{
-		// load the session
-		$this->read();
-
 		// delete the session cookie
 		Cookie::delete($this->config['cookie_name']);
 
@@ -125,9 +125,6 @@ class Fuel_Session_Driver {
 	 */
 	public function set($name, $value)
 	{
-		// load the session
-		$this->read();
-
 		$this->data[$name] = $value;
 	}
 
@@ -142,9 +139,6 @@ class Fuel_Session_Driver {
 	 */
 	public function get($name)
 	{
-		// load the session
-		$this->read();
-
 		return isset($this->data[$name]) ? $this->data[$name] : false;
 	}
 
@@ -160,9 +154,6 @@ class Fuel_Session_Driver {
 	 */
 	public function delete($name)
 	{
-		// load the session
-		$this->read();
-
 		if (isset($this->data[$name]))
 		{
 			unset($this->data[$name]);
@@ -181,9 +172,6 @@ class Fuel_Session_Driver {
 	 */
 	public function set_flash($name, $value)
 	{
-		// load the session
-		$this->read();
-
 		$this->flash[$name] = array('state' => 'new', 'value' => $value);
 	}
 
@@ -198,9 +186,6 @@ class Fuel_Session_Driver {
 	 */
 	public function get_flash($name)
 	{
-		// load the session
-		$this->read();
-
 		if (isset($this->flash[$name]))
 		{
 			$this->flash[$name]['state'] = '';
@@ -220,9 +205,6 @@ class Fuel_Session_Driver {
 	 */
 	public function keep_flash($name)
 	{
-		// load the session
-		$this->read();
-
 		if (isset($this->flash[$name]))
 		{
 			$this->flash[$name]['state'] = 'new';
@@ -241,9 +223,6 @@ class Fuel_Session_Driver {
 	 */
 	public function delete_flash($name)
 	{
-		// load the session
-		$this->read();
-
 		if (isset($this->flash[$name]))
 		{
 			unset($this->flash[$name]);
