@@ -20,7 +20,7 @@ return array(
 			'database'   => 'fuel',
 			'username'   => 'root',
 			'password'   => '',
-			'persistent' => false,
+			'persistent' => FALSE,
 		),
 		'table_prefix' => '',
 		'charset'      => 'utf8',
