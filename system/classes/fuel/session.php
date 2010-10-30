@@ -31,14 +31,17 @@ class Fuel_Session
 	/*
 	 * class uses as a static object, automatically read everything
 	 */
-	public static function init()
+	public function init(array $config = array())
 	{
 		// If loaded as an instance or first load of static
 		if (isset($this) OR ( ! isset($this) AND self::$instance === FALSE))
 		{
 			// load the session configuration
-			Config::load('session', 'session');
-			$config = Config::get('session');
+			if (empty($config) OR ! is_array($config))
+			{
+				Config::load('session', 'session');
+				$config = Config::get('session');
+			}
 
 			// validate the config, set some defaults if needed
 			if ( ! isset($config['type']) OR ! in_array($config['type'], self::$valid_storage))
@@ -61,11 +64,7 @@ class Fuel_Session
 			self::$instance->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
 			self::$instance->set_config('config', isset($config['config']) ? (array) $config['config'] : array());
 			self::$instance->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : TRUE);
-		}
-		
-		// If static automatically read stuff for simple access
-		if ( ! isset($this))
-		{
+
 			self::read();
 		}
 	}
@@ -73,11 +72,10 @@ class Fuel_Session
 	/*
 	 * class autoload initialisation, and driver instantiation
 	 */
-	public function __construct()
+	public function __construct(array $config = array())
 	{
-		self::init();
+		self::init($config);
 	}
-
 
 	// --------------------------------------------------------------------
 	// mapping of the static public methods to the driver instance methods
@@ -91,12 +89,12 @@ class Fuel_Session
 	 * @access	public
 	 * @return	void
 	 */
-	public static function set($name, $value)
+	public function set($name, $value)
 	{
 		$return = self::$instance->set($name, $value);
 
 		// Automatically write if status
-		isset($this) OR self::write();
+		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
 
 		return $return;
 	}
@@ -110,7 +108,7 @@ class Fuel_Session
 	 * @param	string	name of the variable to get
 	 * @return	mixed
 	 */
-	public static function get($name)
+	public function get($name)
 	{
 		return self::$instance->get($name);
 	}
@@ -125,12 +123,12 @@ class Fuel_Session
 	 * @access	public
 	 * @return	void
 	 */
-	public static function delete($name)
+	public function delete($name)
 	{
 		$return = self::$instance->delete($name);
 
 		// Automatically write if status
-		isset($this) OR self::write();
+		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
 
 		return $return;
 	}
@@ -145,12 +143,12 @@ class Fuel_Session
 	 * @access	public
 	 * @return	void
 	 */
-	public static function set_flash($name, $value)
+	public function set_flash($name, $value)
 	{
 		$return = self::$instance->set_flash($name, $value);
 
 		// Automatically write if status
-		isset($this) OR self::write();
+		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
 
 		return $return;
 	}
@@ -164,7 +162,7 @@ class Fuel_Session
 	 * @param	string	name of the variable to get
 	 * @return	mixed
 	 */
-	public static function get_flash($name)
+	public function get_flash($name)
 	{
 		return self::$instance->get_flash($name);
 	}
@@ -178,12 +176,12 @@ class Fuel_Session
 	 * @param	string	name of the variable to keep
 	 * @return	void
 	 */
-	public static function keep_flash($name)
+	public function keep_flash($name)
 	{
 		$return = self::$instance->keep_flash($name);
 
 		// Automatically write if status
-		isset($this) OR self::write();
+		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
 
 		return $return;
 	}
@@ -198,12 +196,12 @@ class Fuel_Session
 	 * @access	public
 	 * @return	void
 	 */
-	public static function delete_flash($name)
+	public function delete_flash($name)
 	{
 		$return = self::$instance->delete_flash($name);
 
 		// Automatically write if status
-		isset($this) OR self::write();
+		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
 
 		return $return;
 	}
@@ -216,7 +214,7 @@ class Fuel_Session
 	 * @access	public
 	 * @return	void
 	 */
-	public static function create()
+	public function create()
 	{
 		return self::$instance->create();
 	}
@@ -229,7 +227,7 @@ class Fuel_Session
 	 * @access	public
 	 * @return	void
 	 */
-	public static function read()
+	public function read()
 	{
 		return self::$instance->read();
 	}
@@ -242,7 +240,7 @@ class Fuel_Session
 	 * @access	public
 	 * @return	void
 	 */
-	public static function write()
+	public function write()
 	{
 		return self::$instance->write();
 	}
@@ -255,7 +253,7 @@ class Fuel_Session
 	 * @access	public
 	 * @return	void
 	 */
-	public static function destroy()
+	public function destroy()
 	{
 		return self::$instance->destroy();
 	}
