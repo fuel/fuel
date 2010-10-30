@@ -147,8 +147,11 @@ class Fuel_Request {
 	{
 		// TODO: Write the Route class and parse the routes.
 		list($controller, $action) = array_pad($this->uri->segments, 2, false);
-		
-		$controller and $this->controller = $controller;
+
+		// Use the controller given, if empty then use the default route
+		$this->controller = $controller ? $controller : Config::get('routes.default');
+
+		// Use the action if it is sets
 		$action and $this->action = $action;
 
 		$class = 'Controller_'.ucfirst($this->controller);

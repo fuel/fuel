@@ -13,7 +13,7 @@
  */
 
 return array(
-	'default'		=> 'welcome',
+	'default' => 'welcome',
 	'404'	=> 'welcome/404',
 );
 
