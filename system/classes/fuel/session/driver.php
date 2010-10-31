@@ -332,7 +332,7 @@ class Fuel_Session_Driver {
 		if ($cookie = Cookie::get($this->config['cookie_name'], false))
 		{
 			// fetch the payload
-			$cookie = $this->_unserialize($cookie);
+			$cookie = $this->_unserialize(Encrypt::decrypt($cookie));
 
 			// validate the cookie
 			if ( ! isset($cookie[0]) )
@@ -403,8 +403,15 @@ class Fuel_Session_Driver {
 		// add the session keys to the payload
 		array_unshift($payload, $this->keys);
 
+		// encrypt the payload
+		$payload = Encrypt::encrypt($this->_serialize($payload));
+		if (strlen($payload) > 4000)
+		{
+			throw new Fuel_Exception('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
+		}
+
 		// write the session cookie
-		Cookie::set($this->config['cookie_name'], $this->_serialize($payload),$this->config['expiration_time']);
+		Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
 	}
 
 	// --------------------------------------------------------------------
