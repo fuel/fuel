@@ -12,6 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-class Cache extends Fuel_Cache { }
+abstract class Cache extends Fuel_Cache { }
 
 /* End of file cache.php */

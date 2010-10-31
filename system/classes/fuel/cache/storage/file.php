@@ -64,7 +64,7 @@ class Fuel_Cache_Storage_File extends Cache {
 
 		try
 		{
-			unprep_contents($payload);
+			$this->unprep_contents($payload);
 		}
 		catch(Cache_Exception $e)
 		{
@@ -77,9 +77,10 @@ class Fuel_Cache_Storage_File extends Cache {
 	protected function prep_contents()
 	{
 		$properties = array(
-			'created'		=> $this->created,
-			'expiration'	=> $this->expiration,
-			'dependencies'	=> $this->dependencies
+			'created'			=> $this->created,
+			'expiration'		=> $this->expiration,
+			'dependencies'		=> $this->dependencies,
+			'content_handler'	=> $this->content_handler
 		);
 		$properties = '{{'.self::PROPS_TAG.'}}'.json_encode($properties).'{{/'.self::PROPS_TAG.'}}';
 
@@ -96,20 +97,21 @@ class Fuel_Cache_Storage_File extends Cache {
 
 		$this->contents = substr($payload, $properties_end + strlen('{{/'.self::PROPS_TAG.'}}'));
 		$props = substr(substr($payload, 0, $properties_end), strlen('{{'.self::PROPS_TAG.'}}'));
-		$props = json_decode($props);
+		$props = json_decode($props, true);
 		if ($props === NULL)
 		{
 			throw new Cache_Exception('Properties retrieval failed');
 		}
 
-		$this->created		= $props['created'];
-		$this->expiration	= ($props['expiration'] - time()) / 60;
-		$this->dependencies	= $props['dependencies'];
+		$this->created			= $props['created'];
+		$this->expiration		= (int) ($props['expiration'] - time()) / 60;
+		$this->dependencies		= $props['dependencies'];
+		$this->content_handler	= $props['content_handler'];
 	}
 
-	public static function check_dependencies()
+	public static function check_dependencies($dependencies)
 	{
-		foreach($this->dependencies as $dep)
+		foreach($dependencies as $dep)
 		{
 			$filemtime = filemtime($this->path.$dep.'.cache');
 			if ($filemtime === FALSE || $filemtime > $this->created)
@@ -122,6 +124,7 @@ class Fuel_Cache_Storage_File extends Cache {
 	{
 		$path = $this->path.$this->identifier.'.cache';
 		@unlink($path);
+		$this->reset();
 	}
 
 	public static function _delete_all($section)

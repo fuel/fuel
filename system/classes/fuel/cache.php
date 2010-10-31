@@ -67,6 +67,8 @@ abstract class Fuel_Cache {
 	 */
 	public function __construct($identifier, $config)
 	{
+		$this->identifier = $identifier;
+		
 		// fetch options from config and set them
 		$this->expiration		= array_key_exists('expiration', $config) ? $config['expiration'] : null;
 		$this->dependencies		= array_key_exists('dependencies', $config) ? $config['dependencies'] : null;
@@ -88,6 +90,21 @@ abstract class Fuel_Cache {
 	{
 		Config::load('cache', 'cache');
 	}
+
+	/**
+	 * Resets all properties except for the identifier, should be run by default when a delete() is triggered
+	 *
+	 * @access public
+	 */
+	public function reset()
+	{
+		$this->contents			= NULL;
+		$this->created			= NULL;
+		$this->expiration		= NULL;
+		$this->dependencies		= array();
+		$this->content_handler	= NULL;
+		$this->handler_object	= NULL;
+	}
 	
 	/**
 	 * Creates a new cache instance.
@@ -106,7 +123,7 @@ abstract class Fuel_Cache {
 		}
 		
 		// Use the right type of storage engine
-		if (array_key_exists($config, 'storage'))
+		if (array_key_exists('storage', $config))
 		{
 			$storage = $config['storage'];
 			unset($config['storage']);
@@ -137,11 +154,9 @@ abstract class Fuel_Cache {
 	final public function set($contents = null, $expiration = null, $dependencies = array())
 	{
 		// Use either the set value
-		$this->contents		= ( ! is_null($contents)) ? $contents : $this->contents;
+		$this->contents		= ( ! is_null($contents)) ? $this->set_contents($contents) : $this->contents;
 		$this->expiration	= ( ! is_null($expiration)) ? $expiration : $this->expiration;
 		$this->dependencies	= ( ! is_null($dependencies)) ? $dependencies : $this->dependencies;
-		
-		$this->handle_contents();
 		
 		// Create expiration timestamp when other then null
 		if ( ! is_null($this->expiration))
@@ -202,6 +217,7 @@ abstract class Fuel_Cache {
 	 *
 	 * @access	public
 	 * @param	bool
+	 * @return	mixed
 	 */
 	final public function get($use_expiration = true)
 	{
@@ -210,7 +226,7 @@ abstract class Fuel_Cache {
 			throw new Cache_Exception('not found');
 		}
 
-		if ( ! $use_expiration)
+		if ($use_expiration)
 		{
 			if ($this->expiration < 0)
 			{
@@ -225,6 +241,8 @@ abstract class Fuel_Cache {
 				throw new Cache_Exception('expired');
 			}
 		}
+
+		return $this->get_contents();
 	}
 
 	/**
@@ -246,7 +264,7 @@ abstract class Fuel_Cache {
 	 * @access	protected
 	 * @return	bool either true or false on any failure
 	 */
-	abstract public static function check_dependencies();
+	abstract public static function check_dependencies($dependencies);
 	
 	/**
 	 * Should delete this cache
@@ -272,10 +290,16 @@ abstract class Fuel_Cache {
 		$class = 'Cache_Storage_'.ucfirst($storage);
 
 		// Should be static::... but impossible in PHP 5.2, using self::... wouldn't allow extending it.
-		$identifier = call_user_func_array($class.'::_delete_all', array($section, $storage));
+		$identifier = call_user_func_array($class.'::_delete_all', array($section));
 	}
 
-	abstract public static function _delete_all();
+	/**
+	 * Does the delete_all method's work from the storage engine driver
+	 *
+	 * @access	public
+	 * @param	string
+	 */
+	abstract public static function _delete_all($section);
 	
 	/**
 	 * Converts the identifier to a string when necessary:
@@ -329,7 +353,7 @@ abstract class Fuel_Cache {
 		elseif (substr($method, 0, 3) == 'set')
 		{
 			$name = substr($method, 4);
-			if (in_array($name, $this->settable))
+			if (in_array($name, $this->_settable))
 			{
 				$this->{$name} = @$args[0];
 			}
@@ -337,6 +361,7 @@ abstract class Fuel_Cache {
 			{
 				throw new Cache_Exception('This property doesn\'t exist or can\'t be set.');
 			}
+			return $this;
 		}
 		else
 		{
@@ -353,8 +378,10 @@ abstract class Fuel_Cache {
 	 */
 	public function set_contents($contents, $handler = NULL)
 	{
+		$this->contents = $contents;
 		$this->set_content_handler($handler);
 		$this->contents = $this->handle_writing($contents);
+		return $this;
 	}
 
 	/**
@@ -365,7 +392,7 @@ abstract class Fuel_Cache {
 	 */
 	public function get_contents()
 	{
-		return $this->handle_reading($contents);
+		return $this->handle_reading($this->contents);
 	}
 
 	/**
@@ -378,6 +405,7 @@ abstract class Fuel_Cache {
 	{
 		$this->handler_object = null;
 		$this->content_handler = (string) $handler;
+		return $this;
 	}
 
 	/**
@@ -423,9 +451,9 @@ abstract class Fuel_Cache {
 	 * @access	protected
 	 * @return	string
 	 */
-	protected function handle_writing()
+	protected function handle_writing($contents)
 	{
-		return $this->get_object_handler()->writable($this->contents);
+		return $this->get_content_handler()->writable(contents);
 	}
 
 	/**
@@ -434,9 +462,9 @@ abstract class Fuel_Cache {
 	 * @access	protected
 	 * @return	mixed
 	 */
-	protected function handle_reading()
+	protected function handle_reading($contents)
 	{
-		return $this->get_object_handler()->readable($this->contents);
+		return $this->get_content_handler()->readable($contents);
 	}
 }
 
