@@ -186,10 +186,10 @@ class Fuel_View {
 	 * @param   array   variables
 	 * @return  string
 	 */
-	protected static function capture($fuel_view_filename, array $kohana_view_data)
+	protected static function capture($view_filename, array $view_data)
 	{
 		// Import the view variables to local namespace
-		extract($fuel_view_data, EXTR_SKIP);
+		$view_data AND extract($fuel_view_data, EXTR_SKIP);
 
 		if (View::$_global_data)
 		{
@@ -203,7 +203,7 @@ class Fuel_View {
 		try
 		{
 			// Load the view within the current scope
-			include $fuel_view_filename;
+			include $view_filename;
 		}
 		catch (Exception $e)
 		{
