@@ -16,16 +16,24 @@
 
 class Fuel_Session_Driver {
 
-	// session class configuration
+	/*
+	 * @var	session class configuration
+	 */
 	protected $config = array();
 
-	// session indentification keys
+	/*
+	 * @var	session indentification keys
+	 */
 	protected $keys = array();
 
-	// session variable data
+	/*
+	 * @var	session variable data
+	 */
 	protected $data = array();
 
-	// session flash data
+	/*
+	 * @var	session flash data
+	 */
 	protected $flash = array();
 
 	// --------------------------------------------------------------------
@@ -172,7 +180,7 @@ class Fuel_Session_Driver {
 	 */
 	public function set_flash($name, $value)
 	{
-		$this->flash[$name] = array('state' => 'new', 'value' => $value);
+		$this->flash[$this->config['flash_id'].'::'.$name] = array('state' => 'new', 'value' => $value);
 	}
 
 	// --------------------------------------------------------------------
@@ -186,10 +194,10 @@ class Fuel_Session_Driver {
 	 */
 	public function get_flash($name)
 	{
-		if (isset($this->flash[$name]))
+		if (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
-			$this->flash[$name]['state'] = '';
-			return $this->flash[$name]['value'];
+			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = '';
+			return $this->flash[$this->config['flash_id'].'::'.$name]['value'];
 		}
 		return FALSE;
 	}
@@ -205,9 +213,9 @@ class Fuel_Session_Driver {
 	 */
 	public function keep_flash($name)
 	{
-		if (isset($this->flash[$name]))
+		if (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
-			$this->flash[$name]['state'] = 'new';
+			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = 'new';
 		}
 	}
 
@@ -223,10 +231,37 @@ class Fuel_Session_Driver {
 	 */
 	public function delete_flash($name)
 	{
-		if (isset($this->flash[$name]))
+		if (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
-			unset($this->flash[$name]);
+			unset($this->flash[$this->config['flash_id'].'::'.$name]);
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * set the session flash id
+	 *
+	 * @param	string	name of the id to set
+	 * @access	public
+	 * @return	void
+	 */
+	public function set_flash_id($name)
+	{
+		$this->config['flash_id'] = (string) $name;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * get the current session flash id
+	 *
+	 * @access	public
+	 * @return	string	name of the flash id
+	 */
+	public function get_flash_id($name)
+	{
+		return $this->config['flash_id'];
 	}
 
 	// --------------------------------------------------------------------

@@ -16,7 +16,12 @@
 
 class Fuel_Session_Memcached_Driver extends Session_Driver {
 
+	/*
+	 * @var	storage for the memcached object
+	 */
 	protected $memcached = FALSE;
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * driver initialisation
@@ -31,22 +36,19 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 			// do we have the PHP memcached extension available
 			if ( ! class_exists('Memcached') )
 			{
-				throw new Fuel_Exception('Memcached sessions are configured, but your PHP installation doesn\'t have the Memcached extension loaded.');
+				throw new Fuel_Session_Exception('Memcached sessions are configured, but your PHP installation doesn\'t have the Memcached extension loaded.');
 			}
 
 			// instantiate the memcached object
 			$this->memcached = new Memcached();
 
-			// add the configured server(s)
-			foreach ($this->config['config']['servers'] as $server)
-			{
-				$this->memcached->addServer($server['host'], $server['port']);
-			}
+			// add the configured servers
+			$this->memcached->addServers($this->config['config']['servers']);
 
 			// check if we can connect to the server(s)
 			if ($this->memcached->getVersion() === false)
 			{
-				throw new Fuel_Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
+				throw new Fuel_Session_Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
 			}
 		}
 	}
@@ -64,7 +66,7 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 		// delete the key from the memcached server
 		if ($this->memcached->deleteByKey($this->config['cookie_name'], $this->keys['session_id']) === false)
 		{
-			throw new Fuel_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
+			throw new Fuel_Session_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
 		}
 
 		// delete the cookie, reset all session variables
@@ -98,12 +100,18 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 				// do we have a host?
 				if ( ! isset($server['host']) OR ! is_string($server['host']))
 				{
-					throw new Fuel_Exception('Invalid Memcached server definition in the session configuration.');
+					throw new Fuel_Session_Exception('Invalid Memcached server definition in the session configuration.');
 				}
-				// do we have a port number
+				// do we have a port number?
 				if ( ! isset($server['port']) OR ! is_numeric($server['port']) OR $server['port'] < 1025 OR $server['port'] > 65535)
 				{
-					throw new Fuel_Exception('Invalid Memcached server definition in the session configuration.');
+					throw new Fuel_Session_Exception('Invalid Memcached server definition in the session configuration.');
+				}
+				// do we have a relative server weight?
+				if ( ! isset($server['weight']) OR ! is_numeric($server['weight']) OR $server['weight'] < 0)
+				{
+					// set a default
+					$value['servers'][$key]['weight'] = 0;
 				}
 			}
 		}
@@ -130,9 +138,10 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 		$payload = $this->_serialize(array($this->data, $this->flash));
 
 		// write it to the memcached server
-		if ($this->memcached->setByKey($this->config['cookie_name'], $this->keys['session_id'], $payload) === false)
+		$expiration = $this->config['expiration_time'] == 0 ? 86400 * 30 : $this->config['expiration_time'] + 60;
+		if ($this->memcached->setByKey($this->config['cookie_name'], $this->keys['session_id'], $payload, $expiration) === false)
 		{
-			throw new Fuel_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
+			throw new Fuel_Session_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
 		}
 	}
 
@@ -159,7 +168,7 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 
 			if ($payload === false)
 			{
-				throw new Fuel_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on read. Check your configuration.');
+				throw new Fuel_Session_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on read. Check your configuration.');
 			}
 			else
 			{
@@ -175,4 +184,4 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 
 }
 
-/* End of file session.php */
+/* End of file driver.php */
