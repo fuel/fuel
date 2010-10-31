@@ -12,6 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-class Cache_Handler_Serialized extends Fuel_Cache_Handler_Driver { }
+class Cache_Handler_Serialized extends Fuel_Cache_Handler_Serialized { }
 
 /* End of file serialized.php */

@@ -203,24 +203,27 @@ abstract class Fuel_Cache {
 	 * @access	public
 	 * @param	bool
 	 */
-	final public function get($ignore_expiration = false)
+	final public function get($use_expiration = true)
 	{
 		if ( ! $this->_get())
 		{
 			throw new Cache_Exception('not found');
 		}
-		
-		if ($this->expiration < time())
+
+		if ( ! $use_expiration)
 		{
-			$this->delete();
-			throw new Cache_Exception('expired');
-		}
-		
-		// Check dependency and handle as expired on failure
-		if ( ! $this->check_dependencies($this->dependencies))
-		{
-			$this->delete();
-			throw new Cache_Exception('expired');
+			if ($this->expiration < 0)
+			{
+				$this->delete();
+				throw new Cache_Exception('expired');
+			}
+
+			// Check dependency and handle as expired on failure
+			if ( ! $this->check_dependencies($this->dependencies))
+			{
+				$this->delete();
+				throw new Cache_Exception('expired');
+			}
 		}
 	}
 

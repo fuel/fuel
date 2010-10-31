@@ -103,7 +103,7 @@ class Fuel_Cache_Storage_File extends Cache {
 		}
 
 		$this->created		= $props['created'];
-		$this->expiration	= $props['expiration'];
+		$this->expiration	= ($props['expiration'] - time()) / 60;
 		$this->dependencies	= $props['dependencies'];
 	}
 
