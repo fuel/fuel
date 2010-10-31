@@ -4,11 +4,7 @@ class Controller_Welcome extends Controller {
 
 	public function action_index()
 	{
-		$this->request->output = '<hr />Hello from the the Welcome controller!';
-
-		Lang::load('test');
-		$this->template->title = Lang::__('hello', array('name' => 'gary'));
-		$this->template->content = View::factory('test');
+		$this->request->output = View::factory('welcome');
 	}
 
 	public function action_404()
