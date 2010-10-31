@@ -101,7 +101,7 @@ class Fuel_Session
 		$return = self::$instance->set($name, $value);
 
 		// Automatically write if status
-		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
+		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
 	}
@@ -135,7 +135,7 @@ class Fuel_Session
 		$return = self::$instance->delete($name);
 
 		// Automatically write if status
-		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
+		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
 	}
@@ -155,7 +155,7 @@ class Fuel_Session
 		$return = self::$instance->set_flash($name, $value);
 
 		// Automatically write if status
-		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
+		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
 	}
@@ -188,7 +188,7 @@ class Fuel_Session
 		$return = self::$instance->keep_flash($name);
 
 		// Automatically write if status
-		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
+		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
 	}
@@ -208,7 +208,7 @@ class Fuel_Session
 		$return = self::$instance->delete_flash($name);
 
 		// Automatically write if status
-		!(isset($this) && get_class($this) == __CLASS__) AND self::write();
+		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
 	}
