@@ -118,6 +118,7 @@ class Fuel_Core {
 			{
 				require($path);
 				eval('class '.$called_class.' extends Fuel_'.$called_class.' {}');
+				return true;
 			}
 		}
 
