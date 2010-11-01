@@ -70,7 +70,7 @@ class Fuel_Request {
 		{
 			list($controller, $action) = array_pad(explode('/', Config::get('routes.404')), 2, false);
 
-			( ! $action) and $action = 'index';
+			$action or $action = 'index';
 
 			$class = 'Controller_'.$controller;
 			$method = 'action_'.$action;
@@ -96,12 +96,12 @@ class Fuel_Request {
 				}
 				else
 				{
-					throw new Fuel_Exception('404 Action not found.', 404);
+					throw new Fuel_Exception('404 Action not found.');
 				}
 			}
 			else
 			{
-				throw new Fuel_Exception('404 Controller not found.', 404);
+				throw new Fuel_Exception('404 Controller not found.');
 			}
 		}
 	}
@@ -148,10 +148,13 @@ class Fuel_Request {
 		// TODO: Write the Route class and parse the routes.
 		list($controller, $action) = array_pad($this->uri->segments, 2, false);
 
-		// Use the controller given, if empty then use the default route
-		$this->controller = $controller ? $controller : Config::get('routes.default');
+		// If the controller is set, use it
+		if ( ! $controller)
+		{
+			list($controller, $action) = array_pad(explode('/', Config::get('routes.default')), 2, false);
+		}
 
-		// Use the action if it is sets
+		$this->controller = $controller;
 		$action and $this->action = $action;
 
 		$class = 'Controller_'.ucfirst($this->controller);
