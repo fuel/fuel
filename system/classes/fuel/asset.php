@@ -56,7 +56,7 @@ class Fuel_Asset {
 	public static function init()
 	{
 		// Prevent multiple initializations
-		if (Asset::$initialized)
+		if (self::$initialized)
 		{
 			return;
 		}
@@ -67,18 +67,18 @@ class Fuel_Asset {
 
 		foreach($paths as $path)
 		{
-			Asset::add_path($path);
+			self::add_path($path);
 		}
 
-		Asset::$_asset_url = Config::get('asset.url');
+		self::$_asset_url = Config::get('asset.url');
 
-		Asset::$_folders = array(
+		self::$_folders = array(
 			'css'	=>	Config::get('asset.css_dir'),
 			'js'	=>	Config::get('asset.js_dir'),
 			'img'	=>	Config::get('asset.img_dir')
 		);
 
-		Asset::$initialized = true;
+		self::$initialized = true;
 	}
 
 	// --------------------------------------------------------------------
@@ -94,7 +94,7 @@ class Fuel_Asset {
 	 */
 	public static function add_path($path)
 	{
-		array_unshift(Asset::$_asset_paths, str_replace('../', '', $path));
+		array_unshift(self::$_asset_paths, str_replace('../', '', $path));
 	}
 
 	// --------------------------------------------------------------------
@@ -110,9 +110,9 @@ class Fuel_Asset {
 	 */
 	public static function remove_path($path)
 	{
-		if (($key = array_search(str_replace('../', '', $path), Asset::$_asset_paths)) !== false)
+		if (($key = array_search(str_replace('../', '', $path), self::$_asset_paths)) !== false)
 		{
-			unset(Asset::$_asset_paths[$key]);
+			unset(self::$_asset_paths[$key]);
 		}
 	}
 
@@ -132,7 +132,7 @@ class Fuel_Asset {
 	{
 		if (is_string($group))
 		{
-			$group = isset(Asset::$_groups[$group]) ? Asset::$_groups[$group] : array();
+			$group = isset(self::$_groups[$group]) ? self::$_groups[$group] : array();
 		}
 
 		$return = '';
@@ -144,12 +144,12 @@ class Fuel_Asset {
 
 			if (strpos($filename, '://') === false)
 			{
-				if ( ! ($file = Asset::find_file($filename, Asset::$_folders[$type])))
+				if ( ! ($file = self::find_file($filename, self::$_folders[$type])))
 				{
 					throw new Fuel_Exception('Could not find asset: '.$filename);
 				}
 				
-				$file = Asset::$_asset_url.$file;
+				$file = self::$_asset_url.$file;
 			}
 			else
 			{
@@ -167,7 +167,7 @@ class Fuel_Asset {
 					$attr['type'] = 'text/css';
 					$attr['href'] = $file;
 
-					$return .= '<link'.Asset::attr($attr).' />'.PHP_EOL;
+					$return .= '<link'.self::attr($attr).' />'.PHP_EOL;
 					break;
 				case 'js':
 					if ($raw)
@@ -177,13 +177,13 @@ class Fuel_Asset {
 					$attr['type'] = 'text/javascript';
 					$attr['src'] = $file;
 
-					$return .= '<script'.Asset::attr($attr).'></script>'.PHP_EOL;
+					$return .= '<script'.self::attr($attr).'></script>'.PHP_EOL;
 					break;
 				case 'img':
 					$attr['src'] = $file;
 					$attr['alt'] = isset($attr['alt']) ? $attr['alt'] : '';
 
-					$return .= '<img'.Asset::attr($attr).' />';
+					$return .= '<img'.self::attr($attr).' />';
 					break;
 			}
 
@@ -216,11 +216,11 @@ class Fuel_Asset {
 			$render = true;
 		}
 
-		Asset::_parse_assets('css', $stylesheets, $attr, $group);
+		self::_parse_assets('css', $stylesheets, $attr, $group);
 
 		if ($render)
 		{
-			return Asset::render($group, $raw);
+			return self::render($group, $raw);
 		}
 
 		return '';
@@ -250,11 +250,11 @@ class Fuel_Asset {
 			$render = true;
 		}
 
-		Asset::_parse_assets('js', $scripts, $attr, $group);
+		self::_parse_assets('js', $scripts, $attr, $group);
 
 		if ($render)
 		{
-			return Asset::render($group, $raw);
+			return self::render($group, $raw);
 		}
 
 		return '';
@@ -284,11 +284,11 @@ class Fuel_Asset {
 			$render = true;
 		}
 
-		Asset::_parse_assets('img', $images, $attr, $group);
+		self::_parse_assets('img', $images, $attr, $group);
 
 		if ($render)
 		{
-			return Asset::render($group);
+			return self::render($group);
 		}
 
 		return '';
@@ -317,7 +317,7 @@ class Fuel_Asset {
 		
 		foreach ($assets as $key => $asset)
 		{
-			Asset::$_groups[$group][] = array(
+			self::$_groups[$group][] = array(
 				'type'	=>	$type,
 				'file'	=>	$asset,
 				'attr'	=>	(array) $attr
@@ -372,7 +372,7 @@ class Fuel_Asset {
 	 */
 	public static function find_file($file, $folder)
 	{
-		foreach (Asset::$_asset_paths as $path)
+		foreach (self::$_asset_paths as $path)
 		{
 			if (is_file($path.$folder.$file))
 			{
