@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Cache_Storage_File extends Cache {
+class Fuel_Cache_Storage_File extends Cache_Storage_Driver {
 
 	protected $path = '';
 
