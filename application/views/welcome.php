@@ -21,7 +21,7 @@
 	
 			<p>Your default controller, 'Controller_Welcome' is located at: <br/><strong><?php echo $controller_file; ?></strong></p>
 			
-			<p>The Controller_Welcome is using the view: <br/><strong><?php echo __FILE__; ?></strong></p>
+			<p>The Controller_Welcome is using the view: <br/><strong><?php echo str_replace(DOCROOT, '', __FILE__); ?></strong></p>
 		
 			<p>The assets for this page(css, js, img) have been loaded using the built in Asset Helper.</p>
 			

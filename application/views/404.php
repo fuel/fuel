@@ -21,7 +21,7 @@
 	
 			<p>Your 404 controller, '<?php echo Config::get('routes.404'); ?>' is located at: <br/><strong><?php echo $controller_file; ?></strong></p>
 			
-			<p>The Controller_Welcome is using the view: <br/><strong><?php echo __FILE__; ?></strong></p>
+			<p>The Controller_Welcome is using the view: <br/><strong><?php echo str_replace(DOCROOT, '', __FILE__); ?></strong></p>
 			
 			<p></p>
 		</section>
