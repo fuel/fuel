@@ -211,6 +211,16 @@ class Fuel_Request {
 		return $this;
 	}
 
+	/**
+	 * PHP magic function returns the Output of the request.
+	 *
+	 * @access	public
+	 * @return	string
+	 */
+	public function __toString()
+	{
+		return $this->output;
+	}
 }
 
 /* End of file request.php */
