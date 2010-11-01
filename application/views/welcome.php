@@ -3,9 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>FUEL PHP Framework.</title>
-	<?php
-	 echo $css;
-	 ?>
+	<?php echo $css; ?>
 </head>
 <body>
 	<div id="container" class="container_12">
@@ -34,7 +32,7 @@
 			<p><strong>Get Started</strong></p>
 			<ul>
 			<li><a href="http://fuelphp.com/" target="_blank">Fuel Home</a></li>
-			<li><a href="http://fuelphp.com/user_guide" target="_blank">User Guide</a></li>
+			<li><a href="http://fuelphp.com/docs" target="_blank">Documentation</a></li>
 			<li><a href="http://fuelphp.com/forum" target="_blank">Forums</a></li>
 			<li><a href="http://fuelphp.com/tutorials" target="_blank">Tutorials</a></li>
 			</ul>
@@ -42,7 +40,7 @@
 		</div>
 		<section id="footer" class="grid_12">
 			
-			<p>Insert Licence <a href="http://fuelphp.com/" target="_blank">Link</a> 2010</p>
+			<p>MIT License - <a href="http://fuelphp.com/" target="_blank">FuelPHP</a> 2010</p>
 	
 		</section>	
 		<div class="clear"></div> 
