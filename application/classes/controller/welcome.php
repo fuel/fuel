@@ -4,7 +4,9 @@ class Controller_Welcome extends Controller {
 
 	public function action_index()
 	{
-		$this->request->output = View::factory('welcome');
+		$data['css'] = Asset::css(array('reset.css','960.css','main.css'));
+		$data['controller_file'] = __FILE__;
+		$this->request->output = View::factory('welcome',$data);
 	}
 
 	public function action_404()
