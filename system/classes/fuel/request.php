@@ -63,8 +63,8 @@ class Fuel_Request {
 	{
 		if (Config::get('routes.404') === false)
 		{
-			// TODO: Create a standard 404 view and show it here.
-			die('Page not found.');
+			$data['css'] = Asset::css(array('reset.css','960.css','main.css'));
+			Request::active()->output = View::factory('404', $data);
 		}
 		else
 		{
