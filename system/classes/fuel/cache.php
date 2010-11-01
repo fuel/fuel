@@ -15,7 +15,7 @@
 abstract class Fuel_Cache {
 	
 	/**
-	 * @var name of the content handler driver
+	 * @var string name of the content handler driver
 	 */
 	protected $content_handler = null;
 	
@@ -122,7 +122,7 @@ abstract class Fuel_Cache {
 			$config = array('driver' => (string) $config);
 		}
 		
-		// Use the right type of storage engine
+		// Set the extending storage type class
 		if (array_key_exists('storage', $config))
 		{
 			$storage = $config['storage'];
@@ -135,9 +135,9 @@ abstract class Fuel_Cache {
 		$class = 'Cache_Storage_'.ucfirst($storage);
 
 		// Convert the name to a string when necessary
-		// Should be static::... but impossible in PHP 5.2, using self::... wouldn't allow extending it.
 		$identifier = call_user_func($class.'::stringify_identifier', $identifier);
 		
+		// Return instance of the requested cache object
 		return new $class($identifier, $config);
 	}
 	
@@ -153,10 +153,10 @@ abstract class Fuel_Cache {
 	 */
 	final public function set($contents = null, $expiration = null, $dependencies = array())
 	{
-		// Use either the set value
-		$this->contents		= ( ! is_null($contents)) ? $this->set_contents($contents) : $this->contents;
+		// Use either the given value or the class property
+		if ( ! is_null($contents)) $this->set_contents($contents);
 		$this->expiration	= ( ! is_null($expiration)) ? $expiration : $this->expiration;
-		$this->dependencies	= ( ! is_null($dependencies)) ? $dependencies : $this->dependencies;
+		$this->dependencies	= ( ! empty($dependencies)) ? $dependencies : $this->dependencies;
 		
 		// Create expiration timestamp when other then null
 		if ( ! is_null($this->expiration))
@@ -182,6 +182,9 @@ abstract class Fuel_Cache {
 		
 		// Turn everything over to the storage specific method
 		$this->_set();
+		
+		// Convert the expiration back to minutes
+		$this->expiration = (int) ( $this->expiration - time() ) / 60;
 	}
 	
 	/**
@@ -195,9 +198,10 @@ abstract class Fuel_Cache {
 	 */
 	final public function call($callback, $args = array(), $expiration = null, $dependencies = array())
 	{
+		// Set the contents
 		$contents = call_user_func_array($callback, $args);
 		
-		$this->set($contents, $expiration, $dependencies);
+		return $this->set($contents, $expiration, $dependencies);
 	}
 
 	/**
@@ -206,6 +210,7 @@ abstract class Fuel_Cache {
 	 * - expiration
 	 * - dependencies
 	 * - contents
+	 * - content_handler
 	 *
 	 * @access	protected
 	 */
@@ -234,7 +239,7 @@ abstract class Fuel_Cache {
 				throw new Cache_Exception('expired');
 			}
 
-			// Check dependency and handle as expired on failure
+			// Check dependencies and handle as expired on failure
 			if ( ! $this->check_dependencies($this->dependencies))
 			{
 				$this->delete();
@@ -251,6 +256,7 @@ abstract class Fuel_Cache {
 	 * - expiration
 	 * - dependencies
 	 * - contents
+	 * - content_handler
 	 *
 	 * @access	protected
 	 * @return	bool success of the operation
@@ -259,7 +265,8 @@ abstract class Fuel_Cache {
 	
 	/**
 	 * Should check all dependencies against the creation timestamp.
-	 * This is static to make it possible in the future to check dependencies from other storages then the current one.
+	 * This is static to make it possible in the future to check dependencies from other storages then the current one,
+	 * though I don't have a clue yet how to make that possible.
 	 * 
 	 * @access	protected
 	 * @return	bool either true or false on any failure
@@ -267,7 +274,7 @@ abstract class Fuel_Cache {
 	abstract public static function check_dependencies($dependencies);
 	
 	/**
-	 * Should delete this cache
+	 * Should delete this cache instance, should also run reset() afterwards
 	 *
 	 * @access	public
 	 */
@@ -289,12 +296,11 @@ abstract class Fuel_Cache {
 		}
 		$class = 'Cache_Storage_'.ucfirst($storage);
 
-		// Should be static::... but impossible in PHP 5.2, using self::... wouldn't allow extending it.
 		$identifier = call_user_func_array($class.'::_delete_all', array($section));
 	}
 
 	/**
-	 * Does the delete_all method's work from the storage engine driver
+	 * Should do the delete_all method's work from the storage engine driver
 	 *
 	 * @access	public
 	 * @param	string
@@ -338,6 +344,7 @@ abstract class Fuel_Cache {
 	 */
 	public function __call($method, $args = array())
 	{
+		// Allow getting any properties set in $this->_gettable
 		if (substr($method, 0, 3) == 'get')
 		{
 			$name = substr($method, 4);
@@ -350,6 +357,7 @@ abstract class Fuel_Cache {
 				throw new Cache_Exception('This property doesn\'t exist or can\'t be read.');
 			}
 		}
+		// Allow setting any properties set in $this->_settable
 		elseif (substr($method, 0, 3) == 'set')
 		{
 			$name = substr($method, 4);
@@ -422,6 +430,7 @@ abstract class Fuel_Cache {
 			return $this->handler_object;
 		}
 
+		// When not yet set, use $handler or detect the prefered handler (string = string, otherwise serialize)
 		if (empty($this->content_handler) && empty($handler))
 		{
 			if ( ! empty($handler))
