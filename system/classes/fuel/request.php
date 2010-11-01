@@ -63,8 +63,7 @@ class Fuel_Request {
 	{
 		if (Config::get('routes.404') === false)
 		{
-			$data['css'] = Asset::css(array('reset.css','960.css','main.css'));
-			Request::active()->output = View::factory('404', $data);
+			Request::active()->output = View::factory('404');
 		}
 		else
 		{
