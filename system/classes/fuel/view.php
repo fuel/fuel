@@ -189,7 +189,7 @@ class Fuel_View {
 	protected static function capture($view_filename, array $view_data)
 	{
 		// Import the view variables to local namespace
-		$view_data AND extract($fuel_view_data, EXTR_SKIP);
+		$view_data AND extract($view_data, EXTR_SKIP);
 
 		if (View::$_global_data)
 		{
