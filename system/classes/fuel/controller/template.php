@@ -54,7 +54,7 @@ abstract class Fuel_Controller_Template extends Controller {
 	{
 		if ($this->auto_render === true)
 		{
-			$this->request->output = $this->template;
+			$this->output = $this->template;
 		}
 
 		return parent::after();

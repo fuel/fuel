@@ -63,14 +63,13 @@ class Fuel_Request {
 	{
 		if (Config::get('routes.404') === false)
 		{
-			// TODO: Create a standard 404 view and show it here.
-			die('Page not found.');
+			Request::active()->output = View::factory('404');
 		}
 		else
 		{
 			list($controller, $action) = array_pad(explode('/', Config::get('routes.404')), 2, false);
 
-			( ! $action) and $action = 'index';
+			$action or $action = 'index';
 
 			$class = 'Controller_'.$controller;
 			$method = 'action_'.$action;
@@ -93,6 +92,9 @@ class Fuel_Request {
 					{
 						$controller->after();
 					}
+					
+					// Get the controller's output
+					Request::active()->output =& $controller->output;
 				}
 				else
 				{
@@ -148,10 +150,13 @@ class Fuel_Request {
 		// TODO: Write the Route class and parse the routes.
 		list($controller, $action) = array_pad($this->uri->segments, 2, false);
 
-		// Use the controller given, if empty then use the default route
-		$this->controller = $controller ? $controller : Config::get('routes.default');
+		// If the controller is set, use it
+		if ( ! $controller)
+		{
+			list($controller, $action) = array_pad(explode('/', Config::get('routes.default')), 2, false);
+		}
 
-		// Use the action if it is sets
+		$this->controller = $controller;
 		$action and $this->action = $action;
 
 		$class = 'Controller_'.ucfirst($this->controller);
@@ -177,21 +182,31 @@ class Fuel_Request {
 					{
 						$controller->after();
 					}
+
+					// Get the controller's output
+					$this->output =& $controller->output;
 				}
 				else
 				{
-					throw new Fuel_Exception('Action not found.');
+					throw new Fuel_Exception('Action not found.', 404);
 				}
 			}
 			else
 			{
-				throw new Fuel_Exception('Controller not found.');
+				throw new Fuel_Exception('Controller not found.', 404);
 			}
 		}
 		catch (Fuel_Exception $e)
 		{
-			exit($e);
-			Request::show_404();
+			switch ($e->getCode())
+			{
+				case 404:
+					Request::show_404();
+					break;
+
+				default:
+					Debug::dump($e);
+			}
 		}
 		return $this;
 	}

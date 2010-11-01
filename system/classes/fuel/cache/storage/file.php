@@ -12,11 +12,22 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Cache_Storage_File extends Cache {
+class Fuel_Cache_Storage_File extends Cache_Storage_Driver {
 
 	protected $path = '';
 
 	const PROPS_TAG = 'Fuel_Cache_Properties';
+	
+	public function __construct($identifier, $config)
+	{
+		parent::__construct($identifier, $config);
+		
+		$this->path = Config::get('cache.path') != FALSE ? Config::get('cache.path') : APPPATH.'cache'.DIRECTORY_SEPARATOR;
+		if ( ! is_dir($this->path) || ! is_writable($this->path))
+		{
+			throw new Cache_Exception('Cache directory does not exist or is not writable.');
+		}
+	}
 
 	protected function _set()
 	{
