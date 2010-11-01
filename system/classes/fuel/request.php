@@ -93,6 +93,9 @@ class Fuel_Request {
 					{
 						$controller->after();
 					}
+					
+					// Get the controller's output
+					Request::active()->output =& $controller->output;
 				}
 				else
 				{
