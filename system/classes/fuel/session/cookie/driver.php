@@ -16,78 +16,6 @@
 
 class Fuel_Session_Cookie_Driver extends Session_Driver {
 
-	/**
-	 * create a new session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function create()
-	{
-		parent::create();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * read the session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function read()
-	{
-		parent::read();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * write the session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function write()
-	{
-		parent::write();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * destroy the current session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function destroy()
-	{
-		parent::destroy();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * set a runtime config value
-	 *
-	 * @param	string	name of the config variable to set
-	 * @param	mixed	value
-	 * @access	public
-	 * @return  mixed
-	 */
-	public function set_config($name, $value)
-	{
-		// store the config value
-		parent::set_config($name, $value);
-
-		// driver specific config?
-		if ($name == 'config')
-		{
-			// cookie driver doesn't have any specific config values
-		}
-	}
-
 	// --------------------------------------------------------------------
 
 	/**
@@ -134,4 +62,4 @@ class Fuel_Session_Cookie_Driver extends Session_Driver {
 
 }
 
-/* End of file session.php */
+/* End of file driver.php */

@@ -90,12 +90,12 @@ class Fuel_Session_File_Driver extends Session_Driver {
 			// do we have a path?
 			if ( ! isset($value['path']) OR ! is_dir($value['path']))
 			{
-				throw new Fuel_Exception('You have specify a path to store the session data files.');
+				throw new Fuel_Session_Exception('You have specify a path to store the session data files.');
 			}
 			// and can we write to it?
 			if ( ! is_writable($value['path']))
 			{
-				throw new Fuel_Exception('The webserver doesn\'t have write access to the path to store the session data files.');
+				throw new Fuel_Session_Exception('The webserver doesn\'t have write access to the path to store the session data files.');
 			}
 			// update the path, and add the trailing slash
 			$value['path'] = realpath($value['path']).'/';
@@ -198,4 +198,4 @@ class Fuel_Session_File_Driver extends Session_Driver {
 
 }
 
-/* End of file session.php */
+/* End of file driver.php */
