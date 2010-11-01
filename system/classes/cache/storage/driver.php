@@ -12,6 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-class Cache extends Fuel_Cache { }
+abstract class Cache_Storage_Driver extends Fuel_Cache_Storage_Driver { }
 
-/* End of file cache.php */
+/* End of file file.php */
