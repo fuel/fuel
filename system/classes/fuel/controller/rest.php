@@ -78,13 +78,13 @@ abstract class Fuel_Controller_Rest extends Controller
 			// Set the correct format header
 			Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
 
-			$this->request->output = $this->{'_format_'.$this->request->format}($data);
+			$this->output = $this->{'_format_'.$this->request->format}($data);
 		}
 
 		// Format not supported, output directly
 		else
 		{
-			$this->request->output = (string) $data;
+			$this->output = (string) $data;
 		}
 	}
 

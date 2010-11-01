@@ -177,6 +177,9 @@ class Fuel_Request {
 					{
 						$controller->after();
 					}
+
+					// Get the controller's output
+					$this->output =& $controller->output;
 				}
 				else
 				{

@@ -4,7 +4,7 @@ class Controller_Sessiontests extends Controller {
 
 	public function action_index()
 	{
-		$this->request->output = '<hr />Session Test controller!';
+		$this->output = '<hr />Session Test controller!';
 	}
 
 	/*
@@ -54,7 +54,7 @@ class Controller_Sessiontests extends Controller {
 		else
 			$session->write();
 
-		$this->request->output = $output;
+		$this->output = $output;
 	}
 
 	/*
@@ -100,7 +100,7 @@ class Controller_Sessiontests extends Controller {
 		// Destroy the session after 10 loads
 		if ( $x >= 10 ) Session::destroy();
 
-		$this->request->output = $output;
+		$this->output = $output;
 	}
 
 	/*
@@ -108,6 +108,6 @@ class Controller_Sessiontests extends Controller {
 	 */
 	public function action_404()
 	{
-		$this->request->output = '404 - Unknown action requested';
+		$this->output = '404 - Unknown action requested';
 	}
 }

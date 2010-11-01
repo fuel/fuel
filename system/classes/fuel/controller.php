@@ -15,6 +15,8 @@
 class Fuel_Controller {
 
 	public $request;
+	
+	public $output;
 
 	public function __construct(Fuel_Request $request)
 	{

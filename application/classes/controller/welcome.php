@@ -6,11 +6,11 @@ class Controller_Welcome extends Controller {
 	{
 		$data['css'] = Asset::css(array('reset.css','960.css','main.css'));
 		$data['controller_file'] = __FILE__;
-		$this->request->output = View::factory('welcome',$data);
+		$this->output = View::factory('welcome',$data);
 	}
 
 	public function action_404()
 	{
-		$this->request->output = '404';
+		$this->output = '404';
 	}
 }
