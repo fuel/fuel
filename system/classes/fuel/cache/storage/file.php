@@ -17,6 +17,13 @@ class Fuel_Cache_Storage_File extends Cache_Storage_Driver {
 	protected $path = '';
 
 	const PROPS_TAG = 'Fuel_Cache_Properties';
+	
+	public function __construct($identifier, $config)
+	{
+		parent::__construct($identifier, $config);
+		
+		$this->path = Config::get('cache.path') !== FALSE ? Config::get('cache.path') : APPPATH.'cache'.DIRECTORY_SEPARATOR;
+	}
 
 	protected function _set()
 	{
