@@ -208,7 +208,9 @@ abstract class Fuel_Cache {
 		// Allow simplified static call
 		if ( ! isset($this))
 		{
-			$cache = Cache::factory(array($callback, $args));
+			// simplify the identifier to the classname when applicable, otherwise serialization is unnecessarily heavy
+			$identifier = (is_array($callback) && is_object($callback[0])) ? array(get_class($callback[0]), $callback[1]) : $callback;
+			$cache = Cache::factory($callback);
 			return $cache->call($callback, $args, $expiration, $dependencies);
 		}
 		
