@@ -28,12 +28,43 @@ class Fuel_Cache_Storage_File extends Cache_Storage_Driver {
 			throw new Cache_Exception('Cache directory does not exist or is not writable.');
 		}
 	}
+	
+	protected function identifier_to_path( $identifier )
+	{
+		// cleanup to only allow alphanum chars, dashes, dots & underscores
+		if (preg_match('/^([a-z0-9_\.\-]*)$/i', $identifier) === 0)
+		{
+			throw new Cache_Exception('Cache identifier can only contain alphanumeric characters, underscores, dashes & dots.');
+		}
+		
+		// replace dots with dashes
+		$identifier = str_replace('.', DIRECTORY_SEPARATOR, $identifier);
+		
+		return $identifier;
+	}
 
 	protected function _set()
 	{
 		$payload = $this->prep_contents();
+		$id_path = $this->identifier_to_path( $this->identifier );
 
-		$file = $this->path.$this->identifier.'.cache';
+		// create directory if necessary
+		$subdirs = explode(DIRECTORY_SEPARATOR, $id_path);
+		if (count($subdirs) > 1)
+		{
+			array_pop($subdirs);
+			$test_path = $this->path.implode(DIRECTORY_SEPARATOR, $subdirs);
+
+			// check if specified subdir exists
+			if ( ! @is_dir($test_path))
+			{
+				// create non existing dir
+				if ( ! @mkdir($test_path, 0755, true)) return false;
+			}
+		}
+		
+		// write the cache
+		$file = $this->path.$id_path.'.cache';
 		$handle = fopen($file, 'c');
 		if ($handle)
 		{
@@ -53,7 +84,8 @@ class Fuel_Cache_Storage_File extends Cache_Storage_Driver {
 
 	protected function _get()
 	{
-		$file = $this->path.$this->identifier.'.cache';
+		$id_path = $this->identifier_to_path( $this->identifier );
+		$file = $this->path.$id_path.'.cache';
 		if ( ! file_exists($file))
 			return false;
 
