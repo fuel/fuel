@@ -96,12 +96,12 @@ class Fuel_Request {
 				}
 				else
 				{
-					throw new Fuel_Exception('404 Action not found.');
+					throw new Fuel_Exception('404 Action not found.', 404);
 				}
 			}
 			else
 			{
-				throw new Fuel_Exception('404 Controller not found.');
+				throw new Fuel_Exception('404 Controller not found.', 404);
 			}
 		}
 	}
@@ -180,18 +180,25 @@ class Fuel_Request {
 				}
 				else
 				{
-					throw new Fuel_Exception('Action not found.');
+					throw new Fuel_Exception('Action not found.', 404);
 				}
 			}
 			else
 			{
-				throw new Fuel_Exception('Controller not found.');
+				throw new Fuel_Exception('Controller not found.', 404);
 			}
 		}
 		catch (Fuel_Exception $e)
 		{
-			exit($e);
-			Request::show_404();
+			switch ($e->getCode())
+			{
+				case 404:
+					Request::show_404();
+					break;
+
+				default:
+					Debug::dump($e);
+			}
 		}
 		return $this;
 	}
