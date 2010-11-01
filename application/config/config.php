@@ -36,7 +36,7 @@ return array(
 	'locale'		=> 'en_US',
 
 	/**
-	 * Your environment.  Can be set to any of the following:
+	 * Logging Threshold.  Can be set to any of the following:
 	 *
 	 * Log::NONE
 	 * Log::ERROR
