@@ -14,10 +14,23 @@
 
 class Fuel_Controller {
 
+	/**
+	 * @var	object	The current Request object
+	 */
 	public $request;
-	
+
+	/**
+	 * @var	string	Holds the output of the controller
+	 */
 	public $output;
 
+	/**
+	 * Sets the controller request object.
+	 *
+	 * @access	public
+	 * @param	object	The current request object
+	 * @return	void
+	 */
 	public function __construct(Fuel_Request $request)
 	{
 		$this->request = $request;
