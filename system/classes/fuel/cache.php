@@ -151,8 +151,15 @@ abstract class Fuel_Cache {
 	 * @param	array			Array of names on which this cache depends for 
 	 * @return	object			The new request
 	 */
-	final public function set($contents = null, $expiration = null, $dependencies = array())
+	final public static function set($contents = null, $expiration = null, $dependencies = array())
 	{
+		if ( ! isset($this))
+		{
+			$params = func_get_args(); // remaps from above signature to ($name, $contents, $expiration, $dependencies)
+			$cache = Cache::factory($params[0]);
+			return $cache->set($params[1], @$params[2], (array) @$params[3]);
+		}
+		
 		// Use either the given value or the class property
 		if ( ! is_null($contents)) $this->set_contents($contents);
 		$this->expiration	= ( ! is_null($expiration)) ? $expiration : $this->expiration;
@@ -196,8 +203,15 @@ abstract class Fuel_Cache {
 	 * @param	int				Cache expiration in minutes
 	 * @param	array			Contains the identifiers of caches this one will depend on
 	 */
-	final public function call($callback, $args = array(), $expiration = null, $dependencies = array())
+	final public static function call($callback, $args = array(), $expiration = null, $dependencies = array())
 	{
+		// Allow simplified static call
+		if ( ! isset($this))
+		{
+			$cache = Cache::factory(array($callback, $args));
+			return $cache->call($callback, $args, $expiration, $dependencies);
+		}
+		
 		try
 		{
 			$this->get();
@@ -233,8 +247,16 @@ abstract class Fuel_Cache {
 	 * @param	bool
 	 * @return	mixed
 	 */
-	final public function get($use_expiration = true)
+	final public static function get($use_expiration = true)
 	{
+		// Allow simplified static call
+		if ( ! isset($this))
+		{
+			$params = func_get_args(); // remaps from above signature to ($name, $use_expiration)
+			$cache = Cache::factory($params[0]);
+			return $cache->get(@$params[1] !== false);
+		}
+		
 		if ( ! $this->_get())
 		{
 			throw new Cache_Exception('not found');
