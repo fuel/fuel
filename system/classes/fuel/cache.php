@@ -188,7 +188,7 @@ abstract class Fuel_Cache {
 	}
 	
 	/**
-	 * Alias for set() that takes a callback and it's arguements to generate the contents
+	 * Does get() & set() in one call that takes a callback and it's arguements to generate the contents
 	 *
 	 * @access	public
 	 * @param	string|array	Valid PHP callback
@@ -198,10 +198,19 @@ abstract class Fuel_Cache {
 	 */
 	final public function call($callback, $args = array(), $expiration = null, $dependencies = array())
 	{
-		// Set the contents
-		$contents = call_user_func_array($callback, $args);
+		try
+		{
+			$this->get();
+		}
+		catch (Cache_Exception $e)
+		{
+			// Create the contents
+			$contents = call_user_func_array($callback, $args);
+			
+			$this->set($contents, $expiration, $dependencies);
+		}
 		
-		return $this->set($contents, $expiration, $dependencies);
+		return $this->get_contents();
 	}
 
 	/**
