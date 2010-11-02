@@ -13,7 +13,7 @@
  */
 
 return array(
-
+	
 	/**
 	 * index_file - The name of the main bootstrap file.
 	 *
