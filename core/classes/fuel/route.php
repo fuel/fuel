@@ -41,7 +41,7 @@ class Fuel_Route {
 
 		foreach (Route::$routes as $search => $route)
 		{
-			$search = str_replace(array(':any', ':segment'), array('.+', '/.+'), $search);
+			$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+'), $search);
 			if (preg_match('#'.$search.'#uD', $uri->uri) != false)
 			{
 				// TODO: Write the advanced routing.
