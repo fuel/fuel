@@ -39,7 +39,7 @@ class Fuel_Config {
 		}
 	}
 	
-	public static function get($item, $group = false)
+	public static function get($item, $default = false)
 	{
 		if (strpos($item, '.') !== false)
 		{
@@ -68,7 +68,7 @@ class Fuel_Config {
 		{
 			return Config::$items[$item];
 		}
-		return false;
+		return $default;
 	}
 
 	public static function set($item, $value, $group = NULL)
