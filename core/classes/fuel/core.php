@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('COREPATH') or die('No direct script access.');
 /**
  * Fuel
  *
@@ -38,7 +38,7 @@ class Fuel_Core {
 		// TODO: Replace die() and throw an exception.
 		Fuel::$initialized and die('Can only initialize Fuel once.');
 
-		Fuel::$_paths = array(APPPATH, SYSPATH);
+		Fuel::$_paths = array(APPPATH, COREPATH);
 
 		spl_autoload_register(array('Fuel', 'autoload'));
 

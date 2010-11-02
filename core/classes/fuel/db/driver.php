@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('COREPATH') or die('No direct script access.');
 /**
  * Fuel
  *

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('COREPATH') or die('No direct script access.');
 /**
  * Fuel
  *
@@ -82,7 +82,7 @@ class Fuel_Log
 
 		if ( ! file_exists($filename))
 		{
-			$message .= "<"."?php defined('SYSPATH') or exit('No direct script access allowed'); ?".">".PHP_EOL.PHP_EOL;
+			$message .= "<"."?php defined('COREPATH') or exit('No direct script access allowed'); ?".">".PHP_EOL.PHP_EOL;
 		}
 
 		if ( ! $fp = @fopen($filename, 'a'))

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or exit('No direct script access allowed');
+<?php defined('COREPATH') or exit('No direct script access allowed');
 
 abstract class Fuel_Controller_Rest extends Controller
 {

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('COREPATH') or die('No direct script access.');
 
 // Get the start time and memory for use later
 defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
