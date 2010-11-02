@@ -14,4 +14,4 @@
 
 class Env extends Fuel_Env { }
 
-/* End of file model.php */
+/* End of file env.php */
