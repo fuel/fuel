@@ -19,7 +19,7 @@
 $fuel_paths = array(
 	'application'	=> './app',		// The path to the application folder
 	'modules'		=> './modules',	// The path to the modules folder
-	'system'		=> './system'	// The path to the system folder
+	'core'			=> './core'		// The path to the system folder
 );
 
 /**
@@ -56,16 +56,16 @@ foreach ($fuel_paths as &$folder)
 // Define the global path constants
 define('APPPATH', realpath($fuel_paths['application']).DIRECTORY_SEPARATOR);
 define('MODPATH', realpath($fuel_paths['modules']).DIRECTORY_SEPARATOR);
-define('SYSPATH', realpath($fuel_paths['system']).DIRECTORY_SEPARATOR);
+define('COREPATH', realpath($fuel_paths['core']).DIRECTORY_SEPARATOR);
 
 // save a bit of memory by unsetting the path array
 unset($fuel_paths);
 
 // Load the base, low-level functions
-require SYSPATH.'base.php';
+require COREPATH.'base.php';
 
 // Load in the core class
-require SYSPATH.'classes/fuel/core.php';
+require COREPATH.'classes/fuel/core.php';
 
 // If the Fuel class is overrided in the application folder
 // load that, else load the core class.
@@ -75,7 +75,7 @@ if (is_file(APPPATH.'classes/fuel.php'))
 }
 else
 {
-	require SYSPATH.'classes/fuel.php';
+	require COREPATH.'classes/fuel.php';
 }
 
 // Initialize the framework
