@@ -140,25 +140,24 @@ class Fuel_Request {
 	 */
 	public $action = 'index';
 
+	/**
+	 * @var	string	The request's params
+	 */
+	public $params = array();
+
+
 	public function __construct($uri)
 	{
 		$this->uri = new URI($uri);
+		$route = Route::parse($this->uri);
+		$this->controller = $route['controller'];
+		$this->action = $route['action'];
+		$this->params = $route['params'];
+		unset($route);
 	}
 
 	public function execute()
 	{
-		// TODO: Write the Route class and parse the routes.
-		list($controller, $action) = array_pad($this->uri->segments, 2, false);
-
-		// If the controller is set, use it
-		if ( ! $controller)
-		{
-			list($controller, $action) = array_pad(explode('/', Config::get('routes.default')), 2, false);
-		}
-
-		$this->controller = $controller;
-		$action and $this->action = $action;
-
 		$class = 'Controller_'.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 

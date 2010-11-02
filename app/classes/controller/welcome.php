@@ -17,4 +17,9 @@ class Controller_Welcome extends Controller {
 
 		$this->output = View::factory('welcome/404', $data);
 	}
+	
+	public function action_hello()
+	{
+		$this->output = 'Hello '.URI::segment(2);
+	}
 }

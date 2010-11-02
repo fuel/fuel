@@ -13,8 +13,10 @@
  */
 
 return array(
-	'default' => 'welcome',
-	'404'	=> 'welcome/404',
+	'default'	=> 'welcome',
+	'404'		=> 'welcome/404',
+
+	'hello(:segment)'	=> 'welcome/hello',
 );
 
 /* End of file routes.php */
