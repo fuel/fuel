@@ -23,6 +23,10 @@ class Fuel_Core {
 
 	public static $initialized = false;
 
+	public static $env;
+
+	public static $bm = true;
+
 	protected static $_paths = array();
 
 	final private function __construct() { }
@@ -43,7 +47,14 @@ class Fuel_Core {
 		spl_autoload_register(array('Fuel', 'autoload'));
 
 		Config::load('config');
+
+		Fuel::$bm = Config::get('benchmarking', null);
+		Fuel::$bm === null and Fuel::$bm = true;
+
+		Fuel::$env = Config::get('environment');
+
 		Config::load('routes', 'routes');
+		Route::$routes = Config::get('routes');
 
 		if (Config::get('base_url') === false)
 		{
