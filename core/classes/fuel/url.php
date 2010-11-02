@@ -23,7 +23,7 @@ class Fuel_Url {
 	 * @param	string	The URL
 	 * @param	string	The text value
 	 * @param	array	The attributes array
-	 * @return	string	The html link tag
+	 * @return	string	The html link
 	 */ 
 	public static function anchor($href, $text, $attributes = NULL)
 	{
