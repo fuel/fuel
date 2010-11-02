@@ -8,6 +8,7 @@ class Controller_Welcome extends Controller {
 		$data['controller_file'] = str_replace(DOCROOT, '', __FILE__);
 		
 		$this->output = View::factory('welcome/index', $data);
+		echo Url::anchor('http://www.google.com/', 'Google', array('class' => 'lol'));
 	}
 
 	public function action_404()
