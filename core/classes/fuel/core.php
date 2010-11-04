@@ -48,8 +48,7 @@ class Fuel_Core {
 
 		Config::load('config');
 
-		Fuel::$bm = Config::get('benchmarking', null);
-		Fuel::$bm === null and Fuel::$bm = true;
+		Fuel::$bm = Config::get('benchmarking', true);
 
 		Fuel::$env = Config::get('environment');
 
