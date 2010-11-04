@@ -46,6 +46,9 @@ class Fuel_Core {
 
 		spl_autoload_register(array('Fuel', 'autoload'));
 
+		// Start up output buffering
+		ob_start();
+
 		Config::load('config');
 
 		Fuel::$bm = Config::get('benchmarking', null);
@@ -60,7 +63,7 @@ class Fuel_Core {
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
-				Config::set('base_url', dirname($_SERVER['SCRIPT_NAME']).'/');
+				Config::set('base_url', dirname($_SERVER['SCRIPT_NAME']));
 			}
 		}
 
@@ -68,6 +71,29 @@ class Fuel_Core {
 		setlocale(LC_ALL, Config::get('locale'));
 
 		Fuel::$initialized = true;
+	}
+	
+	/**
+	 * Handles all post-script execution duties, 
+	 * such as flushing buffer, displaying output
+	 * and replacing any performance statistics.
+	 */
+	public static function finish()
+	{
+		// Grab the output buffer
+		$output = ob_get_clean();
+
+		// Grab our benchmark information.
+		$benchmarks = Benchmark::app_total();
+
+		// Replace our basic performance measures.
+		// By doing it now, we are certain to have
+		// accurate reponses, even when output is cached.
+		$output = str_replace('{elapsed_time}', number_format($benchmarks[0], 4), $output);
+		$output = str_replace('{memory_usage}', round($benchmarks[1]/1048576,2) .' Mb', $output);
+
+		// Send the buffer to the browser.
+		echo $output;
 	}
 
 	/**
