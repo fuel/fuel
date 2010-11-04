@@ -43,6 +43,11 @@ class Fuel_Core {
 		spl_autoload_register(array('Fuel', 'autoload'));
 
 		Config::load('config');
+
+		Fuel::$bm = Config::get('benchmarking', true);
+		Fuel::$env = Config::get('environment');
+		Fuel::$locale = Config::get('locale');
+
 		Config::load('routes', 'routes');
 
 		if (Config::get('base_url') === false)
@@ -54,7 +59,7 @@ class Fuel_Core {
 		}
 
 		// Set some server options
-		setlocale(LC_ALL, Config::get('locale'));
+		setlocale(LC_ALL, Fuel::$locale);
 
 		Fuel::$initialized = true;
 	}
