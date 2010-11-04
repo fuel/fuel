@@ -12,11 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-return array(
-	'default'	=> 'welcome',
-	'404'		=> 'welcome/404',
+class Benchmark extends Fuel_Benchmark { }
 
-	'hello/(:segment)'	=> 'welcome/hello',
-);
-
-/* End of file routes.php */
+/* End of file benchmark.php */
