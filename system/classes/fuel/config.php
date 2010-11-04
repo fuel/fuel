@@ -71,19 +71,30 @@ class Fuel_Config {
 		return false;
 	}
 
-	public static function set($item, $value, $group = NULL)
+	public static function set($item, $value)
 	{
-		if ($group === NULL)
+		$parts = explode('.', $item);
+
+		$item =& Config::$items;
+		foreach ($parts as $part)
 		{
-			Config::$items[$item] = $value;
-			return true;
+			// if it's not an array it can't have a subvalue
+			if ( ! is_array($item))
+			{
+				return false;
+			}
+			
+			// if the part didn't exist yet: add it
+			if ( ! isset($item[$part]))
+			{
+				$item[$part] = array();
+			}
+			
+			$item =& $item[$part];
 		}
-		elseif (isset(Config::$items[$group][$item]))
-		{
-			Config::$items[$group][$item] = $value;
-			return true;
-		}
-		return false;
+		$item = $value;
+		
+		return true;
 	}
 }
 
