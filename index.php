@@ -79,10 +79,13 @@ else
 }
 
 // Initialize the framework
+// and start buffering the output.
 Fuel::init();
 
 $request = Request::instance();
 $request->execute();
 echo $request->output;
+
+Fuel::finish();
 
 /* End of file index.php */
