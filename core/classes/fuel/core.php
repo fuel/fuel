@@ -49,6 +49,9 @@ class Fuel_Core {
 		// Start up output buffering
 		ob_start();
 
+		// and register the event that will process the buffer
+		Shutdown::event('Fuel_Core::finish');
+
 		Config::load('config');
 
 		Fuel::$bm = Config::get('benchmarking', null);
@@ -72,9 +75,9 @@ class Fuel_Core {
 
 		Fuel::$initialized = true;
 	}
-	
+
 	/**
-	 * Handles all post-script execution duties, 
+	 * Handles all post-script execution duties,
 	 * such as flushing buffer, displaying output
 	 * and replacing any performance statistics.
 	 */
@@ -118,7 +121,7 @@ class Fuel_Core {
 			$file = str_replace('_', DIRECTORY_SEPARATOR, $class);
 			$folder = 'classes';
 		}
-		
+
 		// If it is a controller or model, then look in 'controllers' or 'models'
 		else
 		{
@@ -139,13 +142,13 @@ class Fuel_Core {
 			{
 				require $path;
 			}
-			
+
 			// if it has a static init() method, then call it now.
 			if (is_callable($called_class.'::init'))
 			{
 				call_user_func($called_class.'::init');
 			}
-			
+
 			return true;
 		}
 
