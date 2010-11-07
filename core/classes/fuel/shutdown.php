@@ -52,8 +52,8 @@ class Fuel_Shutdown {
 			throw new Fuel_Exception('Invalid callback passed to Shutdown::event()');
 		}
 
-		// store the callback
-		self::$callbacks[] = $callback;
+		// store the callback on the call stack
+		array_unshift(self::$callbacks, $callback);
 	}
 
 	/**
