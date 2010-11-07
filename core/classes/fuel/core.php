@@ -27,6 +27,8 @@ class Fuel_Core {
 
 	public static $bm = true;
 
+	public static $locale;
+
 	protected static $_paths = array();
 
 	final private function __construct() { }
@@ -54,10 +56,9 @@ class Fuel_Core {
 
 		Config::load('config');
 
-		Fuel::$bm = Config::get('benchmarking', null);
-		Fuel::$bm === null and Fuel::$bm = true;
-
+		Fuel::$bm = Config::get('benchmarking', true);
 		Fuel::$env = Config::get('environment');
+		Fuel::$locale = Config::get('locale');
 
 		Config::load('routes', 'routes');
 		Route::$routes = Config::get('routes');
@@ -66,12 +67,17 @@ class Fuel_Core {
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
-				Config::set('base_url', dirname($_SERVER['SCRIPT_NAME']));
+				$base_url = dirname($_SERVER['SCRIPT_NAME']);
+
+				// Add a slash if it is missing
+				substr($base_url, -1, 1) == '/' OR $base_url .= '/';
+
+				Config::set('base_url', $base_url);
 			}
 		}
 
 		// Set some server options
-		setlocale(LC_ALL, Config::get('locale'));
+		setlocale(LC_ALL, Fuel::$locale);
 
 		Fuel::$initialized = true;
 	}
@@ -92,8 +98,8 @@ class Fuel_Core {
 		// Replace our basic performance measures.
 		// By doing it now, we are certain to have
 		// accurate reponses, even when output is cached.
-		$output = str_replace('{elapsed_time}', number_format($benchmarks[0], 4), $output);
-		$output = str_replace('{memory_usage}', round($benchmarks[1]/1048576,2) .' Mb', $output);
+//		$output = str_replace('{elapsed_time}', number_format($benchmarks[0], 4), $output);
+//		$output = str_replace('{memory_usage}', round($benchmarks[1]/1048576,2) .' Mb', $output);
 
 		// Send the buffer to the browser.
 		echo $output;
