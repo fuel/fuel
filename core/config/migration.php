@@ -14,14 +14,20 @@
 return array(
 
 	/*
+	| Which version of the schema should be considered "current"
+	|
+	|	Default: 0
+	|
+	*/
+	'version' => 0,
+
+	/*
 	| Where are these migrations stored?
 	|
 	|	Default: APPPATH.'migrations/'
 	|
 	*/
-	'path' => APPPATH.'migrations/',
-
-	'version' => 1
+	'path' => APPPATH.'migrations/'
 
 );
 

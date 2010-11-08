@@ -43,29 +43,31 @@ class Fuel_Migrate
 {
 	public static $version = 0;
 
-	function init()
+	private static $db;
+
+	public static function init()
 	{
 		Log::debug('Migrate class initialized');
 
 		Config::load('migration', 'migration');
 
-		$db = DB::instance();
-		$db->connect();
+		self::$db = DB::instance();
+		self::$db->connect();
 
-		$db->query(DB::INSERT, 'CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");');
+		self::$db->query(DB::INSERT, 'CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");');
 
 		// Check if there is a version
-		$foo = $db->query(DB::SELECT, 'SELECT `current` FROM `migration`')->as_array();
+		$foo = self::$db->query(DB::SELECT, 'SELECT `current` FROM `migration`')->as_array();
 
 		// Not set, so we are on 0
 		if ( ! isset($foo[0]->current))
 		{
-			$db->query(DB::INSERT, 'INSERT INTO `migration` (`current`) VALUES (0)');
+			self::$db->query(DB::INSERT, 'INSERT INTO `migration` (`current`) VALUES (0)');
 		}
 
 		else
 		{
-			Migrate::$version = (int) $foo[0]->current;
+			self::$version = (int) $foo[0]->current;
 		}
 	}
 
@@ -75,9 +77,9 @@ class Fuel_Migrate
 	 * @access	public
 	 * @return	void	Outputs a report of the installation
 	 */
-	public function install()
+	public static function install()
 	{
-		if ( ! $migrations = Migrate::find_migrations())
+		if ( ! $migrations = self::find_migrations())
 		{
 			Log::error('no_migrations_found');
 			return FALSE;
@@ -103,7 +105,7 @@ class Fuel_Migrate
 	 * @param $version integer	Target schema version
 	 * @return	mixed	TRUE if already latest, FALSE if failed, int if upgraded
 	 */
-	function version($version)
+	public static function version($version)
 	{
 		$start = Migrate::$version;
 		$stop = $version;
@@ -225,7 +227,7 @@ class Fuel_Migrate
 	 * @access	public
 	 * @return	mixed	TRUE if already latest, FALSE if failed, int if upgraded
 	 */
-	public function current()
+	public static function current()
 	{
 		return Migrate::version(Config::get('migration.version'));
 	}
@@ -271,9 +273,6 @@ class Fuel_Migrate
 	 */
 	private function _update_schema_version($version)
 	{
-		$db = DB::instance();
-		$db->connect();
-
-		$db->query(DB::UPDATE, 'UPDATE `migration` SET `current` = '.(int)$version);
+		self::$db->query(DB::UPDATE, 'UPDATE `migration` SET `current` = '.(int)$version);
 	}
 }
