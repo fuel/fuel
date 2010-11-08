@@ -115,24 +115,9 @@ class Fuel_Core {
 		$called_class = $class;
 
 		$class = (MBSTRING) ? mb_strtolower($class, INTERNAL_ENC) : strtolower($class);
-		$parts = explode('_', $class);
-		$folder = array_pop($parts);
+		$file = str_replace('_', DIRECTORY_SEPARATOR, $class);
 
-		// If the class is not a Controller, or is a Core Class, then look in 'classes'
-		if (($folder != 'controller' and $folder != 'model') or empty($parts) or $parts[0] == 'fuel')
-		{
-			$file = str_replace('_', DIRECTORY_SEPARATOR, $class);
-			$folder = 'classes';
-		}
-		
-		// If it is a controller or model, then look in 'controllers' or 'models'
-		else
-		{
-			$folder .= 's';
-			$file = implode(DIRECTORY_SEPARATOR, $parts);
-		}
-
-		if ($path = Fuel::find_file($folder, $file))
+		if ($path = Fuel::find_file('classes', $file))
 		{
 			if (is_array($path))
 			{
