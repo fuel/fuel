@@ -131,10 +131,10 @@ class Fuel_Core {
 				require $path;
 			}
 			
-			// if it has a static init() method, then call it now.
-			if (is_callable($called_class.'::init'))
+			// if it has a static _init() method, then call it now.
+			if (is_callable($called_class.'::_init'))
 			{
-				call_user_func($called_class.'::init');
+				call_user_func($called_class.'::_init');
 			}
 			
 			return true;

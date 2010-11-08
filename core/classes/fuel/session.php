@@ -31,7 +31,7 @@ class Fuel_Session
 	/*
 	 * class uses as a static object, automatically read everything
 	 */
-	public function init(array $config = array())
+	public function _init(array $config = array())
 	{
 		// If loaded as an instance or first load of static
 		if (isset($this) OR ( ! isset($this) AND self::$instance === FALSE))
@@ -66,9 +66,9 @@ class Fuel_Session
 			self::$instance->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : TRUE);
 
 			// if the driver has an init method, call it
-			if (method_exists(self::$instance, '_init'))
+			if (method_exists(self::$instance, 'init'))
 			{
-				self::$instance->_init();
+				self::$instance->init();
 			}
 
 			// and load the session
