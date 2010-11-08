@@ -82,7 +82,7 @@ class Fuel_Session
 	 */
 	public function __construct(array $config = array())
 	{
-		self::init($config);
+		self::_init($config);
 	}
 
 	// --------------------------------------------------------------------
