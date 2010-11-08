@@ -29,7 +29,7 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 	 * @access	public
 	 * @return	void
 	 */
-	public function _init()
+	public function init()
 	{
 		if ($this->memcached === false)
 		{

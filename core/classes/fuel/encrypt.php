@@ -44,7 +44,7 @@ class Fuel_Encrypt {
 	/*
 	 * initialisation and auto configuration
 	 */
-	public static function init()
+	public static function _init()
 	{
 		// check we we have the mcrypt library available
 		self::$have_mcrypt = function_exists('mcrypt_encrypt') ? true : false;

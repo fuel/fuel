@@ -31,7 +31,7 @@ class Fuel_Session
 	/*
 	 * class uses as a static object, automatically read everything
 	 */
-	public function init(array $config = array())
+	public function _init(array $config = array())
 	{
 		// If loaded as an instance or first load of static
 		if (isset($this) OR ( ! isset($this) AND self::$instance === false))
@@ -67,9 +67,9 @@ class Fuel_Session
 			self::$instance->set_config('write_on_finish', isset($config['write_on_finish']) ? (bool) $config['write_on_finish'] : false);
 
 			// if the driver has an init method, call it
-			if (method_exists(self::$instance, '_init'))
+			if (method_exists(self::$instance, 'init'))
 			{
-				self::$instance->_init();
+				self::$instance->init();
 			}
 
 			// and load the session
