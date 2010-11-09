@@ -52,7 +52,7 @@ class Fuel_Core {
 		ob_start();
 
 		// and register the event that will process the buffer
-		Shutdown::event('Fuel_Core::finish');
+		Event::register('shutdown', 'Fuel_Core::finish');
 
 		Config::load('config');
 

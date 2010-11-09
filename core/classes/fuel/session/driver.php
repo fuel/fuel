@@ -98,7 +98,7 @@ class Fuel_Session_Driver {
 			if ( ! $write_on_finish_event)
 			{
 				// register a shutdown event to update the session
-				Shutdown::event(array($this, 'write_session'));
+				Event::register('shutdown', array($this, 'write_session'));
 				$write_on_finish_event = true;
 			}
 		}

@@ -12,6 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-class Shutdown extends Fuel_Shutdown { }
+class Event extends Fuel_Event { }
 
-/* End of file shutdown.php */
+/* End of file event.php */
