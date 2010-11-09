@@ -30,6 +30,8 @@ class Fuel_URL {
 		return '<a href="'.URL::href($href).'"'.URL::attr($attributes).'>'.$text.'</a>';
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * Href
 	 *
@@ -53,6 +55,21 @@ class Fuel_URL {
 		}
 
 		return $href;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Href
+	 *
+	 * Creates an html link
+	 *
+	 * @access	public
+	 * @param	string	The URL
+	 */
+	public static function current()
+	{
+		return URL::href(Request::active()->uri->uri);
 	}
 
 	// --------------------------------------------------------------------
