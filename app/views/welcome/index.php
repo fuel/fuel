@@ -44,9 +44,6 @@
 	
 		</section>	
 		<div class="clear"></div> 
-		
-
-		<p>Page rendered in {elapsed_time} seconds, using {memory_usage}.</p>
 	</div>
 </body>
 </html>
