@@ -19,7 +19,7 @@ class Fuel_Cache {
 	 *
 	 * @access	public
 	 */
-	public static function init()
+	public static function _init()
 	{
 		Config::load('cache', 'cache');
 	}

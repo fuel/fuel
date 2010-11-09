@@ -45,7 +45,7 @@ class Fuel_Migrate
 
 	private static $db;
 
-	public static function init()
+	public static function _init()
 	{
 		Log::debug('Migrate class initialized');
 
