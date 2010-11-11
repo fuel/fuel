@@ -20,7 +20,7 @@ ini_set('short_open_tag', 0);
  * 
  * @see http://www.php.net/timezones
  */
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('GMT');
 
 /**
  * Define the internal encoding to use.
