@@ -52,6 +52,29 @@ class Fuel_Controller {
 	 */
 	public function after() { }
 
+	/**
+	 * This method returns the named parameter requested, or all of them
+	 * if no parameter is given.
+	 *
+	 * @access	public
+	 * @param	string	The name of the parameter
+	 * @return	void
+	 */
+	public function params($param = null)
+	{
+		if ($param === null)
+		{
+			return $this->request->named_params;
+		}
+
+		if ( ! isset($this->request->named_params[$param]))
+		{
+			return FALSE;
+		}
+
+		return $this->request->named_params[$param];
+	}
+
 }
 
 /* End of file fuel_controller.php */

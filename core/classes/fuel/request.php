@@ -141,18 +141,25 @@ class Fuel_Request {
 	public $action = 'index';
 
 	/**
-	 * @var	string	The request's params
+	 * @var	string	The request's method params
 	 */
-	public $params = array();
+	public $method_params = array();
+
+	/**
+	 * @var	string	The request's named params
+	 */
+	public $named_params = array();
 
 
 	public function __construct($uri)
 	{
 		$this->uri = new URI($uri);
 		$route = Route::parse($this->uri);
+		
 		$this->controller = $route['controller'];
 		$this->action = $route['action'];
-		$this->params = $route['params'];
+		$this->method_params = $route['method_params'];
+		$this->named_params = $route['named_params'];
 		unset($route);
 	}
 
@@ -174,7 +181,7 @@ class Fuel_Request {
 						$controller->before();
 					}
 
-					$controller->{$method}();
+					call_user_func_array(array($controller, $method), $this->method_params);
 
 					// Call the after method if it exists
 					if (method_exists($controller, 'after'))
