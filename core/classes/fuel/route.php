@@ -76,9 +76,9 @@ class Fuel_Route {
 		// Clean out all the non-named stuff out of $named_params
 		foreach($named_params as $key => $val)
 		{
-			if ( ! is_numeric($named_params))
+			if (is_numeric($key))
 			{
-				$named_params[$key] = $val;
+				unset($named_params[$key]);
 			}
 		}
 
