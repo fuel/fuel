@@ -60,11 +60,11 @@ class Fuel_Controller {
 	 * @param	string	The name of the parameter
 	 * @return	void
 	 */
-	public function param($param)
+	public function param($param, $default_value = false)
 	{
 		if ( ! isset($this->request->named_params[$param]))
 		{
-			return FALSE;
+			return $default_value;
 		}
 
 		return $this->request->named_params[$param];
