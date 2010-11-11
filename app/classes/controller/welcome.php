@@ -20,6 +20,6 @@ class Controller_Welcome extends Controller {
 	
 	public function action_hello()
 	{
-		$this->output = 'Hello '.$this->params('name');
+		$this->output = 'Hello '.$this->param('name');
 	}
 }

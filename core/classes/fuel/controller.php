@@ -60,19 +60,25 @@ class Fuel_Controller {
 	 * @param	string	The name of the parameter
 	 * @return	void
 	 */
-	public function params($param = null)
+	public function param($param)
 	{
-		if ($param === null)
-		{
-			return $this->request->named_params;
-		}
-
 		if ( ! isset($this->request->named_params[$param]))
 		{
 			return FALSE;
 		}
 
 		return $this->request->named_params[$param];
+	}
+
+	/**
+	 * This method returns all of the named parameters.
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function params()
+	{
+		return $this->request->named_params;
 	}
 
 }
