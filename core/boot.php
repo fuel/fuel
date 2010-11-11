@@ -30,6 +30,9 @@ define('COREPATH', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 // save a bit of memory by unsetting the path array
 unset($app_path, $package_path);
 
+// Load in the core functions that are available app wide
+require COREPATH.'base.php';
+
 // Load in the core class
 require COREPATH.'classes/fuel/core.php';
 
