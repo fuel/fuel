@@ -70,9 +70,7 @@ class Fuel_Route {
 		
 		if (count($segments) > 2)
 		{
-			$method_params = $segments;
-			array_shift($method_params);
-			array_shift($method_params);
+			$method_params = array_slice($segments, 2);
 		}
 
 		// Clean out all the non-named stuff out of $named_params
