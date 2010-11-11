@@ -75,6 +75,15 @@ class Fuel_Route {
 			array_shift($method_params);
 		}
 
+		// Clean out all the non-named stuff out of $named_params
+		foreach($named_params as $key => $val)
+		{
+			if ( ! is_numeric($named_params))
+			{
+				$named_params[$key] = $val;
+			}
+		}
+
 		return array(
 			'uri'			=> $route,
 			'controller'	=> $segments[0],
