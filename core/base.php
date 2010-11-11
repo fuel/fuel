@@ -51,10 +51,9 @@ function array_to_attr($attr)
 /**
  * Create a XHTML tag
  *
- * @param	string	tag name
- * @param	array	tag attributes
- * @param	bool	whether to include a closing tag
- * @param	string	what to put after the opening tag and before optional closing tag
+ * @param	string	The tag name
+ * @param	array	The tag attributes
+ * @param	string	The content to place in the tag
  * @return	string
  */
 function html_tag($tag, $attr = array(), $content = '')
