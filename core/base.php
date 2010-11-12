@@ -19,34 +19,36 @@
  * @param	array	$attr
  * @return	string
  */
-function array_to_attr($attr)
+if ( ! function_exists('html_tag'))
 {
-	$attr_str = '';
-
-	if ( ! is_array($attr))
+	function array_to_attr($attr)
 	{
-		$attr = (array) $attr;
-	}
+		$attr_str = '';
 
-	foreach ($attr as $property => $value)
-	{
-		// If the key is numeric then it must be something like selected="selected"
-		if (is_numeric($property))
+		if ( ! is_array($attr))
 		{
-			$property = $value;
+			$attr = (array) $attr;
 		}
 
-		if (in_array($property, array('value', 'alt', 'title')))
+		foreach ($attr as $property => $value)
 		{
-			$value = htmlentities($value, ENT_QUOTES, INTERNAL_ENC);
-		}
-		$attr_str .= $property.'="'.$value.'" ';
-	}
+			// If the key is numeric then it must be something like selected="selected"
+			if (is_numeric($property))
+			{
+				$property = $value;
+			}
 
-	// We strip off the last space for return
-	return trim($attr_str);
+			if (in_array($property, array('value', 'alt', 'title')))
+			{
+				$value = htmlentities($value, ENT_QUOTES, INTERNAL_ENC);
+			}
+			$attr_str .= $property.'="'.$value.'" ';
+		}
+
+		// We strip off the last space for return
+		return trim($attr_str);
+	}
 }
-
 
 /**
  * Create a XHTML tag
@@ -56,17 +58,19 @@ function array_to_attr($attr)
  * @param	string	The content to place in the tag
  * @return	string
  */
-function html_tag($tag, $attr = array(), $content = '')
+if ( ! function_exists('html_tag'))
 {
-	$html = '<'.$tag;
+	function html_tag($tag, $attr = array(), $content = '')
+	{
+		$html = '<'.$tag;
 
-	$html .= ( ! empty($attr)) ? ' '.array_to_attr($attr) : '';
-	$html .= empty($content) ? ' />' : '>';
-	$html .= ( ! empty($content)) ? $content.'</'.$tag.'>' : '';
+		$html .= ( ! empty($attr)) ? ' '.array_to_attr($attr) : '';
+		$html .= empty($content) ? ' />' : '>';
+		$html .= ( ! empty($content)) ? $content.'</'.$tag.'>' : '';
 
-	return $html;
+		return $html;
+	}
 }
-
 
 /**
  * A case-insensitive version of in_array.
@@ -75,11 +79,13 @@ function html_tag($tag, $attr = array(), $content = '')
  * @param	array	$haystack
  * @return	bool
  */
-function in_arrayi($needle, $haystack)
+if ( ! function_exists('in_arrayi'))
 {
-	return in_array(strtolower($needle), array_map('strtolower', $haystack));
+	function in_arrayi($needle, $haystack)
+	{
+		return in_array(strtolower($needle), array_map('strtolower', $haystack));
+	}
 }
-
 
 /**
  * Render's a view and returns the output.
@@ -88,10 +94,12 @@ function in_arrayi($needle, $haystack)
  * @param	array	The data for the view
  * @return	string
  */
-function render($view, $data = array())
+if ( ! function_exists('render'))
 {
-	return View::factory($view, $data)->render();
+	function render($view, $data = array())
+	{
+		return View::factory($view, $data)->render();
+	}
 }
-
 
 /* End of file base.php */
