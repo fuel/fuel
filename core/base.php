@@ -102,4 +102,19 @@ if ( ! function_exists('render'))
 	}
 }
 
+/**
+ * A wrapper function for Lang::line()
+ *
+ * @param	mixed	The string to translate
+ * @param	array	The parameters
+ * @return	string
+ */
+if ( ! function_exists('__'))
+{
+	function __($string, $params = array())
+	{
+		return Lang::line($string, $params);
+	}
+}
+
 /* End of file base.php */
