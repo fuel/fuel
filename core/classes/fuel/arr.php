@@ -57,13 +57,14 @@ class Fuel_Arr {
 	 * @access	public
 	 * @param	array		The array to fetch from
 	 * @param	string|int	The key to fetch from the array
-	 * @return	mixed		Value of the $key, or false when no array or invalid key
+	 * @param	mixed		The value returned when not an array or invalid key
+	 * @return	mixed		Value of the key
 	 */
-	public static function get_value($array, $key)
+	public static function get_value($array, $key, $default = false)
 	{
 		if ( ! is_array( $array) || ! array_key_exists($key, $array))
 		{
-			return false;
+			return $default;
 		}
 		
 		return $array[$key];
