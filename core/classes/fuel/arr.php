@@ -50,24 +50,57 @@ class Fuel_Arr {
 		}
 		return $return;
 	}
-	
+
 	/**
-	 * Because you can't do something like func_get_args()[1] in PHP5.2
+	 * Returns the element of the given array or a default if it is not set.
 	 *
 	 * @access	public
-	 * @param	array		The array to fetch from
-	 * @param	string|int	The key to fetch from the array
-	 * @param	mixed		The value returned when not an array or invalid key
-	 * @return	mixed		Value of the key
+	 * @param	array	The array to fetch from
+	 * @param	mixed	The key to fetch from the array
+	 * @param	mixed	The value returned when not an array or invalid key
+	 * @return	mixed
 	 */
-	public static function get_value($array, $key, $default = false)
+	public static function element($array, $key, $default = false)
 	{
-		if ( ! is_array( $array) || ! array_key_exists($key, $array))
+		if ( ! is_array($array) || ! array_key_exists($key, $array))
 		{
 			return $default;
 		}
 		
 		return $array[$key];
+	}
+
+	/**
+	 * Returns the elements of the given array or a default if it is not set.
+	 *
+	 * @access	public
+	 * @param	array	The array to fetch from
+	 * @param	array	The keys to fetch from the array
+	 * @param	array	The value returned when not an array or invalid key
+	 * @return	mixed
+	 */
+	public static function elements($array, $keys, $default = false)
+	{
+		$return = array();
+		
+		if ( ! is_array($keys))
+		{
+			throw new Fuel_Exception('Arr::elements() - $keys must be an array.');
+		}
+		
+		foreach ($keys as $key)
+		{
+			if ( ! array_key_exists($key, $array))
+			{
+				$return[$key] = $default;
+			}
+			else
+			{
+				$return[$key] = $array[$key];
+			}
+		}
+		
+		return $return;
 	}
 }
 
