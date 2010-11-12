@@ -50,6 +50,24 @@ class Fuel_Arr {
 		}
 		return $return;
 	}
+	
+	/**
+	 * Because you can't do something like func_get_args()[1] in PHP5.2
+	 *
+	 * @access	public
+	 * @param	array		The array to fetch from
+	 * @param	string|int	The key to fetch from the array
+	 * @return	mixed		Value of the $key, or false when no array or invalid key
+	 */
+	public static function get_value($array, $key)
+	{
+		if ( ! is_array( $array) || ! array_key_exists($key, $array))
+		{
+			return false;
+		}
+		
+		return $array[$key];
+	}
 }
 
 /* End of file arr.php */
