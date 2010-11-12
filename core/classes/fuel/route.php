@@ -42,11 +42,13 @@ class Fuel_Route {
 		foreach (Route::$routes as $search => $route)
 		{
 			$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+'), $search);
-			if (preg_match('#'.$search.'#uD', $uri->uri) != false)
+			$search = preg_replace('#:([a-z]+)#uD', '(?P<$1>.+)', $search);
+
+			if (preg_match('#'.$search.'#uD', $uri->uri, $params) != false)
 			{
-				// TODO: Write the advanced routing.
 				$route = preg_replace('#'.$search.'#uD', $route, $uri->uri);
-				return Route::parse_match($route);
+
+				return Route::parse_match($route, $params);
 			}
 		}
 		
@@ -60,27 +62,33 @@ class Fuel_Route {
 	 * @param	string	The matched route
 	 * @return	array
 	 */
-	protected static function parse_match($route)
+	protected static function parse_match($route, $named_params = array())
 	{
-		if (is_array($route))
+		$method_params = array();
+
+		$segments = array_pad(explode('/', $route), 2, 'index');
+		
+		if (count($segments) > 2)
 		{
-			// TODO: Write the advanced routing.
-			if ( ! isset($route['params']))
+			$method_params = array_slice($segments, 2);
+		}
+
+		// Clean out all the non-named stuff out of $named_params
+		foreach($named_params as $key => $val)
+		{
+			if (is_numeric($key))
 			{
-				$routes['params'] = array();
+				unset($named_params[$key]);
 			}
-			return $route;
 		}
-		else
-		{
-			list($controller, $action) = array_pad(explode('/', $route), 2, 'index');
-			return array(
-				'uri'			=> $route,
-				'controller'	=> $controller,
-				'action'		=> $action,
-				'params'		=> array(),
-			);
-		}
+
+		return array(
+			'uri'			=> $route,
+			'controller'	=> $segments[0],
+			'action'		=> $segments[1],
+			'method_params'	=> $method_params,
+			'named_params'	=> $named_params,
+		);
 	}
 	
 }

@@ -53,7 +53,7 @@ class Fuel_Asset {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function init()
+	public static function _init()
 	{
 		// Prevent multiple initializations
 		if (self::$initialized)
