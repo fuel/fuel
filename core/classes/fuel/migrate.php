@@ -161,7 +161,7 @@ class Fuel_Migrate
 			// Filename validations
 			if (preg_match('/^\d{3}_(\w+)$/', $name, $match))
 			{
-				$match[1] = strtolower($match[1]);
+				$match[1] = (MBSTRING) ? mb_strtolower($match[1], INTERNAL_ENC) : strtolower($match[1]);
 
 				// Cannot repeat a migration at different steps
 				if (in_array($match[1], $migrations))
@@ -276,3 +276,5 @@ class Fuel_Migrate
 		self::$db->query(DB::UPDATE, 'UPDATE `migration` SET `current` = '.(int)$version);
 	}
 }
+
+/* End of file migrate.php */

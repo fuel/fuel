@@ -6,9 +6,14 @@ defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 
 /**
  * Do we have access to mbstring?
+ * Not every server has it installed by default
+ * http://php.net/manual/en/mbstring.installation.php
  * We need this in order to work with UTF-8 strings
  */
 define('MBSTRING', function_exists('mb_get_info'));
+
+// if we have access to MBSTRING, set the internal encoding:
+if (MBSTRING) mb_internal_encoding(INTERNAL_ENC);
 
 // Determine the app path
 if ( ! is_dir($app_path) and is_dir(DOCROOT.$app_path))

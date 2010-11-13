@@ -113,9 +113,9 @@ class Fuel_URL {
 		$text or $text = str_replace('@', '[at]', $email);
 
 		$email = explode("@", $email);
-		
+
 		$subject and $subject = '?subject='.$subject;
-		
+
 		$output = '<script type="text/javascript">';
 		$output .= 'var user = "'.$email[0].'";';
 		$output .= 'var at = "@";';
@@ -144,7 +144,7 @@ class Fuel_URL {
 		{
 			$sep = '-'; // default
 		}
-		
+
         $from = array('ă','á','à','â','ã','ª','Á','À',
           'Â','Ã', 'é','è','ê','É','È','Ê','í','ì','î','Í',
           'Ì','Î','ò','ó','ô', 'õ','º','Ó','Ò','Ô','Õ','ş','Ş'
@@ -153,7 +153,7 @@ class Fuel_URL {
           'A','A','e','e','e','E','E','E','i','i','i','I','I',
           'I','o','o','o','o','o','O','O','O','O','s','S',
           't','T','u','u','u','U','U','U','c','C','N','n');
-		
+
         $str = trim(str_replace($from, $to, $str));
 
         $trans = array(
@@ -176,9 +176,7 @@ class Fuel_URL {
 
         if ($lowercase === TRUE)
         {
-        	$str = function_exists('mb_convert_case')
-				? mb_convert_case($str, MB_CASE_LOWER, 'UTF-8')
-				: strtolower($str);
+        	$str = (MBSTRING) ? mb_strtolower($str, INTERNAL_ENC) :	strtolower($str);
         }
 
         return trim(stripslashes($str));

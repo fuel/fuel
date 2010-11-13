@@ -83,7 +83,14 @@ if ( ! function_exists('in_arrayi'))
 {
 	function in_arrayi($needle, $haystack)
 	{
-		return in_array(strtolower($needle), array_map('strtolower', $haystack));
+		if (MBSTRING)
+		{
+			return in_array(mb_strtolower($needle, INTERNAL_ENC), array_map('mb_strtolower', $haystack));
+		}
+		else
+		{
+			return in_array(strtolower($needle), array_map('strtolower', $haystack));
+		}
 	}
 }
 
