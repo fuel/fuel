@@ -20,6 +20,6 @@ class Controller_Welcome extends Controller {
 	
 	public function action_hello()
 	{
-		$this->output = 'Hello '.URI::segment(2);
+		$this->output = 'Hello '.$this->param('name');
 	}
 }
