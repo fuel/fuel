@@ -167,23 +167,23 @@ class Fuel_Asset {
 					$attr['type'] = 'text/css';
 					$attr['href'] = $file;
 
-					$return .= '<link'.self::attr($attr).' />'.PHP_EOL;
+					$return .= html_tag('link', $attr).PHP_EOL;
 					break;
 				case 'js':
 					if ($raw)
 					{
-						return '<script type="text/javascript">'.PHP_EOL.file_get_contents($file).PHP_EOL.'</script>';
+						return html_tag('script', array('type' => 'text/javascript'), PHP_EOL.file_get_contents($file).PHP_EOL).PHP_EOL;
 					}
 					$attr['type'] = 'text/javascript';
 					$attr['src'] = $file;
 
-					$return .= '<script'.self::attr($attr).'></script>'.PHP_EOL;
+					$return .= html_tag('script', $attr, '').PHP_EOL;
 					break;
 				case 'img':
 					$attr['src'] = $file;
 					$attr['alt'] = isset($attr['alt']) ? $attr['alt'] : '';
 
-					$return .= '<img'.self::attr($attr).' />';
+					$return .= html_tag('img', $attr );
 					break;
 			}
 
@@ -323,39 +323,6 @@ class Fuel_Asset {
 				'attr'	=>	(array) $attr
 			);
 		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Attr
-	 *
-	 * Converts an array of attribute into a string
-	 *
-	 * @access	public
-	 * @param	array	The attribute array
-	 * @return	string	The attribute string
-	 * @return	string
-	 */
-	public static function attr($attributes = NULL)
-	{
-		if (empty($attributes))
-		{
-			return '';
-		}
-
-		$final = '';
-		foreach ($attributes as $key => $value)
-		{
-			if ($value === NULL)
-			{
-				continue;
-			}
-
-			$final .= ' '.$key.'="'.htmlspecialchars($value, ENT_QUOTES).'"';
-		}
-
-		return $final;
 	}
 
 	// --------------------------------------------------------------------
