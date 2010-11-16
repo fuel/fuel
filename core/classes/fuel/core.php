@@ -151,16 +151,6 @@ class Fuel_Core {
 			}
 			return true;
 		}
-		elseif ($folder == 'classes')
-		{
-			$path = SYSPATH.$folder.DIRECTORY_SEPARATOR.'fuel'.DIRECTORY_SEPARATOR.strtolower($file).'.php';
-			if (is_file($path))
-			{
-				require($path);
-				eval('class '.$called_class.' extends Fuel_'.$called_class.' {}');
-				return true;
-			}
-		}
 
 		// Class is not in the filesystem
 		return false;
