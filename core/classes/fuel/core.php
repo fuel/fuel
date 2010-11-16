@@ -111,6 +111,7 @@ class Fuel_Core {
 	 */
 	public static function autoload($class)
 	{
+		$found = false;
 		// This is used later
 		$called_class = $class;
 
@@ -130,13 +131,24 @@ class Fuel_Core {
 			{
 				require $path;
 			}
+
+			$found = true;
+		}
+		elseif (is_file($real_file = COREPATH.'classes'.DIRECTORY_SEPARATOR.'fuel'.DIRECTORY_SEPARATOR.$file.'.php'))
+		{
+			require $real_file;
+			eval('class '.$called_class.' extends Fuel_'.$called_class.' { }');
 			
+			$found = true;
+		}
+
+		if ($found)
+		{
 			// if it has a static _init() method, then call it now.
 			if (is_callable($called_class.'::_init'))
 			{
 				call_user_func($called_class.'::_init');
 			}
-			
 			return true;
 		}
 
