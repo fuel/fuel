@@ -13,10 +13,16 @@
  */
 
 class Fuel_DB_MySQL_Driver extends DB_Driver {
-	
+
+	/**
+	 * Connects to the database
+	 * 
+	 * @access	public
+	 * @return	void
+	 */
 	public function connect()
 	{
-		if ($this->_conn !== NULL)
+		if ($this->_conn !== null)
 		{
 			return;
 		}
@@ -43,6 +49,13 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 		$this->_select_db($database);
 	}
 
+	/**
+	 * Selects the database on the connection
+	 * 
+	 * @access	private
+	 * @param	string		the database
+	 * @return	void
+	 */
 	private function _select_db($database)
 	{
 		if ( ! mysql_select_db($database, $this->_conn))
@@ -51,6 +64,12 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 		}
 	}
 
+	/**
+	 * Disconnects from the database server
+	 * 
+	 * @access	public
+	 * @return	bool
+	 */
 	public function disconnect()
 	{
 		$result = true;
@@ -73,8 +92,21 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 		return $result;
 	}
 
+	/**
+	 * Executes a query on the database and returns the appropriate result
+	 * 
+	 * @access	public
+	 * @param	int		the query type
+	 * @param	string	the sql query
+	 * @param	bool	as an object
+	 * @return	object	a mysql result object
+	 * @return	array	an array with the insert id and affected rows
+	 * @return	int		the number of affected rows
+	 */
 	public function query($type, $sql, $as_object = true)
 	{
+		$this->_conn or $this->connect();
+
 		if (($result = mysql_query($sql, $this->_conn)) === false)
 		{
 			throw new Fuel_Exception(mysql_error($this->_conn), mysql_errno($this->_conn));
@@ -99,7 +131,6 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 			return mysql_affected_rows($this->_conn);
 		}
 	}
-	
 }
 
 /* End of file driver.php */
