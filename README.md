@@ -12,7 +12,7 @@ Fuel is very early in its development.  We have big plans for Fuel, but I want y
 
 * Dan Horrigan - Lead Developer ([http://dhorrigan.com](http://dhorrigan.com))
 * Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
-* Jelmer Schreuder - Developer
+* Jelmer Schreuder - Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
 
 ##Roadmap
 
