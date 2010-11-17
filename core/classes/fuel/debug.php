@@ -25,21 +25,30 @@ class Fuel_Debug {
 	public static function dump()
 	{
 		list($callee) = debug_backtrace();
-		$arguments = $callee['args'];
+		$arguments = func_get_args();
 		$total_arguments = count($arguments);
 
-		echo '<fieldset style="background: #fefefe !important; border:2px red solid; padding:5px; position:relative; z-index: 999;">';
-		echo '<legend style="background:lightgrey; padding:5px;">'.$callee['file'].' @ line: '.$callee['line'].'</legend><pre>';
+		$callee['file'] = str_replace(array(APPPATH, COREPATH), array('APPPATH/', 'COREPATH/'), $callee['file']);
 
+		echo '<div style="background: #EEE !important; border:1px solid #666; padding:10px;">';
+		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 18px sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1><pre>';
 		$i = 0;
 		foreach ($arguments as $argument)
 		{
-			echo '<br/><strong>Debug #'.(++$i).' of '.$total_arguments.'</strong>: ';
-			var_dump($argument);
+			echo '<strong>Debug #'.(++$i).' of '.$total_arguments.'</strong>:<br />';
+			if (is_array($argument))
+			{
+				print_r($argument);
+			}
+			else
+			{
+				var_dump($argument);
+			}
+			echo '<br />';
 		}
 
 		echo "</pre>";
-		echo "</fieldset>";
+		echo "</div>";
 	}
 	
 }
