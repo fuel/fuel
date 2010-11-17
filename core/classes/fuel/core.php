@@ -136,8 +136,15 @@ class Fuel_Core {
 		}
 		elseif (is_file($real_file = COREPATH.'classes'.DIRECTORY_SEPARATOR.'fuel'.DIRECTORY_SEPARATOR.$file.'.php'))
 		{
+			$abstract = '';
 			require $real_file;
-			eval('class '.$called_class.' extends Fuel_'.$called_class.' { }');
+
+			$class = new ReflectionClass('Fuel_'.$called_class);
+			if ($class->isAbstract())
+			{
+				$abstract = 'abstract ';
+			}
+			eval($abstract.'class '.$called_class.' extends Fuel_'.$called_class.' { }');
 			
 			$found = true;
 		}
