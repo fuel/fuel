@@ -74,7 +74,10 @@ class Fuel_Core {
 	public static function init()
 	{
 		// TODO: Replace die() and throw an exception.
-		Fuel::$initialized and die('Can only initialize Fuel once.');
+		if (Fuel::$initialized)
+		{
+			throw new Fuel_Exception("You can't initialize Fuel more than once.");
+		}
 
 		Fuel::$_paths = array(APPPATH, COREPATH);
 
@@ -152,7 +155,7 @@ class Fuel_Core {
 		// First we check the class arrays
 		if (isset(Fuel::$classes[$class]))
 		{
-			require Fuel::$classes[$class];
+			require ((strncmp($class, 'Fuel_', 5) === 0) ? COREPATH : APPPATH).Fuel::$classes[$class];
 			$found = true;
 		}
 		elseif (isset(Fuel::$classes['Fuel_'.$class]))
