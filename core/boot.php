@@ -4,6 +4,9 @@
 defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 
+// This is purely for ease of use, creating an alias of DS
+define('DS', DIRECTORY_SEPARATOR);
+
 /**
  * Do we have access to mbstring?
  * We need this in order to work with UTF-8 strings
@@ -23,9 +26,9 @@ if ( ! is_dir($package_path) and is_dir(DOCROOT.$package_path))
 }
 
 // Define the global path constants
-define('APPPATH', realpath($app_path).DIRECTORY_SEPARATOR);
-define('PKGPATH', realpath($package_path).DIRECTORY_SEPARATOR);
-define('COREPATH', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
+define('APPPATH', realpath($app_path).DS);
+define('PKGPATH', realpath($package_path).DS);
+define('COREPATH', realpath(dirname(__FILE__)).DS);
 
 // save a bit of memory by unsetting the path array
 unset($app_path, $package_path);
@@ -40,17 +43,17 @@ if (is_file(APPPATH.'base.php'))
 require COREPATH.'base.php';
 
 // Load in the core class
-require COREPATH.'classes/fuel/core.php';
+require COREPATH.'classes'.DS.'fuel'.DS.'core.php';
 
 // If the Fuel class is overrided in the application folder
 // load that, else load the core class.
-if (is_file(APPPATH.'classes/fuel.php'))
+if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 {
-	require APPPATH.'classes/fuel.php';
+	require APPPATH.'classes'.DS.'fuel.php';
 }
 else
 {
-	require COREPATH.'classes/fuel.php';
+	require COREPATH.'classes'.DS.'fuel.php';
 }
 
 // Initialize the framework

@@ -116,7 +116,7 @@ class Fuel_Core {
 		$called_class = $class;
 
 		$class = (MBSTRING) ? mb_strtolower($class, INTERNAL_ENC) : strtolower($class);
-		$file = str_replace('_', DIRECTORY_SEPARATOR, $class);
+		$file = str_replace('_', DS, $class);
 
 		if ($path = Fuel::find_file('classes', $file))
 		{
@@ -134,7 +134,7 @@ class Fuel_Core {
 
 			$found = true;
 		}
-		elseif (is_file($real_file = COREPATH.'classes'.DIRECTORY_SEPARATOR.'fuel'.DIRECTORY_SEPARATOR.$file.'.php'))
+		elseif (is_file($real_file = COREPATH.'classes'.DS.'fuel'.DS.$file.'.php'))
 		{
 			$abstract = '';
 			require $real_file;
@@ -174,7 +174,7 @@ class Fuel_Core {
 	 */
 	public static function find_file($directory, $file, $ext = '.php')
 	{
-		$path = $directory.DIRECTORY_SEPARATOR.strtolower($file).$ext;
+		$path = $directory.DS.strtolower($file).$ext;
 
 		$found = false;
 		foreach (Fuel::$_paths as $dir)

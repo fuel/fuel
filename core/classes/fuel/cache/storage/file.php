@@ -22,7 +22,7 @@ class Fuel_Cache_Storage_File extends Cache_Storage_Driver {
 	{
 		parent::__construct($identifier, $config);
 		
-		$this->path = Config::get('cache.path') != FALSE ? Config::get('cache.path') : APPPATH.'cache'.DIRECTORY_SEPARATOR;
+		$this->path = Config::get('cache.path') != FALSE ? Config::get('cache.path') : APPPATH.'cache'.DS;
 		if ( ! is_dir($this->path) || ! is_writable($this->path))
 		{
 			throw new Cache_Exception('Cache directory does not exist or is not writable.');
@@ -38,7 +38,7 @@ class Fuel_Cache_Storage_File extends Cache_Storage_Driver {
 		}
 		
 		// replace dots with dashes
-		$identifier = str_replace('.', DIRECTORY_SEPARATOR, $identifier);
+		$identifier = str_replace('.', DS, $identifier);
 		
 		return $identifier;
 	}
@@ -49,11 +49,11 @@ class Fuel_Cache_Storage_File extends Cache_Storage_Driver {
 		$id_path = $this->identifier_to_path( $this->identifier );
 
 		// create directory if necessary
-		$subdirs = explode(DIRECTORY_SEPARATOR, $id_path);
+		$subdirs = explode(DS, $id_path);
 		if (count($subdirs) > 1)
 		{
 			array_pop($subdirs);
-			$test_path = $this->path.implode(DIRECTORY_SEPARATOR, $subdirs);
+			$test_path = $this->path.implode(DS, $subdirs);
 
 			// check if specified subdir exists
 			if ( ! @is_dir($test_path))
