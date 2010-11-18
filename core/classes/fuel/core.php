@@ -121,23 +121,16 @@ class Fuel_Core {
 	}
 	
 	/**
-	 * Handles all post-script execution duties, 
-	 * such as flushing buffer, displaying output
-	 * and replacing any performance statistics.
+	 * Cleans up Fuel execution, ends the output buffering, and outputs the
+	 * buffer contents.
+	 * 
+	 * @access	public
+	 * @return	void
 	 */
 	public static function finish()
 	{
 		// Grab the output buffer
 		$output = ob_get_clean();
-
-		// Grab our benchmark information.
-		$benchmarks = Benchmark::app_total();
-
-		// Replace our basic performance measures.
-		// By doing it now, we are certain to have
-		// accurate reponses, even when output is cached.
-		$output = str_replace('{elapsed_time}', number_format($benchmarks[0], 4), $output);
-		$output = str_replace('{memory_usage}', round($benchmarks[1]/1048576,2) .' Mb', $output);
 
 		// Send the buffer to the browser.
 		echo $output;
