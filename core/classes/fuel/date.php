@@ -24,8 +24,8 @@
  * @author		Jelmer Schreuder
  *
  * Notes:
- * - Always returns DateTime objects, will accepts both DateTime objects and UNIX timestamps
- * - create_time() only works in non-Windows environments
+ * - Always returns Date objects, will accept both Date objects and UNIX timestamps
+ * - create_time() uses strptime and has currently a very bad hack to use strtotime for windows servers
  * - Uses strftime formatting for dates http://nl2.php.net/manual/en/function.strftime.php
  */
 class Fuel_Date {
@@ -55,7 +55,7 @@ class Fuel_Date {
 	protected static $php_timezones = array();
 
 	/**
-	 * @var array Allows for using numeric output as timezone input
+	 * @var array Allows for using numeric timezone input
 	 */
 	protected static $offset_to_timezone = array();
 
@@ -85,10 +85,11 @@ class Fuel_Date {
 		// Allow the default timezone to be set numericly
 		if ( ! is_string(Date::$default_timezone))
 		{
-			Date::list_timezones();
-			$offset = (int) Date::$default_timezone * 3600;
-			Date::$default_timezone = Date::$offset_to_timezone[$offset];
+			Date::$default_timezone = Date::offset_to_timezone(Date::$default_timezone * 3600);
 		}
+
+		// Set the default timezone
+		date_default_timezone_set(Date::$default_timezone);
 
 		// Ugly temporary windows fix because windows doesn't support strptime()
 		// Better fix will accept custom pattern parsing but only parse numeric input on windows servers
@@ -258,6 +259,19 @@ class Fuel_Date {
 		return Date::$php_timezones[$timezone];
 	}
 
+	/**
+	 * Takes an offset in seconds and returns its PHP named timezone
+	 *
+	 * @param int $offset
+	 * @return string
+	 */
+	public static function offset_to_timezone($offset)
+	{
+		Date::list_timezones();
+
+		return Date::$offset_to_timezone[(int) $offset];
+	}
+
 	/* ---------------------------------------------------------------------------
 	 * DYNAMIC METHODS
 	 * --------------------------------------------------------------------------- */
@@ -282,7 +296,22 @@ class Fuel_Date {
 		$pattern = Config::get('date.patterns.'.$pattern_key, null);
 		$pattern = ($pattern === null) ? $pattern_key : $pattern;
 
-		return strftime($pattern, $this->timestamp);
+		// Temporarily change timezone when different from default
+		if (Date::$default_timezone != $this->timezone)
+		{
+			date_default_timezone_set($this->timezone);
+		}
+
+		// Create output
+		$output = strftime($pattern, $this->timestamp);
+
+		// Change timezone back to default if changed previously
+		if (Date::$default_timezone != $this->timezone)
+		{
+			date_default_timezone_set(Date::$default_timezone);
+		}
+
+		return $output;
 	}
 
 	/**
@@ -326,7 +355,7 @@ class Fuel_Date {
 		else
 		{
 			$offset = (int) $timezone * 3600;
-			$this->timezone = Date::$offset_to_timezone[$offset];
+			$this->timezone = Date::offset_to_timezone($offset);
 		}
 	}
 }
