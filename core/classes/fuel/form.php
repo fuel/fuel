@@ -468,30 +468,33 @@ class Fuel_Form
 		$selected = $parameters['selected'];
 		unset($parameters['selected']);
 
-		$input = '<select ' . Form::attr_to_string($parameters) . '>' . PHP_EOL;
+		$input = PHP_EOL;
 		foreach ($options as $key => $val)
 		{
 			if (is_array($val))
 			{
-				$input .= str_repeat("\t", $indent_amount + 1) . '<optgroup label="' . $key . '">' . PHP_EOL;
+				$optgroup = PHP_EOL;
 				foreach ($val as $opt_key => $opt_val)
 				{
-					$extra = ($opt_key == $selected) ? ' selected="selected"' : '';
-					$input .= str_repeat("\t", $indent_amount + 2);
-					$input .= '<option value="' . $opt_key . '"' . $extra . '>' . Form::prep_value($opt_val) . "</option>\n";
+					$opt_attr = array('value' => $opt_key);
+					($opt_key == $selected) && $opt_attr[] = 'selected';
+					$optgroup .= str_repeat("\t", $indent_amount + 2);
+					$optgroup .= html_tag('option', $opt_array, Form::prep_value($opt_val)).PHP_EOL;
 				}
-				$input .= str_repeat("\t", $indent_amount + 1) . '</optgroup>' . PHP_EOL;
+				$optgroup .= str_repeat("\t", $indent_amount + 1);
+				$input .= str_repeat("\t", $indent_amount + 1).html_tag('optgroup', array('label' => $key), $optgroup).PHP_EOL;
 			}
 			else
 			{
-				$extra = ($key == $selected) ? ' selected="selected"' : '';
+				$opt_attr = array('value' => $key);
+				($key == $selected) && $opt_attr[] = 'selected';
 				$input .= str_repeat("\t", $indent_amount + 1);
-				$input .= '<option value="' . $key . '"' . $extra . '>' . Form::prep_value($val) . "</option>\n";
+				$input .= html_tag('option', $opt_attr, Form::prep_value($val)).PHP_EOL;
 			}
 		}
-		$input .= str_repeat("\t", $indent_amount) . "</select>";
+		$input .= str_repeat("\t", $indent_amount);
 
-		return $input;
+		return html_tag('select', Form::attr_to_string($parameters), $input);
 	}
 
 	// --------------------------------------------------------------------
@@ -617,9 +620,7 @@ class Fuel_Form
 	 */
 	public static function label($value, $for = null)
 	{
-		return $for === null
-			? '<label>' . $value . '</label>'
-			: '<label for="' . $for . '">' . $value . '</label>';
+		return html_tag('label', (isset($for) ? array('for' => $for) : array()), $value);
 	}
 
 	// --------------------------------------------------------------------
@@ -643,9 +644,8 @@ class Fuel_Form
 		{
 			throw new Fuel_Exception(sprintf('"%s" is not a valid input type.', $options['type']));
 		}
-		$input = '<input ' . Form::attr_to_string($options) . ' />';
 
-		return $input;
+		return html_tag('input', Form::attr_to_string($options));
 	}
 
 	// --------------------------------------------------------------------
@@ -667,11 +667,8 @@ class Fuel_Form
 			$value = $options['value'];
 			unset($options['value']);
 		}
-		$input = "<textarea " . Form::attr_to_string($options) . '>';
-		$input .= Form::prep_value($value);
-		$input .= '</textarea>';
 
-		return $input;
+		return html_tag('textarea', Form::attr_to_string($options), Form::prep_value($value));
 	}
 
 
@@ -680,7 +677,7 @@ class Fuel_Form
 	/**
 	 * Attr to String
 	 *
-	 * Takes an array of attributes and turns it into a string for an input
+	 * Wraps the global attributes function and does some form specific work
 	 *
 	 * @access	private
 	 * @param	array	$attr
@@ -688,28 +685,9 @@ class Fuel_Form
 	 */
 	private function attr_to_string($attr)
 	{
-		$attr_str = '';
-
-		if ( ! is_array($attr))
-		{
-			$attr = (array) $attr;
-		}
-
-		foreach ($attr as $property => $value)
-		{
-			if ($property == 'label')
-			{
-				continue;
-			}
-			if ($property == 'value')
-			{
-				$value = Form::prep_value($value);
-			}
-			$attr_str .= $property . '="' . $value . '" ';
-		}
-
-		// We strip off the last space for return
-		return substr($attr_str, 0, -1);
+		unset($attr['label']);
+		isset($attr['value']) && $attr['value'] = Form::prep_value($attr['value']);
+		return array_to_attr($attr);
 	}
 
 	// --------------------------------------------------------------------
