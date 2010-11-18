@@ -168,51 +168,36 @@ class Fuel_Request {
 		$class = 'Controller_'.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
-		try
+		if (class_exists($class))
 		{
-			if (class_exists($class))
+			$controller = new $class($this);
+			if (method_exists($controller, $method))
 			{
-				$controller = new $class($this);
-				if (method_exists($controller, $method))
+				// Call the before method if it exists
+				if (method_exists($controller, 'before'))
 				{
-					// Call the before method if it exists
-					if (method_exists($controller, 'before'))
-					{
-						$controller->before();
-					}
-
-					call_user_func_array(array($controller, $method), $this->method_params);
-
-					// Call the after method if it exists
-					if (method_exists($controller, 'after'))
-					{
-						$controller->after();
-					}
-
-					// Get the controller's output
-					$this->output =& $controller->output;
+					$controller->before();
 				}
-				else
+
+				call_user_func_array(array($controller, $method), $this->method_params);
+
+				// Call the after method if it exists
+				if (method_exists($controller, 'after'))
 				{
-					throw new Fuel_Exception('Action not found.', 404);
+					$controller->after();
 				}
+
+				// Get the controller's output
+				$this->output =& $controller->output;
 			}
 			else
 			{
-				throw new Fuel_Exception('Controller not found.', 404);
+				Request::show_404();
 			}
 		}
-		catch (Fuel_Exception $e)
+		else
 		{
-			switch ($e->getCode())
-			{
-				case 404:
-					Request::show_404();
-					break;
-
-				default:
-					Debug::dump($e);
-			}
+			Request::show_404();
 		}
 		return $this;
 	}
