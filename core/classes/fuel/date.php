@@ -26,7 +26,7 @@
  * Notes:
  * - Always returns Date objects, will accept both Date objects and UNIX timestamps
  * - create_time() uses strptime and has currently a very bad hack to use strtotime for windows servers
- * - Uses strftime formatting for dates http://nl2.php.net/manual/en/function.strftime.php
+ * - Uses strftime formatting for dates http://www.php.net/manual/en/function.strftime.php
  */
 class Fuel_Date {
 
@@ -100,8 +100,8 @@ class Fuel_Date {
 				$ts = strtotime($input);
 				return array(
 					'tm_year'	=> date('Y', $ts),
-					'tm_month'	=> date('n', $ts),
-					'tm_day'	=> date('G', $ts),
+					'tm_mon'	=> date('n', $ts),
+					'tm_mday'	=> date('j', $ts),
 					'tm_hour'	=> date('H', $ts),
 					'tm_min'	=> date('i', $ts),
 					'tm_sec'	=> date('s', $ts)
@@ -114,7 +114,7 @@ class Fuel_Date {
 
 	public function factory($timestamp = null, $timezone = null)
 	{
-		$timestamp	= is_null($timestamp) ? Date::time() : $timestamp;
+		$timestamp	= is_null($timestamp) ? time() + Date::$server_gmt_offset : $timestamp;
 		$timezone	= is_null($timezone) ? Date::$default_timezone : $timezone;
 
 		return new Date($timestamp, $timezone);
@@ -125,9 +125,9 @@ class Fuel_Date {
 	 * 
 	 * @return Date
 	 */
-	public static function time()
+	public static function time($timezone = null)
 	{
-		return new Date(time() + Date::$server_gmt_offset);
+		return Date::factory(null, $timezone);
 	}
 
 	/**
@@ -150,10 +150,10 @@ class Fuel_Date {
 			trigger_error('Input was not recognized by pattern.', E_USER_WARNING);
 			return false;
 		}
-		$date = new Date(mktime($time['tm_hour'], $time['tm_min'], $time['tm_sec'],
-						$time['tm_mon'], $time['tm_mday'], $time['tm_year']) + Date::$gmt_offset);
-
-		return Date::factory($date);
+		$timestamp = mktime($time['tm_hour'], $time['tm_min'], $time['tm_sec'],
+						$time['tm_mon'], $time['tm_mday'], $time['tm_year']);
+		
+		return Date::factory($timestamp + Date::$server_gmt_offset);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class Fuel_Date {
 	 */
 	public static function days_in_month($month, $year = null)
 	{
-		$year	= ! empty($year) ? (int) $year : (int) strftime('%G');
+		$year	= ! empty($year) ? (int) $year : (int) date('Y');
 		$month	= (int) $month;
 
 		if ($month < 1 || $month > 12)
@@ -301,7 +301,7 @@ class Fuel_Date {
 		{
 			date_default_timezone_set($this->timezone);
 		}
-
+		
 		// Create output
 		$output = strftime($pattern, $this->timestamp);
 
@@ -357,6 +357,18 @@ class Fuel_Date {
 			$offset = (int) $timezone * 3600;
 			$this->timezone = Date::offset_to_timezone($offset);
 		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Allows you to just put the object in a string and get it inserted in the default pattern
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->format(Date::$default_pattern);
 	}
 }
 
