@@ -29,38 +29,6 @@ class Fuel_Core {
 
 	public static $locale;
 
-	public static $loaded_classes = array();
-
-	public static $classes = array(
-		'Fuel_Arr'			=>	'classes/fuel/arr.php',
-		'Fuel_Asset'		=>	'classes/fuel/asset.php',
-		'Fuel_Benchmark'	=>	'classes/fuel/benchmark.php',
-		'Fuel_Cache'		=>	'classes/fuel/cache.php',
-		'Fuel_Config'		=>	'classes/fuel/config.php',
-		'Fuel_Controller'	=>	'classes/fuel/controller.php',
-		'Fuel_Cookie'		=>	'classes/fuel/cookie.php',
-		'Fuel_DB'			=>	'classes/fuel/db.php',
-		'Fuel_Debug'		=>	'classes/fuel/debug.php',
-		'Fuel_Encrypt'		=>	'classes/fuel/encrypt.php',
-		'Fuel_Env'			=>	'classes/fuel/env.php',
-		'Fuel_Error'		=>	'classes/fuel/error.php',
-		'Fuel_Exception'	=>	'classes/fuel/exception.php',
-		'Fuel_Form'			=>	'classes/fuel/form.php',
-		'Fuel_Ftp'			=>	'classes/fuel/ftp.php',
-		'Fuel_Input'		=>	'classes/fuel/input.php',
-		'Fuel_Lang'			=>	'classes/fuel/lang.php',
-		'Fuel_Log'			=>	'classes/fuel/log.php',
-		'Fuel_Migrate'		=>	'classes/fuel/migrate.php',
-		'Fuel_Model'		=>	'classes/fuel/model.php',
-		'Fuel_Output'		=>	'classes/fuel/output.php',
-		'Fuel_Request'		=>	'classes/fuel/request.php',
-		'Fuel_Route'		=>	'classes/fuel/route.php',
-		'Fuel_Session'		=>	'classes/fuel/session.php',
-		'Fuel_URI'			=>	'classes/fuel/uri.php',
-		'Fuel_URL'			=>	'classes/fuel/url.php',
-		'Fuel_View'			=>	'classes/fuel/view.php',
-	);
-
 	protected static $_paths = array();
 
 	final private function __construct() { }
@@ -73,7 +41,6 @@ class Fuel_Core {
 	 */
 	public static function init()
 	{
-		// TODO: Replace die() and throw an exception.
 		if (Fuel::$initialized)
 		{
 			throw new Fuel_Exception("You can't initialize Fuel more than once.");
@@ -81,13 +48,6 @@ class Fuel_Core {
 
 		Fuel::$_paths = array(APPPATH, COREPATH);
 
-		if (is_file(APPPATH.'config/classes.php'))
-		{
-			Fuel::$classes = Fuel::$classes + Fuel::load(APPPATH.'config/classes.php');
-		}
-
-		spl_autoload_register(array('Fuel', 'autoload'));
-		
 		register_shutdown_function('Error::shutdown_handler');
 		set_exception_handler('Error::exception_handler');
 		set_error_handler('Error::error_handler');
@@ -137,81 +97,6 @@ class Fuel_Core {
 
 		// Send the buffer to the browser.
 		echo $output;
-	}
-
-	/**
-	 * Autoloads the given class.
-	 *
-	 * @access	public
-	 * @param	string	The name of the class
-	 * @return	bool	Whether the class was loaded or not
-	 */
-	public static function autoload($class)
-	{
-		$found = false;
-		$auto_alias = false;
-		$called_class = $class;
-	
-		// First we check the class arrays
-		if (isset(Fuel::$classes[$class]))
-		{
-			require ((strncmp($class, 'Fuel_', 5) === 0) ? COREPATH : APPPATH).Fuel::$classes[$class];
-			$found = true;
-		}
-		elseif (isset(Fuel::$classes['Fuel_'.$class]))
-		{
-			require COREPATH.Fuel::$classes['Fuel_'.$class];
-			$found = true;
-			$auto_alias = true;
-		}
-		else
-		{
-			$class = (MBSTRING) ? mb_strtolower($class, INTERNAL_ENC) : strtolower($class);
-			$file = str_replace('_', DS, $class);
-
-			if ($path = Fuel::find_file('classes', $file))
-			{
-				if (is_array($path))
-				{
-					foreach ($path as $file)
-					{
-						require $file;
-					}
-				}
-				else
-				{
-					require $path;
-				}
-
-				$found = true;
-			}
-		}
-
-		if ($auto_alias)
-		{
-			$abstract = '';
-			$class = new ReflectionClass('Fuel_'.$called_class);
-			if ($class->isAbstract())
-			{
-				$abstract = 'abstract ';
-			}
-			eval($abstract.'class '.$called_class.' extends Fuel_'.$called_class.' { }');
-		
-			$found = true;
-		}
-
-		if ($found)
-		{
-			// if it has a static _init() method, then call it now.
-			if (is_callable($called_class.'::_init'))
-			{
-				call_user_func($called_class.'::_init');
-			}
-			return true;
-		}
-
-		// Class is not in the filesystem
-		return false;
 	}
 
 	/**

@@ -42,6 +42,19 @@ if (is_file(APPPATH.'base.php'))
 // Load in the core functions that are available app wide
 require COREPATH.'base.php';
 
+
+/**
+ * Load in the autoloader class then register any app and core autoloaders.
+ */
+require COREPATH.'classes'.DS.'autoloader.php';
+require COREPATH.'autoload.php';
+
+if (is_file(APPPATH.'autoload.php'))
+{
+	require APPPATH.'autoload.php';
+}
+
+
 // Load in the core class
 require COREPATH.'classes'.DS.'fuel'.DS.'core.php';
 
