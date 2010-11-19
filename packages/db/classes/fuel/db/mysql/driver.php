@@ -117,7 +117,7 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 
 		if ($type === DB::SELECT)
 		{
-			return new DB_MySQL_Result($result, $sql, $as_object);
+			return new DB_Mysql_Result($result, $sql, $as_object);
 		}
 		elseif ($type === DB::INSERT)
 		{
