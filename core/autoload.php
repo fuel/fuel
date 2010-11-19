@@ -23,11 +23,22 @@ $loader->add_aliases(array(
 	'Arr'			=> 'Fuel_Arr',
 	'Asset'			=> 'Fuel_Asset',
 	'Benchmark'		=> 'Fuel_Benchmark',
-	'Cache'			=> 'Fuel_Cache',
+
+	'Cache'						=> 'Fuel_Cache',
+	'Cache_Handler_Driver'		=> 'Fuel_Cache_Handler_Driver',
+	'Cache_Handler_Json'		=> 'Fuel_Cache_Handler_Json',
+	'Cache_Handler_Serialized'	=> 'Fuel_Cache_Handler_Serialized',
+	'Cache_Handler_String'		=> 'Fuel_Cache_Handler_String',
+	'Cache_Storage_Driver'		=> 'Fuel_Cache_Storage_Driver',
+	'Cache_Storage_File'		=> 'Fuel_Cache_Storage_File',
+
 	'Config'		=> 'Fuel_Config',
-	'Controller'	=> 'Fuel_Controller',
+
+	'Controller'			=> 'Fuel_Controller',
+	'Controller_Template'	=> 'Fuel_Controller_Template',
+	'Controller_Rest'		=> 'Fuel_Controller_Rest',
+
 	'Cookie'		=> 'Fuel_Cookie',
-	'DB'			=> 'Fuel_DB',
 	'Debug'			=> 'Fuel_Debug',
 	'Encrypt'		=> 'Fuel_Encrypt',
 	'Env'			=> 'Fuel_Env',
@@ -53,7 +64,10 @@ $loader->add_aliases(array(
 
 	'URI'			=> 'Fuel_URI',
 	'URL'			=> 'Fuel_URL',
-	'View'			=> 'Fuel_View',
+
+	'View'				=> 'Fuel_View',
+	'View_Exception'	=> 'Fuel_View_Exception',
+
 	'Fuel'			=> 'Fuel_Core',
 ));
 
