@@ -168,7 +168,19 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 
 			if ($payload === false)
 			{
-				throw new Fuel_Session_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on read. Check your configuration.');
+				// not found, try the previous session id
+				if ( ! empty($this->keys['previous_id']))
+				{
+					// fetch the session data from the Memcached server
+					$payload = $this->memcached->getByKey($this->config['cookie_name'], $this->keys['previous_id']);
+				}
+
+				// still not found?
+				if ($payload === false)
+				{
+					// bail out!
+					throw new Fuel_Session_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on read. Check your configuration.');
+				}
 			}
 			else
 			{

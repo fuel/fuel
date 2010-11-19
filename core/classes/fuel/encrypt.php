@@ -48,6 +48,13 @@ class Fuel_Encrypt {
 	{
 		// check we we have the mcrypt library available
 		self::$have_mcrypt = function_exists('mcrypt_encrypt') ? true : false;
+
+		// load the config
+		Config::load('encrypt', 'encrypt');
+		$config = Config::get('encrypt');
+
+		// update the default salt value if one is defined in the config
+		isset($config['salt']) && self::$salt = $config['salt'];
 	}
 
 	// --------------------------------------------------------------------
@@ -291,4 +298,4 @@ class Fuel_Encrypt {
 
 }
 
-/* End of file encryption.php */
+/* End of file encrypt.php */

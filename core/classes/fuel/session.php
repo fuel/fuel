@@ -19,7 +19,7 @@ class Fuel_Session
 	/*
 	 * loaded session driver instance
 	 */
-	protected static $instance = FALSE;
+	protected static $instance = false;
 
 	/*
 	 * list of supported session drivers
@@ -34,7 +34,7 @@ class Fuel_Session
 	public function _init(array $config = array())
 	{
 		// If loaded as an instance or first load of static
-		if (isset($this) OR ( ! isset($this) AND self::$instance === FALSE))
+		if (isset($this) OR ( ! isset($this) AND self::$instance === false))
 		{
 			// load the session configuration
 			if (empty($config) OR ! is_array($config))
@@ -54,8 +54,8 @@ class Fuel_Session
 			self::$instance = new $driver;
 
 			// and configure it
-			self::$instance->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : TRUE);
-			self::$instance->set_config('match_ua', isset($config['match_ua']) ? (bool) $config['match_ua'] : TRUE);
+			self::$instance->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : true);
+			self::$instance->set_config('match_ua', isset($config['match_ua']) ? (bool) $config['match_ua'] : true);
 			self::$instance->set_config('cookie_name', isset($config['cookie_name']) ? (string) $config['cookie_name'] : 'fuelsession');
 			self::$instance->set_config('cookie_domain', isset($config['cookie_domain']) ? (string) $config['cookie_domain'] : '');
 			self::$instance->set_config('cookie_path', isset($config['cookie_path']) ? (string) $config['cookie_path'] : '/');
@@ -63,7 +63,8 @@ class Fuel_Session
 			self::$instance->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
 			self::$instance->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
 			self::$instance->set_config('config', isset($config['config']) ? (array) $config['config'] : array());
-			self::$instance->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : TRUE);
+			self::$instance->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
+			self::$instance->set_config('write_on_finish', isset($config['write_on_finish']) ? (bool) $config['write_on_finish'] : false);
 
 			// if the driver has an init method, call it
 			if (method_exists(self::$instance, 'init'))
@@ -81,7 +82,7 @@ class Fuel_Session
 	 */
 	public function __construct(array $config = array())
 	{
-		self::init($config);
+		self::_init($config);
 	}
 
 	// --------------------------------------------------------------------

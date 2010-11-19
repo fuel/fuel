@@ -27,11 +27,6 @@
 class Fuel_Cookie {
 
 	/**
-	 * @var  string  Magic salt to add to the cookie
-	 */
-	public static $salt = 'sup3rs3Cr3tk3y564';
-
-	/**
 	 * @var  integer  Number of seconds before the cookie expires
 	 */
 	public static $expiration = 0;
@@ -84,7 +79,6 @@ class Fuel_Cookie {
 	 * @param   string   value of cookie
 	 * @param   integer  lifetime in seconds
 	 * @return  boolean
-	 * @uses    Cookie::salt
 	 */
 	public static function set($name, $value, $expiration = NULL)
 	{
@@ -99,7 +93,7 @@ class Fuel_Cookie {
 		{
 			$expiration = $expiration > 0 ? $expiration + time() : 0;
 		}
-		
+
 		return setcookie($name, $value, $expiration, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httponly);
 	}
 
