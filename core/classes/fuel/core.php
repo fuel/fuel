@@ -177,15 +177,22 @@ class Fuel_Core {
 		 * the new packages loader in second place after APPPATH's
 		 */
 		$loaders = spl_autoload_functions();
-		$last_loader = array_pop($loaders);
-		array_shift($loaders);
+		
+		// Remove the first autoloader (from APPPATH), and the last autoloader
+		// (from the last added package).  These will not be unregistered.
+		$loaders = array_slice($loaders, 1, -1);
 
+		/**
+		 * Here we unregister all but the APPPATH and the last loaded autoloader.
+		 * This takes the last autoloader and moves it to position 2 in the 
+		 * autoloader stack.
+		 */
 		foreach ($loaders as $loader)
 		{
 			spl_autoload_unregister(array($loader[0], $loader[1]));
 		}
 
-		spl_autoload_register(array($last_loader[0], $last_loader[1]));
+		// Load back in all the autoloaders
 		foreach ($loaders as $loader)
 		{
 			spl_autoload_register(array($loader[0], $loader[1]));
