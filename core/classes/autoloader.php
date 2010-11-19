@@ -65,6 +65,10 @@ class Autoloader {
 	 */
 	public function add_alias($alias, $class, $is_abstract = false)
 	{
+		if ($is_abstract)
+		{
+			$class = array($class, true);
+		}
 		$this->aliases[$alias] = $class;
 	}
 
