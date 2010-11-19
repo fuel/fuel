@@ -14,7 +14,7 @@
 
 $loader = new Autoloader;
 
-$loader->default_path(__DIR__.'/classes/');
+$loader->default_path(dirname(__FILE__).'/classes/');
 $loader->add_prefixes(array(
 	'Fuel_'		=> COREPATH.'classes/',
 ));
