@@ -14,7 +14,7 @@
 
 $loader = new Autoloader;
 
-$loader->default_path(APPPATH.'classes/');
+$loader->default_path(__DIR__.'/classes/');
 $loader->add_packages(array(
 	'Fuel_'		=> COREPATH.'classes/',
 ));
