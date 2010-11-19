@@ -15,9 +15,9 @@
 class Autoloader {
 
 	/**
-	 * @var	array	Holds all the package prefixes and paths
+	 * @var	array	Holds all the prefixes and paths
 	 */
-	protected $packages = array();
+	protected $prefixes = array();
 
 	/**
 	 * @var	array	Holds all the class aliases
@@ -38,9 +38,9 @@ class Autoloader {
 	 * @param
 	 * @return	void
 	 */
-	public function add_package($prefix, $path)
+	public function add_prefix($prefix, $path)
 	{
-		$this->packages[$prefix] = $path;
+		$this->prefixes[$prefix] = $path;
 	}
 
 	/**
@@ -50,9 +50,9 @@ class Autoloader {
 	 * @param	array	the packages
 	 * @return	void
 	 */
-	public function add_packages(array $packages)
+	public function add_prefixes(array $prefixes)
 	{
-		$this->packages = array_merge($this->packages, $packages);
+		$this->prefixes = array_merge($this->prefixes, $prefixes);
 	}
 
 	/**
@@ -102,7 +102,7 @@ class Autoloader {
 
 	public function load($class)
 	{
-		foreach ($this->packages as $prefix => $path)
+		foreach ($this->prefixes as $prefix => $path)
 		{
 			if (strncmp($class, $prefix, strlen($prefix)) === 0)
 			{
