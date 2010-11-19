@@ -31,6 +31,7 @@ $loader->add_aliases(array(
 	'Debug'			=> 'Fuel_Debug',
 	'Encrypt'		=> 'Fuel_Encrypt',
 	'Env'			=> 'Fuel_Env',
+	'Event'			=> 'Fuel_Event',
 	'Error'			=> 'Fuel_Error',
 	'Form'			=> 'Fuel_Form',
 	'Ftp'			=> 'Fuel_Ftp',

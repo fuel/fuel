@@ -77,6 +77,4 @@ $request = Request::instance();
 $request->execute();
 echo $request->output;
 
-Fuel::finish();
-
 /* End of file boot.php */

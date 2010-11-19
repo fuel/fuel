@@ -30,7 +30,7 @@ class Fuel_Event {
 	 * @param	void
 	 * @return	void
 	 */
-	public function _init()
+	public static function _init()
 	{
 		static $_init_done = false;
 
