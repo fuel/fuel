@@ -24,27 +24,6 @@ class Fuel_Event {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Class init, setup the shutdown event
-	 *
-	 * @access	public
-	 * @param	void
-	 * @return	void
-	 */
-	public static function _init()
-	{
-		static $_init_done = false;
-
-		// make sure we're called on shutdown
-		if ( ! $_init_done)
-		{
-			register_shutdown_function('Fuel_Event::shutdown');
-			$_init_done = true;
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Register
 	 *
 	 * Registers a Callback for a given event

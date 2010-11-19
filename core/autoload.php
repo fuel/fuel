@@ -43,7 +43,14 @@ $loader->add_aliases(array(
 	'Output'		=> 'Fuel_Output',
 	'Request'		=> 'Fuel_Request',
 	'Route'			=> 'Fuel_Route',
-	'Session'		=> 'Fuel_Session',
+
+	'Session'					=> 'Fuel_Session',
+	'Session_Driver'			=> 'Fuel_Session_Driver',
+	'Session_Exceptption'		=> 'Fuel_Session_Exception',
+	'Session_Cookie_Driver'		=> 'Fuel_Session_Cookie_Driver',
+	'Session_File_Driver'		=> 'Fuel_Session_File_Driver',
+	'Session_Memcached_Driver'	=> 'Fuel_Session_Memcached_Driver',
+
 	'URI'			=> 'Fuel_URI',
 	'URL'			=> 'Fuel_URL',
 	'View'			=> 'Fuel_View',

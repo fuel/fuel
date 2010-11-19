@@ -57,9 +57,6 @@ class Fuel_Core {
 		// Start up output buffering
 		ob_start();
 
-		// and register the event that will process the buffer
-		Event::register('shutdown', 'Fuel_Core::finish');
-
 		Config::load('config');
 
 		Fuel::$bm = Config::get('benchmarking', true);

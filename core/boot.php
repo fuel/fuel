@@ -77,4 +77,9 @@ $request = Request::instance();
 $request->execute();
 echo $request->output;
 
+// Call all the shutdown events
+Event::shutdown();
+
+Fuel::finish();
+
 /* End of file boot.php */
