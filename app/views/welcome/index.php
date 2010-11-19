@@ -41,7 +41,10 @@
 		<section id="footer" class="grid_12">
 			
 			<p>MIT License - <a href="http://fuelphp.com/" target="_blank">FuelPHP</a> 2010</p>
-	
+			<p>
+				Execution Time (sec): <?php echo $exec_time; ?><br />
+				Memory Used (MB): <?php echo $mem_usage; ?>
+			</p>
 		</section>	
 		<div class="clear"></div> 
 	</div>
