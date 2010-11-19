@@ -69,6 +69,12 @@ class Fuel_Core {
 		Config::load('routes', 'routes');
 		Route::$routes = Config::get('routes');
 
+		//Load in the packages
+		foreach (Config::get('packages', array()) as $package)
+		{
+			Fuel::add_package($package);
+		}
+
 		if (Config::get('base_url') === false)
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))

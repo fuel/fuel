@@ -44,11 +44,23 @@ return array(
 	 * Log::INFO
 	 * Log::ALL
 	 */
-	'log_threshold'	=> Log::ALL,
-
-	'log_path'		=> APPPATH . 'logs/',
-
-	'log_date_format' => 'Y-m-d H:i:s',
+	'log_threshold'		=> Log::ALL,
+	'log_path'			=> APPPATH . 'logs/',
+	'log_date_format' 	=> 'Y-m-d H:i:s',
+	
+	/**
+	 * These packages are loaded on Fuel's startup.  You can specify them in
+	 * the following manner:
+	 * 
+	 * array('db', 'auth'); // This will assume the packages are in PKGPATH
+	 * 
+	 * // Use this format to specify the path to the package explicitly
+	 * array(
+	 *     array('db'	=> PKGPATH.'db/')
+	 *     array('auth'	=> PKGPATH.'auth/')
+	 * );
+	 */
+	'packages'	=> array(),
 
 );
 
