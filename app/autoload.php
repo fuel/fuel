@@ -15,5 +15,6 @@
 $loader = new Autoloader;
 $loader->default_path(__DIR__.'/classes/');
 $loader->register();
+return $loader;
 
 /* End of file autoload.php */

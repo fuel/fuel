@@ -47,12 +47,12 @@ require COREPATH.'base.php';
  * Load in the autoloader class then register any app and core autoloaders.
  */
 require COREPATH.'classes'.DS.'autoloader.php';
-require COREPATH.'autoload.php';
 
 if (is_file(APPPATH.'autoload.php'))
 {
 	require APPPATH.'autoload.php';
 }
+require COREPATH.'autoload.php';
 
 
 // Load in the core class

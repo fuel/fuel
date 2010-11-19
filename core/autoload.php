@@ -50,5 +50,6 @@ $loader->add_aliases(array(
 ));
 
 $loader->register();
+return $loader;
 
 /* End of file autoload.php */

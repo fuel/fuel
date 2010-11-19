@@ -31,6 +31,8 @@ class Fuel_Core {
 
 	protected static $_paths = array();
 
+	protected static $packages = array();
+
 	final private function __construct() { }
 
 	/**
@@ -134,6 +136,67 @@ class Fuel_Core {
 	public static function load($file)
 	{
 		return include $file;
+	}
+
+	/**
+	 * Adds a package or multiple packages to the stack.
+	 * 
+	 * Examples:
+	 * 
+	 * Fuel::add_package('foo');
+	 * Fuel::add_package(array('foo' => PKGPATH.'bar/foo/'));
+	 * 
+	 * @access	public
+	 * @param	array|string	the package name or array of packages
+	 * @return	void
+	 */
+	public static function add_package($package)
+	{
+		if ( ! is_array($package))
+		{
+			$package = array($package => PKGPATH.$package.DS);
+		}
+		foreach ($package as $name => $path)
+		{
+			if (array_key_exists($name, Fuel::$packages))
+			{
+				continue;
+			}
+			Fuel::$packages[$name] = Fuel::load($path.'autoload.php');
+		}
+		
+		/**
+		 * We need to re-order the autoloaders because spl_autoload_register
+		 * calls the autoloaders in FIFO, so we need to do all this to insert
+		 * the new packages loader in second place after APPPATH's
+		 */
+		$loaders = spl_autoload_functions();
+		$last_loader = array_pop($loaders);
+		array_shift($loaders);
+
+		foreach ($loaders as $loader)
+		{
+			spl_autoload_unregister(array($loader[0], $loader[1]));
+		}
+
+		spl_autoload_register(array($last_loader[0], $last_loader[1]));
+		foreach ($loaders as $loader)
+		{
+			spl_autoload_register(array($loader[0], $loader[1]));
+		}
+	}
+
+	/**
+	 * Removes a package from the stack.
+	 * 
+	 * @access	public
+	 * @param	string	the package name
+	 * @return	void
+	 */
+	public static function remove_package($package)
+	{
+		spl_autoload_unregister(array(Fuel::$packages[$name], 'load'));
+		unset(Fuel::$packages[$name]);
 	}
 
 	/**
