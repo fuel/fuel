@@ -114,6 +114,10 @@ class Fuel_Event {
 	 */
 	public function shutdown()
 	{
+		if ( ! Event::has_events('shutdown'))
+		{
+			return;
+		}
 		// shutdown events have to be executed in reverse order
 		self::$_events['shutdown'] = array_reverse(self::$_events['shutdown']);
 
