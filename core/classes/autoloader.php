@@ -69,7 +69,7 @@ class Autoloader {
 		{
 			$class = array($class, true);
 		}
-		$this->aliases[$alias] = $class;
+		$this->aliases[strtolower($alias)] = $class;
 	}
 
 	/**
@@ -82,7 +82,7 @@ class Autoloader {
 	 */
 	public function add_aliases(array $aliases)
 	{
-		$this->aliases = array_merge($this->aliases, $aliases);
+		$this->aliases = array_merge($this->aliases, array_change_key_case($aliases, CASE_LOWER));
 	}
 
 	/**
@@ -141,19 +141,20 @@ class Autoloader {
 	
 	public function is_alias($class)
 	{
-		return array_key_exists($class, $this->aliases);
+		return array_key_exists(strtolower($class), $this->aliases);
 	}
 	
 	public function create_alias_class($class)
 	{
 		$code = '';
+		$alias = strtolower($class);
 
-		if (is_array($this->aliases[$class]) && $this->aliases[$class][1] == true)
+		if (is_array($this->aliases[$alias]) && $this->aliases[$alias][1] == true)
 		{
 			$code .= 'abstract ';
 		}
-		$code .= "class {$class} extends ";
-		$code .= (is_array($this->aliases[$class])) ? $this->aliases[$class][0] : $this->aliases[$class];
+		$code .= "class {$alias} extends ";
+		$code .= (is_array($this->aliases[$alias])) ? $this->aliases[$alias][0] : $this->aliases[$alias];
 		$code .= ' { }';
 
 		eval($code);
