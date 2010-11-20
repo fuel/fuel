@@ -71,7 +71,7 @@ class Fuel_Request {
 
 			$action or $action = 'index';
 
-			$class = 'Controller_'.$controller;
+			$class = 'Controller_'.ucfirst($controller);
 			$method = 'action_'.$action;
 
 			if (class_exists($class))
@@ -165,8 +165,9 @@ class Fuel_Request {
 
 	public function execute()
 	{
-		$class = 'Controller_'.ucfirst($this->controller);
+		$class = 'App\\Controller\\'.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
+
 
 		if (class_exists($class))
 		{

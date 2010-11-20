@@ -25,6 +25,11 @@ class Autoloader {
 	protected $aliases = array();
 
 	/**
+	 * @var	array	Holds all the namespace paths
+	 */
+	protected $namespaces = array();
+
+	/**
 	 * @var	array	The default path to look in if the class is not in a package
 	 */
 	protected $default_path = NULL;
@@ -54,6 +59,32 @@ class Autoloader {
 	{
 		$this->prefixes = array_merge($this->prefixes, $prefixes);
 	}
+
+	/**
+	 * Adds a namespace and path
+	 * 
+	 * @access	public
+	 * @param	string	the namespace
+	 * @param	string	the path
+	 * @return	void
+	 */
+	public function add_namespace($namespace, $path)
+	{
+		$this->namespaces[$namespace] = $path;
+	}
+
+	/**
+	 * Adds an array of namespaces
+	 * 
+	 * @access	public
+	 * @param	array	the namespaces
+	 * @return	void
+	 */
+	public function add_namespaces(array $namespaces)
+	{
+		$this->namespaces = array_merge($this->namespaces, $namespaces);
+	}
+
 
 	/**
 	 * Adds an alias for a class.
@@ -106,20 +137,43 @@ class Autoloader {
 
 	public function load($class)
 	{
-		foreach ($this->prefixes as $prefix => $path)
+		// Checks if there is a \ in the class name.  This indicates it is a
+		// namespace.  It sets $pos to the position of the last \.
+		if (($pos = strripos($class, '\\')) !== false)
 		{
-			if (strncmp($class, $prefix, strlen($prefix)) === 0)
+			$namespace = substr($class, 0, $pos);
+
+			foreach ($this->namespaces as $ns => $path)
 			{
-				$file_path = $path.str_replace('_', DS, strtolower($class)).'.php';
-				if (is_file($file_path))
+				if (strncmp($ns, $namespace, $ns_len = strlen($ns)) === 0)
 				{
-					require $file_path;
-					$this->_init_class($class);
+					$namespace = substr($namespace, $ns_len + 1);
+					$class = substr($class, $pos + 1);
+					$file_path = $path.str_replace('\\', DS, strtolower($namespace)).DS.str_replace('_', DS, strtolower($class)).'.php';
+					if (file_exists($file_path))
+					{
+						require $file_path;
+					}
+					return true;
 				}
-				return true;
 			}
 		}
-
+		else
+		{
+			foreach ($this->prefixes as $prefix => $path)
+			{
+				if (strncmp($class, $prefix, strlen($prefix)) === 0)
+				{
+					$file_path = $path.str_replace('_', DS, strtolower($class)).'.php';
+					if (is_file($file_path))
+					{
+						require $file_path;
+						$this->_init_class($class);
+					}
+					return true;
+				}
+			}
+		}
 		// if ew get here then lets just try to load it from the default path
 		$file_path = $this->default_path.str_replace('_', DS, strtolower($class)).'.php';
 		if (is_file($file_path))

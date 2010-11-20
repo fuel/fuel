@@ -15,6 +15,11 @@
 $loader = new Autoloader;
 
 $loader->default_path(dirname(__FILE__).'/classes/');
+
+$loader->add_namespaces(array(
+	'Fuel\\Core'	=>	__DIR__.'/classes/',
+));
+
 $loader->add_prefixes(array(
 	'Fuel_'		=> COREPATH.'classes/',
 ));
@@ -33,10 +38,6 @@ $loader->add_aliases(array(
 	'Cache_Storage_File'		=> 'Fuel_Cache_Storage_File',
 
 	'Config'		=> 'Fuel_Config',
-
-	'Controller'			=> 'Fuel_Controller',
-	'Controller_Template'	=> 'Fuel_Controller_Template',
-	'Controller_Rest'		=> 'Fuel_Controller_Rest',
 
 	'Cookie'		=> 'Fuel_Cookie',
 	'Debug'			=> 'Fuel_Debug',
