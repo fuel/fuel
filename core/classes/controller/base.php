@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Controller {
+namespace Fuel\Core\Controller;
+
+class Base {
 
 	/**
 	 * @var	object	The current Request object
@@ -31,7 +33,7 @@ class Fuel_Controller {
 	 * @param	object	The current request object
 	 * @return	void
 	 */
-	public function __construct(Fuel_Request $request)
+	public function __construct(\Fuel_Request $request)
 	{
 		$this->request = $request;
 	}

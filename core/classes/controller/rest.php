@@ -1,6 +1,9 @@
 <?php defined('COREPATH') or exit('No direct script access allowed');
 
-abstract class Fuel_Controller_Rest extends Controller
+namespace Fuel\Core\Controller;
+
+
+abstract class Rest extends Controller\Base
 {
 	protected $rest_format = NULL; // Set this in a controller to use a default format
 
@@ -22,14 +25,14 @@ abstract class Fuel_Controller_Rest extends Controller
 	{
 		parent::before();
 
-		Config::load('rest', 'rest');
+		\Config::load('rest', 'rest');
 
-		if (Config::get('rest.auth') == 'basic')
+		if (\Config::get('rest.auth') == 'basic')
 		{
 			$this->_prepare_basic_auth();
 		}
 
-		elseif (Config::get('rest.auth') == 'digest')
+		elseif (\Config::get('rest.auth') == 'digest')
 		{
 			$this->_prepare_digest_auth();
 		}
@@ -52,7 +55,7 @@ abstract class Fuel_Controller_Rest extends Controller
 	 */
 	function _remap($object_called)
 	{
-		$controller_method = $object_called.'_'.Input::method();
+		$controller_method = $object_called.'_'.\Input::method();
 
 		$this->$controller_method();
 	}
@@ -66,11 +69,11 @@ abstract class Fuel_Controller_Rest extends Controller
 	{
    		if (empty($data))
 		{
-			Output::$status = 404;
+			\Output::$status = 404;
 			return;
 		}
 
-		Output::$status = $http_code;
+		\Output::$status = $http_code;
 
 		// If the format method exists, call and return the output in that format
 		if (method_exists('Controller_Rest', '_format_'.$this->request->format))
