@@ -43,15 +43,15 @@ class Fuel_Core {
 	 */
 	public static function init($autoloaders)
 	{
-		if (Fuel::$initialized)
+		if (static::$initialized)
 		{
 			throw new Fuel_Exception("You can't initialize Fuel more than once.");
 		}
 
-		Fuel::$_paths = array(APPPATH, COREPATH);
+		static::$_paths = array(APPPATH, COREPATH);
 
 		// Add the core and optional application loader to the packages array
-		Fuel::$packages = $autoloaders;
+		static::$packages = $autoloaders;
 
 		register_shutdown_function('Error::shutdown_handler');
 		set_exception_handler('Error::exception_handler');
@@ -62,9 +62,9 @@ class Fuel_Core {
 
 		Config::load('config');
 
-		Fuel::$bm = Config::get('benchmarking', true);
-		Fuel::$env = Config::get('environment');
-		Fuel::$locale = Config::get('locale');
+		static::$bm = Config::get('benchmarking', true);
+		static::$env = Config::get('environment');
+		static::$locale = Config::get('locale');
 
 		Config::load('routes', 'routes');
 		Route::$routes = Config::get('routes');
@@ -72,7 +72,7 @@ class Fuel_Core {
 		//Load in the packages
 		foreach (Config::get('packages', array()) as $package)
 		{
-			Fuel::add_package($package);
+			static::add_package($package);
 		}
 
 		if (Config::get('base_url') === false)
@@ -89,9 +89,9 @@ class Fuel_Core {
 		}
 
 		// Set some server options
-		setlocale(LC_ALL, Fuel::$locale);
+		setlocale(LC_ALL, static::$locale);
 
-		Fuel::$initialized = true;
+		static::$initialized = true;
 	}
 	
 	/**
@@ -124,7 +124,7 @@ class Fuel_Core {
 		$path = $directory.DS.strtolower($file).$ext;
 
 		$found = false;
-		foreach (Fuel::$_paths as $dir)
+		foreach (static::$_paths as $dir)
 		{
 			if (is_file($dir.$path))
 			{
@@ -152,8 +152,8 @@ class Fuel_Core {
 	 * 
 	 * Examples:
 	 * 
-	 * Fuel::add_package('foo');
-	 * Fuel::add_package(array('foo' => PKGPATH.'bar/foo/'));
+	 * static::add_package('foo');
+	 * static::add_package(array('foo' => PKGPATH.'bar/foo/'));
 	 * 
 	 * @access	public
 	 * @param	array|string	the package name or array of packages
@@ -167,11 +167,11 @@ class Fuel_Core {
 		}
 		foreach ($package as $name => $path)
 		{
-			if (array_key_exists($name, Fuel::$packages))
+			if (array_key_exists($name, static::$packages))
 			{
 				continue;
 			}
-			Fuel::$packages[$name] = Fuel::load($path.'autoload.php');
+			static::$packages[$name] = static::load($path.'autoload.php');
 		}
 		
 		/**
@@ -186,10 +186,10 @@ class Fuel_Core {
 		$loaders = array_slice($loaders, 1, -1);
 
 		// Put the APP autoloader back on top if it exists
-		if (array_key_exists('app', Fuel::$packages))
+		if (array_key_exists('app', static::$packages))
 		{
-			spl_autoload_unregister(array(Fuel::$packages['app'], 'load'));
-			spl_autoload_register(array(Fuel::$packages['app'], 'load'), true, true);
+			spl_autoload_unregister(array(static::$packages['app'], 'load'));
+			spl_autoload_register(array(static::$packages['app'], 'load'), true, true);
 		}
 	}
 
@@ -202,8 +202,8 @@ class Fuel_Core {
 	 */
 	public static function remove_package($package)
 	{
-		spl_autoload_unregister(array(Fuel::$packages[$name], 'load'));
-		unset(Fuel::$packages[$name]);
+		spl_autoload_unregister(array(static::$packages[$name], 'load'));
+		unset(static::$packages[$name]);
 	}
 
 	/**
