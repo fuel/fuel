@@ -412,9 +412,8 @@ class Fuel_Session_Driver {
 		// do we have a valid session
 		if (is_null($session_id))
 		{
-			// no, create one
+			// no, create new one
 			$this->keys['session_id']	= $this->_new_session_id();
-			$this->keys['previous_id']	= '';
 			$this->keys['ip_address']	= Input::real_ip();
 			$this->keys['user_agent']	= Input::user_agent();
 			$this->keys['created'] 		= $this->_gmttime();
@@ -425,7 +424,6 @@ class Fuel_Session_Driver {
 			if ($this->config['rotation_time'] && $this->keys['created'] + $this->config['rotation_time'] <= $this->_gmttime())
 			{
 				// create a new session id, and update the create timestamp
-				$this->keys['previous_id']	= $this->keys['session_id'];
 				$this->keys['session_id']	= $this->_new_session_id();
 				$this->keys['created'] 		= $this->_gmttime();
 			}

@@ -132,6 +132,10 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 	 */
 	protected function _set_cookie($session_id = NULL)
 	{
+		// save the current session id
+		$session_id = isset($this->keys['session_id']) ? $this->keys['session_id'] : NULL;
+
+		// create the session cookie
 		parent::_set_cookie($session_id);
 
 		// session payload
@@ -142,6 +146,18 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 		if ($this->memcached->setByKey($this->config['cookie_name'], $this->keys['session_id'], $payload, $expiration) === false)
 		{
 			throw new Fuel_Session_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
+		}
+
+		// was the session id rotated?
+		if ( ! is_null($session_id) && $session_id != $this->keys['session_id'])
+		{
+			// point the old memcached entry to the new one, we don't want to lose the session
+			$payload = $this->_serialize(array('rotated_session_id' => $this->keys['session_id']));
+			$expiration = $this->config['rotation_time'];
+			if ($this->memcached->setByKey($this->config['cookie_name'], $session_id, $payload, $expiration) === false)
+			{
+				throw new Fuel_Session_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
+			}
 		}
 	}
 
@@ -165,25 +181,13 @@ class Fuel_Session_Memcached_Driver extends Session_Driver {
 		{
 			// fetch the session data from the Memcached server
 			$payload = $this->memcached->getByKey($this->config['cookie_name'], $this->keys['session_id']);
+			$payload = $this->_unserialize($payload);
 
-			if ($payload === false)
+			// check for rotated session id's
+			if (isset($payload['rotated_session_id']))
 			{
-				// not found, try the previous session id
-				if ( ! empty($this->keys['previous_id']))
-				{
-					// fetch the session data from the Memcached server
-					$payload = $this->memcached->getByKey($this->config['cookie_name'], $this->keys['previous_id']);
-				}
-
-				// still not found?
-				if ($payload === false)
-				{
-					// bail out!
-					throw new Fuel_Session_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on read. Check your configuration.');
-				}
-			}
-			else
-			{
+				// get the session data using the rotated session id
+				$payload = $this->memcached->getByKey($this->config['cookie_name'], $payload['rotated_session_id']);
 				$payload = $this->_unserialize($payload);
 			}
 

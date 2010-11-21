@@ -31,22 +31,39 @@ class Fuel_Session
 	/*
 	 * class uses as a static object, automatically read everything
 	 */
-	public function _init(array $config = array())
+	public function _init($parms = array())
 	{
 		// If loaded as an instance or first load of static
 		if (isset($this) OR ( ! isset($this) AND self::$instance === false))
 		{
 			// load the session configuration
-			if (empty($config) OR ! is_array($config))
+			if ( ! empty($parms) && is_array($parms))
+			{
+				$config = $parms;
+			}
+			else
 			{
 				Config::load('session', 'session');
 				$config = Config::get('session');
 			}
 
+			// if the parm is a string, it's the desired session type
+			if (is_string($parms))
+			{
+				$config['type'] = $parms;
+			}
+
 			// validate the config, set some defaults if needed
+			if ( ! isset($config['default']) OR ! in_array($config['default'], self::$valid_storage))
+			{
+				throw new Fuel_Exception('You have specified an invalid default session storage system.');
+			}
+
+			// was a specific session storage backend requested?
 			if ( ! isset($config['type']) OR ! in_array($config['type'], self::$valid_storage))
 			{
-				throw new Fuel_Exception('You have specified an invalid session storage system.');
+				// fall back to the default backend
+				$config['type'] = $config['default'];
 			}
 
 			// instantiate the driver
@@ -62,9 +79,12 @@ class Fuel_Session
 			self::$instance->set_config('expiration_time', isset($config['expiration_time']) ? (int) $config['expiration_time'] : 0);
 			self::$instance->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
 			self::$instance->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
-			self::$instance->set_config('config', isset($config['config']) ? (array) $config['config'] : array());
 			self::$instance->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
 			self::$instance->set_config('write_on_finish', isset($config['write_on_finish']) ? (bool) $config['write_on_finish'] : false);
+			if (isset($config[$config['type']]))
+			{
+				self::$instance->set_config('config', $config[$config['type']]);
+			}
 
 			// if the driver has an init method, call it
 			if (method_exists(self::$instance, 'init'))
@@ -80,8 +100,20 @@ class Fuel_Session
 	/*
 	 * class autoload initialisation, and driver instantiation
 	 */
-	public function __construct(array $config = array())
+	public function __construct($config = array())
 	{
+		self::_init($config);
+	}
+
+	/*
+	 * allows instantiation of a named session driver
+	 */
+	public static function factory($config = NULL)
+	{
+		// reset the current instance
+		self::$instance = false;
+
+		// and run the instance initialisation again
 		self::_init($config);
 	}
 
@@ -101,7 +133,7 @@ class Fuel_Session
 	{
 		$return = self::$instance->set($name, $value);
 
-		// Automatically write if status
+		// Automatically write if static
 		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
@@ -135,7 +167,7 @@ class Fuel_Session
 	{
 		$return = self::$instance->delete($name);
 
-		// Automatically write if status
+		// Automatically write if static
 		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
@@ -155,7 +187,7 @@ class Fuel_Session
 	{
 		$return = self::$instance->set_flash($name, $value);
 
-		// Automatically write if status
+		// Automatically write if static
 		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
@@ -188,7 +220,7 @@ class Fuel_Session
 	{
 		$return = self::$instance->keep_flash($name);
 
-		// Automatically write if status
+		// Automatically write if static
 		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;
@@ -208,7 +240,7 @@ class Fuel_Session
 	{
 		$return = self::$instance->delete_flash($name);
 
-		// Automatically write if status
+		// Automatically write if static
 		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
 
 		return $return;

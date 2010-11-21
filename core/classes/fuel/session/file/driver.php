@@ -59,12 +59,11 @@ class Fuel_Session_File_Driver extends Session_Driver {
 
 				while (($file = readdir($handle)) !== false)
 				{
-					if (filetype($this->config['config']['path'] . $file) == 'file')
+					if (filetype($this->config['config']['path'] . $file) == 'file' &&
+						strpos($file, $this->config['cookie_name']) === 0 &&
+						filemtime($this->config['config']['path'] . $file) < $expire)
 					{
-						if (filemtime($this->config['config']['path'] . $file) < $expire)
-						{
-							@unlink($this->config['config']['path'] . $file);
-						}
+						@unlink($this->config['config']['path'] . $file);
 					}
 				}
 				closedir($handle);
@@ -124,27 +123,24 @@ class Fuel_Session_File_Driver extends Session_Driver {
 	 */
 	protected function _set_cookie($session_id = NULL)
 	{
+		// save the current session id
+		$session_id = isset($this->keys['session_id']) ? $this->keys['session_id'] : NULL;
+
+		// create the session cookie
 		parent::_set_cookie($session_id);
 
 		// session payload
 		$payload = $this->_serialize(array($this->data, $this->flash));
 
 		// create the session file
-		$file = $this->config['config']['path'].$this->keys['session_id'];
-		$handle = fopen($file,'c');
-		if ($handle)
+		$this->_write_file($this->keys['session_id'], $payload);
+
+		// was the session id rotated?
+		if ( ! is_null($session_id) && $session_id != $this->keys['session_id'])
 		{
-			// wait for a lock
-			while(!flock($handle, LOCK_EX));
-
-			// write the session data
-			fwrite($handle, $payload);
-
-			//release the lock
-			flock($handle, LOCK_UN);
-
-			// close the file
-			fclose($handle);
+			// point the old session file to the new one, we don't want to lose the session
+			$payload = $this->_serialize(array('rotated_session_id' => $this->keys['session_id']));
+			$this->_write_file($session_id, $payload);
 		}
 	}
 
@@ -167,33 +163,93 @@ class Fuel_Session_File_Driver extends Session_Driver {
 		if ( ! empty($this->keys))
 		{
 			// read the session file
-			$file = $this->config['config']['path'].$this->keys['session_id'];
-			if (file_exists($file))
+			$payload = $this->_read_file($this->keys['session_id']);
+
+			if ($payload)
 			{
-				$handle = fopen($file,'r');
-				if ($handle)
+				$payload = $this->_unserialize($payload);
+
+				// check for rotated session id's
+				if (isset($payload['rotated_session_id']))
 				{
-					// wait for a lock
-					while(!flock($handle, LOCK_EX));
-
-					// read the session data
-					$payload = fread($handle, filesize($file));
-
-					//release the lock
-					flock($handle, LOCK_UN);
-
-					// close the file
-					fclose($handle);
-
+					// get the session data using the rotated session id
+					$payload = $this->_read_file($payload['rotated_session_id']);
 					$payload = $this->_unserialize($payload);
-
-					if (isset($payload[0])) $this->data = $payload[0];
-					if (isset($payload[1])) $this->flash = $payload[1];
 				}
+
+				if (isset($payload[0])) $this->data = $payload[0];
+				if (isset($payload[1])) $this->flash = $payload[1];
 			}
 		}
 
 		return ! empty($this->keys);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Writes the session file
+	 *
+	 * @access	private
+	 * @return  boolean, true if found, false if not
+	 */
+	protected function _write_file($session_id, $payload)
+	{
+		// create the session file
+		$file = $this->config['config']['path'].$this->config['cookie_name'].'_'.$session_id;
+		$handle = fopen($file,'c');
+		if ($handle)
+		{
+			// wait for a lock
+			while(!flock($handle, LOCK_EX));
+
+			// erase existing contents
+			ftruncate($handle, 0);
+
+			// write the session data
+			fwrite($handle, $payload);
+
+			//release the lock
+			flock($handle, LOCK_UN);
+
+			// close the file
+			fclose($handle);
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Reads the session file
+	 *
+	 * @access	private
+	 * @return  mixed, the payload if the file exists, or false if not
+	 */
+	protected function _read_file($session_id)
+	{
+		$payload = false;
+
+		$file = $this->config['config']['path'].$this->config['cookie_name'].'_'.$session_id;
+		if (file_exists($file))
+		{
+			$handle = fopen($file,'r');
+			if ($handle)
+			{
+				// wait for a lock
+				while(!flock($handle, LOCK_EX));
+
+				// read the session data
+				$payload = fread($handle, filesize($file));
+
+				//release the lock
+				flock($handle, LOCK_UN);
+
+				// close the file
+				fclose($handle);
+
+			}
+		}
+		return $payload;
 	}
 
 }
