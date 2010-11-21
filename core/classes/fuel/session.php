@@ -92,9 +92,11 @@ class Fuel_Session
 				self::$instance->init();
 			}
 
-			// and load the session
+			// load the session
 			self::read();
 		}
+
+		return self::$instance;
 	}
 
 	/*
@@ -113,8 +115,8 @@ class Fuel_Session
 		// reset the current instance
 		self::$instance = false;
 
-		// and run the instance initialisation again
-		self::_init($config);
+		// run the instance initialisation again, return the instance
+		return self::_init($config);
 	}
 
 	// --------------------------------------------------------------------
