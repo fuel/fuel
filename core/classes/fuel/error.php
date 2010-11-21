@@ -96,7 +96,7 @@ class Fuel_Error {
 			{
 				unset($data['backtrace'][$key]);
 			}
-			if (strncmp($trace['file'], APPPATH, strlen(APPPATH)) !== 0)
+			elseif (strncmp($trace['file'], APPPATH, strlen(APPPATH)) !== 0)
 			{
 				unset($data['backtrace'][$key]);
 			}
