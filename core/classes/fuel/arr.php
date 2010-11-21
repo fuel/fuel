@@ -40,7 +40,7 @@ class Fuel_Arr {
 			$curr_key[] = $key;
 			if (is_array($val) and array_values($val) !== $val)
 			{
-				Arr::flatten_assoc($val, $glue, false);
+				static::flatten_assoc($val, $glue, false);
 			}
 			else
 			{

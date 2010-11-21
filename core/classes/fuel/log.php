@@ -32,21 +32,21 @@ class Fuel_Log
 
 	public static function info($msg)
 	{
-		return Log::_write('info', $msg);
+		return static::_write('info', $msg);
 	}
 
 	// --------------------------------------------------------------------
 
 	public static function debug($msg)
 	{
-		return Log::_write('debug', $msg);
+		return static::_write('debug', $msg);
 	}
 
 	// --------------------------------------------------------------------
 
 	public static function error($msg)
 	{
-		return Log::_write('error', $msg);
+		return static::_write('error', $msg);
 	}
 
 	// --------------------------------------------------------------------

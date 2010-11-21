@@ -27,15 +27,15 @@ class Fuel_Config {
 		}
 		if ($group === NULL)
 		{
-			Config::$items = Config::$items + $config;
+			static::$items = static::$items + $config;
 		}
 		else
 		{
-			if ( ! isset(Config::$items[$group]))
+			if ( ! isset(static::$items[$group]))
 			{
-				Config::$items[$group] = array();
+				static::$items[$group] = array();
 			}
-			Config::$items[$group] = Config::$items[$group] + $config;
+			static::$items[$group] = static::$items[$group] + $config;
 		}
 	}
 	
@@ -48,9 +48,9 @@ class Fuel_Config {
 			$return = false;
 			foreach ($parts as $part)
 			{
-				if ($return === false and isset(Config::$items[$part]))
+				if ($return === false and isset(static::$items[$part]))
 				{
-					$return = Config::$items[$part];
+					$return = static::$items[$part];
 				}
 				elseif (isset($return[$part]))
 				{
@@ -64,9 +64,9 @@ class Fuel_Config {
 			return $return;
 		}
 
-		if (isset(Config::$items[$item]))
+		if (isset(static::$items[$item]))
 		{
-			return Config::$items[$item];
+			return static::$items[$item];
 		}
 		return $default;
 	}
@@ -75,7 +75,7 @@ class Fuel_Config {
 	{
 		$parts = explode('.', $item);
 
-		$item =& Config::$items;
+		$item =& static::$items;
 		foreach ($parts as $part)
 		{
 			// if it's not an array it can't have a subvalue

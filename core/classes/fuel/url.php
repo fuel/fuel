@@ -27,7 +27,7 @@ class Fuel_URL {
 	 */
 	public static function anchor($href, $text, $attributes = array())
 	{
-		$attributes['href'] = URL::href($href);
+		$attributes['href'] = static::href($href);
 		return html_tag('a', $attributes, $text);
 	}
 
@@ -70,7 +70,7 @@ class Fuel_URL {
 	 */
 	public static function current()
 	{
-		return URL::href(Request::active()->uri->uri);
+		return static::href(Request::active()->uri->uri);
 	}
 
 	// --------------------------------------------------------------------

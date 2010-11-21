@@ -57,7 +57,7 @@ class Fuel_Cookie {
 	 * will be deleted.
 	 *
 	 *     // Get the "theme" cookie, or use "blue" if the cookie does not exist
-	 *     $theme = Cookie::get('theme', 'blue');
+	 *     $theme = static::get('theme', 'blue');
 	 *
 	 * @param   string  cookie name
 	 * @param   mixed   default value to return
@@ -73,7 +73,7 @@ class Fuel_Cookie {
 	 * automatic serialization will be performed!
 	 *
 	 *     // Set the "theme" cookie
-	 *     Cookie::set('theme', 'red');
+	 *     static::set('theme', 'red');
 	 *
 	 * @param   string   name of cookie
 	 * @param   string   value of cookie
@@ -94,17 +94,17 @@ class Fuel_Cookie {
 			$expiration = $expiration > 0 ? $expiration + time() : 0;
 		}
 
-		return setcookie($name, $value, $expiration, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httponly);
+		return setcookie($name, $value, $expiration, static::$path, static::$domain, static::$secure, static::$httponly);
 	}
 
 	/**
 	 * Deletes a cookie by making the value NULL and expiring it.
 	 *
-	 *     Cookie::delete('theme');
+	 *     static::delete('theme');
 	 *
 	 * @param   string   cookie name
 	 * @return  boolean
-	 * @uses    Cookie::set
+	 * @uses    static::set
 	 */
 	public static function delete($name)
 	{
@@ -112,7 +112,7 @@ class Fuel_Cookie {
 		unset($_COOKIE[$name]);
 
 		// Nullify the cookie and make it expire
-		return Cookie::set($name, NULL, -86400);
+		return static::set($name, NULL, -86400);
 	}
 
 }

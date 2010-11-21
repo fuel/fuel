@@ -33,12 +33,12 @@ class Fuel_Request {
 	 */
 	public static function instance($uri = NULL)
 	{
-		if ( ! Request::$instance)
+		if ( ! static::$instance)
 		{
-			Request::$instance = Request::$active = new Request($uri);
+			static::$instance = static::$active = new Request($uri);
 		}
 
-		return Request::$instance;
+		return static::$instance;
 	}
 
 	/**
@@ -50,7 +50,7 @@ class Fuel_Request {
 	 */
 	public static function active()
 	{
-		return Request::$active;
+		return static::$active;
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Fuel_Request {
 	{
 		if (Config::get('routes.404') === false)
 		{
-			Request::active()->output = View::factory('404');
+			static::active()->output = View::factory('404');
 		}
 		else
 		{
@@ -76,7 +76,7 @@ class Fuel_Request {
 
 			if (class_exists($class))
 			{
-				$controller = new $class(Request::active());
+				$controller = new $class(static::active());
 				if (method_exists($controller, $method))
 				{
 					// Call the before method if it exists
@@ -94,7 +94,7 @@ class Fuel_Request {
 					}
 					
 					// Get the controller's output
-					Request::active()->output =& $controller->output;
+					static::active()->output =& $controller->output;
 				}
 				else
 				{
@@ -193,12 +193,12 @@ class Fuel_Request {
 			}
 			else
 			{
-				Request::show_404();
+				static::show_404();
 			}
 		}
 		else
 		{
-			Request::show_404();
+			static::show_404();
 		}
 		return $this;
 	}

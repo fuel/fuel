@@ -36,7 +36,7 @@ class Fuel_Ftp
 	/**
 	 * Returns a new Ftp object. If you do not define the "file" parameter,
 	 *
-	 *     $ftp = Ftp::factory('group');
+	 *     $ftp = static::factory('group');
 	 *
 	 * @param   string  Ftp filename
 	 * @param   array   array of values
@@ -56,7 +56,7 @@ class Fuel_Ftp
 	 */
 	public function __construct($config = 'default')
 	{
-		if (empty(Ftp::$initialized))
+		if (empty(static::$initialized))
 		{
 			Config::load('ftp', 'ftp');
 		}
@@ -84,7 +84,7 @@ class Fuel_Ftp
 		$this->_ssl_mode = (bool) $config['ssl_mode'];
 		$this->_debug = (bool) $config['debug'];
 
-		Ftp::$initialized = true;
+		static::$initialized = true;
 	}
 
 	// --------------------------------------------------------------------

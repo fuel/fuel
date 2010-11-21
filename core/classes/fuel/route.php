@@ -28,18 +28,18 @@ class Fuel_Route {
 		// This handles the default route
 		if ($uri->uri == '')
 		{
-			if ( ! isset(Route::$routes['default']) || Route::$routes['default'] == '')
+			if ( ! isset(static::$routes['default']) || static::$routes['default'] == '')
 			{
 				// TODO: write logic to deal with missing default route.
 				return FALSE;
 			}
 			else
 			{
-				return Route::parse_match(Route::$routes['default']);
+				return static::parse_match(static::$routes['default']);
 			}
 		}
 
-		foreach (Route::$routes as $search => $route)
+		foreach (static::$routes as $search => $route)
 		{
 			$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+'), $search);
 			$search = preg_replace('#:([a-z]+)#uD', '(?P<$1>.+)', $search);
@@ -48,11 +48,11 @@ class Fuel_Route {
 			{
 				$route = preg_replace('#'.$search.'#uD', $route, $uri->uri);
 
-				return Route::parse_match($route, $params);
+				return static::parse_match($route, $params);
 			}
 		}
 		
-		return Route::parse_match($uri->uri);
+		return static::parse_match($uri->uri);
 	}
 	
 	/**

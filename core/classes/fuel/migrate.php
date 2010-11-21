@@ -51,23 +51,23 @@ class Fuel_Migrate
 
 		Config::load('migration', 'migration');
 
-		self::$db = DB::instance();
-		self::$db->connect();
+		static::$db = DB::instance();
+		static::$db->connect();
 
-		self::$db->query(DB::INSERT, 'CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");');
+		static::$db->query(DB::INSERT, 'CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");');
 
 		// Check if there is a version
-		$foo = self::$db->query(DB::SELECT, 'SELECT `current` FROM `migration`')->as_array();
+		$foo = static::$db->query(DB::SELECT, 'SELECT `current` FROM `migration`')->as_array();
 
 		// Not set, so we are on 0
 		if ( ! isset($foo[0]->current))
 		{
-			self::$db->query(DB::INSERT, 'INSERT INTO `migration` (`current`) VALUES (0)');
+			static::$db->query(DB::INSERT, 'INSERT INTO `migration` (`current`) VALUES (0)');
 		}
 
 		else
 		{
-			self::$version = (int) $foo[0]->current;
+			static::$version = (int) $foo[0]->current;
 		}
 	}
 
@@ -79,7 +79,7 @@ class Fuel_Migrate
 	 */
 	public static function install()
 	{
-		if ( ! $migrations = self::find_migrations())
+		if ( ! $migrations = static::find_migrations())
 		{
 			Log::error('no_migrations_found');
 			return FALSE;
@@ -90,7 +90,7 @@ class Fuel_Migrate
 		// Calculate the last migration step from existing migration
 		// filenames and procceed to the standard version migration
 		$last_version = substr($last_migration, 0, 3);
-		return self::version(intval($last_version, 10));
+		return static::version(intval($last_version, 10));
 	}
 
 	// --------------------------------------------------------------------
@@ -107,10 +107,10 @@ class Fuel_Migrate
 	 */
 	public static function version($version)
 	{
-		$start = Migrate::$version;
+		$start = static::$version;
 		$stop = $version;
 
-		if ($version > Migrate::$version)
+		if ($version > static::$version)
 		{
 			// Moving Up
 			++$start;
@@ -205,18 +205,18 @@ class Fuel_Migrate
 		// Loop through the migrations
 		foreach ($migrations AS $migration)
 		{
-			Log::info('Migrating to: ' . Migrate::$version + $step);
+			Log::info('Migrating to: ' . static::$version + $step);
 
 			$class = 'Migration_' . ucfirst($migration);
 			call_user_func(array(new $class, $method));
 
-			Migrate::$version += $step;
-			self::_update_schema_version(Migrate::$version);
+			static::$version += $step;
+			static::_update_schema_version(static::$version);
 		}
 
-		Log::info('Migrated to '.Migrate::$version.' successfully.');
+		Log::info('Migrated to '.static::$version.' successfully.');
 
-		return Migrate::$version;
+		return static::$version;
 	}
 
 	// --------------------------------------------------------------------
@@ -229,7 +229,7 @@ class Fuel_Migrate
 	 */
 	public static function current()
 	{
-		return Migrate::version(Config::get('migration.version'));
+		return static::version(Config::get('migration.version'));
 	}
 
 	// --------------------------------------------------------------------
@@ -273,6 +273,6 @@ class Fuel_Migrate
 	 */
 	private function _update_schema_version($version)
 	{
-		self::$db->query(DB::UPDATE, 'UPDATE `migration` SET `current` = '.(int)$version);
+		static::$db->query(DB::UPDATE, 'UPDATE `migration` SET `current` = '.(int)$version);
 	}
 }

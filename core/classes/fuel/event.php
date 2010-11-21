@@ -42,10 +42,10 @@ class Fuel_Event {
 		if (isset($callback[0]) && is_string($callback[0]) && isset($callback[1]) && is_callable($callback[1]))
 		{
 			// make sure we have an array for this event
-			isset(self::$_events[$callback[0]]) OR self::$_events[$callback[0]] = array();
+			isset(static::$_events[$callback[0]]) OR static::$_events[$callback[0]] = array();
 
 			// store the callback on the call stack
-			array_unshift(self::$_events[$callback[0]], $callback);
+			array_unshift(static::$_events[$callback[0]], $callback);
 
 			// and report success
 			return true;
@@ -81,10 +81,10 @@ class Fuel_Event {
 		$calls = array();
 
 		// check if we have events registered
-		if (self::has_events($event))
+		if (static::has_events($event))
 		{
 			// process them
-			foreach (self::$_events[$event] as $arguments)
+			foreach (static::$_events[$event] as $arguments)
 			{
 				// get rid of the event name
 				array_shift($arguments);
@@ -100,7 +100,7 @@ class Fuel_Event {
 			}
 		}
 
-		return self::_format_return($calls, $return_type);
+		return static::_format_return($calls, $return_type);
 	}
 
 	// --------------------------------------------------------------------
@@ -114,15 +114,15 @@ class Fuel_Event {
 	 */
 	public function shutdown()
 	{
-		if ( ! Event::has_events('shutdown'))
+		if ( ! static::has_events('shutdown'))
 		{
 			return;
 		}
 		// shutdown events have to be executed in reverse order
-		self::$_events['shutdown'] = array_reverse(self::$_events['shutdown']);
+		static::$_events['shutdown'] = array_reverse(static::$_events['shutdown']);
 
 		// trigger the shutdown events
-		self::trigger('shutdown');
+		static::trigger('shutdown');
 	}
 
 	// --------------------------------------------------------------------
@@ -138,7 +138,7 @@ class Fuel_Event {
 	 */
 	public static function has_events($event)
 	{
-		if (isset(self::$_events[$event]) AND count(self::$_events[$event]) > 0)
+		if (isset(static::$_events[$event]) AND count(static::$_events[$event]) > 0)
 		{
 			return TRUE;
 		}

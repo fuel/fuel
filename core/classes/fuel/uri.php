@@ -120,7 +120,7 @@ class Fuel_URI {
 	{
 		if ($uri === NULL)
 		{
-			$uri = URI::detect();
+			$uri = static::detect();
 		}
 		$this->uri = trim($uri, '/');
 		$this->segments = explode('/', $this->uri);
