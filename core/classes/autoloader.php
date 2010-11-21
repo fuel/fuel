@@ -200,18 +200,7 @@ class Autoloader {
 	
 	public function create_alias_class($class)
 	{
-		$code = '';
-		$alias = strtolower($class);
-
-		if (is_array($this->aliases[$alias]) && $this->aliases[$alias][1] == true)
-		{
-			$code .= 'abstract ';
-		}
-		$code .= "class {$alias} extends ";
-		$code .= (is_array($this->aliases[$alias])) ? $this->aliases[$alias][0] : $this->aliases[$alias];
-		$code .= ' { }';
-
-		eval($code);
+		class_alias($this->aliases[strtolower($class)], $class);
 	}
 	
 	private function _init_class($class)
