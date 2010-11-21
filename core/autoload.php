@@ -17,7 +17,7 @@ $loader = new Autoloader;
 $loader->default_path(dirname(__FILE__).'/classes/');
 
 $loader->add_namespaces(array(
-	'Fuel\\Core'	=>	__DIR__.'/classes/',
+	'Fuel'	=>	__DIR__.'/classes/',
 ));
 
 $loader->add_prefixes(array(

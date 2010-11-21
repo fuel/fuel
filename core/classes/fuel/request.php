@@ -165,7 +165,7 @@ class Fuel_Request {
 
 	public function execute()
 	{
-		$class = 'App\\Controller\\'.ucfirst($this->controller);
+		$class = 'Controller_'.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
 

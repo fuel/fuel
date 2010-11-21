@@ -1,6 +1,6 @@
 <?php defined('COREPATH') or exit('No direct script access allowed');
 
-namespace Fuel\Core\Controller;
+namespace Fuel\Controller;
 
 
 abstract class Rest extends Controller\Base
@@ -25,14 +25,14 @@ abstract class Rest extends Controller\Base
 	{
 		parent::before();
 
-		\Config::load('rest', 'rest');
+		Config::load('rest', 'rest');
 
-		if (\Config::get('rest.auth') == 'basic')
+		if (Config::get('rest.auth') == 'basic')
 		{
 			$this->_prepare_basic_auth();
 		}
 
-		elseif (\Config::get('rest.auth') == 'digest')
+		elseif (Config::get('rest.auth') == 'digest')
 		{
 			$this->_prepare_digest_auth();
 		}
@@ -69,11 +69,11 @@ abstract class Rest extends Controller\Base
 	{
    		if (empty($data))
 		{
-			\Output::$status = 404;
+			Output::$status = 404;
 			return;
 		}
 
-		\Output::$status = $http_code;
+		Output::$status = $http_code;
 
 		// If the format method exists, call and return the output in that format
 		if (method_exists('Controller_Rest', '_format_'.$this->request->format))

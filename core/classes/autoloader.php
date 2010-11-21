@@ -147,7 +147,6 @@ class Autoloader {
 			{
 				if (strncmp($ns, $namespace, $ns_len = strlen($ns)) === 0)
 				{
-					$namespace = substr($namespace, $ns_len + 1);
 					$class = substr($class, $pos + 1);
 					$file_path = $path.str_replace('\\', DS, strtolower($namespace)).DS.str_replace('_', DS, strtolower($class)).'.php';
 					if (file_exists($file_path))
@@ -174,6 +173,7 @@ class Autoloader {
 				}
 			}
 		}
+
 		// if ew get here then lets just try to load it from the default path
 		$file_path = $this->default_path.str_replace('_', DS, strtolower($class)).'.php';
 		if (is_file($file_path))

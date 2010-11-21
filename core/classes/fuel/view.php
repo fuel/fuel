@@ -46,9 +46,9 @@ class Fuel_View {
 
 	/**
 	 * Returns a new View object. If you do not define the "file" parameter,
-	 * you must call [View::set_filename].
+	 * you must call [static::set_filename].
 	 *
-	 *     $view = View::factory($file);
+	 *     $view = static::factory($file);
 	 *
 	 * @param   string  view filename
 	 * @param   array   array of values
@@ -67,7 +67,7 @@ class Fuel_View {
 	 * @param   string  view filename
 	 * @param   array   array of values
 	 * @return  void
-	 * @uses    View::set_filename
+	 * @uses    static::set_filename
 	 */
 	public function __construct($file = NULL, array $data = NULL)
 	{
@@ -101,9 +101,9 @@ class Fuel_View {
 		{
 			return $this->_data[$key];
 		}
-		elseif (array_key_exists($key, View::$_global_data))
+		elseif (array_key_exists($key, static::$_global_data))
 		{
-			return View::$_global_data[$key];
+			return static::$_global_data[$key];
 		}
 		else
 		{
@@ -113,7 +113,7 @@ class Fuel_View {
 	}
 
 	/**
-	 * Magic method, calls [View::set] with the same parameters.
+	 * Magic method, calls [static::set] with the same parameters.
 	 *
 	 *     $view->foo = 'something';
 	 *
@@ -138,7 +138,7 @@ class Fuel_View {
 	 */
 	public function __isset($key)
 	{
-		return (isset($this->_data[$key]) or isset(View::$_global_data[$key]));
+		return (isset($this->_data[$key]) or isset(static::$_global_data[$key]));
 	}
 
 	/**
@@ -151,14 +151,14 @@ class Fuel_View {
 	 */
 	public function __unset($key)
 	{
-		unset($this->_data[$key], View::$_global_data[$key]);
+		unset($this->_data[$key], static::$_global_data[$key]);
 	}
 
 	/**
-	 * Magic method, returns the output of [View::render].
+	 * Magic method, returns the output of [static::render].
 	 *
 	 * @return  string
-	 * @uses    View::render
+	 * @uses    static::render
 	 */
 	public function __toString()
 	{
@@ -166,7 +166,7 @@ class Fuel_View {
 		{
 			return $this->render();
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			// Display the exception message
 			// TODO: Write the exception Handler
@@ -180,7 +180,7 @@ class Fuel_View {
 	 * The view data will be extracted to make local variables. This method
 	 * is static to prevent object scope resolution.
 	 *
-	 *     $output = View::capture($file, $data);
+	 *     $output = static::capture($file, $data);
 	 *
 	 * @param   string  filename
 	 * @param   array   variables
@@ -191,10 +191,10 @@ class Fuel_View {
 		// Import the view variables to local namespace
 		$view_data AND extract($view_data, EXTR_SKIP);
 
-		if (View::$_global_data)
+		if (static::$_global_data)
 		{
 			// Import the global view variables to local namespace and maintain references
-			extract(View::$_global_data, EXTR_REFS);
+			extract(static::$_global_data, EXTR_REFS);
 		}
 
 		// Capture the view output
@@ -207,6 +207,8 @@ class Fuel_View {
 		}
 		catch (Exception $e)
 		{
+			die('Error');
+			
 			// Delete the output buffer
 			ob_end_clean();
 
@@ -219,10 +221,10 @@ class Fuel_View {
 	}
 
 	/**
-	 * Sets a global variable, similar to [View::set], except that the
+	 * Sets a global variable, similar to [static::set], except that the
 	 * variable will be accessible to all views.
 	 *
-	 *     View::set_global($name, $value);
+	 *     static::set_global($name, $value);
 	 *
 	 * @param   string  variable name or an array of variables
 	 * @param   mixed   value
@@ -234,20 +236,20 @@ class Fuel_View {
 		{
 			foreach ($key as $key2 => $value)
 			{
-				View::$_global_data[$key2] = $value;
+				static::$_global_data[$key2] = $value;
 			}
 		}
 		else
 		{
-			View::$_global_data[$key] = $value;
+			static::$_global_data[$key] = $value;
 		}
 	}
 
 	/**
-	 * Assigns a global variable by reference, similar to [View::bind], except
+	 * Assigns a global variable by reference, similar to [static::bind], except
 	 * that the variable will be accessible to all views.
 	 *
-	 *     View::bind_global($key, $value);
+	 *     static::bind_global($key, $value);
 	 *
 	 * @param   string  variable name
 	 * @param   mixed   referenced variable
@@ -255,7 +257,7 @@ class Fuel_View {
 	 */
 	public static function bind_global($key, & $value)
 	{
-		View::$_global_data[$key] =& $value;
+		static::$_global_data[$key] =& $value;
 	}
 
 	/**
@@ -271,7 +273,7 @@ class Fuel_View {
 	{
 		if (($path = Fuel::find_file('views', $file)) === false)
 		{
-			throw new Fuel_View_Exception(strpos('The requested view %s could not be found', $file));
+			throw new View_Exception(strpos('The requested view %s could not be found', $file));
 		}
 
 		// Store the file path locally
@@ -345,7 +347,7 @@ class Fuel_View {
 	 * @param    string  view filename
 	 * @return   string
 	 * @throws   Fuel_View_Exception
-	 * @uses     View::capture
+	 * @uses     static::capture
 	 */
 	public function render($file = NULL)
 	{
@@ -356,11 +358,11 @@ class Fuel_View {
 
 		if (empty($this->_file))
 		{
-			throw new Fuel_View_Exception('You must set the file to use within your view before rendering');
+			throw new ViewException('You must set the file to use within your view before rendering');
 		}
 
 		// Combine local and global data and capture the output
-		return View::capture($this->_file, $this->_data);
+		return static::capture($this->_file, $this->_data);
 	}
 
 } // End View
