@@ -41,7 +41,7 @@ class Fuel_Core {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function init()
+	public static function init($autoloaders)
 	{
 		if (Fuel::$initialized)
 		{
@@ -49,6 +49,9 @@ class Fuel_Core {
 		}
 
 		Fuel::$_paths = array(APPPATH, COREPATH);
+
+		// Add the core and optional application loader to the packages array
+		Fuel::$packages = $autoloaders;
 
 		register_shutdown_function('Error::shutdown_handler');
 		set_exception_handler('Error::exception_handler');
@@ -182,20 +185,11 @@ class Fuel_Core {
 		// (from the last added package).  These will not be unregistered.
 		$loaders = array_slice($loaders, 1, -1);
 
-		/**
-		 * Here we unregister all but the APPPATH and the last loaded autoloader.
-		 * This takes the last autoloader and moves it to position 2 in the 
-		 * autoloader stack.
-		 */
-		foreach ($loaders as $loader)
+		// Put the APP autoloader back on top if it exists
+		if (array_key_exists('app', Fuel::$packages))
 		{
-			spl_autoload_unregister(array($loader[0], $loader[1]));
-		}
-
-		// Load back in all the autoloaders
-		foreach ($loaders as $loader)
-		{
-			spl_autoload_register(array($loader[0], $loader[1]));
+			spl_autoload_unregister(array(Fuel::$packages['app'], 'load'));
+			spl_autoload_register(array(Fuel::$packages['app'], 'load'), true, true);
 		}
 	}
 

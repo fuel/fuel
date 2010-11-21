@@ -50,9 +50,9 @@ require COREPATH.'classes'.DS.'autoloader.php';
 
 if (is_file(APPPATH.'autoload.php'))
 {
-	require APPPATH.'autoload.php';
+	$autoloaders['app'] = require APPPATH.'autoload.php';
 }
-require COREPATH.'autoload.php';
+$autoloaders['core'] = require COREPATH.'autoload.php';
 
 
 // Load in the core class
@@ -71,7 +71,7 @@ else
 
 // Initialize the framework
 // and start buffering the output.
-Fuel::init();
+Fuel::init($autoloaders);
 
 $request = Request::instance();
 $request->execute();
