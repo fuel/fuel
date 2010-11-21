@@ -48,11 +48,11 @@ require COREPATH.'base.php';
  */
 require COREPATH.'classes'.DS.'autoloader.php';
 
+$autoloaders['core'] = require COREPATH.'autoload.php';
 if (is_file(APPPATH.'autoload.php'))
 {
 	$autoloaders['app'] = require APPPATH.'autoload.php';
 }
-$autoloaders['core'] = require COREPATH.'autoload.php';
 
 
 // Load in the core class
