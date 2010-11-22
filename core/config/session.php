@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -41,8 +41,7 @@ return array(
 	'expiration_time'			=> 0,						// cookie expiration time, 0 = until browser close  (optional, default = 0)
 	'rotation_time'				=> 300,						// session ID rotation time  (optional, default = 300)
 	'flash_id'					=> 'flash',					// default ID for flash variables  (optional, default = 'flash')
-	'flash_auto_expire'			=> false,					// if FALSE, expire flash values only after it's used  (optional, default = true)
-	'write_on_finish'			=> true						// if TRUE, writes are only done once, at the end of a page request
+	'flash_auto_expire'			=> false					// if FALSE, expire flash values only after it's used  (optional, default = true)
 );
 
 /* End of file config/session.php */

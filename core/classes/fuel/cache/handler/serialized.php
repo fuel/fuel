@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Cache_Handler_Serialized implements Fuel_Cache_Handler_Driver {
+namespace Fuel;
+
+class Cache_Handler_Serialized implements Cache_Handler_Driver {
 
 	public function readable($contents)
 	{

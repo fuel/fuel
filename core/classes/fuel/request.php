@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Request {
+namespace Fuel;
+
+class Request {
 
 	/**
 	 * @var	object	Holds the global request instance
@@ -98,12 +100,12 @@ class Fuel_Request {
 				}
 				else
 				{
-					throw new Fuel_Exception('404 Action not found.');
+					throw new FuelException('404 Action not found.');
 				}
 			}
 			else
 			{
-				throw new Fuel_Exception('404 Controller not found.');
+				throw new FuelException('404 Controller not found.');
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -174,7 +174,7 @@ class Autoloader {
 			}
 		}
 
-		// if ew get here then lets just try to load it from the default path
+		// if we get here then lets just try to load it from the default path
 		$file_path = $this->default_path.str_replace('_', DS, strtolower($class)).'.php';
 		if (is_file($file_path))
 		{
@@ -187,6 +187,7 @@ class Autoloader {
 		if ($this->is_alias($class))
 		{
 			$this->create_alias_class($class);
+			$this->_init_class($class);
 			return true;
 		}
 

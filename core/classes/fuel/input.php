@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Input {
+namespace Fuel;
+
+class Input {
 	
 	/**
 	 * Get the real ip address of the user.  Even if they are using a proxy.

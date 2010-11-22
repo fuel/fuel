@@ -1,4 +1,4 @@
-<?php defined('COREPATH') OR exit('No direct script access allowed');
+<?php
 /**
  * Fuel
  *
@@ -11,6 +11,8 @@
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
  */
+
+namespace Fuel;
 
 // --------------------------------------------------------------------
 
@@ -39,7 +41,7 @@ abstract class Migration
  * @category	Migrations
  * @author		Phil Sturgeon
  */
-class Fuel_Migrate
+class Migrate
 {
 	public static $version = 0;
 

@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Encrypt {
+namespace Fuel;
+
+class Encrypt {
 
 	/**
 	 * @var	boolean	idicator for the usage of mcrypt
@@ -178,7 +180,7 @@ class Fuel_Encrypt {
 			if (substr($value,0,2) == '1:')
 			{
 				// houston, we have a problem!
-				throw new Fuel_Exception('Encrypted string was encrypted using the PHP mcrypt library, which is not loaded on this system.');
+				throw new FuelException('Encrypted string was encrypted using the PHP mcrypt library, which is not loaded on this system.');
 			}
 
 			$value = substr($value,2);

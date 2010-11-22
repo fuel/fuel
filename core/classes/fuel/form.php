@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // ------------------------------------------------------------------------
 
 /**
@@ -23,7 +25,7 @@
  * @category	Core
  * @author		Philip Sturgeon
  */
-class Fuel_Form
+class Form
 {
 	public static $initialized = false;
 
@@ -152,7 +154,7 @@ class Fuel_Form
 	{
 		if ($this->field_exists($field_name))
 		{
-			throw new Fuel_Exception(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
+			throw new FuelException(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
 		}
 
 		$this->_fields[$field_name] = $attributes;
@@ -202,7 +204,7 @@ class Fuel_Form
 	{
 		if ( ! $this->field_exists($field_name))
 		{
-			throw new Fuel_Exception(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
+			throw new FuelException(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
 		}
 		$this->_fields[$field_name] = array_merge_recursive($this->_fields[$field_name], $attributes);
 
@@ -260,7 +262,7 @@ class Fuel_Form
 	{
 		if ( ! isset(static::$_forms[$form_name]))
 		{
-			throw new Fuel_Exception(sprintf('Form "%s" does not exist.', $form_name));
+			throw new FuelException(sprintf('Form "%s" does not exist.', $form_name));
 		}
 
 		return static::$_forms[$form_name];
@@ -458,7 +460,7 @@ class Fuel_Form
 	{
 		if ( ! isset($parameters['options']) OR !is_array($parameters['options']))
 		{
-			throw new Fuel_Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
+			throw new FuelException(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
 		}
 		// Get the options then unset them from the array
 		$options = $parameters['options'];
@@ -638,11 +640,11 @@ class Fuel_Form
 	{
 		if ( ! isset($options['type']))
 		{
-			throw new Fuel_Exception('You must specify a type for the input.');
+			throw new FuelException('You must specify a type for the input.');
 		}
 		elseif ( ! in_array($options['type'], static::$_valid_inputs))
 		{
-			throw new Fuel_Exception(sprintf('"%s" is not a valid input type.', $options['type']));
+			throw new FuelException(sprintf('"%s" is not a valid input type.', $options['type']));
 		}
 
 		return html_tag('input', static::attr_to_string($options));

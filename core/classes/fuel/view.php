@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php 
 /**
  * Fuel
  *
@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-// ------------------------------------------------------------------------
+namespace Fuel;
 
 /**
  * View class
@@ -33,7 +33,7 @@
  * @license    http://kohanaframework.org/license
  */
 
-class Fuel_View {
+class View {
 
 	// Array of global view data
 	protected static $_global_data = array();
@@ -93,7 +93,7 @@ class Fuel_View {
 	 *
 	 * @param   string  variable name
 	 * @return  mixed
-	 * @throws  Fuel_Exception
+	 * @throws  FuelException
 	 */
 	public function & __get($key)
 	{
@@ -107,7 +107,7 @@ class Fuel_View {
 		}
 		else
 		{
-//			throw new Fuel_Exception('View variable is not set: :var',
+//			throw new FuelException('View variable is not set: :var',
 //				array(':var' => $key));
 		}
 	}
@@ -267,13 +267,13 @@ class Fuel_View {
 	 *
 	 * @param   string  view filename
 	 * @return  View
-	 * @throws  Fuel_View_Exception
+	 * @throws  View_Exception
 	 */
 	public function set_filename($file)
 	{
 		if (($path = Fuel::find_file('views', $file)) === false)
 		{
-			throw new View_Exception(strpos('The requested view %s could not be found', $file));
+			throw new ViewException(strpos('The requested view %s could not be found', $file));
 		}
 
 		// Store the file path locally

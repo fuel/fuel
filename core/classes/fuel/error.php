@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Error {
+namespace Fuel;
+
+class Error {
 	
 	public static $levels = array(
 		E_ERROR				=>	'Error',
@@ -47,13 +49,13 @@ class Fuel_Error {
 		// Only show valid fatal errors
 		if ($last_error AND in_array($last_error['type'], static::$fatal_levels))
 		{
-			static::show_php_error(new ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
+			static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
 
 			exit(1);
 		}
 	}
 
-	public static function exception_handler(Exception $e)
+	public static function exception_handler(\Exception $e)
 	{
 		static::show_php_error($e);
 	}
@@ -62,12 +64,12 @@ class Fuel_Error {
 	{
 		if (($severity & error_reporting()) == $severity)
 		{
-			static::show_php_error(new ErrorException($message, $severity, 0, $filepath, $line));
+			static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
 		}
 		return true;
 	}
 
-	public static function show_php_error(Exception $e)
+	public static function show_php_error(\Exception $e)
 	{
 		static::$count++;
 		$data['type']		= get_class($e);
@@ -96,7 +98,7 @@ class Fuel_Error {
 			{
 				unset($data['backtrace'][$key]);
 			}
-			if (strncmp($trace['file'], APPPATH, strlen(APPPATH)) !== 0)
+			elseif (strncmp($trace['file'], APPPATH, strlen(APPPATH)) !== 0)
 			{
 				unset($data['backtrace'][$key]);
 			}

@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -11,6 +11,8 @@
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
  */
+
+namespace Fuel;
 
 return array(
 	'default'	=> 'welcome',

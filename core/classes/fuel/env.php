@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Env {
+namespace Fuel;
+
+class Env {
 	const TEST = 0;
 	const DEVELOPMENT = 1;
 	const QA = 2;

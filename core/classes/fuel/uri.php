@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_URI {
+namespace Fuel;
+
+class URI {
 
 	public static function detect()
 	{
@@ -39,7 +41,7 @@ class Fuel_URI {
 			}
 			else
 			{
-				throw new Fuel_Exception('Unable to detect the URI.');
+				throw new FuelException('Unable to detect the URI.');
 			}
 
 			// Remove the base URL from the URI

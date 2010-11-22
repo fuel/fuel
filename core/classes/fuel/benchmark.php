@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or exit('No direct script access allowed');
+<?php
 /**
  * Fuel
  *
@@ -11,7 +11,9 @@
  * @copyright	2010 Dan Horrigan
  */
 
-class Fuel_Benchmark {
+namespace Fuel;
+
+class Benchmark {
 
 	protected static $benchmarks = array();
 

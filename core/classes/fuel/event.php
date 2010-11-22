@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -14,7 +14,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Event {
+namespace Fuel;
+
+class Event {
 
 	/**
 	 * @var	array	An array of listeners

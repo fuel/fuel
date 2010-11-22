@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // --------------------------------------------------------------------
 
 /**
@@ -22,7 +24,7 @@
  * @author		Phil Sturgeon
  */
 
-class Fuel_Log
+class Log
 {
 	const NONE = 0;
 	const ERROR = 1;

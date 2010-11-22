@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Cache {
+namespace Fuel;
+
+class Cache {
 
 	/**
 	 * Loads any default caching settings when available

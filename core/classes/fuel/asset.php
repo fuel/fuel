@@ -1,5 +1,4 @@
-<?php defined('COREPATH') or exit('No direct script access allowed');
-
+<?php
 /**
  * Fuel
  *
@@ -12,7 +11,9 @@
  * @copyright	2010 Dan Horrigan
  */
 
-class Fuel_Asset {
+namespace Fuel;
+
+class Asset {
 
 	/**
 	 * @var	array	The asset paths
@@ -146,7 +147,7 @@ class Fuel_Asset {
 			{
 				if ( ! ($file = static::find_file($filename, static::$_folders[$type])))
 				{
-					throw new Fuel_Exception('Could not find asset: '.$filename);
+					throw new FuelException('Could not find asset: '.$filename);
 				}
 				
 				$file = static::$_asset_url.$file;

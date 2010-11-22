@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -40,10 +40,10 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 				$this->_conn = mysql_connect($hostname, $username, $password, true);
 			}
 		}
-		catch (Fuel_Exception $e)
+		catch (FuelException $e)
 		{
 			$this->_conn = NULL;
-			throw new Fuel_Exception(mysql_error(), mysql_errno());
+			throw new FuelException(mysql_error(), mysql_errno());
 		}
 		
 		$this->_select_db($database);
@@ -109,7 +109,7 @@ class Fuel_DB_MySQL_Driver extends DB_Driver {
 
 		if (($result = mysql_query($sql, $this->_conn)) === false)
 		{
-			throw new Fuel_Exception(mysql_error($this->_conn), mysql_errno($this->_conn));
+			throw new FuelException(mysql_error($this->_conn), mysql_errno($this->_conn));
 		}
 
 		// Set the last query

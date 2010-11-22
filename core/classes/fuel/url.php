@@ -1,5 +1,4 @@
-<?php defined('COREPATH') or exit('No direct script access allowed');
-
+<?php
 /**
  * Fuel
  *
@@ -12,7 +11,9 @@
  * @copyright	2010 Dan Horrigan
  */
 
-class Fuel_URL {
+namespace Fuel;
+
+class URL {
 
 	/**
 	 * Anchor

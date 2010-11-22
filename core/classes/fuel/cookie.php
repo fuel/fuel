@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // ------------------------------------------------------------------------
 
 /**
@@ -24,7 +26,7 @@
  * @copyright  (c) 2008-2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Fuel_Cookie {
+class Cookie {
 
 	/**
 	 * @var  integer  Number of seconds before the cookie expires
