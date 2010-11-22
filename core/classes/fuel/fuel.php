@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 /**
  * The core of the framework.
  *
@@ -19,7 +21,7 @@
  * @subpackage	Core
  * @category	Core
  */
-class Fuel_Core {
+class Fuel {
 
 	public static $initialized = false;
 
@@ -45,7 +47,7 @@ class Fuel_Core {
 	{
 		if (Fuel::$initialized)
 		{
-			throw new Fuel_Exception("You can't initialize Fuel more than once.");
+			throw new FuelException("You can't initialize Fuel more than once.");
 		}
 
 		Fuel::$_paths = array(APPPATH, COREPATH);

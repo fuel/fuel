@@ -12,4 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-class View_Exception extends Fuel_Exception { }
+namespace Fuel;
+
+class ViewException extends FuelException { }

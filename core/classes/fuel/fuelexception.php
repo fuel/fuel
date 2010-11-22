@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,4 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Exception extends Exception { }
+namespace Fuel;
+
+class FuelException extends \Exception { }
