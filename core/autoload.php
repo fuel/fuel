@@ -43,6 +43,7 @@ $loader->add_aliases(array(
 	'Config'		=> 'Fuel\\Config',
 
 	'Cookie'		=> 'Fuel\\Cookie',
+	'DB'			=> 'Fuel\\DB',
 	'Debug'			=> 'Fuel\\Debug',
 	'Encrypt'		=> 'Fuel\\Encrypt',
 	'Env'			=> 'Fuel\\Env',
