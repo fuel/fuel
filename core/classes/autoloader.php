@@ -178,6 +178,7 @@ class Autoloader {
 					if (file_exists($file_path))
 					{
 						require $file_path;
+						$this->_init_class($class);
 						return true;
 					}
 				}
@@ -194,8 +195,8 @@ class Autoloader {
 					{
 						require $file_path;
 						$this->_init_class($class);
+						return true;
 					}
-					return true;
 				}
 			}
 		}
