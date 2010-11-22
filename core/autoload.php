@@ -20,6 +20,9 @@ $loader->add_namespaces(array(
 	'Fuel'	=>	__DIR__.'/classes/',
 ));
 
+
+$loader->add_namespace_alias(APP_NAMESPACE, 'Fuel');
+
 $loader->add_prefixes(array(
 	'Fuel_'		=> COREPATH.'classes/',
 ));
