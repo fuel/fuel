@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Core\Controller;
+namespace Fuel\Controller;
 
 class Base {
 
@@ -33,7 +33,7 @@ class Base {
 	 * @param	object	The current request object
 	 * @return	void
 	 */
-	public function __construct(\Fuel_Request $request)
+	public function __construct(\Fuel\Request $request)
 	{
 		$this->request = $request;
 	}

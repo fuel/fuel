@@ -97,7 +97,7 @@
 			<li><?php echo Fuel::clean_path($trace['file']).' @ line '.$trace['line'].': '.(isset($trace['function']) ? $trace['function'].'('.(isset($trace['args']) ? implode(', ', $trace['args']) : '').')' : ''); ?></li>
 		<?php endforeach; ?>
 		</ol>
-			<?php Debug::dump($backtrace); ?>
+			<?php \Debug::dump($backtrace); ?>
 		</div>
 	</div>
 </div>

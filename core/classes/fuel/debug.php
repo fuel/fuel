@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Debug {
+namespace Fuel;
+
+class Debug {
 	
 	protected static $files = array();
 
@@ -66,10 +68,10 @@ class Fuel_Debug {
 	public static function file_lines($filepath, $line_num, $highlight = true, $padding = 5)
 	{
 		// We cache the entire file to reduce disk IO for multiple errors
-		if ( ! isset(Debug::$files[$filepath]))
+		if ( ! isset(static::$files[$filepath]))
 		{
-			Debug::$files[$filepath] = file($filepath, FILE_IGNORE_NEW_LINES);
-			array_unshift(Debug::$files[$filepath], '');
+			static::$files[$filepath] = file($filepath, FILE_IGNORE_NEW_LINES);
+			array_unshift(static::$files[$filepath], '');
 		}
 
 		$start = $line_num - $padding;
@@ -79,12 +81,12 @@ class Fuel_Debug {
 		}
 
 		$length = ($line_num - $start) + $padding + 1;
-		if (($start + $length) > count(Debug::$files[$filepath]) - 1)
+		if (($start + $length) > count(static::$files[$filepath]) - 1)
 		{
 			$length = NULL;
 		}
 
-		$debug_lines = array_slice(Debug::$files[$filepath], $start, $length, TRUE);
+		$debug_lines = array_slice(static::$files[$filepath], $start, $length, TRUE);
 	
 		if ($highlight)
 		{

@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Error {
+namespace Fuel;
+
+class Error {
 	
 	public static $levels = array(
 		E_ERROR				=>	'Error',
@@ -45,31 +47,31 @@ class Fuel_Error {
 		$last_error = error_get_last();
 		
 		// Only show valid fatal errors
-		if ($last_error AND in_array($last_error['type'], Error::$fatal_levels))
+		if ($last_error AND in_array($last_error['type'], static::$fatal_levels))
 		{
-			Error::show_php_error(new ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
+			static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
 
 			exit(1);
 		}
 	}
 
-	public static function exception_handler(Exception $e)
+	public static function exception_handler(\Exception $e)
 	{
-		Error::show_php_error($e);
+		static::show_php_error($e);
 	}
 
 	public static function error_handler($severity, $message, $filepath, $line)
 	{
 		if (($severity & error_reporting()) == $severity)
 		{
-			Error::show_php_error(new ErrorException($message, $severity, 0, $filepath, $line));
+			static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
 		}
 		return true;
 	}
 
-	public static function show_php_error(Exception $e)
+	public static function show_php_error(\Exception $e)
 	{
-		Error::$count++;
+		static::$count++;
 		$data['type']		= get_class($e);
 		$data['severity']	= $e->getCode();
 		$data['message']	= $e->getMessage();
@@ -102,7 +104,7 @@ class Fuel_Error {
 			}
 		}
 
-		$data['severity'] = ( ! isset(Error::$levels[$data['severity']])) ? $data['severity'] : Error::$levels[$data['severity']];
+		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
 
 		$data['debug_lines'] = Debug::file_lines($data['filepath'], $data['error_line']);
 

@@ -1,27 +1,30 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
- * Fuel
+ * Database result wrapper.
  *
- * Fuel is a fast, lightweight, community driven PHP5 framework.
- *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 Dan Horrigan
- * @link		http://fuelphp.com
+ * @package    Kohana/Database
+ * @category   Query/Result
+ * @author     Kohana Team
+ * @copyright  (c) 2008-2009 Kohana Team
+ * @license    http://kohanaphp.com/license
  */
 
-abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, ArrayAccess {
+namespace Fuel;
 
+abstract class Database_Result implements \Countable, \Iterator, \SeekableIterator, \ArrayAccess {
+
+	// Executed SQL for this result
 	protected $_query;
 
+	// Raw result resource
 	protected $_result;
 
+	// Total number of rows and current row
 	protected $_total_rows  = 0;
 	protected $_current_row = 0;
 
-	protected $_as_object = true;
+	// Return rows as an object or associative array
+	protected $_as_object;
 
 	/**
 	 * Sets the total number of rows and stores the result locally.
@@ -30,15 +33,22 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 * @param   string  SQL query
 	 * @return  void
 	 */
-	public function __construct($result, $sql, $as_object = true)
+	public function __construct($result, $sql, $as_object)
 	{
-		$this->_as_object = $as_object;
-
 		// Store the result locally
 		$this->_result = $result;
 
 		// Store the SQL locally
 		$this->_query = $sql;
+
+		if (is_object($as_object))
+		{
+			// Get the object class name
+			$as_object = get_class($as_object);
+		}
+
+		// Results as objects or associative arrays
+		$this->_as_object = $as_object;
 	}
 
 	/**
@@ -58,7 +68,7 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 */
 	public function cached()
 	{
-		//return new Database_Result_Cached($this->as_array(), $this->_query, $this->_as_object);
+		return new Database_Result_Cached($this->as_array(), $this->_query, $this->_as_object);
 	}
 
 	/**
@@ -81,7 +91,7 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	{
 		$results = array();
 
-		if ($key === NULL and $value === NULL)
+		if ($key === NULL AND $value === NULL)
 		{
 			// Indexed rows
 
@@ -205,7 +215,7 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 */
 	public function offsetExists($offset)
 	{
-		return ($offset >= 0 and $offset < $this->_total_rows);
+		return ($offset >= 0 AND $offset < $this->_total_rows);
 	}
 
 	/**
@@ -229,11 +239,11 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 * [!!] You cannot modify a database result.
 	 *
 	 * @return  void
-	 * @throws  Fuel_Exception
+	 * @throws  Exception
 	 */
 	final public function offsetSet($offset, $value)
 	{
-		//throw new Fuel_Exception('Database results are read-only');
+		throw new Exception('Database results are read-only');
 	}
 
 	/**
@@ -242,11 +252,11 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 * [!!] You cannot modify a database result.
 	 *
 	 * @return  void
-	 * @throws  Fuel_Exception
+	 * @throws  Exception
 	 */
 	final public function offsetUnset($offset)
 	{
-		//throw new Fuel_Exception('Database results are read-only');
+		throw new Exception('Database results are read-only');
 	}
 
 	/**
@@ -311,6 +321,5 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	{
 		return $this->offsetExists($this->_current_row);
 	}
-}
 
-/* End of file driver.php */
+} // End Database_Result

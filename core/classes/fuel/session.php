@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,9 +12,11 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // --------------------------------------------------------------------
 
-class Fuel_Session
+class Session
 {
 	/*
 	 * loaded session driver instance
@@ -62,8 +64,7 @@ class Fuel_Session
 			// was a specific session storage backend requested?
 			if ( ! isset($config['type']) OR ! in_array($config['type'], self::$valid_storage))
 			{
-				// fall back to the default backend
-				$config['type'] = $config['default'];
+				throw new Exception('You have specified an invalid session storage system.');
 			}
 
 			// instantiate the driver

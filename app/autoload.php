@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -13,10 +13,10 @@
  */
 
 $loader = new Autoloader;
-$loader->default_path(dirname(__FILE__).'/classes/');
+$loader->default_path(__DIR__.'/classes/');
 
 $loader->add_namespaces(array(
-	'App'		=> __dir__.'/classes/',
+	APP_NAMESPACE		=> __DIR__.'/classes/',
 ));
 
 $loader->register();

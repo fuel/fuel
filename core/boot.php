@@ -28,10 +28,12 @@ if ( ! is_dir($package_path) and is_dir(DOCROOT.$package_path))
 // Define the global path constants
 define('APPPATH', realpath($app_path).DS);
 define('PKGPATH', realpath($package_path).DS);
-define('COREPATH', realpath(dirname(__FILE__)).DS);
+define('COREPATH', realpath(__DIR__).DS);
 
 // save a bit of memory by unsetting the path array
 unset($app_path, $package_path);
+
+define('APP_NAMESPACE', trim($app_namespace, '\\'));
 
 // If the user has added a base.php to their app load it
 if (is_file(APPPATH.'base.php'))
@@ -48,15 +50,12 @@ require COREPATH.'base.php';
  */
 require COREPATH.'classes'.DS.'autoloader.php';
 
-if (is_file(APPPATH.'autoload.php'))
-{
-	require APPPATH.'autoload.php';
-}
-require COREPATH.'autoload.php';
+$autoloaders['core'] = require COREPATH.'autoload.php';
+$autoloaders['app'] = require APPPATH.'autoload.php';
 
 
 // Load in the core class
-require COREPATH.'classes'.DS.'fuel'.DS.'core.php';
+require COREPATH.'classes'.DS.'fuel'.DS.'fuel.php';
 
 // If the Fuel class is overrided in the application folder
 // load that, else load the core class.
@@ -64,22 +63,18 @@ if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 {
 	require APPPATH.'classes'.DS.'fuel.php';
 }
-else
-{
-	require COREPATH.'classes'.DS.'fuel.php';
-}
 
 // Initialize the framework
 // and start buffering the output.
-Fuel::init();
+Fuel\Fuel::init($autoloaders);
 
-$request = Request::instance();
+$request = Fuel\Request::instance();
 $request->execute();
 echo $request->output;
 
 // Call all the shutdown events
-Event::shutdown();
+Fuel\Event::shutdown();
 
-Fuel::finish();
+Fuel\Fuel::finish();
 
 /* End of file boot.php */

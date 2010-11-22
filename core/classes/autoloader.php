@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -28,6 +28,11 @@ class Autoloader {
 	 * @var	array	Holds all the namespace paths
 	 */
 	protected $namespaces = array();
+
+	/**
+	 * @var	array	Holds all the namespace aliases
+	 */
+	protected $namespace_aliases = array();
 
 	/**
 	 * @var	array	The default path to look in if the class is not in a package
@@ -94,12 +99,8 @@ class Autoloader {
 	 * @param	string	class name
 	 * @return	void
 	 */
-	public function add_alias($alias, $class, $is_abstract = false)
+	public function add_alias($alias, $class)
 	{
-		if ($is_abstract)
-		{
-			$class = array($class, true);
-		}
 		$this->aliases[strtolower($alias)] = $class;
 	}
 
@@ -114,6 +115,31 @@ class Autoloader {
 	public function add_aliases(array $aliases)
 	{
 		$this->aliases = array_merge($this->aliases, array_change_key_case($aliases, CASE_LOWER));
+	}
+
+	/**
+	 * Adds an alias for a namespace.
+	 * 
+	 * @access	public
+	 * @param	string	the alias
+	 * @param	string	alias name
+	 * @return	void
+	 */
+	public function add_namespace_alias($alias, $namespace)
+	{
+		$this->namespace_aliases[$alias] = $namespace;
+	}
+
+	/**
+	 * Adds an array of namespaces aliases.
+	 * 
+	 * @access	public
+	 * @param	array	the aliases
+	 * @return	void
+	 */
+	public function add_namespace_aliases(array $aliases)
+	{
+		$this->namespace_aliases = array_merge($this->namespace_aliases, $aliases);
 	}
 
 	/**
@@ -132,7 +158,7 @@ class Autoloader {
 
 	public function register()
 	{
-		spl_autoload_register(array($this, 'load'));
+		spl_autoload_register(array($this, 'load'), true, true);
 	}
 
 	public function load($class)
@@ -147,14 +173,13 @@ class Autoloader {
 			{
 				if (strncmp($ns, $namespace, $ns_len = strlen($ns)) === 0)
 				{
-					$namespace = substr($namespace, $ns_len + 1);
-					$class = substr($class, $pos + 1);
-					$file_path = $path.str_replace('\\', DS, strtolower($namespace)).DS.str_replace('_', DS, strtolower($class)).'.php';
+					$class_no_ns = substr($class, $pos + 1);
+					$file_path = $path.str_replace('\\', DS, strtolower($namespace)).DS.str_replace('_', DS, strtolower($class_no_ns)).'.php';
 					if (file_exists($file_path))
 					{
 						require $file_path;
+						return true;
 					}
-					return true;
 				}
 			}
 		}
@@ -174,7 +199,8 @@ class Autoloader {
 				}
 			}
 		}
-		// if ew get here then lets just try to load it from the default path
+
+		// if we get here then lets just try to load it from the default path
 		$file_path = $this->default_path.str_replace('_', DS, strtolower($class)).'.php';
 		if (is_file($file_path))
 		{
@@ -187,6 +213,13 @@ class Autoloader {
 		if ($this->is_alias($class))
 		{
 			$this->create_alias_class($class);
+			$this->_init_class($class);
+			return true;
+		}
+
+		if ($this->namespace_alias($class))
+		{
+			$this->_init_class($class);
 			return true;
 		}
 
@@ -197,21 +230,28 @@ class Autoloader {
 	{
 		return array_key_exists(strtolower($class), $this->aliases);
 	}
+
+	public function namespace_alias($class)
+	{
+		foreach ($this->namespace_aliases as $alias => $actual)
+		{
+			if ($alias == '')
+			{
+				continue;
+			}
+			if (strpos($class, $alias) === 0)
+			{
+				$alias = $actual.substr($class, strlen($actual) - 1);
+				class_alias($alias, $class);
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public function create_alias_class($class)
 	{
-		$code = '';
-		$alias = strtolower($class);
-
-		if (is_array($this->aliases[$alias]) && $this->aliases[$alias][1] == true)
-		{
-			$code .= 'abstract ';
-		}
-		$code .= "class {$alias} extends ";
-		$code .= (is_array($this->aliases[$alias])) ? $this->aliases[$alias][0] : $this->aliases[$alias];
-		$code .= ' { }';
-
-		eval($code);
+		class_alias($this->aliases[strtolower($class)], $class);
 	}
 	
 	private function _init_class($class)

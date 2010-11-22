@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // --------------------------------------------------------------------
 
 /**
@@ -22,7 +24,7 @@
  * @author		Phil Sturgeon
  */
 
-class Fuel_Log
+class Log
 {
 	const NONE = 0;
 	const ERROR = 1;
@@ -32,21 +34,21 @@ class Fuel_Log
 
 	public static function info($msg)
 	{
-		return Log::_write('info', $msg);
+		return static::_write('info', $msg);
 	}
 
 	// --------------------------------------------------------------------
 
 	public static function debug($msg)
 	{
-		return Log::_write('debug', $msg);
+		return static::_write('debug', $msg);
 	}
 
 	// --------------------------------------------------------------------
 
 	public static function error($msg)
 	{
-		return Log::_write('error', $msg);
+		return static::_write('error', $msg);
 	}
 
 	// --------------------------------------------------------------------

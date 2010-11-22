@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Encrypt {
+namespace Fuel;
+
+class Encrypt {
 
 	/**
 	 * @var	boolean	idicator for the usage of mcrypt
@@ -47,14 +49,14 @@ class Fuel_Encrypt {
 	public static function _init()
 	{
 		// check we we have the mcrypt library available
-		self::$have_mcrypt = function_exists('mcrypt_encrypt') ? true : false;
+		static::$have_mcrypt = function_exists('mcrypt_encrypt') ? true : false;
 
 		// load the config
 		Config::load('encrypt', 'encrypt');
 		$config = Config::get('encrypt');
 
 		// update the default salt value if one is defined in the config
-		isset($config['salt']) && self::$salt = $config['salt'];
+		isset($config['salt']) && static::$salt = $config['salt'];
 	}
 
 	// --------------------------------------------------------------------
@@ -69,7 +71,7 @@ class Fuel_Encrypt {
 	 */
 	public static function set($name = false, $value = null)
 	{
-		$name && isset(self::${$name}) && self::${$name} = $value;
+		$name && isset(static::${$name}) && static::${$name} = $value;
 	}
 
 	// --------------------------------------------------------------------
@@ -83,7 +85,7 @@ class Fuel_Encrypt {
 	 */
 	public static function get($name = false)
 	{
-		return $name && isset(self::${$name}) ? self::${$name} : false;
+		return $name && isset(static::${$name}) ? static::${$name} : false;
 	}
 
 	// --------------------------------------------------------------------
@@ -101,20 +103,20 @@ class Fuel_Encrypt {
 		// if no salt is given, use the default salt
 		if ($salt === false)
 		{
-			$salt = self::$salt;
+			$salt = static::$salt;
 		}
 
 		// check if we have mcrypt available, and we want to use it
-		if (self::$have_mcrypt && self::$use_mcrypt)
+		if (static::$have_mcrypt && static::$use_mcrypt)
 		{
 			// encrypt using mcrypt
-			$iv_size = mcrypt_get_iv_size(self::$mcrypt_cipher, self::$mcrypt_mode);
+			$iv_size = mcrypt_get_iv_size(static::$mcrypt_cipher, static::$mcrypt_mode);
 			$iv_vector = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-			$value = '1:'.self::_add_cipher_noise($iv_vector.mcrypt_encrypt(self::$mcrypt_cipher, $salt, $value, self::$mcrypt_mode, $iv_vector), $salt);
+			$value = '1:'.static::_add_cipher_noise($iv_vector.mcrypt_encrypt(static::$mcrypt_cipher, $salt, $value, static::$mcrypt_mode, $iv_vector), $salt);
 		}
 		else
 		{
-			$keys = self::_crypt_key($salt);
+			$keys = static::_crypt_key($salt);
 			for($i = 0; $i < strlen($value); $i++){
 				$id = $i % count($keys);
 				$ord = ord($value{$i});
@@ -150,18 +152,18 @@ class Fuel_Encrypt {
 		// if no salt is given, use the default salt
 		if ($salt === false)
 		{
-			$salt = self::$salt;
+			$salt = static::$salt;
 		}
 
 		// decode the value passed
 		$value = base64_decode($value);
 
 		// check if we have mcrypt available, and the value was encrypted by mcrypt
-		if (self::$have_mcrypt && substr($value,0,2) == '1:')
+		if (static::$have_mcrypt && substr($value,0,2) == '1:')
 		{
 			// decrypt using mcrypt
-			$value = self::_remove_cipher_noise(substr($value,2), $salt);
-			$iv_size = mcrypt_get_iv_size(self::$mcrypt_cipher, self::$mcrypt_mode);
+			$value = static::_remove_cipher_noise(substr($value,2), $salt);
+			$iv_size = mcrypt_get_iv_size(static::$mcrypt_cipher, static::$mcrypt_mode);
 
 			if ($iv_size > strlen($value))
 			{
@@ -170,7 +172,7 @@ class Fuel_Encrypt {
 
 			$iv_vector = substr($value, 0, $iv_size);
 			$value = substr($value, $iv_size);
-			$value = rtrim(mcrypt_decrypt(self::$mcrypt_cipher, $salt, $value, self::$mcrypt_mode, $iv_vector), "\0");
+			$value = rtrim(mcrypt_decrypt(static::$mcrypt_cipher, $salt, $value, static::$mcrypt_mode, $iv_vector), "\0");
 		}
 		else
 		{
@@ -178,11 +180,11 @@ class Fuel_Encrypt {
 			if (substr($value,0,2) == '1:')
 			{
 				// houston, we have a problem!
-				throw new Fuel_Exception('Encrypted string was encrypted using the PHP mcrypt library, which is not loaded on this system.');
+				throw new Exception('Encrypted string was encrypted using the PHP mcrypt library, which is not loaded on this system.');
 			}
 
 			$value = substr($value,2);
-			$keys = self::_crypt_key($salt);
+			$keys = static::_crypt_key($salt);
 			for($i = 0; $i < strlen($value); $i++){
 				$id = $i % count($keys);
 				$ord = ord($value{$i});

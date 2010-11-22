@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Arr {
+namespace Fuel;
+
+class Arr {
 	
 	/**
 	 * Flattens a multi-dimensional associative array down into a 1 dimensional
@@ -40,7 +42,7 @@ class Fuel_Arr {
 			$curr_key[] = $key;
 			if (is_array($val) and array_values($val) !== $val)
 			{
-				Arr::flatten_assoc($val, $glue, false);
+				static::flatten_assoc($val, $glue, false);
 			}
 			else
 			{
@@ -85,7 +87,7 @@ class Fuel_Arr {
 		
 		if ( ! is_array($keys))
 		{
-			throw new Fuel_Exception('Arr::elements() - $keys must be an array.');
+			throw new Exception('Arr::elements() - $keys must be an array.');
 		}
 		
 		foreach ($keys as $key)

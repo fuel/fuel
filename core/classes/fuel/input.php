@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Input {
+namespace Fuel;
+
+class Input {
 	
 	/**
 	 * Get the real ip address of the user.  Even if they are using a proxy.
@@ -102,7 +104,7 @@ class Fuel_Input {
 	 */
 	public static function get($index = '', $default = false)
 	{
-		return Input::_fetch_from_array($_GET, $index, $default);
+		return static::_fetch_from_array($_GET, $index, $default);
 	}
 
 	/**
@@ -115,7 +117,7 @@ class Fuel_Input {
 	 */
 	public static function post($index = '', $default = false)
 	{
-		return Input::_fetch_from_array($_POST, $index, $default);
+		return static::_fetch_from_array($_POST, $index, $default);
 	}
 
 	/**
@@ -128,7 +130,7 @@ class Fuel_Input {
 	 */
 	public static function put($index = '', $default = false)
 	{
-		if (Input::method() !== 'PUT')
+		if (static::method() !== 'PUT')
 		{
 			return NULL;
 		}
@@ -139,7 +141,7 @@ class Fuel_Input {
 			parse_str(file_get_contents('php://input'), $_PUT);
 		}
 
-		return Input::_fetch_from_array($_PUT, $index, $default);
+		return static::_fetch_from_array($_PUT, $index, $default);
 	}
 
 	/**
@@ -152,7 +154,7 @@ class Fuel_Input {
 	 */
 	public static function delete($index = '', $default = false)
 	{
-		if (Input::method() !== 'DELETE')
+		if (static::method() !== 'DELETE')
 		{
 			return NULL;
 		}
@@ -163,7 +165,7 @@ class Fuel_Input {
 			parse_str(file_get_contents('php://input'), $_DELETE);
 		}
 
-		return Input::_fetch_from_array($_DELETE, $index, $default);
+		return static::_fetch_from_array($_DELETE, $index, $default);
 	}
 
 	/**
@@ -176,7 +178,7 @@ class Fuel_Input {
 	 */
 	public static function get_post($index = '', $default = false)
 	{
-		return isset($_POST[$index]) ? Input::post($index, $default) : Input::get($index, $default);
+		return isset($_POST[$index]) ? static::post($index, $default) : static::get($index, $default);
 	}
 
 	/**
@@ -189,7 +191,7 @@ class Fuel_Input {
 	 */
 	function cookie($index = '', $default = false)
 	{
-		return Input::_fetch_from_array($_COOKIE, $index, $default);
+		return static::_fetch_from_array($_COOKIE, $index, $default);
 	}
 
 	/**
@@ -202,7 +204,7 @@ class Fuel_Input {
 	 */
 	function server($index = '', $default = false)
 	{
-		return Input::_fetch_from_array($_SERVER, $index, $default);
+		return static::_fetch_from_array($_SERVER, $index, $default);
 	}
 
 	/**

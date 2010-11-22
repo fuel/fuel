@@ -13,7 +13,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Core\Controller;
+namespace Fuel\Controller;
 
 /**
  * Template Controller class

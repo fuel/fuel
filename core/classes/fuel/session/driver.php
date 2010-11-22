@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,9 +12,11 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // --------------------------------------------------------------------
 
-class Fuel_Session_Driver {
+class Session_Driver {
 
 	/*
 	 * @var	session class configuration
@@ -438,7 +440,7 @@ class Fuel_Session_Driver {
 		$payload = Encrypt::encrypt($this->_serialize($payload));
 		if (strlen($payload) > 4000)
 		{
-			throw new Fuel_Exception('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
+			throw new Exception('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
 		}
 
 		// write the session cookie

@@ -10,6 +10,12 @@ $app_path = './app';
 $package_path = './packages';
 
 /**
+ * If you want to use a default namespace for your application you must specify
+ * it here.
+ */
+$app_namespace = '';
+
+/**
  * We disable short open tags by default so as to not confuse people.  They
  * also interfere with generating XML documents.
  */
@@ -20,7 +26,10 @@ ini_set('short_open_tag', 0);
  *
  * @see http://www.php.net/timezones
  */
-date_default_timezone_set('GMT');
+if ( ! date_default_timezone_get())
+{
+	date_default_timezone_set('GMT');
+}
 
 /**
  * Define the internal encoding to use.
@@ -32,7 +41,7 @@ define('INTERNAL_ENC', 'ISO-8859-1');
 /**
  * Get the current path
  */
-define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
+define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
 
 /**
  * Boots the system and executes the request.  To change the path to the core,
