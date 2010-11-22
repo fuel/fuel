@@ -73,7 +73,7 @@ class Request {
 
 			$action or $action = 'index';
 
-			$class = 'Controller_'.ucfirst($controller);
+			$class = APP_NAMESPACE.'\\Controller_'.ucfirst($controller);
 			$method = 'action_'.$action;
 
 			if (class_exists($class))
@@ -167,7 +167,8 @@ class Request {
 
 	public function execute()
 	{
-		$class = 'Controller_'.ucfirst($this->controller);
+		$controller_prefix = APP_NAMESPACE.'\\Controller_';
+		$class = $controller_prefix.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
 
