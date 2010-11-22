@@ -52,11 +52,10 @@ return array(
 	 * These packages are loaded on Fuel's startup.  You can specify them in
 	 * the following manner:
 	 * 
-	 * array('db', 'auth'); // This will assume the packages are in PKGPATH
+	 * array('auth'); // This will assume the packages are in PKGPATH
 	 * 
 	 * // Use this format to specify the path to the package explicitly
 	 * array(
-	 *     array('db'	=> PKGPATH.'db/')
 	 *     array('auth'	=> PKGPATH.'auth/')
 	 * );
 	 */
