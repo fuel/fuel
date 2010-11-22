@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-interface Fuel_Cache_Handler_Driver {
+namespace Fuel;
+
+interface Cache_Handler_Driver {
 
 	/**
 	 * Should make the contents readable

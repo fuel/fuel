@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-abstract class Fuel_Cache_Storage_Driver {
+namespace Fuel;
+
+abstract class Cache_Storage_Driver {
 	
 	/**
 	 * @var string name of the content handler driver

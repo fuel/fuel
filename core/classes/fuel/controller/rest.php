@@ -1,6 +1,9 @@
 <?php defined('COREPATH') or exit('No direct script access allowed');
 
-abstract class Fuel_Controller_Rest extends Controller
+namespace Fuel\Controller;
+
+
+abstract class Rest extends Controller\Base
 {
 	protected $rest_format = NULL; // Set this in a controller to use a default format
 
@@ -52,7 +55,7 @@ abstract class Fuel_Controller_Rest extends Controller
 	 */
 	function _remap($object_called)
 	{
-		$controller_method = $object_called.'_'.Input::method();
+		$controller_method = $object_called.'_'.\Input::method();
 
 		$this->$controller_method();
 	}

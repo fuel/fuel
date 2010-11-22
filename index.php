@@ -17,14 +17,14 @@ ini_set('short_open_tag', 0);
 
 /**
  * The apps default timezone
- * 
+ *
  * @see http://www.php.net/timezones
  */
 date_default_timezone_set('GMT');
 
 /**
  * Define the internal encoding to use.
- * 
+ *
  * @todo Re-evaluate how to handle this.
  */
 define('INTERNAL_ENC', 'ISO-8859-1');
@@ -39,6 +39,5 @@ define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
  * simply change this require path.
  */
 require './core/boot.php';
-
 
 /* End of file index.php */

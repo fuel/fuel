@@ -12,13 +12,14 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+$loader = new Autoloader;
+$loader->default_path(dirname(__FILE__).'/classes/');
 
-class Env {
-	const TEST = 0;
-	const DEVELOPMENT = 1;
-	const QA = 2;
-	const PRODUCTION = 3;
-}
+$loader->add_namespaces(array(
+	'App'		=> __dir__.'/classes/',
+));
 
-/* End of file env.php */
+$loader->register();
+return $loader;
+
+/* End of file autoload.php */

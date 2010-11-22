@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -53,20 +53,20 @@ if ( ! function_exists('html_tag'))
 /**
  * Create a XHTML tag
  *
- * @param	string	The tag name
- * @param	array	The tag attributes
- * @param	string	The content to place in the tag
+ * @param	string			The tag name
+ * @param	array|string	The tag attributes
+ * @param	string|bool		The content to place in the tag, or false for no closing tag
  * @return	string
  */
 if ( ! function_exists('html_tag'))
 {
-	function html_tag($tag, $attr = array(), $content = '')
+	function html_tag($tag, $attr = array(), $content = false)
 	{
 		$html = '<'.$tag;
 
-		$html .= ( ! empty($attr)) ? ' '.array_to_attr($attr) : '';
+		$html .= ( ! empty($attr)) ? ' '.(is_array($attr) ? array_to_attr($attr) : $attr) : '';
 		$html .= empty($content) ? ' />' : '>';
-		$html .= ( ! empty($content)) ? $content.'</'.$tag.'>' : '';
+		$html .= ($content !== false && $content !== null) ? $content.'</'.$tag.'>' : '';
 
 		return $html;
 	}

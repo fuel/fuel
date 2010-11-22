@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // ------------------------------------------------------------------------
 
 /**
@@ -23,7 +25,7 @@
  * @category	Core
  * @author		Philip Sturgeon
  */
-class Fuel_Form
+class Form
 {
 	public static $initialized = false;
 
@@ -60,13 +62,13 @@ class Fuel_Form
 	public static function init()
 	{
 		// Load for the first time
-		if (empty(self::$initialized))
+		if (empty(static::$initialized))
 		{
 			Config::load('form', 'form');
 
-			self::$initialized = true;
+			static::$initialized = true;
 
-			self::$_forms = Config::get('form.forms');
+			static::$_forms = Config::get('form.forms');
 		}
 	}
 
@@ -80,28 +82,28 @@ class Fuel_Form
 	{
 		if ($name === NULL)
 		{
-			$name = Form::$default;
+			$name = static::$default;
 		}
 
 		// This form is already set, lets use the config
-		if (isset(self::$_forms[$name]))
+		if (isset(static::$_forms[$name]))
 		{
-			self::$_forms[$name] = array_merge_recursive(self::$_forms[$name], $config);
+			static::$_forms[$name] = array_merge_recursive(static::$_forms[$name], $config);
 		}
 
 		// This is new, so assign the config (which hopefully will be an array of fields, or an empty array)
 		else
 		{
-			self::$_forms[$name] = $config;
+			static::$_forms[$name] = $config;
 		}
 
 		// If this is a new instance, fire off the constructor
-		if ( ! isset(Form::$instances[$name]))
+		if ( ! isset(static::$instances[$name]))
 		{
-			Form::$instances[$name] = new Form($name, $config);
+			static::$instances[$name] = new Form($name, $config);
 		}
 
-		return Form::$instances[$name];
+		return static::$instances[$name];
 	}
 
 	// --------------------------------------------------------------------
@@ -129,10 +131,10 @@ class Fuel_Form
 
 		if (isset($config['fields']))
 		{
-			Form::add_fields($config['fields']);
+			static::add_fields($config['fields']);
 		}
 
-		Form::parse_validation();
+		static::parse_validation();
 	}
 	
 	// --------------------------------------------------------------------
@@ -152,7 +154,7 @@ class Fuel_Form
 	{
 		if ($this->field_exists($field_name))
 		{
-			throw new Fuel_Exception(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
+			throw new FuelException(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
 		}
 
 		$this->_fields[$field_name] = $attributes;
@@ -202,7 +204,7 @@ class Fuel_Form
 	{
 		if ( ! $this->field_exists($field_name))
 		{
-			throw new Fuel_Exception(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
+			throw new FuelException(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
 		}
 		$this->_fields[$field_name] = array_merge_recursive($this->_fields[$field_name], $attributes);
 
@@ -258,12 +260,12 @@ class Fuel_Form
 	 */
 	private static function get_form_array($form_name)
 	{
-		if ( ! isset(Form::$_forms[$form_name]))
+		if ( ! isset(static::$_forms[$form_name]))
 		{
-			throw new Fuel_Exception(sprintf('Form "%s" does not exist.', $form_name));
+			throw new FuelException(sprintf('Form "%s" does not exist.', $form_name));
 		}
 
-		return Form::$_forms[$form_name];
+		return static::$_forms[$form_name];
 	}
 
 	// --------------------------------------------------------------------
@@ -279,11 +281,11 @@ class Fuel_Form
 	 */
 	public static function form($form_name)
 	{
-		$form = Form::get_form_array($form_name);
+		$form = static::get_form_array($form_name);
 
-		$return = Form::open($form_name) . PHP_EOL;
-		$return .= Form::fields($form_name);
-		$return .= Form::close() . PHP_EOL;
+		$return = static::open($form_name) . PHP_EOL;
+		$return .= static::fields($form_name);
+		$return .= static::close() . PHP_EOL;
 
 		return $return;
 	}
@@ -310,9 +312,9 @@ class Fuel_Form
 			$properties['name'] = $name;
 		}
 		$required = FALSE;
-		if (isset(Form::$_validation[$form_name]))
+		if (isset(static::$_validation[$form_name]))
 		{
-			foreach (Form::$_validation[$form_name] as $rule)
+			foreach (static::$_validation[$form_name] as $rule)
 			{
 				if ($rule['field'] == $properties['name'] and $rule['rules'] and strpos('required', $rule['rules']) !== FALSE)
 				{
@@ -321,12 +323,12 @@ class Fuel_Form
 			}
 		}
 
-		$return .= Form::_open_field($properties['type'], $required);
+		$return .= static::_open_field($properties['type'], $required);
 
 		switch($properties['type'])
 		{
 			case 'hidden':
-				$return .= "\t\t" . Form::input($properties) . PHP_EOL;
+				$return .= "\t\t" . static::input($properties) . PHP_EOL;
 				break;
 			case 'radio': case 'checkbox':
 				$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
@@ -353,31 +355,31 @@ class Fuel_Form
 						$element['type'] = $properties['type'];
 						$element['name'] = $properties['name'];
 						$return .= "\t\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $element['id']) . $element['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
-						$return .= "\t\t\t\t" . Form::input($element) . PHP_EOL;
+						$return .= "\t\t\t\t" . static::input($element) . PHP_EOL;
 					}
 					$return .= "\t\t\t</span>\n";
 				}
 				else
 				{
 					$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
-					$return .= "\t\t\t" . Form::input($properties) . PHP_EOL;
+					$return .= "\t\t\t" . static::input($properties) . PHP_EOL;
 				}
 				break;
 			case 'select':
 				$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
-				$return .= "\t\t\t" . Form::select($properties, 3) . PHP_EOL;
+				$return .= "\t\t\t" . static::select($properties, 3) . PHP_EOL;
 				break;
 			case 'textarea':
 				$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
-				$return .= "\t\t\t" . Form::textarea($properties) . PHP_EOL;
+				$return .= "\t\t\t" . static::textarea($properties) . PHP_EOL;
 				break;
 			default:
 				$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
-				$return .= "\t\t\t" . Form::input($properties) . PHP_EOL;
+				$return .= "\t\t\t" . static::input($properties) . PHP_EOL;
 				break;
 		}
 
-		$return .= Form::_close_field($properties['type'], $required);
+		$return .= static::_close_field($properties['type'], $required);
 
 		return $return;
 	}
@@ -458,7 +460,7 @@ class Fuel_Form
 	{
 		if ( ! isset($parameters['options']) OR !is_array($parameters['options']))
 		{
-			throw new Fuel_Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
+			throw new FuelException(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
 		}
 		// Get the options then unset them from the array
 		$options = $parameters['options'];
@@ -468,30 +470,33 @@ class Fuel_Form
 		$selected = $parameters['selected'];
 		unset($parameters['selected']);
 
-		$input = '<select ' . Form::attr_to_string($parameters) . '>' . PHP_EOL;
+		$input = PHP_EOL;
 		foreach ($options as $key => $val)
 		{
 			if (is_array($val))
 			{
-				$input .= str_repeat("\t", $indent_amount + 1) . '<optgroup label="' . $key . '">' . PHP_EOL;
+				$optgroup = PHP_EOL;
 				foreach ($val as $opt_key => $opt_val)
 				{
-					$extra = ($opt_key == $selected) ? ' selected="selected"' : '';
-					$input .= str_repeat("\t", $indent_amount + 2);
-					$input .= '<option value="' . $opt_key . '"' . $extra . '>' . Form::prep_value($opt_val) . "</option>\n";
+					$opt_attr = array('value' => $opt_key);
+					($opt_key == $selected) && $opt_attr[] = 'selected';
+					$optgroup .= str_repeat("\t", $indent_amount + 2);
+					$optgroup .= html_tag('option', $opt_array, static::prep_value($opt_val)).PHP_EOL;
 				}
-				$input .= str_repeat("\t", $indent_amount + 1) . '</optgroup>' . PHP_EOL;
+				$optgroup .= str_repeat("\t", $indent_amount + 1);
+				$input .= str_repeat("\t", $indent_amount + 1).html_tag('optgroup', array('label' => $key), $optgroup).PHP_EOL;
 			}
 			else
 			{
-				$extra = ($key == $selected) ? ' selected="selected"' : '';
+				$opt_attr = array('value' => $key);
+				($key == $selected) && $opt_attr[] = 'selected';
 				$input .= str_repeat("\t", $indent_amount + 1);
-				$input .= '<option value="' . $key . '"' . $extra . '>' . Form::prep_value($val) . "</option>\n";
+				$input .= html_tag('option', $opt_attr, static::prep_value($val)).PHP_EOL;
 			}
 		}
-		$input .= str_repeat("\t", $indent_amount) . "</select>";
+		$input .= str_repeat("\t", $indent_amount);
 
-		return $input;
+		return html_tag('select', static::attr_to_string($parameters), $input);
 	}
 
 	// --------------------------------------------------------------------
@@ -509,9 +514,9 @@ class Fuel_Form
 	public static function open($form_name = null, $options = array())
 	{
 		// The form name does not exist, must be an action as its not set in options either
-		if (isset(Form::$_forms[$form_name]))
+		if (isset(static::$_forms[$form_name]))
 		{
-			$form = Form::get_form_array($form_name);
+			$form = static::get_form_array($form_name);
 
 			if (isset($form['attributes']))
 			{
@@ -540,7 +545,7 @@ class Fuel_Form
 		// If method is empty, use POST
 		isset($options['method']) OR $options['method'] = 'post';
 
-		$form = '<form ' . Form::attr_to_string($options) . '>';
+		$form = '<form ' . static::attr_to_string($options) . '>';
 
 		return $form;
 	}
@@ -560,7 +565,7 @@ class Fuel_Form
 	public static function fields($form_name)
 	{
 		$hidden = array();
-		$form = Form::get_form_array($form_name);
+		$form = static::get_form_array($form_name);
 
 		$return = "\t" . Config::get('form.form_wrapper_open') . PHP_EOL;
 
@@ -571,7 +576,7 @@ class Fuel_Form
 				$hidden[$name] = $properties;
 				continue;
 			}
-			$return .= Form::field($name, $properties, $form_name);
+			$return .= static::field($name, $properties, $form_name);
 		}
 
 		$return .= "\t" . Config::get('form.form_wrapper_close') . PHP_EOL;
@@ -582,7 +587,7 @@ class Fuel_Form
 			{
 				$properties['name'] = $name;
 			}
-			$return .= "\t" . Form::input($properties) . PHP_EOL;
+			$return .= "\t" . static::input($properties) . PHP_EOL;
 		}
 
 		return $return;
@@ -617,9 +622,7 @@ class Fuel_Form
 	 */
 	public static function label($value, $for = null)
 	{
-		return $for === null
-			? '<label>' . $value . '</label>'
-			: '<label for="' . $for . '">' . $value . '</label>';
+		return html_tag('label', (isset($for) ? array('for' => $for) : array()), $value);
 	}
 
 	// --------------------------------------------------------------------
@@ -637,15 +640,14 @@ class Fuel_Form
 	{
 		if ( ! isset($options['type']))
 		{
-			throw new Fuel_Exception('You must specify a type for the input.');
+			throw new FuelException('You must specify a type for the input.');
 		}
-		elseif ( ! in_array($options['type'], Form::$_valid_inputs))
+		elseif ( ! in_array($options['type'], static::$_valid_inputs))
 		{
-			throw new Fuel_Exception(sprintf('"%s" is not a valid input type.', $options['type']));
+			throw new FuelException(sprintf('"%s" is not a valid input type.', $options['type']));
 		}
-		$input = '<input ' . Form::attr_to_string($options) . ' />';
 
-		return $input;
+		return html_tag('input', static::attr_to_string($options));
 	}
 
 	// --------------------------------------------------------------------
@@ -667,11 +669,8 @@ class Fuel_Form
 			$value = $options['value'];
 			unset($options['value']);
 		}
-		$input = "<textarea " . Form::attr_to_string($options) . '>';
-		$input .= Form::prep_value($value);
-		$input .= '</textarea>';
 
-		return $input;
+		return html_tag('textarea', static::attr_to_string($options), static::prep_value($value));
 	}
 
 
@@ -680,7 +679,7 @@ class Fuel_Form
 	/**
 	 * Attr to String
 	 *
-	 * Takes an array of attributes and turns it into a string for an input
+	 * Wraps the global attributes function and does some form specific work
 	 *
 	 * @access	private
 	 * @param	array	$attr
@@ -688,28 +687,9 @@ class Fuel_Form
 	 */
 	private function attr_to_string($attr)
 	{
-		$attr_str = '';
-
-		if ( ! is_array($attr))
-		{
-			$attr = (array) $attr;
-		}
-
-		foreach ($attr as $property => $value)
-		{
-			if ($property == 'label')
-			{
-				continue;
-			}
-			if ($property == 'value')
-			{
-				$value = Form::prep_value($value);
-			}
-			$attr_str .= $property . '="' . $value . '" ';
-		}
-
-		// We strip off the last space for return
-		return substr($attr_str, 0, -1);
+		unset($attr['label']);
+		isset($attr['value']) && $attr['value'] = static::prep_value($attr['value']);
+		return array_to_attr($attr);
 	}
 
 	// --------------------------------------------------------------------
@@ -744,7 +724,7 @@ class Fuel_Form
 	 */
 	private static function parse_validation()
 	{
-		foreach (Form::$_forms as $form_name => $form)
+		foreach (static::$_forms as $form_name => $form)
 		{
 			if ( ! isset($form['fields']))
 			{
@@ -756,9 +736,9 @@ class Fuel_Form
 			{
 				if (isset($attr['validation']))
 				{
-					Form::$_validation[$form_name][$i]['field'] = $name;
-					Form::$_validation[$form_name][$i]['label'] = $attr['label'];
-					Form::$_validation[$form_name][$i]['rules'] = $attr['validation'];
+					static::$_validation[$form_name][$i]['field'] = $name;
+					static::$_validation[$form_name][$i]['label'] = $attr['label'];
+					static::$_validation[$form_name][$i]['rules'] = $attr['validation'];
 
 					unset($this->_fields[$name]['validation']);
 				}
@@ -784,12 +764,12 @@ class Fuel_Form
 		// #TODO: Add validation support
 		return true;
 		
-		if ( ! isset(Form::$_validation[$form_name]))
+		if ( ! isset(static::$_validation[$form_name]))
 		{
 			return TRUE;
 		}
 
-		Validation::set_rules(Form::$_validation[$form_name]);
+		Validation::set_rules(static::$_validation[$form_name]);
 
 		return Validation::run();
 	}
@@ -845,7 +825,7 @@ class Fuel_Form
 	public static function set_value($form_name, $field_name, $default = null)
 	{
 		$post_name = str_replace('[]', '', $field_name);
-		$value = isset($_POST[$post_name]) ? $_POST[$post_name] : Form::prep_value($default);
+		$value = isset($_POST[$post_name]) ? $_POST[$post_name] : static::prep_value($default);
 
 		$field =& $this->_fields[$field_name];
 
@@ -895,7 +875,7 @@ class Fuel_Form
 				$field['selected'] = $value;
 				break;
 			default:
-				$field['value'] = Form::prep_value($value);
+				$field['value'] = static::prep_value($value);
 				break;
 		}
 	}
@@ -915,7 +895,7 @@ class Fuel_Form
 	{
 		foreach ($this->_fields as $field_name => $attr)
 		{
-			Form::set_value($form_name, $field_name, (isset($attr['value']) ? $attr['value'] : null));
+			static::set_value($form_name, $field_name, (isset($attr['value']) ? $attr['value'] : null));
 		}
 	}
 }

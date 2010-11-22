@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -229,11 +229,11 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 * [!!] You cannot modify a database result.
 	 *
 	 * @return  void
-	 * @throws  Fuel_Exception
+	 * @throws  FuelException
 	 */
 	final public function offsetSet($offset, $value)
 	{
-		//throw new Fuel_Exception('Database results are read-only');
+		//throw new FuelException('Database results are read-only');
 	}
 
 	/**
@@ -242,11 +242,11 @@ abstract class Fuel_DB_Result implements Countable, Iterator, SeekableIterator, 
 	 * [!!] You cannot modify a database result.
 	 *
 	 * @return  void
-	 * @throws  Fuel_Exception
+	 * @throws  FuelException
 	 */
 	final public function offsetUnset($offset)
 	{
-		//throw new Fuel_Exception('Database results are read-only');
+		//throw new FuelException('Database results are read-only');
 	}
 
 	/**

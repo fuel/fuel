@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or exit('No direct script access allowed');
+<?php
 /**
  * Fuel
  *
@@ -11,7 +11,9 @@
  * @copyright	2010 Dan Horrigan
  */
 
-class Fuel_Benchmark {
+namespace Fuel;
+
+class Benchmark {
 
 	protected static $benchmarks = array();
 
@@ -26,7 +28,7 @@ class Fuel_Benchmark {
 	 */
 	public static function start($name)
 	{
-		Benchmark::$benchmarks[$name] = array (
+		static::$benchmarks[$name] = array (
 			'start_time'   => microtime(TRUE),
 			'start_memory' => memory_get_usage(),
 			'stop_time'    => FALSE,
@@ -42,8 +44,8 @@ class Fuel_Benchmark {
 	 */
 	public static function stop($name)
 	{
-		Benchmark::$benchmarks[$name]['stop_time']		= microtime(true);
-		Benchmark::$benchmarks[$name]['stop_memory']	= memory_get_usage();
+		static::$benchmarks[$name]['stop_time']		= microtime(true);
+		static::$benchmarks[$name]['stop_memory']	= memory_get_usage();
 	}
 
 	/**
@@ -55,7 +57,7 @@ class Fuel_Benchmark {
 	public static function delete($token)
 	{
 		// Remove the benchmark
-		unset(Benchmark::$benchmarks[$name]);
+		unset(static::$benchmarks[$name]);
 	}
 
 	/**
@@ -67,8 +69,8 @@ class Fuel_Benchmark {
 	public static function total($name)
 	{
 		return array (
-			Benchmark::total_time($name),
-			Benchmark::total_mem($name),
+			static::total_time($name),
+			static::total_mem($name),
 		);
 	}
 
@@ -81,17 +83,17 @@ class Fuel_Benchmark {
 	 */
 	public static function total_time($name)
 	{
-		if ( ! isset(Benchmark::$benchmarks[$name]))
+		if ( ! isset(static::$benchmarks[$name]))
 		{
 			return false;
 		}
 
-		if (Benchmark::$benchmarks[$name]['stop_time'] === false)
+		if (static::$benchmarks[$name]['stop_time'] === false)
 		{
-			Benchmark::stop($name);
+			static::stop($name);
 		}
 
-		return Benchmark::$benchmarks[$name]['stop_time'] - Benchmark::$benchmarks[$name]['start_time'];
+		return static::$benchmarks[$name]['stop_time'] - static::$benchmarks[$name]['start_time'];
 	}
 
 	/**
@@ -103,28 +105,28 @@ class Fuel_Benchmark {
 	 */
 	public static function total_mem($name)
 	{
-		if ( ! isset(Benchmark::$benchmarks[$name]))
+		if ( ! isset(static::$benchmarks[$name]))
 		{
 			return false;
 		}
 
-		if (Benchmark::$benchmarks[$name]['stop_memory'] === false)
+		if (static::$benchmarks[$name]['stop_memory'] === false)
 		{
-			Benchmark::stop($name);
+			static::stop($name);
 		}
 
-		return Benchmark::$benchmarks[$name]['stop_memory'] - Benchmark::$benchmarks[$name]['start_memory'];
+		return static::$benchmarks[$name]['stop_memory'] - static::$benchmarks[$name]['start_memory'];
 	}
 
 	public static function app_total()
 	{
-		Benchmark::$benchmarks['fuel.app'] = array (
+		static::$benchmarks['fuel.app'] = array (
 			'start_time'   => FUEL_START_TIME,
 			'start_memory' => FUEL_START_MEM,
 		);
-		Benchmark::stop('fuel.app');
+		static::stop('fuel.app');
 
-		return Benchmark::total('fuel.app');
+		return static::total('fuel.app');
 	}
 
 }

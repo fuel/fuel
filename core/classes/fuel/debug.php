@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,8 +12,12 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Debug {
+namespace Fuel;
+
+class Debug {
 	
+	protected static $files = array();
+
 	/**
 	 * Quick and dirty way to output a mixed variable to the browser
 	 *
@@ -50,7 +54,53 @@ class Fuel_Debug {
 		echo "</pre>";
 		echo "</div>";
 	}
+
+	/**
+	 * Returns the debug lines from the specified file
+	 *
+	 * @access	protected
+	 * @param	string		the file path
+	 * @param	int			the line number
+	 * @param	bool		whether to use syntax highlighting or not
+	 * @param	int			the amount of line padding
+	 * @return	array
+	 */
+	public static function file_lines($filepath, $line_num, $highlight = true, $padding = 5)
+	{
+		// We cache the entire file to reduce disk IO for multiple errors
+		if ( ! isset(static::$files[$filepath]))
+		{
+			static::$files[$filepath] = file($filepath, FILE_IGNORE_NEW_LINES);
+			array_unshift(static::$files[$filepath], '');
+		}
+
+		$start = $line_num - $padding;
+		if ($start < 0)
+		{
+			$start = 0;
+		}
+
+		$length = ($line_num - $start) + $padding + 1;
+		if (($start + $length) > count(static::$files[$filepath]) - 1)
+		{
+			$length = NULL;
+		}
+
+		$debug_lines = array_slice(static::$files[$filepath], $start, $length, TRUE);
 	
+		if ($highlight)
+		{
+			$to_replace = array('<code>', '</code>', '<span style="color: #0000BB">&lt;?php&nbsp;', "\n");
+			$replace_with = array('', '', '<span style="color: #0000BB">', '');
+	
+			foreach ($debug_lines as & $line)
+			{
+				$line = str_replace($to_replace, $replace_with, highlight_string('<?php ' . $line, TRUE));
+			}
+		}
+
+		return $debug_lines;
+	}
 }
 
 /* End of file input.php */

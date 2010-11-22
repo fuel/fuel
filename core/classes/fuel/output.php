@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Output {
+namespace Fuel;
+
+class Output {
 
 	/**
 	 * @var	int		The HTTP status code
@@ -86,7 +88,7 @@ class Fuel_Output {
 	 */
 	public static function set_header($name, $value)
 	{
-		Output::$headers[$name] = $value;
+		static::$headers[$name] = $value;
 	}
 
 	/**
@@ -104,22 +106,22 @@ class Fuel_Output {
 	 */
 	public static function redirect($url, $method = 'location', $redirect_code = 302)
 	{
-		Output::$status = $redirect_code;
+		static::$status = $redirect_code;
 
 		if ($method == 'location')
 		{
-			Output::set_header('Location', $url);
+			static::set_header('Location', $url);
 		}
 		elseif ($method == 'refresh')
 		{
-			Output::set_header('Refresh', '0;url='.$url);
+			static::set_header('Refresh', '0;url='.$url);
 		}
 		else
 		{
 			return;
 		}
 
-		Output::send_headers();
+		static::send_headers();
 		exit;
 	}
 
@@ -135,9 +137,9 @@ class Fuel_Output {
 		{
 			// Send the protocol line first
 			$protocol = Input::server('SERVER_PROTOCOL') ? Input::server('SERVER_PROTOCOL') : 'HTTP/1.1';
-			header($protocol.' '.Output::$status.' '.Output::$statuses[Output::$status]);
+			header($protocol.' '.static::$status.' '.static::$statuses[static::$status]);
 
-			foreach (Output::$headers as $name => $value)
+			foreach (static::$headers as $name => $value)
 			{
 				is_string($name) and $value = "{$name}: {$value}";
 				header($value, true);

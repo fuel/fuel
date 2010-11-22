@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,9 +12,11 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // --------------------------------------------------------------------
 
-class Fuel_Session_Driver {
+class Session_Driver {
 
 	/*
 	 * @var	session class configuration
@@ -89,17 +91,23 @@ class Fuel_Session_Driver {
 	 */
 	public function write()
 	{
-		// cleanup any used flash variables
-		$this->_cleanup_flash();
+		static $write_on_finish_event = false;
 
-		// create the session if needed
-		if (empty($this->keys))
+		// do we need to set a write_on_finish event?
+		if ($this->config['write_on_finish'])
 		{
-			$this->create();
+			// check if we need to register the shutdown event
+			if ( ! $write_on_finish_event)
+			{
+				// register a shutdown event to update the session
+				Event::register('shutdown', array($this, 'write_session'));
+				$write_on_finish_event = true;
+			}
 		}
-
-		// write the session cookie
-		$this->_set_cookie($this->keys['session_id']);
+		else
+		{
+			$this->write_session();
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -296,6 +304,7 @@ class Fuel_Session_Driver {
 			case 'match_ip':
 			case 'match_ua':
 			case 'flash_auto_expire':
+			case 'write_on_finish':
 				$this->config[$name] = (bool) $value;
 				break;
 			// strings
@@ -316,6 +325,32 @@ class Fuel_Session_Driver {
 			default:
 				break;
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Write the session
+	 *
+	 * This method is either called by every write operation, of at the
+	 * end of processing a page request by the shutdown event handler
+	 *
+	 * @access	public	(otherwise the event handler can't access it!)
+	 * @return  void
+	 */
+	public function write_session()
+	{
+		// cleanup any used flash variables
+		$this->_cleanup_flash();
+
+		// create the session if needed
+		if (empty($this->keys))
+		{
+			$this->create();
+		}
+
+		// write the session cookie
+		$this->_set_cookie($this->keys['session_id']);
 	}
 
 	// --------------------------------------------------------------------
@@ -407,7 +442,7 @@ class Fuel_Session_Driver {
 		$payload = Encrypt::encrypt($this->_serialize($payload));
 		if (strlen($payload) > 4000)
 		{
-			throw new Fuel_Exception('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
+			throw new FuelException('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
 		}
 
 		// write the session cookie

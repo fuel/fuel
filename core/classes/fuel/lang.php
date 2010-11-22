@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,7 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-class Fuel_Lang {
+namespace Fuel;
+
+class Lang {
 	
 	public static $lines = array();
 	
@@ -25,7 +27,7 @@ class Fuel_Lang {
 		$lang = array();
 
 		// Use the current language, failing that use the fallback language
-		foreach (array(Config::get('language'), Lang::$fallback) as $language)
+		foreach (array(Config::get('language'), static::$fallback) as $language)
 		{
 			if ($path = Fuel::find_file('lang/'.$language, $file))
 			{
@@ -36,15 +38,15 @@ class Fuel_Lang {
 
 		if ($group === NULL)
 		{
-			Lang::$lines = Lang::$lines + $lang;
+			static::$lines = static::$lines + $lang;
 		}
 		else
 		{
-			if ( ! isset(Lang::$lines[$group]))
+			if ( ! isset(static::$lines[$group]))
 			{
-				Lang::$lines[$group] = array();
+				static::$lines[$group] = array();
 			}
-			Lang::$lines[$group] = Lang::$lines[$group] + $lang;
+			static::$lines[$group] = static::$lines[$group] + $lang;
 		}
 	}
 
@@ -57,9 +59,9 @@ class Fuel_Lang {
 			$return = false;
 			foreach ($parts as $part)
 			{
-				if ($return === false and isset(Lang::$lines[$part]))
+				if ($return === false and isset(static::$lines[$part]))
 				{
-					$return = Lang::$lines[$part];
+					$return = static::$lines[$part];
 				}
 				elseif (isset($return[$part]))
 				{
@@ -70,12 +72,12 @@ class Fuel_Lang {
 					return false;
 				}
 			}
-			return  Lang::parse_params($return, $params);
+			return  static::parse_params($return, $params);
 		}
 
-		isset(Lang::$lines[$line]) and $line = Lang::$lines[$line];
+		isset(static::$lines[$line]) and $line = static::$lines[$line];
 		
-		return Lang::parse_params($line, $params);
+		return static::parse_params($line, $params);
 	}
 
 	public function parse_params($string, $array = array())
@@ -95,12 +97,12 @@ class Fuel_Lang {
 	{
 		if ($group === NULL)
 		{
-			Lang::$lines[$line] = $value;
+			static::$lines[$line] = $value;
 			return true;
 		}
-		elseif (isset(Lang::$lines[$group][$line]))
+		elseif (isset(static::$lines[$group][$line]))
 		{
-			Lang::$lines[$group][$line] = $value;
+			static::$lines[$group][$line] = $value;
 			return true;
 		}
 		return false;

@@ -13,7 +13,7 @@
  * @link		http://fuelphp.com
  */
 
-// ------------------------------------------------------------------------
+namespace Fuel\Controller;
 
 /**
  * Template Controller class
@@ -24,8 +24,7 @@
  * @category	Core
  * @author		Fuel Development Team
  */
-
-abstract class Fuel_Controller_Template extends Controller {
+abstract class Template extends Controller\Base {
 
 	/**
 	* @var string page template

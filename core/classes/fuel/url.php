@@ -1,5 +1,4 @@
-<?php defined('COREPATH') or exit('No direct script access allowed');
-
+<?php
 /**
  * Fuel
  *
@@ -12,7 +11,9 @@
  * @copyright	2010 Dan Horrigan
  */
 
-class Fuel_URL {
+namespace Fuel;
+
+class URL {
 
 	/**
 	 * Anchor
@@ -25,9 +26,10 @@ class Fuel_URL {
 	 * @param	array	The attributes array
 	 * @return	string	The html link
 	 */
-	public static function anchor($href, $text, $attributes = NULL)
+	public static function anchor($href, $text, $attributes = array())
 	{
-		return '<a href="'.URL::href($href).'"'.URL::attr($attributes).'>'.$text.'</a>';
+		$attributes['href'] = static::href($href);
+		return html_tag('a', $attributes, $text);
 	}
 
 	// --------------------------------------------------------------------
@@ -69,7 +71,7 @@ class Fuel_URL {
 	 */
 	public static function current()
 	{
-		return URL::href(Request::active()->uri->uri);
+		return static::href(Request::active()->uri->uri);
 	}
 
 	// --------------------------------------------------------------------
@@ -138,7 +140,7 @@ class Fuel_URL {
 	 * @param	string	The separator (either - or _)
 	 * @return	string	The URL-friendly title
 	 */
-	public function friendly_title($str, $sep = '-', $lowercase = FALSE)
+	public static function friendly_title($str, $sep = '-', $lowercase = FALSE)
 	{
 		if ($sep != '-' && $sep != '_')
 		{
@@ -203,38 +205,6 @@ class Fuel_URL {
 		}
 
 		return $url;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Attr
-	 *
-	 * Converts an array of attribute into a string
-	 *
-	 * @access	public
-	 * @param	array	The attribute array
-	 * @return	string	The attribute string
-	 */
-	public static function attr($attributes = NULL)
-	{
-		if (empty($attributes))
-		{
-			return '';
-		}
-
-		$final = '';
-		foreach ($attributes as $key => $value)
-		{
-			if ($value === NULL)
-			{
-				continue;
-			}
-
-			$final .= ' '.$key.'="'.htmlspecialchars($value, ENT_QUOTES).'"';
-		}
-
-		return $final;
 	}
 }
 

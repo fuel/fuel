@@ -1,5 +1,4 @@
-<?php defined('COREPATH') or exit('No direct script access allowed');
-
+<?php
 /**
  * Fuel
  *
@@ -12,7 +11,9 @@
  * @copyright	2010 Dan Horrigan
  */
 
-class Fuel_Asset {
+namespace Fuel;
+
+class Asset {
 
 	/**
 	 * @var	array	The asset paths
@@ -56,7 +57,7 @@ class Fuel_Asset {
 	public static function _init()
 	{
 		// Prevent multiple initializations
-		if (self::$initialized)
+		if (static::$initialized)
 		{
 			return;
 		}
@@ -67,18 +68,18 @@ class Fuel_Asset {
 
 		foreach($paths as $path)
 		{
-			self::add_path($path);
+			static::add_path($path);
 		}
 
-		self::$_asset_url = Config::get('asset.url');
+		static::$_asset_url = Config::get('asset.url');
 
-		self::$_folders = array(
+		static::$_folders = array(
 			'css'	=>	Config::get('asset.css_dir'),
 			'js'	=>	Config::get('asset.js_dir'),
 			'img'	=>	Config::get('asset.img_dir')
 		);
 
-		self::$initialized = true;
+		static::$initialized = true;
 	}
 
 	// --------------------------------------------------------------------
@@ -94,7 +95,7 @@ class Fuel_Asset {
 	 */
 	public static function add_path($path)
 	{
-		array_unshift(self::$_asset_paths, str_replace('../', '', $path));
+		array_unshift(static::$_asset_paths, str_replace('../', '', $path));
 	}
 
 	// --------------------------------------------------------------------
@@ -110,9 +111,9 @@ class Fuel_Asset {
 	 */
 	public static function remove_path($path)
 	{
-		if (($key = array_search(str_replace('../', '', $path), self::$_asset_paths)) !== false)
+		if (($key = array_search(str_replace('../', '', $path), static::$_asset_paths)) !== false)
 		{
-			unset(self::$_asset_paths[$key]);
+			unset(static::$_asset_paths[$key]);
 		}
 	}
 
@@ -132,7 +133,7 @@ class Fuel_Asset {
 	{
 		if (is_string($group))
 		{
-			$group = isset(self::$_groups[$group]) ? self::$_groups[$group] : array();
+			$group = isset(static::$_groups[$group]) ? static::$_groups[$group] : array();
 		}
 
 		$return = '';
@@ -144,12 +145,12 @@ class Fuel_Asset {
 
 			if (strpos($filename, '://') === false)
 			{
-				if ( ! ($file = self::find_file($filename, self::$_folders[$type])))
+				if ( ! ($file = static::find_file($filename, static::$_folders[$type])))
 				{
-					throw new Fuel_Exception('Could not find asset: '.$filename);
+					throw new FuelException('Could not find asset: '.$filename);
 				}
 				
-				$file = self::$_asset_url.$file;
+				$file = static::$_asset_url.$file;
 			}
 			else
 			{
@@ -167,23 +168,23 @@ class Fuel_Asset {
 					$attr['type'] = 'text/css';
 					$attr['href'] = $file;
 
-					$return .= '<link'.self::attr($attr).' />'.PHP_EOL;
+					$return .= html_tag('link', $attr).PHP_EOL;
 					break;
 				case 'js':
 					if ($raw)
 					{
-						return '<script type="text/javascript">'.PHP_EOL.file_get_contents($file).PHP_EOL.'</script>';
+						return html_tag('script', array('type' => 'text/javascript'), PHP_EOL.file_get_contents($file).PHP_EOL).PHP_EOL;
 					}
 					$attr['type'] = 'text/javascript';
 					$attr['src'] = $file;
 
-					$return .= '<script'.self::attr($attr).'></script>'.PHP_EOL;
+					$return .= html_tag('script', $attr, '').PHP_EOL;
 					break;
 				case 'img':
 					$attr['src'] = $file;
 					$attr['alt'] = isset($attr['alt']) ? $attr['alt'] : '';
 
-					$return .= '<img'.self::attr($attr).' />';
+					$return .= html_tag('img', $attr );
 					break;
 			}
 
@@ -216,11 +217,11 @@ class Fuel_Asset {
 			$render = true;
 		}
 
-		self::_parse_assets('css', $stylesheets, $attr, $group);
+		static::_parse_assets('css', $stylesheets, $attr, $group);
 
 		if ($render)
 		{
-			return self::render($group, $raw);
+			return static::render($group, $raw);
 		}
 
 		return '';
@@ -250,11 +251,11 @@ class Fuel_Asset {
 			$render = true;
 		}
 
-		self::_parse_assets('js', $scripts, $attr, $group);
+		static::_parse_assets('js', $scripts, $attr, $group);
 
 		if ($render)
 		{
-			return self::render($group, $raw);
+			return static::render($group, $raw);
 		}
 
 		return '';
@@ -284,11 +285,11 @@ class Fuel_Asset {
 			$render = true;
 		}
 
-		self::_parse_assets('img', $images, $attr, $group);
+		static::_parse_assets('img', $images, $attr, $group);
 
 		if ($render)
 		{
-			return self::render($group);
+			return static::render($group);
 		}
 
 		return '';
@@ -317,45 +318,12 @@ class Fuel_Asset {
 		
 		foreach ($assets as $key => $asset)
 		{
-			self::$_groups[$group][] = array(
+			static::$_groups[$group][] = array(
 				'type'	=>	$type,
 				'file'	=>	$asset,
 				'attr'	=>	(array) $attr
 			);
 		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Attr
-	 *
-	 * Converts an array of attribute into a string
-	 *
-	 * @access	public
-	 * @param	array	The attribute array
-	 * @return	string	The attribute string
-	 * @return	string
-	 */
-	public static function attr($attributes = NULL)
-	{
-		if (empty($attributes))
-		{
-			return '';
-		}
-
-		$final = '';
-		foreach ($attributes as $key => $value)
-		{
-			if ($value === NULL)
-			{
-				continue;
-			}
-
-			$final .= ' '.$key.'="'.htmlspecialchars($value, ENT_QUOTES).'"';
-		}
-
-		return $final;
 	}
 
 	// --------------------------------------------------------------------
@@ -372,7 +340,7 @@ class Fuel_Asset {
 	 */
 	public static function find_file($file, $folder)
 	{
-		foreach (self::$_asset_paths as $path)
+		foreach (static::$_asset_paths as $path)
 		{
 			if (is_file($path.$folder.$file))
 			{

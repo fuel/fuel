@@ -6,19 +6,14 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Fuel Development Team
+ * @author		Harro "WanWizard" Verton
  * @license		MIT License
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+return array(
+	'salt'			=> 'sup3rs3Cr3tk3y564'				// Encryption salt. Make sure to update this to something random!!!!
+);
 
-class Env {
-	const TEST = 0;
-	const DEVELOPMENT = 1;
-	const QA = 2;
-	const PRODUCTION = 3;
-}
-
-/* End of file env.php */
+/* End of file config/encrypt.php */

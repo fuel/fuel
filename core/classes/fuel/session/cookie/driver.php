@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -12,9 +12,11 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel;
+
 // --------------------------------------------------------------------
 
-class Fuel_Session_Cookie_Driver extends Session_Driver {
+class Session_Cookie_Driver extends Session_Driver {
 
 	// --------------------------------------------------------------------
 
