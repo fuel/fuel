@@ -43,14 +43,17 @@ class Fuel {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function init()
+	public static function init($autoloaders)
 	{
-		if (Fuel::$initialized)
+		if (static::$initialized)
 		{
 			throw new FuelException("You can't initialize Fuel more than once.");
 		}
 
-		Fuel::$_paths = array(APPPATH, COREPATH);
+		static::$_paths = array(APPPATH, COREPATH);
+
+		// Add the core and optional application loader to the packages array
+		static::$packages = $autoloaders;
 
 		register_shutdown_function('Error::shutdown_handler');
 		set_exception_handler('Error::exception_handler');
@@ -61,9 +64,9 @@ class Fuel {
 
 		Config::load('config');
 
-		Fuel::$bm = Config::get('benchmarking', true);
-		Fuel::$env = Config::get('environment');
-		Fuel::$locale = Config::get('locale');
+		static::$bm = Config::get('benchmarking', true);
+		static::$env = Config::get('environment');
+		static::$locale = Config::get('locale');
 
 		Config::load('routes', 'routes');
 		Route::$routes = Config::get('routes');
@@ -71,7 +74,7 @@ class Fuel {
 		//Load in the packages
 		foreach (Config::get('packages', array()) as $package)
 		{
-			Fuel::add_package($package);
+			static::add_package($package);
 		}
 
 		if (Config::get('base_url') === false)
@@ -88,9 +91,9 @@ class Fuel {
 		}
 
 		// Set some server options
-		setlocale(LC_ALL, Fuel::$locale);
+		setlocale(LC_ALL, static::$locale);
 
-		Fuel::$initialized = true;
+		static::$initialized = true;
 	}
 	
 	/**
@@ -123,7 +126,7 @@ class Fuel {
 		$path = $directory.DS.strtolower($file).$ext;
 
 		$found = false;
-		foreach (Fuel::$_paths as $dir)
+		foreach (static::$_paths as $dir)
 		{
 			if (is_file($dir.$path))
 			{
@@ -151,8 +154,8 @@ class Fuel {
 	 * 
 	 * Examples:
 	 * 
-	 * Fuel::add_package('foo');
-	 * Fuel::add_package(array('foo' => PKGPATH.'bar/foo/'));
+	 * static::add_package('foo');
+	 * static::add_package(array('foo' => PKGPATH.'bar/foo/'));
 	 * 
 	 * @access	public
 	 * @param	array|string	the package name or array of packages
@@ -166,11 +169,11 @@ class Fuel {
 		}
 		foreach ($package as $name => $path)
 		{
-			if (array_key_exists($name, Fuel::$packages))
+			if (array_key_exists($name, static::$packages))
 			{
 				continue;
 			}
-			Fuel::$packages[$name] = Fuel::load($path.'autoload.php');
+			static::$packages[$name] = static::load($path.'autoload.php');
 		}
 		
 		/**
@@ -184,20 +187,11 @@ class Fuel {
 		// (from the last added package).  These will not be unregistered.
 		$loaders = array_slice($loaders, 1, -1);
 
-		/**
-		 * Here we unregister all but the APPPATH and the last loaded autoloader.
-		 * This takes the last autoloader and moves it to position 2 in the 
-		 * autoloader stack.
-		 */
-		foreach ($loaders as $loader)
+		// Put the APP autoloader back on top if it exists
+		if (array_key_exists('app', static::$packages))
 		{
-			spl_autoload_unregister(array($loader[0], $loader[1]));
-		}
-
-		// Load back in all the autoloaders
-		foreach ($loaders as $loader)
-		{
-			spl_autoload_register(array($loader[0], $loader[1]));
+			spl_autoload_unregister(array(static::$packages['app'], 'load'));
+			spl_autoload_register(array(static::$packages['app'], 'load'), true, true);
 		}
 	}
 
@@ -210,8 +204,8 @@ class Fuel {
 	 */
 	public static function remove_package($package)
 	{
-		spl_autoload_unregister(array(Fuel::$packages[$name], 'load'));
-		unset(Fuel::$packages[$name]);
+		spl_autoload_unregister(array(static::$packages[$name], 'load'));
+		unset(static::$packages[$name]);
 	}
 
 	/**
