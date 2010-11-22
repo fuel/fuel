@@ -175,17 +175,6 @@ class Fuel {
 			}
 			static::$packages[$name] = static::load($path.'autoload.php');
 		}
-		
-		/**
-		 * We need to re-order the autoloaders because spl_autoload_register
-		 * calls the autoloaders in FIFO, so we need to do all this to insert
-		 * the new packages loader in second place after APPPATH's
-		 */
-		$loaders = spl_autoload_functions();
-		
-		// Remove the first autoloader (from APPPATH), and the last autoloader
-		// (from the last added package).  These will not be unregistered.
-		$loaders = array_slice($loaders, 1, -1);
 
 		// Put the APP autoloader back on top if it exists
 		if (array_key_exists('app', static::$packages))
