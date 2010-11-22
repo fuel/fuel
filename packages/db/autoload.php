@@ -16,13 +16,12 @@ $loader = new Autoloader;
 
 $loader->default_path(__DIR__.'/classes/');
 
+$loader->add_namespaces(array(
+	'Fuel'		=> __DIR__.'/classes/',
+));
+
 $loader->add_aliases(array(
-	'DB'				=> 'Fuel_DB',
-	'DB_Driver'			=> array('Fuel_DB_Driver', true),
-	'DB_Query'			=> 'Fuel_DB_Query',
-	'DB_Result'			=> array('Fuel_DB_Result', true),
-	'DB_Mysql_Driver'	=> 'Fuel_DB_Mysql_Driver',
-	'DB_Mysql_Result'	=> 'Fuel_DB_Mysql_Result',
+	'DB'	=> 'Fuel\\DB',
 ));
 
 $loader->register();
