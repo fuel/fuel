@@ -176,12 +176,9 @@ class Fuel {
 			static::$packages[$name] = static::load($path.'autoload.php');
 		}
 
-		// Put the APP autoloader back on top if it exists
-		if (array_key_exists('app', static::$packages))
-		{
-			spl_autoload_unregister(array(static::$packages['app'], 'load'));
-			spl_autoload_register(array(static::$packages['app'], 'load'), true, true);
-		}
+		// Put the APP autoloader back on top
+		spl_autoload_unregister(array(static::$packages['app'], 'load'));
+		spl_autoload_register(array(static::$packages['app'], 'load'), true, true);
 	}
 
 	/**
