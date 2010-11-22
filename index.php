@@ -41,7 +41,7 @@ define('INTERNAL_ENC', 'ISO-8859-1');
 /**
  * Get the current path
  */
-define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
+define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
 
 /**
  * Boots the system and executes the request.  To change the path to the core,

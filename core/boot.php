@@ -28,7 +28,7 @@ if ( ! is_dir($package_path) and is_dir(DOCROOT.$package_path))
 // Define the global path constants
 define('APPPATH', realpath($app_path).DS);
 define('PKGPATH', realpath($package_path).DS);
-define('COREPATH', realpath(dirname(__FILE__)).DS);
+define('COREPATH', realpath(__DIR__).DS);
 
 // save a bit of memory by unsetting the path array
 unset($app_path, $package_path);
