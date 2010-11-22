@@ -14,7 +14,7 @@
 
 namespace Fuel;
 
-class Encrypt {
+class Crypt {
 
 	/**
 	 * @var	boolean	idicator for the usage of mcrypt
@@ -98,7 +98,7 @@ class Encrypt {
 	 * @access	public
 	 * @return	string	encrypted value
 	 */
-	public static function encrypt($value, $salt = false)
+	public static function encode($value, $salt = false)
 	{
 		// if no salt is given, use the default salt
 		if ($salt === false)
@@ -147,7 +147,7 @@ class Encrypt {
 	 * @access	public
 	 * @return	string	encrypted value
 	 */
-	public static function decrypt($value, $salt = false)
+	public static function decode($value, $salt = false)
 	{
 		// if no salt is given, use the default salt
 		if ($salt === false)
@@ -214,7 +214,7 @@ class Encrypt {
 	 * @access	private
 	 * @return	string
 	 */
-	protected function _add_cipher_noise($value, $salt)
+	protected static function _add_cipher_noise($value, $salt)
 	{
 		$keyhash = sha1($salt);
 		$keylen = strlen($keyhash);
@@ -244,7 +244,7 @@ class Encrypt {
 	 * @access	private
 	 * @return	string
 	 */
-	protected function _remove_cipher_noise($value, $salt)
+	protected static function _remove_cipher_noise($value, $salt)
 	{
 		$keyhash = sha1($salt);
 		$keylen = strlen($keyhash);
@@ -279,7 +279,7 @@ class Encrypt {
 	 * @access	private
 	 * @return	array	keys used for the encryption algorithm
 	 */
-	protected function _crypt_key($salt)
+	protected static function _crypt_key($salt)
 	{
 		$keys = array();
 		$c_key = base64_encode(sha1(md5($salt)));
