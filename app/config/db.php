@@ -12,8 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
-
 return array(
 	'default' => array(
 		'type'			=> 'mysql',

@@ -12,8 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
-
 return array(
 
 	/**
