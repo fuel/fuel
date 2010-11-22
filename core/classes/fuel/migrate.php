@@ -45,31 +45,26 @@ class Migrate
 {
 	public static $version = 0;
 
-	private static $db;
-
 	public static function _init()
 	{
 		Log::debug('Migrate class initialized');
 
 		Config::load('migration', 'migration');
 
-		static::$db = DB::instance();
-		static::$db->connect();
-
-		static::$db->query(DB::INSERT, 'CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");');
+		DB::query(Database::INSERT, 'CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
 
 		// Check if there is a version
-		$foo = static::$db->query(DB::SELECT, 'SELECT `current` FROM `migration`')->as_array();
+		$foo = DB::query(Database::SELECT, 'SELECT `current` FROM `migration`')->execute()->current();
 
 		// Not set, so we are on 0
-		if ( ! isset($foo[0]->current))
+		if ( ! isset($foo['current']))
 		{
-			static::$db->query(DB::INSERT, 'INSERT INTO `migration` (`current`) VALUES (0)');
+			DB::query(Database::INSERT, 'INSERT INTO `migration` (`current`) VALUES (0)')->execute();
 		}
 
 		else
 		{
-			static::$version = (int) $foo[0]->current;
+			static::$version = (int) $foo['current'];
 		}
 	}
 
@@ -213,7 +208,7 @@ class Migrate
 			call_user_func(array(new $class, $method));
 
 			static::$version += $step;
-			static::_update_schema_version(static::$version);
+			static::_update_schema_version(static::$version - $step, static::$version);
 		}
 
 		Log::info('Migrated to '.static::$version.' successfully.');
@@ -273,8 +268,8 @@ class Migrate
 	 * @param $schema_version integer	Schema version reached
 	 * @return	void					Outputs a report of the migration
 	 */
-	private function _update_schema_version($version)
+	private function _update_schema_version($old_version, $version)
 	{
-		static::$db->query(DB::UPDATE, 'UPDATE `migration` SET `current` = '.(int)$version);
+		DB::query(Database::UPDATE, 'UPDATE `migration` SET `current` = '.(int)$version.' WHERE `current` = '.(int)$old_version)->execute();
 	}
 }
