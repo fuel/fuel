@@ -14,6 +14,6 @@
 
 namespace Fuel;
 
-class SessionException extends FuelException { }
+class SessionException extends Exception { }
 
 /* End of file exception.php */

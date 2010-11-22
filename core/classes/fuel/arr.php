@@ -87,7 +87,7 @@ class Arr {
 		
 		if ( ! is_array($keys))
 		{
-			throw new FuelException('Arr::elements() - $keys must be an array.');
+			throw new Exception('Arr::elements() - $keys must be an array.');
 		}
 		
 		foreach ($keys as $key)

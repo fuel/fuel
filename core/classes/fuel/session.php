@@ -48,7 +48,7 @@ class Session
 			// validate the config, set some defaults if needed
 			if ( ! isset($config['type']) OR ! in_array($config['type'], self::$valid_storage))
 			{
-				throw new FuelException('You have specified an invalid session storage system.');
+				throw new Exception('You have specified an invalid session storage system.');
 			}
 
 			// instantiate the driver

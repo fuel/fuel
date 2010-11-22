@@ -41,7 +41,7 @@ class URI {
 			}
 			else
 			{
-				throw new FuelException('Unable to detect the URI.');
+				throw new Exception('Unable to detect the URI.');
 			}
 
 			// Remove the base URL from the URI

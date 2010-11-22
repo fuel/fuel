@@ -93,7 +93,7 @@ class View {
 	 *
 	 * @param   string  variable name
 	 * @return  mixed
-	 * @throws  FuelException
+	 * @throws  Exception
 	 */
 	public function & __get($key)
 	{
@@ -107,7 +107,7 @@ class View {
 		}
 		else
 		{
-//			throw new FuelException('View variable is not set: :var',
+//			throw new Exception('View variable is not set: :var',
 //				array(':var' => $key));
 		}
 	}

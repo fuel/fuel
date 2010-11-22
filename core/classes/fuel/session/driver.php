@@ -442,7 +442,7 @@ class Session_Driver {
 		$payload = Encrypt::encrypt($this->_serialize($payload));
 		if (strlen($payload) > 4000)
 		{
-			throw new FuelException('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
+			throw new Exception('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
 		}
 
 		// write the session cookie

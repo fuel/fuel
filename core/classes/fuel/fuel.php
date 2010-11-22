@@ -47,7 +47,7 @@ class Fuel {
 	{
 		if (static::$initialized)
 		{
-			throw new FuelException("You can't initialize Fuel more than once.");
+			throw new Exception("You can't initialize Fuel more than once.");
 		}
 
 		static::$_paths = array(APPPATH, COREPATH);

@@ -100,12 +100,12 @@ class Request {
 				}
 				else
 				{
-					throw new FuelException('404 Action not found.');
+					throw new Exception('404 Action not found.');
 				}
 			}
 			else
 			{
-				throw new FuelException('404 Controller not found.');
+				throw new Exception('404 Controller not found.');
 			}
 		}
 	}

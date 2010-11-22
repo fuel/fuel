@@ -71,7 +71,7 @@ class Ftp
 			// Check that it exists
 			if ( ! is_array($config_arr) or $config_arr === array())
 			{
-				throw new FuelException('You have specified an invalid ftp connection group: '.$config);
+				throw new Exception('You have specified an invalid ftp connection group: '.$config);
 			}
 
 			$config = $config_arr;
@@ -104,7 +104,7 @@ class Ftp
 		{
 //			if( ! function_exists('ftp_ssl_connect'))
 //			{
-//				throw new FuelException('ftp_ssl_connect() is missing.');
+//				throw new Exception('ftp_ssl_connect() is missing.');
 //			}
 
 			$this->_conn_id = @ftp_ssl_connect($this->_hostname, $this->_port);
@@ -119,7 +119,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_unable_to_connect');
+				throw new Exception('ftp_unable_to_connect');
 			}
 			return false;
 		}
@@ -128,7 +128,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_unable_to_login');
+				throw new Exception('ftp_unable_to_login');
 			}
 		}
 
@@ -168,7 +168,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_no_connection');
+				throw new Exception('ftp_no_connection');
 			}
 			return false;
 		}
@@ -205,7 +205,7 @@ class Ftp
 		{
 			if ($this->_debug == true and $supress_debug == false)
 			{
-				throw new FuelException('ftp_unable_to_change_dir');
+				throw new Exception('ftp_unable_to_change_dir');
 			}
 			return false;
 		}
@@ -235,7 +235,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_unable_to_makdir');
+				throw new Exception('ftp_unable_to_makdir');
 			}
 			return false;
 		}
@@ -269,7 +269,7 @@ class Ftp
 
 		if ( ! file_exists($locpath))
 		{
-			throw new FuelException('ftp_no_source_file');
+			throw new Exception('ftp_no_source_file');
 			return false;
 		}
 
@@ -289,7 +289,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_unable_to_upload');
+				throw new Exception('ftp_unable_to_upload');
 			}
 			return false;
 		}
@@ -337,7 +337,7 @@ class Ftp
 		{
 			if ($this->_debug === true)
 			{
-				throw new FuelException('ftp_unable_to_download');
+				throw new Exception('ftp_unable_to_download');
 			}
 			return false;
 		}
@@ -371,7 +371,7 @@ class Ftp
 			{
 				$msg = ($move == false) ? 'ftp_unable_to_rename' : 'ftp_unable_to_move';
 
-				throw new FuelException($msg);
+				throw new Exception($msg);
 			}
 			return false;
 		}
@@ -416,7 +416,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_unable_to_delete');
+				throw new Exception('ftp_unable_to_delete');
 			}
 			return false;
 		}
@@ -465,7 +465,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_unable_to_delete');
+				throw new Exception('ftp_unable_to_delete');
 			}
 			return false;
 		}
@@ -495,7 +495,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_unable_to_chmod');
+				throw new Exception('ftp_unable_to_chmod');
 			}
 			return false;
 		}
@@ -506,7 +506,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new FuelException('ftp_unable_to_chmod');
+				throw new Exception('ftp_unable_to_chmod');
 			}
 			return false;
 		}
