@@ -26,7 +26,10 @@ ini_set('short_open_tag', 0);
  *
  * @see http://www.php.net/timezones
  */
-date_default_timezone_set('GMT');
+if ( ! date_default_timezone_get())
+{
+	date_default_timezone_set('GMT');
+}
 
 /**
  * Define the internal encoding to use.
