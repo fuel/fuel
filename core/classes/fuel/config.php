@@ -60,7 +60,7 @@ class Config {
 				}
 				else
 				{
-					return false;
+					return $default;
 				}
 			}
 			return $return;
