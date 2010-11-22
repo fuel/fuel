@@ -35,7 +35,7 @@ class Database_Query {
 	 * @param   string   query string
 	 * @return  void
 	 */
-	public function __construct($type, $sql)
+	public function __construct($sql, $type = null)
 	{
 		$this->_type = $type;
 		$this->_sql = $sql;
@@ -206,6 +206,17 @@ class Database_Query {
 			}
 		}
 */
+
+		switch(substr($sql, 0, 6))
+		{
+			case 'SELECT':
+				$this->_type = Database::SELECT;
+				break;
+			case 'INSERT':
+			case 'CREATE':
+				$this->_type = Database::INSERT;
+				break;
+		}
 		// Execute the query
 		$result = $db->query($this->_type, $sql, $this->_as_object);
 

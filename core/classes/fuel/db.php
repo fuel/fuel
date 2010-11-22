@@ -17,10 +17,10 @@ class DB {
 	 * Create a new [Database_Query] of the given type.
 	 *
 	 *     // Create a new SELECT query
-	 *     $query = DB::query(Database::SELECT, 'SELECT * FROM users');
+	 *     $query = DB::query('SELECT * FROM users');
 	 *
 	 *     // Create a new DELETE query
-	 *     $query = DB::query(Database::DELETE, 'DELETE FROM users WHERE id = 5');
+	 *     $query = DB::query('DELETE FROM users WHERE id = 5');
 	 *
 	 * Specifying the type changes the returned result. When using
 	 * `Database::SELECT`, a [Database_Query_Result] will be returned.
@@ -31,9 +31,9 @@ class DB {
 	 * @param   string   SQL statement
 	 * @return  Database_Query
 	 */
-	public static function query($type, $sql)
+	public static function query($sql, $type = null)
 	{
-		return new Database_Query($type, $sql);
+		return new Database_Query($sql, $type);
 	}
 
 	/**
