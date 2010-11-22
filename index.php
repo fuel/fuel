@@ -10,6 +10,12 @@ $app_path = './app';
 $package_path = './packages';
 
 /**
+ * If you want to use a default namespace for your application you must specify
+ * it here.
+ */
+$app_namespace = '';
+
+/**
  * We disable short open tags by default so as to not confuse people.  They
  * also interfere with generating XML documents.
  */

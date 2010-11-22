@@ -33,6 +33,8 @@ define('COREPATH', realpath(dirname(__FILE__)).DS);
 // save a bit of memory by unsetting the path array
 unset($app_path, $package_path);
 
+define('APP_NAMESPACE', trim($app_namespace, '\\'));
+
 // If the user has added a base.php to their app load it
 if (is_file(APPPATH.'base.php'))
 {
