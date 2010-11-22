@@ -15,10 +15,10 @@
 namespace Fuel;
 
 class Env {
-	const TEST = 0;
-	const DEVELOPMENT = 1;
-	const QA = 2;
-	const PRODUCTION = 3;
+	const TEST = 'test';
+	const DEVELOPMENT = 'dev';
+	const QA = 'qa';
+	const PRODUCTION = 'production';
 }
 
 /* End of file env.php */

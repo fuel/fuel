@@ -50,8 +50,10 @@ abstract class Database {
 	{
 		if ($name === NULL)
 		{
+			Config::load('db', 'db');
+
 			// Use the default instance name
-			$name = static::$default;
+			$name = Config::get('db.active');
 		}
 
 		if ( ! isset(static::$instances[$name]))
@@ -59,7 +61,6 @@ abstract class Database {
 			if ($config === NULL)
 			{
 				// Load the configuration for this database
-				Config::load('db', 'db');
 				$config = Config::get("db.{$name}");
 			}
 

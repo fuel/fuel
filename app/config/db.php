@@ -13,11 +13,13 @@
  */
 
 return array(
-	'default' => array(
+	'active' => Config::get('environment'),
+
+	'dev' => array(
 		'type'			=> 'mysql',
 		'connection'	=> array(
 			'hostname'   => 'localhost',
-			'database'   => 'fuel',
+			'database'   => 'fuel_dev',
 			'username'   => 'root',
 			'password'   => '',
 			'persistent' => FALSE,
@@ -27,6 +29,52 @@ return array(
 		'caching'      => false,
 		'profiling'    => false,
 	),
+
+	'production' => array(
+		'type'			=> 'mysql',
+		'connection'	=> array(
+			'hostname'   => 'localhost',
+			'database'   => 'fuel_prod',
+			'username'   => 'root',
+			'password'   => '',
+			'persistent' => FALSE,
+		),
+		'table_prefix' => '',
+		'charset'      => 'utf8',
+		'caching'      => false,
+		'profiling'    => false,
+	),
+
+	'test' => array(
+		'type'			=> 'mysql',
+		'connection'	=> array(
+			'hostname'   => 'localhost',
+			'database'   => 'fuel_test',
+			'username'   => 'root',
+			'password'   => '',
+			'persistent' => FALSE,
+		),
+		'table_prefix' => '',
+		'charset'      => 'utf8',
+		'caching'      => false,
+		'profiling'    => false,
+	),
+
+	'qa' => array(
+		'type'			=> 'mysql',
+		'connection'	=> array(
+			'hostname'   => 'localhost',
+			'database'   => 'fuel_qa',
+			'username'   => 'root',
+			'password'   => '',
+			'persistent' => FALSE,
+		),
+		'table_prefix' => '',
+		'charset'      => 'utf8',
+		'caching'      => false,
+		'profiling'    => false,
+	),
+
 );
 
 /* End of file db.php */
