@@ -2,12 +2,12 @@
 /**
  * This is the path to the app directory.
  */
-$app_path = './app';
+$app_path = '../fuel/app';
 
 /**
  * This is the path to the package directory.
  */
-$package_path = './packages';
+$package_path = '../fuel/packages';
 
 /**
  * If you want to use a default namespace for your application you must specify
@@ -47,6 +47,6 @@ define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
  * Boots the system and executes the request.  To change the path to the core,
  * simply change this require path.
  */
-require './core/boot.php';
+require '../fuel/core/boot.php';
 
 /* End of file index.php */
