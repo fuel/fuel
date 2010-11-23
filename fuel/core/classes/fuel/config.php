@@ -56,10 +56,30 @@ class Config {
 			return static::$items[$item];
 		}
 
-		$var = "static::\$items['".str_replace('.', "']['", $item)."']";
-		eval("\$item = isset($var) ? $var : \$default;");
+		if (strpos($item, '.') !== false)
+		{
+			$parts = explode('.', $item);
 
-		return $item;
+			$return = false;
+			foreach ($parts as $part)
+			{
+				if ($return === false and isset(static::$items[$part]))
+				{
+					$return = static::$items[$part];
+				}
+				elseif (isset($return[$part]))
+				{
+					$return = $return[$part];
+				}
+				else
+				{
+					return $default;
+				}
+			}
+			return $return;
+		}
+
+		return $default;
 	}
 
 	public static function set($item, $value)
