@@ -6,5 +6,6 @@ desktop.ini
 .buildpath
 .project
 .settings
-application/logs/
+fuel/app/logs/*/*/*
+fuel/app/classes/controller/test*
 nbproject/
