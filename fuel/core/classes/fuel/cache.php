@@ -23,7 +23,7 @@ class Cache {
 	 */
 	public static function _init()
 	{
-		Config::load('cache', 'cache');
+		Config::load('cache', true);
 	}
 	
 	/**

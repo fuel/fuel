@@ -16,61 +16,50 @@ namespace Fuel;
 
 class Config {
 	
+	public static $loaded_files = array();
+	
 	public static $items = array();
 	
-	public static $flat_items = array();
-	
-	public static function load($file, $group = NULL)
+	public static function load($file, $group = null)
 	{
+		if (array_key_exists($file, static::$loaded_files))
+		{
+			return;
+		}
+
 		$config = array();
 		if ($path = Fuel::find_file('config', $file))
 		{
 			$config = Fuel::load($path);
 		}
-		if ($group === NULL)
+		if ($group === null)
 		{
 			static::$items = static::$items + $config;
 		}
 		else
 		{
+			$group = ($group === true) ? $file : $group;
 			if ( ! isset(static::$items[$group]))
 			{
 				static::$items[$group] = array();
 			}
 			static::$items[$group] = static::$items[$group] + $config;
 		}
+
+		return $config;
 	}
 	
 	public static function get($item, $default = false)
 	{
-		if (strpos($item, '.') !== false)
-		{
-			$parts = explode('.', $item);
-
-			$return = false;
-			foreach ($parts as $part)
-			{
-				if ($return === false and isset(static::$items[$part]))
-				{
-					$return = static::$items[$part];
-				}
-				elseif (isset($return[$part]))
-				{
-					$return = $return[$part];
-				}
-				else
-				{
-					return $default;
-				}
-			}
-			return $return;
-		}
-
 		if (isset(static::$items[$item]))
 		{
 			return static::$items[$item];
 		}
-		return $default;
+
+		$var = "static::\$items['".str_replace('.', "']['", $item)."']";
+		eval("\$item = isset($var) ? $var : \$default;");
+
+		return $item;
 	}
 
 	public static function set($item, $value)

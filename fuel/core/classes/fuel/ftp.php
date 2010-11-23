@@ -58,10 +58,7 @@ class Ftp
 	 */
 	public function __construct($config = 'default')
 	{
-		if (empty(static::$initialized))
-		{
-			Config::load('ftp', 'ftp');
-		}
+		Config::load('ftp', true);
 
 		// If it is a string we're looking at a predefined config group
 		if (is_string($config))

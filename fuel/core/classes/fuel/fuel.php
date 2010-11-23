@@ -68,8 +68,7 @@ class Fuel {
 		static::$env = Config::get('environment');
 		static::$locale = Config::get('locale');
 
-		Config::load('routes', 'routes');
-		Route::$routes = Config::get('routes');
+		Route::$routes = Config::load('routes', true);
 
 		//Load in the packages
 		foreach (Config::get('packages', array()) as $package)

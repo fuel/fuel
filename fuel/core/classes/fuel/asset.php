@@ -62,7 +62,7 @@ class Asset {
 			return;
 		}
 
-		Config::load('asset', 'asset');
+		Config::load('asset', true);
 
 		$paths = Config::get('asset.paths');
 

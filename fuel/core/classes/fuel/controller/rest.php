@@ -25,7 +25,7 @@ abstract class Rest extends Controller\Base
 	{
 		parent::before();
 
-		Config::load('rest', 'rest');
+		Config::load('rest', true);
 
 		if (Config::get('rest.auth') == 'basic')
 		{

@@ -64,7 +64,7 @@ class Form
 		// Load for the first time
 		if (empty(static::$initialized))
 		{
-			Config::load('form', 'form');
+			Config::load('form', true);
 
 			static::$initialized = true;
 

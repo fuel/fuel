@@ -49,7 +49,7 @@ class Migrate
 	{
 		Log::debug('Migrate class initialized');
 
-		Config::load('migration', 'migration');
+		Config::load('migration', true);
 
 		DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
 

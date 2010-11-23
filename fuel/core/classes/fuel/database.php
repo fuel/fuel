@@ -48,7 +48,7 @@ abstract class Database {
 	 */
 	public static function instance($name = NULL, array $config = NULL)
 	{
-		Config::load('db', 'db');
+		Config::load('db', true);
 		if ($name === NULL)
 		{
 			// Use the default instance name

@@ -45,8 +45,7 @@ class Session
 			}
 			else
 			{
-				Config::load('session', 'session');
-				$config = Config::get('session');
+				$config = Config::load('session', true);
 			}
 
 			// if the parm is a string, it's the desired session type

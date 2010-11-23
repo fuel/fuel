@@ -52,8 +52,7 @@ class Crypt {
 		static::$have_mcrypt = function_exists('mcrypt_encrypt') ? true : false;
 
 		// load the config
-		Config::load('encrypt', 'encrypt');
-		$config = Config::get('encrypt');
+		$config = Config::load('encrypt', true);
 
 		// update the default salt value if one is defined in the config
 		isset($config['salt']) && static::$salt = $config['salt'];
