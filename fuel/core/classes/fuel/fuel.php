@@ -92,6 +92,12 @@ class Fuel {
 		// Set some server options
 		setlocale(LC_ALL, static::$locale);
 
+		// Set default timezone when given in config
+		if (($timezone = Config::get('default_timezone', null)) != null)
+		{
+			date_default_timezone_set($timezone);
+		}
+
 		static::$initialized = true;
 	}
 	
