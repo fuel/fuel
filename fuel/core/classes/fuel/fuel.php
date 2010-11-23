@@ -92,6 +92,12 @@ class Fuel {
 		// Set some server options
 		setlocale(LC_ALL, static::$locale);
 
+		// Set default timezone when given in config
+		if (($timezone = Config::get('default_timezone', null)) != null)
+		{
+			date_default_timezone_set($timezone);
+		}
+
 		static::$initialized = true;
 	}
 	
@@ -187,7 +193,7 @@ class Fuel {
 	 * @param	string	the package name
 	 * @return	void
 	 */
-	public static function remove_package($package)
+	public static function remove_package($name)
 	{
 		spl_autoload_unregister(array(static::$packages[$name], 'load'));
 		unset(static::$packages[$name]);
