@@ -179,8 +179,7 @@ class Database_MySQL extends Database {
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error [ :query ]',
-				array(':error' => mysql_error($this->_connection), ':query' => $sql),
+			throw new Database_Exception(mysql_error($this->_connection).' [ '.$sql.' ]',
 				mysql_errno($this->_connection));
 		}
 
