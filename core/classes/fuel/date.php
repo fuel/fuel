@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or die('No direct script access.');
+<?php
 /**
  * Fuel
  *
@@ -11,6 +11,10 @@
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
  */
+
+namespace Fuel;
+
+// ------------------------------------------------------------------------
 
 /**
  * Date Class
@@ -28,7 +32,7 @@
  * - create_time() uses strptime and has currently a very bad hack to use strtotime for windows servers
  * - Uses strftime formatting for dates http://www.php.net/manual/en/function.strftime.php
  */
-class Fuel_Date {
+class Date {
 
 	/* ---------------------------------------------------------------------------
 	 * STATIC PROPERTIES
@@ -79,17 +83,17 @@ class Fuel_Date {
 
 	public static function _init()
 	{
-		Date::$server_gmt_offset	= Config::get('server_gmt_offset', 0);
-		Date::$default_timezone		= Config::get('default_timezone', 'UTC');
+		static::$server_gmt_offset	= Config::get('server_gmt_offset', 0);
+		static::$default_timezone		= Config::get('default_timezone', 'UTC');
 
 		// Allow the default timezone to be set numericly
-		if ( ! is_string(Date::$default_timezone))
+		if ( ! is_string(static::$default_timezone))
 		{
-			Date::$default_timezone = Date::offset_to_timezone(Date::$default_timezone * 3600);
+			static::$default_timezone = static::offset_to_timezone(static::$default_timezone);
 		}
 
 		// Set the default timezone
-		date_default_timezone_set(Date::$default_timezone);
+		date_default_timezone_set(static::$default_timezone);
 
 		// Ugly temporary windows fix because windows doesn't support strptime()
 		// Better fix will accept custom pattern parsing but only parse numeric input on windows servers
@@ -114,8 +118,8 @@ class Fuel_Date {
 
 	public function factory($timestamp = null, $timezone = null)
 	{
-		$timestamp	= is_null($timestamp) ? time() + Date::$server_gmt_offset : $timestamp;
-		$timezone	= is_null($timezone) ? Date::$default_timezone : $timezone;
+		$timestamp	= is_null($timestamp) ? time() + static::$server_gmt_offset : $timestamp;
+		$timezone	= is_null($timezone) ? static::$default_timezone : $timezone;
 
 		return new Date($timestamp, $timezone);
 	}
@@ -127,7 +131,7 @@ class Fuel_Date {
 	 */
 	public static function time($timezone = null)
 	{
-		return Date::factory(null, $timezone);
+		return static::factory(null, $timezone);
 	}
 
 	/**
@@ -153,21 +157,21 @@ class Fuel_Date {
 		$timestamp = mktime($time['tm_hour'], $time['tm_min'], $time['tm_sec'],
 						$time['tm_mon'], $time['tm_mday'], $time['tm_year']);
 		
-		return Date::factory($timestamp + Date::$server_gmt_offset);
+		return static::factory($timestamp + static::$server_gmt_offset);
 	}
 
 	/**
-	 * Fetches an array of DateTime objects per interval within a range
+	 * Fetches an array of Date objects per interval within a range
 	 *
 	 * @param	int|Date	start of the range
 	 * @param	int|Date	end of the range
 	 * @param	int|string	Length of the interval in seconds or valid strtotime time difference
-	 * @return	array		array of DateTime objects
+	 * @return	array		array of Date objects
 	 */
 	public static function range_to_array($start, $end, $interval = '+1 Day')
 	{
-		$start		= ( ! $start instanceof Date) ? Date::factory($start) : $start;
-		$end		= ( ! $end instanceof Date) ? Date::factory($end) : $end;
+		$start		= ( ! $start instanceof Date) ? static::factory($start) : $start;
+		$end		= ( ! $end instanceof Date) ? static::factory($end) : $end;
 		$interval	= (is_int($interval)) ? $interval : strtotime($interval);
 
 		if ($interval <= 0)
@@ -181,7 +185,7 @@ class Fuel_Date {
 		while ($current->get_timestamp() <= $end->get_timestamp())
 		{
 			$range[] = $current;
-			$current = Date::factory($current->get_timestamp() + $interval);
+			$current = static::factory($current->get_timestamp() + $interval);
 		}
 
 		return $range;
@@ -224,39 +228,30 @@ class Fuel_Date {
 	 */
 	public static function list_timezones()
 	{
-		if ( ! empty( Date::$php_timezones ) )
+		if ( ! empty(static::$php_timezones))
 		{
-			return Date::$php_timezones;
+			return static::$php_timezones;
 		}
 		
-		$timezones = DateTimeZone::listAbbreviations();
+		$timezones = \DateTimeZone::listAbbreviations();
 		foreach ($timezones as $area)
 		{
 			foreach ($area as $country)
 			{
-				Date::$php_timezones[$country['timezone_id']] = array('offset' => $country['offset'], 'dst' => $country['dst']);
+				static::$php_timezones[$country['timezone_id']] = array('offset' => $country['offset'], 'dst' => $country['dst']);
 
-				if ( ! array_key_exists($country['offset'], Date::$offset_to_timezone))
+				$offset = (int) ($country['offset'] / 3600);
+				if ( ! array_key_exists($offset, static::$offset_to_timezone) ||
+					 ! array_key_exists((int) $country['dst'], static::$offset_to_timezone[$offset]))
 				{
-					Date::$offset_to_timezone[$country['offset']] = $country['timezone_id'];
+					static::$offset_to_timezone[$offset][$country['dst']] = $country['timezone_id'];
 				}
 			}
 		}
+		echo '<pre>';
+		exit(print_r(\DateTimeZone::listAbbreviations()));
 
-		return Date::$php_timezones;
-	}
-
-	/**
-	 * Takes a PHP named timezone and returns its offset in seconds
-	 * 
-	 * @param string $timezone
-	 * @return int
-	 */
-	public static function timezone_offset($timezone)
-	{
-		Date::list_timezones();
-
-		return Date::$php_timezones[$timezone];
+		return static::$php_timezones;
 	}
 
 	/**
@@ -265,11 +260,11 @@ class Fuel_Date {
 	 * @param int $offset
 	 * @return string
 	 */
-	public static function offset_to_timezone($offset)
+	public static function offset_to_timezone($offset, $dst = false)
 	{
-		Date::list_timezones();
+		static::list_timezones();
 
-		return Date::$offset_to_timezone[(int) $offset];
+		return static::$offset_to_timezone[(int) $offset][(int) $dst];
 	}
 
 	/* ---------------------------------------------------------------------------
@@ -285,8 +280,8 @@ class Fuel_Date {
 	/**
 	 * Returns the date formatted according to the current locale
 	 * 
-	 * @param	int|DateTime	time to display
-	 * @param	string			either a named pattern from date config file or a pattern
+	 * @param	int|Date	time to display
+	 * @param	string		either a named pattern from date config file or a pattern
 	 * @return	string
 	 */
 	public function format($pattern_key = 'human')
@@ -297,7 +292,7 @@ class Fuel_Date {
 		$pattern = ($pattern === null) ? $pattern_key : $pattern;
 
 		// Temporarily change timezone when different from default
-		if (Date::$default_timezone != $this->timezone)
+		if (static::$default_timezone != $this->timezone)
 		{
 			date_default_timezone_set($this->timezone);
 		}
@@ -306,9 +301,9 @@ class Fuel_Date {
 		$output = strftime($pattern, $this->timestamp);
 
 		// Change timezone back to default if changed previously
-		if (Date::$default_timezone != $this->timezone)
+		if (static::$default_timezone != $this->timezone)
 		{
-			date_default_timezone_set(Date::$default_timezone);
+			date_default_timezone_set(static::$default_timezone);
 		}
 
 		return $output;
@@ -331,22 +326,16 @@ class Fuel_Date {
 	 */
 	public function get_timezone($numeric = false)
 	{
-		if ($numeric)
-		{
-			return round((double) Date::timezone_offset($this->timezone) / 3600, 1);
-		}
-		else
-		{
-			return $this->timezone;
-		}
+		return $this->timezone;
 	}
 
 	/**
 	 * Change the timezone
 	 *
-	 * @param	string|int|double	timezone as offset in hours or PHP named
+	 * @param	string|int	timezone as offset in hours or PHP named
+	 * @param	bool		whether or not DST is active, only used for numeric input
 	 */
-	public function set_timezone($timezone)
+	public function set_timezone($timezone, $dst = false)
 	{
 		if (is_string($timezone))
 		{
@@ -354,8 +343,8 @@ class Fuel_Date {
 		}
 		else
 		{
-			$offset = (int) $timezone * 3600;
-			$this->timezone = Date::offset_to_timezone($offset);
+			$offset = (int) $timezone;
+			$this->timezone = static::offset_to_timezone($offset, $dst);
 		}
 		
 		return $this;
@@ -368,7 +357,7 @@ class Fuel_Date {
 	 */
 	public function __toString()
 	{
-		return $this->format(Date::$default_pattern);
+		return $this->format(static::$default_pattern);
 	}
 }
 
