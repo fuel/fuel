@@ -187,7 +187,7 @@ class Fuel {
 	 * @param	string	the package name
 	 * @return	void
 	 */
-	public static function remove_package($package)
+	public static function remove_package($name)
 	{
 		spl_autoload_unregister(array(static::$packages[$name], 'load'));
 		unset(static::$packages[$name]);
