@@ -57,7 +57,8 @@ class Session_Db_Driver extends Session_Driver {
 		srand(time());
 		if ((rand() % 100) < $this->config['gc_probability'])
 		{
-			$expired = $this->_gmttime() - $this->config['expiration_time'];
+			$time = Date::time();
+			$expired = $time->get_timestamp() - $this->config['expiration_time'];
 			$result = DB::delete($this->config['table'])->where('updated', '<', $expired)->execute($this->config['database']);
 		}
 	}
@@ -141,20 +142,23 @@ class Session_Db_Driver extends Session_Driver {
 		// create the session cookie
 		parent::_set_cookie($session_id);
 
+		// get a time object
+		$time = Date::time();
+
 		// create the initial session record
 		$session = array(
 			'session_id' => $this->keys['session_id'],
 			'previous_id' => ( ! is_null($session_id) && $session_id != $this->keys['session_id']) ? $session_id : $this->keys['session_id'],
 			'ip_address' => Input::real_ip(),
 			'user_agent' => Input::user_agent(),
-			'updated' => $this->_gmttime(),
+			'updated' => $time->get_timestamp(),
 			'payload' => $this->_serialize(array($this->data, $this->flash))
 		);
 
 		if (is_null($session_id))
 		{
 			// set the create timestamp
-			$session['created'] = $this->_gmttime();
+			$session['created'] = $time->get_timestamp();
 
 			// insert it into the database
 			$result = DB::insert($this->config['table'], array_keys($session))->values($session)->execute($this->config['database']);

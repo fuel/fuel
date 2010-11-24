@@ -72,7 +72,8 @@ class Session_File_Driver extends Session_Driver {
 		{
 			if ($handle = opendir($this->config['path']))
 			{
-				$expire = $this->_gmttime() - $this->config['expiration_time'];
+				$time = Date::time();
+				$expire = $time->get_timestamp() - $this->config['expiration_time'];
 
 				while (($file = readdir($handle)) !== false)
 				{

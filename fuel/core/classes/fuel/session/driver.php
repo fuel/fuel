@@ -377,12 +377,15 @@ class Session_Driver {
 			// fetch the payload
 			$cookie = $this->_unserialize(Crypt::decode($cookie));
 
+			// get a time object
+			$time = Date::time();
+
 			// validate the cookie
 			if ( ! isset($cookie[0]) )
 			{
 				// not a valid cookie payload
 			}
-			elseif ($this->config['expiration_time'] && $cookie[0]['updated'] + $this->config['expiration_time'] <= $this->_gmttime())
+			elseif ($this->config['expiration_time'] && $cookie[0]['updated'] + $this->config['expiration_time'] <= $time->get_timestamp())
 			{
 				// session has expired
 			}
@@ -419,6 +422,9 @@ class Session_Driver {
 	 */
 	protected function _set_cookie($session_id = null, array $payload = array())
 	{
+		// get a time object
+		$time = Date::time();
+
 		// do we have a valid session
 		if (is_null($session_id))
 		{
@@ -426,20 +432,20 @@ class Session_Driver {
 			$this->keys['session_id']	= $this->_new_session_id();
 			$this->keys['ip_address']	= Input::real_ip();
 			$this->keys['user_agent']	= Input::user_agent();
-			$this->keys['created'] 		= $this->_gmttime();
+			$this->keys['created'] 		= $time->get_timestamp();
 		}
 		else
 		{
 			// existing session. need to rotate the session id?
-			if ($this->config['rotation_time'] && $this->keys['created'] + $this->config['rotation_time'] <= $this->_gmttime())
+			if ($this->config['rotation_time'] && $this->keys['created'] + $this->config['rotation_time'] <= $time->get_timestamp())
 			{
 				// create a new session id, and update the create timestamp
 				$this->keys['session_id']	= $this->_new_session_id();
-				$this->keys['created'] 		= $this->_gmttime();
+				$this->keys['created'] 		= $time->get_timestamp();
 			}
 		}
 		// record the last update time of the session
-		$this->keys['updated'] = $this->_gmttime();
+		$this->keys['updated'] = $time->get_timestamp();
 
 		// add the session keys to the payload
 		array_unshift($payload, $this->keys);
@@ -580,20 +586,6 @@ class Session_Driver {
 		}
 
 		return (is_string($data)) ? str_replace('{{slash}}', '\\', $data) : $data;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * generates a GMT timestamp
-	 *
-	 * @access	private
-	 * @return  void
-	 */
-	protected function _gmttime()
-	{
-		$now = time();
-		return mktime(gmdate("H", $now), gmdate("i", $now), gmdate("s", $now), gmdate("m", $now), gmdate("d", $now), gmdate("Y", $now));
 	}
 
 }
