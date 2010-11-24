@@ -114,7 +114,7 @@ class Error {
 
 	public static function notice($msg)
 	{
-		if ( ! in_array(Fuel::$env, array('test', 'dev')))
+		if (Fuel::$env == Env::PRODUCTION || Config::get('show_notices', true) === false)
 		{
 			return;
 		}

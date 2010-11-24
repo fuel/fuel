@@ -30,6 +30,15 @@ return array(
 	 * Env::PRODUCTION
 	 */
 	'environment'	=> Env::DEVELOPMENT,
+	
+	/**
+	 * Show notices
+	 *
+	 * Some helper functions return false instead of an expected return type on invalid input,
+	 * do you want Fuel to show notices explaining why false was returned?
+	 * Even when true, only shows when environment is not PRODUCTION
+	 */
+	'show_notices'	=> true,
 
 	'language'		=> 'en',
 	
