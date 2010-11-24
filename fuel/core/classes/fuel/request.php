@@ -17,52 +17,92 @@ namespace Fuel;
 class Request {
 
 	/**
-	 * @var	object	Holds the global request instance
+	 * @var	object	Holds the main request instance
 	 */
-	public static $instance = false;
+	protected static $main = false;
 	
 	/**
 	 * @var	object	Holds the global request instance
 	 */
-	public static $active = false;
+	protected static $active = false;
 
 	/**
-	 * Returns the a Request object singleton
+	 * Generates a new request.  The request is then set to be the active
+	 * request.  If this is the first request, then save that as the main
+	 * request for the app.
 	 *
-	 * @static
+	 * Usage:
+	 * 
+	 * <code>Request::factory('hello/world');</code>
+	 *
 	 * @access	public
-	 * @return	object
+	 * @param	string	The URI of the request
+	 * @return	object	The new request
 	 */
-	public static function instance($uri = NULL)
+	public static function factory($uri = null)
 	{
-		if ( ! static::$instance)
+		Log::info('Creating a new Request with URI = "'.$uri.'"', __METHOD__);
+
+		static::$active = new Request($uri);
+
+		if ( ! static::$main)
 		{
-			static::$instance = static::$active = new Request($uri);
+			Log::info('Setting main Request', __METHOD__);
+			static::$main = static::$active;
 		}
 
-		return static::$instance;
+		return static::$active;
 	}
 
 	/**
-	 * Returns the active request
+	 * Returns the main request instance.
 	 *
-	 * @static
+	 * Usage:
+	 * 
+	 * <code>Request::main();</code>
+	 *
+	 * @access	public
+	 * @return	object
+	 */
+	public static function main()
+	{
+		Log::info('Called', __METHOD__);
+
+		return static::$main;
+	}
+
+	/**
+	 * Returns the active request currently being used.
+	 *
+	 * Usage:
+	 * 
+	 * <code>Request::active();</code>
+	 *
 	 * @access	public
 	 * @return	object
 	 */
 	public static function active()
 	{
+		Log::info('Called', __METHOD__);
+
 		return static::$active;
 	}
 
 	/**
-	 * Shows a 404.  Checks to see if a 404_override route is set, if not show a default 404.
+	 * Shows a 404.  Checks to see if a 404_override route is set, if not show
+	 * a default 404.
+	 * 
+	 * Usage:
+	 * 
+	 * <code>Request::show_404();</code>
 	 *
 	 * @access	public
 	 * @return	void
 	 */
 	public static function show_404()
 	{
+		Log::info('Called', __METHOD__);
+
 		if (Config::get('routes.404') === false)
 		{
 			static::active()->output = View::factory('404');
@@ -111,18 +151,6 @@ class Request {
 	}
 
 	/**
-	 * Generates a new request.  This is used for HMVC.
-	 *
-	 * @access	public
-	 * @param	string	The URI of the request
-	 * @return	object	The new request
-	 */
-	public static function factory($uri)
-	{
-		return new Request($uri);
-	}
-
-	/**
 	 * @var	string	Holds the response of the request.
 	 */
 	public $output = NULL;
@@ -152,7 +180,14 @@ class Request {
 	 */
 	public $named_params = array();
 
-
+	/**
+	 * Creates the new Request object by getting a new URI object, then parsing
+	 * the uri with the Route class.
+	 * 
+	 * @access	public
+	 * @param	string	the uri string
+	 * @return	void
+	 */
 	public function __construct($uri)
 	{
 		$this->uri = new URI($uri);
@@ -165,8 +200,20 @@ class Request {
 		unset($route);
 	}
 
+	/**
+	 * This executes the request and sets the output to be used later.
+	 * 
+	 * Usage:
+	 * 
+	 * <code>$request = Request::factory('hello/world')->execute();</code>
+	 * 
+	 * @access	public
+	 * @return	void
+	 */
 	public function execute()
 	{
+		Log::info('Called', __METHOD__);
+		
 		$controller_prefix = APP_NAMESPACE.'\\Controller_';
 		$class = $controller_prefix.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
@@ -174,20 +221,24 @@ class Request {
 
 		if (class_exists($class))
 		{
+			Log::info('Loading controller '.$class, __METHOD__);
 			$controller = new $class($this);
 			if (method_exists($controller, $method))
 			{
 				// Call the before method if it exists
 				if (method_exists($controller, 'before'))
 				{
+					Log::info('Calling '.$class.'::before', __METHOD__);
 					$controller->before();
 				}
 
+				Log::info('Calling '.$class.'::'.$method, __METHOD__);
 				call_user_func_array(array($controller, $method), $this->method_params);
 
 				// Call the after method if it exists
 				if (method_exists($controller, 'after'))
 				{
+					Log::info('Calling '.$class.'::after', __METHOD__);
 					$controller->after();
 				}
 
@@ -208,7 +259,14 @@ class Request {
 
 	/**
 	 * PHP magic function returns the Output of the request.
-	 *
+	 * 
+	 * Usage:
+	 * 
+	 * <code>
+	 * $request = Request::factory('hello/world')->execute();
+	 * echo $request;
+	 * </code>
+	 * 
 	 * @access	public
 	 * @return	string
 	 */

@@ -30,6 +30,23 @@ return array(
 	 * Env::PRODUCTION
 	 */
 	'environment'	=> Env::DEVELOPMENT,
+	
+	/**
+	 * Show notices
+	 *
+	 * Some helper functions return false instead of an expected return type on invalid input,
+	 * do you want Fuel to show notices explaining why false was returned?
+	 * Even when true, only shows when environment is not PRODUCTION
+	 */
+	'show_notices'	=> true,
+
+	/**
+	 * Error throttling
+	 *
+	 * Limits the number of errors that recieve full reporting and/or logging to prevent 
+	 * out-of-memory crashes.
+	 */
+	'error_throttling'	=> 10,
 
 	'language'		=> 'en',
 	
@@ -53,7 +70,7 @@ return array(
 	 * Log::INFO
 	 * Log::ALL
 	 */
-	'log_threshold'		=> Log::ALL,
+	'log_threshold'		=> Log::ERROR,
 	'log_path'			=> APPPATH . 'logs/',
 	'log_date_format' 	=> 'Y-m-d H:i:s',
 	

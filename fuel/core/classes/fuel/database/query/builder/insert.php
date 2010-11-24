@@ -96,6 +96,20 @@ class Database_Query_Builder_Insert extends Database_Query_Builder {
 	}
 
 	/**
+	 * This is a wrapper function for calling columns() and values().
+	 * 
+	 * @param	array	column value pairs
+	 * @return	$this 
+	 */
+	public function set(array $pairs)
+	{
+		$this->columns(array_keys($pairs));
+		$this->values($pairs);
+
+		return $this;
+	}
+
+	/**
 	 * Use a sub-query to for the inserted values.
 	 *
 	 * @param   object  Database_Query of SELECT type

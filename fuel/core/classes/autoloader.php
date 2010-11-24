@@ -143,7 +143,7 @@ class Autoloader {
 	}
 
 	/**
-	 * Setsthe default path to look in, should the loader not find the file in
+	 * Sets the default path to look in, should the loader not find the file in
 	 * any packages.
 	 * 
 	 * @access	public
@@ -156,11 +156,27 @@ class Autoloader {
 		$this->default_path = $path;
 	}
 
+	/**
+	 * Register's the autoloader to the SPL autoload stack.
+	 *
+	 * @return	void
+	 */
 	public function register()
 	{
 		spl_autoload_register(array($this, 'load'), true, true);
 	}
 
+	/**
+	 * Loads the given class by first determining if it is a namespaced class
+	 * or a class in the global namespace.  If it cannot find the class this way
+	 * then it tries to load it from the default path.  Next it sees if the
+	 * class is an alias of another class.  If so, it will create a class alias.
+	 * Finally it checks to see if the namespace of the class is an alias of
+	 * another namespace.  If all that fails then it returns false.
+	 *
+	 * @param	string	the class name
+	 * @return	bool	if the class has been loaded
+	 */
 	public function load($class)
 	{
 		// Checks if there is a \ in the class name.  This indicates it is a
@@ -226,12 +242,25 @@ class Autoloader {
 
 		return false;
 	}
-	
+
+	/**
+	 * Checks to see if the given class in an alias of another class.
+	 *
+	 * @param	string	the class name
+	 * @return	bool	if the class name is an alias
+	 */
 	public function is_alias($class)
 	{
 		return array_key_exists(strtolower($class), $this->aliases);
 	}
 
+	/**
+	 * Checks to see if the namespace of the given class is an alias for another
+	 * namespace.  If it is then create the alias class.
+	 *
+	 * @param	string	the class name
+	 * @return	bool	whether it was an alias
+	 */
 	public function namespace_alias($class)
 	{
 		foreach ($this->namespace_aliases as $alias => $actual)
@@ -249,12 +278,23 @@ class Autoloader {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Creates an alias class for the given class name.
+	 *
+	 * @param	string	the class name
+	 */
 	public function create_alias_class($class)
 	{
 		class_alias($this->aliases[strtolower($class)], $class);
 	}
-	
+
+	/**
+	 * Checks to see if the given class has a static _init() method.  If so then
+	 * it calls it.
+	 * 
+	 * @param	string	the class name
+	 */
 	private function _init_class($class)
 	{
 		if (is_callable($class.'::_init'))

@@ -10,6 +10,12 @@ $app_path = '../fuel/app';
 $package_path = '../fuel/packages';
 
 /**
+ * This is the path to the core directory.
+ */
+$core_path = '../fuel/core';
+
+
+/**
  * If you want to use a default namespace for your application you must specify
  * it here.
  */
@@ -26,7 +32,7 @@ ini_set('short_open_tag', 0);
  *
  * @see http://www.php.net/timezones
  */
-if ( ! date_default_timezone_get())
+if ( ! ini_get('date.timezone'))
 {
 	date_default_timezone_set('GMT');
 }
@@ -44,9 +50,8 @@ define('INTERNAL_ENC', 'ISO-8859-1');
 define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
 
 /**
- * Boots the system and executes the request.  To change the path to the core,
- * simply change this require path.
+ * Boots the system and executes the request.
  */
-require '../fuel/core/boot.php';
+require rtrim($core_path, '/').'/boot.php';
 
 /* End of file index.php */
