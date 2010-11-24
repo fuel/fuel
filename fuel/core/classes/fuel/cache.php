@@ -109,6 +109,20 @@ class Cache {
 	}
 
 	/**
+	 * Frontend for deleting item from the cache, interchangable storage methods. Actual operation
+	 * handled by delete() call on storage driver class
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	mixed
+	 */
+	public static function delete($identifier)
+	{
+		$cache = Cache::factory($identifier);
+		return $cache->delete();
+	}
+
+	/**
 	 * Flushes the whole cache for a specific storage type or just a part of it when $section is set (might not work
 	 * with all storage drivers), defaults to the default storage type
 	 *

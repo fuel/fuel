@@ -19,7 +19,7 @@
  * @param	array	$attr
  * @return	string
  */
-if ( ! function_exists('html_tag'))
+if ( ! function_exists('array_to_attr'))
 {
 	function array_to_attr($attr)
 	{
