@@ -77,9 +77,6 @@ class Validation_Object {
 	 */
 	protected $errors = array();
 
-	/**
-	 * Prevent instance to be created outside of Validation
-	 */
 	public function __construct()
 	{
 		$this->callables = array($this);
@@ -190,7 +187,7 @@ class Validation_Object {
 					$this->output[$field] = $value;
 				}
 			}
-			catch (Validation_Rule_Exception $v)
+			catch (Validation_Error $v)
 			{
 				$this->errors[$field] = $v;
 			}
@@ -205,7 +202,7 @@ class Validation_Object {
 
 		if ($output === false && $value !== false)
 		{
-			throw new Validation_Rule_Exception($field, $value, $rule, $params);
+			throw new Validation_Error($field, $value, $rule, $params);
 		}
 		elseif ($output !== true)
 		{
@@ -232,9 +229,35 @@ class Validation_Object {
 
 		return array_key_exists($field, $this->errors) ? $this->errors[$field] : $default;
 	}
+
+	public function show_errors($options = array())
+	{
+		$default = array(
+			'open_list' => '<ul>',
+			'close_list' => '</ul>',
+			'open_error' => '<li>',
+			'close_error' => '</li>',
+			'no_errors' => ''
+		);
+		$options = array_merge($default, $options);
+
+		if (empty($this->errors))
+		{
+			return $options['no_errors'];
+		}
+
+		$output = $options['open_list'];
+		foreach($this->errors as $e)
+		{
+			$output .= $e->get_message(false, $options['open_error'], $options['close_error']);
+		}
+		$output .= $options['close_list'];
+
+		return $output;
+	}
 }
 
-class Validation_Rule_Exception extends Exception {
+class Validation_Error extends Exception {
 	public $field = '';
 	public $value = '';
 	public $callback = '';
@@ -249,12 +272,12 @@ class Validation_Rule_Exception extends Exception {
 		$callback = is_string($callback) ? strstr($callback, array('::', ':')) : get_class($callback[0]).':'.$callback[1];
 	}
 
-	public function get_message($msg = false)
+	public function get_message($msg = false, $open = '', $close = '')
 	{
 		$msg = is_null($msg) ? Lang::line('validation.'.$this->callback) : $msg;
 		if ($msg == false)
 		{
-			return 'Validation rule '.$this->callback.' failed for '.$this->field['field'];
+			return $open.'Validation rule '.$this->callback.' failed for '.$this->field['field'].$close;
 		}
 
 		$replace = array(
@@ -270,7 +293,7 @@ class Validation_Rule_Exception extends Exception {
 			$replace['param:'.$key] = $val;
 		}
 
-		return Lang::line('validation.'.$this->callback, $replace);
+		return $open.Lang::line('validation.'.$this->callback, $replace).$close;
 	}
 
 	public function __toString()
