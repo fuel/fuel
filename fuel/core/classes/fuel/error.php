@@ -82,7 +82,7 @@ class Error {
 				&& ($severity & error_reporting()) == $severity)
 		{
 			static::$count++;
-			static::notice('Error throttling threshold was reached, no more full error reports are shown.');
+			static::notice('Error throttling threshold was reached, no more full error reports are shown.', true);
 		}
 
 		return true;
@@ -122,9 +122,9 @@ class Error {
 		echo View::factory('errors'.DS.'php_error', $data);
 	}
 
-	public static function notice($msg)
+	public static function notice($msg, $always_show = false)
 	{
-		if (Fuel::$env == Env::PRODUCTION || Config::get('show_notices', true) === false)
+		if ( ! $always_show && (Fuel::$env == Env::PRODUCTION || Config::get('show_notices', true) === false))
 		{
 			return;
 		}
