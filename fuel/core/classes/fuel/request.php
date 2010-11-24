@@ -41,10 +41,13 @@ class Request {
 	 */
 	public static function factory($uri = null)
 	{
+		Log::info('Creating a new Request with URI = "'.$uri.'"', __METHOD__);
+
 		static::$active = new Request($uri);
 
 		if ( ! static::$main)
 		{
+			Log::info('Setting main Request', __METHOD__);
 			static::$main = static::$active;
 		}
 
@@ -63,6 +66,8 @@ class Request {
 	 */
 	public static function main()
 	{
+		Log::info('Called', __METHOD__);
+
 		return static::$main;
 	}
 
@@ -78,6 +83,8 @@ class Request {
 	 */
 	public static function active()
 	{
+		Log::info('Called', __METHOD__);
+
 		return static::$active;
 	}
 
@@ -94,6 +101,8 @@ class Request {
 	 */
 	public static function show_404()
 	{
+		Log::info('Called', __METHOD__);
+
 		if (Config::get('routes.404') === false)
 		{
 			static::active()->output = View::factory('404');
@@ -203,6 +212,8 @@ class Request {
 	 */
 	public function execute()
 	{
+		Log::info('Called', __METHOD__);
+		
 		$controller_prefix = APP_NAMESPACE.'\\Controller_';
 		$class = $controller_prefix.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
@@ -210,20 +221,24 @@ class Request {
 
 		if (class_exists($class))
 		{
+			Log::info('Loading controller '.$class, __METHOD__);
 			$controller = new $class($this);
 			if (method_exists($controller, $method))
 			{
 				// Call the before method if it exists
 				if (method_exists($controller, 'before'))
 				{
+					Log::info('Calling '.$class.'::before', __METHOD__);
 					$controller->before();
 				}
 
+				Log::info('Calling '.$class.'::'.$method, __METHOD__);
 				call_user_func_array(array($controller, $method), $this->method_params);
 
 				// Call the after method if it exists
 				if (method_exists($controller, 'after'))
 				{
+					Log::info('Calling '.$class.'::after', __METHOD__);
 					$controller->after();
 				}
 

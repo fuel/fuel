@@ -114,7 +114,7 @@ class Event {
 	 * @param	void
 	 * @return	void
 	 */
-	public function shutdown()
+	public static function shutdown()
 	{
 		if ( ! static::has_events('shutdown'))
 		{

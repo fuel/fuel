@@ -53,7 +53,7 @@ return array(
 	 * Log::INFO
 	 * Log::ALL
 	 */
-	'log_threshold'		=> Log::ALL,
+	'log_threshold'		=> Log::ERROR,
 	'log_path'			=> APPPATH . 'logs/',
 	'log_date_format' 	=> 'Y-m-d H:i:s',
 	

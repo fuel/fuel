@@ -32,23 +32,23 @@ class Log
 	const INFO = 3;
 	const ALL = 4;
 
-	public static function info($msg)
+	public static function info($msg, $method = null)
 	{
-		return static::_write('info', $msg);
+		return static::_write('Info', $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
 
-	public static function debug($msg)
+	public static function debug($msg, $method = null)
 	{
-		return static::_write('debug', $msg);
+		return static::_write('Debug', $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
 
-	public static function error($msg)
+	public static function error($msg, $method = null)
 	{
-		return static::_write('error', $msg);
+		return static::_write('Error', $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
@@ -63,7 +63,7 @@ class Log
 	 * @param	string	the error message
 	 * @return	bool
 	 */
-	private static function _write($level, $msg)
+	private static function _write($level, $msg, $method = null)
 	{
 		if ( ! defined('self::'.strtoupper($level)) or (constant('self::'.strtoupper($level)) > Config::get('log_threshold')))
 		{
@@ -92,7 +92,15 @@ class Log
 			return false;
 		}
 
-		$message .= $level.' '.(($level == 'info') ? ' -' : '-').' '.date(Config::get('log_date_format')). ' --> '.$msg.PHP_EOL;
+		$call = '';
+		if ( ! empty($method))
+		{
+			$call .= $method;
+		}
+
+		$message .= $level.' '.(($level == 'info') ? ' -' : '-').' ';
+		$message .= date(Config::get('log_date_format'));
+		$message .= ' --> '.(empty($call) ? '' : $call.' - ').$msg.PHP_EOL;
 
 		flock($fp, LOCK_EX);
 		fwrite($fp, $message);
