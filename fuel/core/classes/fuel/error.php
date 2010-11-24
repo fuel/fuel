@@ -15,7 +15,7 @@
 namespace Fuel;
 
 class Error {
-	
+
 	public static $levels = array(
 		E_ERROR				=>	'Error',
 		E_WARNING			=>	'Warning',
@@ -45,7 +45,7 @@ class Error {
 	public static function shutdown_handler()
 	{
 		$last_error = error_get_last();
-		
+
 		// Only show valid fatal errors
 		if ($last_error AND in_array($last_error['type'], static::$fatal_levels))
 		{
@@ -68,18 +68,28 @@ class Error {
 
 	public static function error_handler($severity, $message, $filepath, $line)
 	{
-		Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
-
-		if (($severity & error_reporting()) == $severity)
+		if (static::$count <= Config::get('error_throttling', 10))
 		{
-			static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
+			Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
+	
+			if (($severity & error_reporting()) == $severity)
+			{
+				static::$count++;
+				static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
+			}
 		}
+		elseif (static::$count == (Config::get('error_throttling', 10) + 1)
+				&& ($severity & error_reporting()) == $severity)
+		{
+			static::$count++;
+			static::notice('Error throttling threshold was reached, no more full error reports are shown.');
+		}
+
 		return true;
 	}
 
 	public static function show_php_error(\Exception $e)
 	{
-		static::$count++;
 		$data['type']		= get_class($e);
 		$data['severity']	= $e->getCode();
 		$data['message']	= $e->getMessage();
@@ -88,7 +98,7 @@ class Error {
 		$data['backtrace']	= $e->getTrace();
 
 		array_shift($data['backtrace']);
-		
+
 		foreach ($data['backtrace'] as $key => $trace)
 		{
 			if ( ! isset($trace['file']))
@@ -121,12 +131,15 @@ class Error {
 
 		$trace = Arr::element(debug_backtrace(), 1);
 
+		Log::debug('Notice - '.$msg.' in '.$trace['file'].' on line '.$trace['line']);
+
 		$data['message']	= $msg;
+		$data['type']		= 'Notice';
 		$data['filepath']	= str_replace("\\", "/", Fuel::clean_path($trace['file']));
 		$data['line']		= $trace['line'];
 		$data['function']	= $trace['function'];
 
-		echo View::factory('errors'.DS.'php_notice', $data);
+		echo View::factory('errors'.DS.'php_short', $data);
 	}
 
 }
