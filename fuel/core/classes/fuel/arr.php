@@ -74,6 +74,7 @@ class Arr {
 
 	/**
 	 * Returns the elements of the given array or a default if it is not set.
+	 * WARNING: original array is edited by reference, only boolean success is returned
 	 *
 	 * @access	public
 	 * @param	array	The array to fetch from
@@ -107,6 +108,7 @@ class Arr {
 
 	/**
 	 * Insert value(s) into an array, mostly an array_splice alias
+	 * WARNING: original array is edited by reference, only boolean success is returned
 	 *
 	 * @param	array		The original array (by reference)
 	 * @param	array|mixed	The value(s) to insert, if you want to insert an array it needs to be in an array itself
@@ -117,7 +119,7 @@ class Arr {
 	{
 		if (count($original) < abs($pos))
 		{
-			Error::notice('Position larger then number of elements in array in which to insert.');
+			Error::notice('Position larger than number of elements in array in which to insert.');
 			return false;
 		}
 
@@ -127,6 +129,7 @@ class Arr {
 
 	/**
 	 * Insert value(s) into an array after a specific key
+	 * WARNING: original array is edited by reference, only boolean success is returned
 	 *
 	 * @param	array		The original array (by reference)
 	 * @param	array|mixed	The value(s) to insert, if you want to insert an array it needs to be in an array itself
