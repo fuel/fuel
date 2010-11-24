@@ -40,6 +40,14 @@ return array(
 	 */
 	'show_notices'	=> true,
 
+	/**
+	 * Error throttling
+	 *
+	 * Limits the number of errors that recieve full reporting and/or logging to prevent 
+	 * out-of-memory crashes.
+	 */
+	'error_throttling'	=> 10,
+
 	'language'		=> 'en',
 	
 	'locale'		=> 'en_US',
