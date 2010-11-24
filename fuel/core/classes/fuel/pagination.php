@@ -143,7 +143,7 @@ class Pagination {
 		// Let's get the ending page number
 		$end   = ((static::$current_page + static::$num_links) < static::$total_pages) ? static::$current_page + static::$num_links : static::$total_pages;
 
-		$pagination .= '&nbsp;'.static::next_link('&laquo Previous').'&nbsp;&nbsp;';
+		$pagination .= '&nbsp;'.static::prev_link('&laquo Previous').'&nbsp;&nbsp;';
 		
 		for($i = $start; $i <= $end; $i++)
 		{
