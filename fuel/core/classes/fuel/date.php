@@ -106,7 +106,7 @@ class Date {
 	 * @param	string	valid PHP timezone from www.php.net/timezones
 	 * @return	Date
 	 */
-	public function factory($timestamp = null, $timezone = null)
+	public static function factory($timestamp = null, $timezone = null)
 	{
 		$timestamp	= is_null($timestamp) ? time() + static::$server_gmt_offset : $timestamp;
 		$timezone	= is_null($timezone) ? static::$default_timezone : $timezone;
