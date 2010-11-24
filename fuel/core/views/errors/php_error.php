@@ -1,3 +1,7 @@
+<?php
+	if ( ! defined('FUEL_EXCEPTION_CSS')):
+		define('FUEL_EXCEPTION_CSS', true);
+?>
 <style type="text/css">
 .fuel_error_box,
 .fuel_error_box div,
@@ -25,7 +29,7 @@
 	border: 1px solid #CC0000;
 	border-bottom: 0px;
 	padding: 15px;
-	margin: 0px;
+	margin: 10px 0 0 0;
 	background-color: #CC0000;
 	font: normal normal normal 16px sans-serif;
 	color: #FFFFFF;
@@ -47,6 +51,7 @@
 	font: normal normal normal 12px sans-serif;
 	color: #333333;
 	padding: 15px;
+	margin: 0 0 10px 0;
 }
 .fuel_error_box div.fuel_error_body p {
 	margin: 0 0 10px 0;
@@ -82,6 +87,8 @@
 	font-weight: bold;
 }
 </style>
+<?php endif; ?>
+
 <div class="fuel_error_box">
 	<h2 class="fuel_error"><div class="fuel_error_num">#<?php echo Error::$count; ?></div><?php echo $type; ?> [ <?php echo $severity; ?> ]: <?php echo $message; ?></h2>
 	<div class="fuel_error_body">
@@ -94,7 +101,30 @@
 		<div class="fuel_backtrace">
 		<ol>
 		<?php foreach($backtrace as $trace): ?>
-			<li><?php echo Fuel::clean_path($trace['file']).' @ line '.$trace['line'].': '.(isset($trace['function']) ? $trace['function'].'('.(isset($trace['args']) ? implode(', ', $trace['args']) : '').')' : ''); ?></li>
+			<li><?php
+				echo Fuel::clean_path($trace['file']).' @ line '.$trace['line'];
+				if (isset($trace['function']))
+				{
+					echo ': '.$trace['function'];
+					$args_temp = '(';
+					foreach ($trace['args'] as $a)
+					{
+						if (is_array($a))
+						{
+							$args_temp .= 'Array('.count($a).'), ';
+						}
+						elseif (is_object($a))
+						{
+							$args_temp .= get_class($a).', ';
+						}
+						else
+						{
+							$args_temp .= $a.', ';
+						}
+					}
+					echo substr($args_temp, 0, -2);
+				}
+				echo ')'; ?></li>
 		<?php endforeach; ?>
 		</ol>
 			<?php \Debug::dump($backtrace); ?>
