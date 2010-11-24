@@ -39,32 +39,31 @@ class Controller_Welcome extends Controller\Base {
 		$tsql = "SELECT * FROM `items`";
 		$res = mysql_query($tsql, $db);
 		$total_items = mysql_num_rows($res);
-		
+
+		$config = array(
+			'total_items' => $total_items,
+			'per_page' => 5,
+			'pagination_url' => '/fuel/public/welcome/pagination/',
+			'uri_segment' => 3,
+			'num_links' => 5, // this is not required and is the number of links on each side of the current page
+		);
 		/**
 		 * Method 1
 		 *
 		 * Create pagination by passing configs
 		 * with an array.
 		 */
-		/*
+		
 		// Commented, using method below. can't use 2 methods
-		Pagination::set_config(array(
-			'total_rows' => $total_items,
-			'per_page' => 5,
-			'pagination_url' => '/fuel/public/welcome/pagination/',
-			'uri_segment' => URI::segment(3),
-		));
-		*/
+		Pagination::set_config($config);
+		
 		
 		/**
 		 * Method 2 
 		 *
 		 * Sets global configs that the pagination uses
 		 */
-		Config::set('pagination_url', '/fuel/public/welcome/pagination/');
-		Config::set('total_rows', $total_items);
-		Config::set('per_page', 5);
-		Config::set('uri_segment', URI::segment(3));
+		Config::set('pagination', $config);
 		
 		/**
 		 * Get items from database
@@ -74,7 +73,7 @@ class Controller_Welcome extends Controller\Base {
 		 */
 		$sql = "SELECT * FROM items";
 		$sql .= " ORDER BY id";
-		$sql .= " LIMIT " . Pagination::$current . ", " . Pagination::$per_page;
+		$sql .= " LIMIT " . Pagination::$offset . ", " . Pagination::$per_page;
 		$resource = mysql_query($sql, $db);
 		$items = array();
 		
