@@ -104,6 +104,65 @@ class Arr {
 		
 		return $return;
 	}
+
+	/**
+	 * Insert value(s) into an array
+	 *
+	 * @param	array		The original array (by reference)
+	 * @param	array|mixed	The value(s) to insert, if you want to insert an array it needs to be in an array itself
+	 * @param	int			The numeric position at which to insert
+	 * @return	bool		false when array shorter then $pos, otherwise true
+	 */
+	public static function insert(Array &$original, $value, $pos)
+	{
+		if (count($original) < $pos)
+		{
+			return false;
+		}
+
+		$value = is_array($value) ? $value : array($value);
+
+		$original = array_merge(array_slice($original, 0, $pos), $value, array_slice($original, $pos));
+		return true;
+	}
+
+	/**
+	 * Insert value(s) into an array after a specific key
+	 *
+	 * @param	array		The original array (by reference)
+	 * @param	array|mixed	The value(s) to insert, if you want to insert an array it needs to be in an array itself
+	 * @param	string|int	The key after which to insert
+	 * @return	bool		false when key isn't found in the array, otherwise true
+	 */
+	public static function insert_after_key(Array &$original, $value, $key)
+	{
+		$pos = array_search($key, array_keys($original));
+		if ($pos === false)
+		{
+			return false;
+		}
+
+		return static::insert($original, $value, $pos + 1);
+	}
+
+	/**
+	 * Insert value(s) into an array after a specific value (first found in array)
+	 *
+	 * @param	array		The original array (by reference)
+	 * @param	array|mixed	The value(s) to insert, if you want to insert an array it needs to be in an array itself
+	 * @param	string|int	The value after which to insert
+	 * @return	bool		false when value isn't found in the array, otherwise true
+	 */
+	public static function insert_after_value(Array &$original, $value, $search)
+	{
+		$key = array_search($search, $original);
+		if ($key === false)
+		{
+			return false;
+		}
+
+		return static::insert_after_key($original, $value, $key);
+	}
 }
 
 /* End of file arr.php */
