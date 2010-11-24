@@ -106,23 +106,22 @@ class Arr {
 	}
 
 	/**
-	 * Insert value(s) into an array
+	 * Insert value(s) into an array, mostly an array_splice alias
 	 *
 	 * @param	array		The original array (by reference)
 	 * @param	array|mixed	The value(s) to insert, if you want to insert an array it needs to be in an array itself
-	 * @param	int			The numeric position at which to insert
+	 * @param	int			The numeric position at which to insert, negative to count from the end backwards
 	 * @return	bool		false when array shorter then $pos, otherwise true
 	 */
 	public static function insert(Array &$original, $value, $pos)
 	{
-		if (count($original) < $pos)
+		if (count($original) < abs($pos))
 		{
+			Error::notice('Position larger then number of elements in array in which to insert.');
 			return false;
 		}
 
-		$value = is_array($value) ? $value : array($value);
-
-		$original = array_merge(array_slice($original, 0, $pos), $value, array_slice($original, $pos));
+		array_splice($original, $pos, 0, $value);
 		return true;
 	}
 
@@ -139,6 +138,7 @@ class Arr {
 		$pos = array_search($key, array_keys($original));
 		if ($pos === false)
 		{
+			Error::notice('Unknown key after which to insert the new value into the array.');
 			return false;
 		}
 
@@ -158,6 +158,7 @@ class Arr {
 		$key = array_search($search, $original);
 		if ($key === false)
 		{
+			Error::notice('Unknown value after which to insert the new value into the array.');
 			return false;
 		}
 
