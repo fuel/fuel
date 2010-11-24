@@ -52,6 +52,6 @@ define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
 /**
  * Boots the system and executes the request.
  */
-require trim($core_path, '/').'/boot.php';
+require rtrim($core_path, '/').'/boot.php';
 
 /* End of file index.php */
