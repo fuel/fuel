@@ -17,30 +17,44 @@ namespace Fuel;
 class Request {
 
 	/**
-	 * @var	object	Holds the global request instance
+	 * @var	object	Holds the main request instance
 	 */
-	public static $instance = false;
+	protected static $main = false;
 	
 	/**
 	 * @var	object	Holds the global request instance
 	 */
-	public static $active = false;
+	protected static $active = false;
 
 	/**
-	 * Returns the a Request object singleton
+	 * Generates a new request.  This is used for HMVC.
+	 *
+	 * @access	public
+	 * @param	string	The URI of the request
+	 * @return	object	The new request
+	 */
+	public static function factory($uri = null)
+	{
+		static::$active = new Request($uri);
+
+		if ( ! static::$main)
+		{
+			static::$main = static::$active;
+		}
+
+		return static::$active;
+	}
+
+	/**
+	 * Returns the main Request instance
 	 *
 	 * @static
 	 * @access	public
 	 * @return	object
 	 */
-	public static function instance($uri = NULL)
+	public static function main()
 	{
-		if ( ! static::$instance)
-		{
-			static::$instance = static::$active = new Request($uri);
-		}
-
-		return static::$instance;
+		return static::$main;
 	}
 
 	/**
@@ -108,18 +122,6 @@ class Request {
 				throw new Exception('404 Controller not found.');
 			}
 		}
-	}
-
-	/**
-	 * Generates a new request.  This is used for HMVC.
-	 *
-	 * @access	public
-	 * @param	string	The URI of the request
-	 * @return	object	The new request
-	 */
-	public static function factory($uri)
-	{
-		return new Request($uri);
 	}
 
 	/**
