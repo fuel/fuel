@@ -68,7 +68,7 @@ if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 // and start buffering the output.
 Fuel\Fuel::init($autoloaders);
 
-$request = Fuel\Request::instance();
+$request = Fuel\Request::factory();
 $request->execute();
 echo $request->output;
 
