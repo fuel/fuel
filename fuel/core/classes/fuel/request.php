@@ -27,7 +27,13 @@ class Request {
 	protected static $active = false;
 
 	/**
-	 * Generates a new request.  This is used for HMVC.
+	 * Generates a new request.  The request is then set to be the active
+	 * request.  If this is the first request, then save that as the main
+	 * request for the app.
+	 *
+	 * Usage:
+	 * 
+	 * <code>Request::factory('hello/world');</code>
 	 *
 	 * @access	public
 	 * @param	string	The URI of the request
@@ -46,9 +52,12 @@ class Request {
 	}
 
 	/**
-	 * Returns the main Request instance
+	 * Returns the main request instance.
 	 *
-	 * @static
+	 * Usage:
+	 * 
+	 * <code>Request::main();</code>
+	 *
 	 * @access	public
 	 * @return	object
 	 */
@@ -58,9 +67,12 @@ class Request {
 	}
 
 	/**
-	 * Returns the active request
+	 * Returns the active request currently being used.
 	 *
-	 * @static
+	 * Usage:
+	 * 
+	 * <code>Request::active();</code>
+	 *
 	 * @access	public
 	 * @return	object
 	 */
@@ -70,7 +82,12 @@ class Request {
 	}
 
 	/**
-	 * Shows a 404.  Checks to see if a 404_override route is set, if not show a default 404.
+	 * Shows a 404.  Checks to see if a 404_override route is set, if not show
+	 * a default 404.
+	 * 
+	 * Usage:
+	 * 
+	 * <code>Request::show_404();</code>
 	 *
 	 * @access	public
 	 * @return	void
@@ -154,7 +171,14 @@ class Request {
 	 */
 	public $named_params = array();
 
-
+	/**
+	 * Creates the new Request object by getting a new URI object, then parsing
+	 * the uri with the Route class.
+	 * 
+	 * @access	public
+	 * @param	string	the uri string
+	 * @return	void
+	 */
 	public function __construct($uri)
 	{
 		$this->uri = new URI($uri);
@@ -167,6 +191,16 @@ class Request {
 		unset($route);
 	}
 
+	/**
+	 * This executes the request and sets the output to be used later.
+	 * 
+	 * Usage:
+	 * 
+	 * <code>$request = Request::factory('hello/world')->execute();</code>
+	 * 
+	 * @access	public
+	 * @return	void
+	 */
 	public function execute()
 	{
 		$controller_prefix = APP_NAMESPACE.'\\Controller_';
@@ -210,7 +244,14 @@ class Request {
 
 	/**
 	 * PHP magic function returns the Output of the request.
-	 *
+	 * 
+	 * Usage:
+	 * 
+	 * <code>
+	 * $request = Request::factory('hello/world')->execute();
+	 * echo $request;
+	 * </code>
+	 * 
 	 * @access	public
 	 * @return	string
 	 */
