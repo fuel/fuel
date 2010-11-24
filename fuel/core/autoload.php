@@ -71,6 +71,7 @@ $loader->add_aliases(array(
 
 	'URI'			=> 'Fuel\\URI',
 	'URL'			=> 'Fuel\\URL',
+	'Pagination'	=> 'Fuel\\Pagination',
 
 	'View'				=> 'Fuel\\View',
 	'View_Exception'	=> 'Fuel\\View_Exception',
