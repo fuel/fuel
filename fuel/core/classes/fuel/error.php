@@ -87,17 +87,6 @@ class Error {
 		$data['error_line']	= $e->getLine();
 		$data['backtrace']	= $e->getTrace();
 
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			for ($i = count($data['backtrace']) - 1; $i > 0; --$i)
-			{
-				if (isset($data['backtrace'][$i - 1]['args']))
-				{
-					$data['backtrace'][$i]['args'] = $data['backtrace'][$i - 1]['args'];
-					unset($data['backtrace'][$i - 1]['args']);
-				}
-			}
-		}
 		array_shift($data['backtrace']);
 		
 		foreach ($data['backtrace'] as $key => $trace)
@@ -116,13 +105,29 @@ class Error {
 
 		$data['debug_lines'] = Debug::file_lines($data['filepath'], $data['error_line']);
 
-		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
-
 		$data['filepath'] = Fuel::clean_path($data['filepath']);
+
+		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
 
 		echo View::factory('errors'.DS.'php_error', $data);
 	}
 
+	public static function notice($msg)
+	{
+		if ( ! in_array(Fuel::$env, array('test', 'dev')))
+		{
+			return;
+		}
+
+		$trace = Arr::element(debug_backtrace(), 1);
+
+		$data['message']	= $msg;
+		$data['filepath']	= str_replace("\\", "/", Fuel::clean_path($trace['file']));
+		$data['line']		= $trace['line'];
+		$data['function']	= $trace['function'];
+
+		echo View::factory('errors'.DS.'php_notice', $data);
+	}
 
 }
 
