@@ -18,7 +18,7 @@ class Pagination {
 	/**
 	 * @var	integer	The current page
 	 */
-	public static $current_page = 1;
+	public static $current_page = null;
 	
 	/**
 	 * @var	integer	The offset that the current page starts at
@@ -83,12 +83,10 @@ class Pagination {
 	 */
 	public static function set_config(array $config)
 	{
+
 		foreach ($config as $key => $value)
 		{
-			if (isset(static::${$key}))
-			{
-				static::${$key} = $value;
-			}
+			static::${$key} = $value;
 		}
 		
 		static::initialize();
@@ -107,6 +105,8 @@ class Pagination {
 
 		static::$total_pages = ceil(static::$total_items / static::$per_page) ?: 1;
 		
+		static::$current_page = (int) URI::segment(static::$uri_segment);
+
 		if (static::$current_page > static::$total_pages)
 		{
 			static::$current_page = static::$total_pages;
