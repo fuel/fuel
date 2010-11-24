@@ -97,9 +97,9 @@ class Error {
 
 		$data['debug_lines'] = Debug::file_lines($data['filepath'], $data['error_line']);
 
-		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
-
 		$data['filepath'] = Fuel::clean_path($data['filepath']);
+
+		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
 
 		echo View::factory('errors'.DS.'php_error', $data);
 	}
@@ -111,9 +111,10 @@ class Error {
 			return;
 		}
 
-		$trace = reset(debug_backtrace());
+		$trace = Arr::element(debug_backtrace(), 1);
+
 		$data['message']	= $msg;
-		$data['filepath']	= $trace['file'];
+		$data['filepath']	= str_replace("\\", "/", Fuel::clean_path($trace['file']));
 		$data['line']		= $trace['line'];
 		$data['function']	= $trace['function'];
 
