@@ -48,7 +48,7 @@
 }
 </style>
 <div class="fuel_error_box">
-	<h2 class="fuel_error">Notice: <?php echo $message; ?></h2>
+	<h2 class="fuel_error"><?php echo $type; ?>: <?php echo $message; ?></h2>
 	<div class="fuel_error_body">
 		<p><?php echo $filepath, ' [', $line, ']: ', $function; ?></p>
 	</div>
