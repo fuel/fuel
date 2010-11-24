@@ -305,9 +305,11 @@ class Session_Driver {
 			case 'match_ua':
 			case 'flash_auto_expire':
 			case 'write_on_finish':
+			case 'expire_on_close':
 				$this->config[$name] = (bool) $value;
 				break;
 			// strings
+			case 'driver':
 			case 'flash_id':
 			case 'cookie_name':
 			case 'cookie_domain':
@@ -320,8 +322,14 @@ class Session_Driver {
 				$this->config[$name] = (int) $value;
 				break;
 			// arrays
+			case '_none_defined_yet_':
+				break;
+			// driver config
 			case 'config':
-				$this->config[$name] = (array) $value;
+				foreach($value as $ck => $cv)
+				{
+					$this->config[$ck] = $this->validate_config($ck, $cv);
+				}
 			default:
 				break;
 		}
@@ -367,7 +375,7 @@ class Session_Driver {
 		if ($cookie = Cookie::get($this->config['cookie_name'], false))
 		{
 			// fetch the payload
-			$cookie = $this->_unserialize(Encrypt::decrypt($cookie));
+			$cookie = $this->_unserialize(Crypt::decode($cookie));
 
 			// validate the cookie
 			if ( ! isset($cookie[0]) )
@@ -437,14 +445,21 @@ class Session_Driver {
 		array_unshift($payload, $this->keys);
 
 		// encrypt the payload
-		$payload = Encrypt::encrypt($this->_serialize($payload));
+		$payload = Crypt::encode($this->_serialize($payload));
 		if (strlen($payload) > 4000)
 		{
 			throw new Exception('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
 		}
 
 		// write the session cookie
-		Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
+		if ($this->config['expire_on_close'])
+		{
+			Cookie::set($this->config['cookie_name'], $payload, 0);
+		}
+		else
+		{
+			Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
+		}
 	}
 
 	// --------------------------------------------------------------------

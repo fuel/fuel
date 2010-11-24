@@ -21,6 +21,21 @@ class Session_File_Driver extends Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
+	 * driver initialisation
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function init()
+	{
+		// check for required config values
+		$this->config['path'] = $this->validate_config('path', $this->config['path']);
+		$this->config['gc_probability'] = $this->validate_config('gc_probability', isset($this->config['gc_probability']) ? $this->config['gc_probability'] : 5);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * destroy the current session
 	 *
 	 * @access	public
@@ -29,7 +44,7 @@ class Session_File_Driver extends Session_Driver {
 	public function destroy()
 	{
 		// delete the session file
-		$file = $this->config['config']['path'].$this->keys['session_id'];
+		$file = $this->config['path'].$this->keys['session_id'];
 		if (file_exists($file))
 		{
 			unlink($file);
@@ -42,7 +57,7 @@ class Session_File_Driver extends Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * destroy the current session
+	 * write the current session
 	 *
 	 * @access	public
 	 * @return	void
@@ -53,19 +68,19 @@ class Session_File_Driver extends Session_Driver {
 
 		// do some garbage collection
 		srand(time());
-		if ((rand() % 100) < $this->config['config']['gc_probability'])
+		if ((rand() % 100) < $this->config['gc_probability'])
 		{
-			if ($handle = opendir($this->config['config']['path']))
+			if ($handle = opendir($this->config['path']))
 			{
 				$expire = $this->_gmttime() - $this->config['expiration_time'];
 
 				while (($file = readdir($handle)) !== false)
 				{
-					if (filetype($this->config['config']['path'] . $file) == 'file' &&
+					if (filetype($this->config['path'] . $file) == 'file' &&
 						strpos($file, $this->config['cookie_name']) === 0 &&
-						filemtime($this->config['config']['path'] . $file) < $expire)
+						filemtime($this->config['path'] . $file) < $expire)
 					{
-						@unlink($this->config['config']['path'] . $file);
+						@unlink($this->config['path'] . $file);
 					}
 				}
 				closedir($handle);
@@ -76,41 +91,47 @@ class Session_File_Driver extends Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * set a runtime config value
+	 * validate a driver config value
 	 *
-	 * @param	string	name of the config variable to set
+	 * @param	string	name of the config variable to validate
 	 * @param	mixed	value
 	 * @access	public
 	 * @return  mixed
 	 */
-	public function set_config($name, $value)
+	public function validate_config($name, $value)
 	{
-		// driver specific config?
-		if ($name == 'config')
+		switch ($name)
 		{
-			// do we have a path?
-			if ( ! isset($value['path']) OR ! is_dir($value['path']))
-			{
-				throw new Fuel_Session_Exception('You have specify a path to store the session data files.');
-			}
-			// and can we write to it?
-			if ( ! is_writable($value['path']))
-			{
-				throw new Fuel_Session_Exception('The webserver doesn\'t have write access to the path to store the session data files.');
-			}
-			// update the path, and add the trailing slash
-			$value['path'] = realpath($value['path']).'/';
+			case 'path':
+				// do we have a path?
+				if ( empty($value) OR ! is_dir($value))
+				{
+					throw new Exception('You have specify a valid path to store the session data files.');
+				}
+				// and can we write to it?
+				if ( ! is_writable($value))
+				{
+					throw new Exception('The webserver doesn\'t have write access to the path to store the session data files.');
+				}
+				// update the path, and add the trailing slash
+				$value = realpath($value).'/';
+				break;
 
-			// do we have a path?
-			if ( ! isset($value['gc_probability']) OR ! is_numeric($value['gc_probability']) OR $value['gc_probability'] < 0 OR $value['gc_probability'] > 100)
-			{
-				// default value: 5%
-				$value['gc_probability'] = 5;
-			}
+			case 'gc_probability':
+				// do we have a path?
+				if ( ! is_numeric($value) OR $value < 0 OR $value > 100)
+				{
+					// default value: 5%
+					$value = 5;
+				}
+				break;
+
+			default:
+				break;
 		}
 
-		// store the config value
-		parent::set_config($name, $value);
+		// return the validated value
+		return $value;
 	}
 
 	// --------------------------------------------------------------------
@@ -125,9 +146,6 @@ class Session_File_Driver extends Session_Driver {
 	 */
 	protected function _set_cookie($session_id = NULL)
 	{
-		// save the current session id
-		$session_id = isset($this->keys['session_id']) ? $this->keys['session_id'] : NULL;
-
 		// create the session cookie
 		parent::_set_cookie($session_id);
 
@@ -151,7 +169,7 @@ class Session_File_Driver extends Session_Driver {
 	/**
 	 * Gets the session cookie
 	 *
-	 * the cookie driver stores data and flash in the cookie payload
+	 * the file driver stores data and flash in a separate session file
 	 *
 	 * @access	private
 	 * @return  boolean, true if found, false if not
@@ -198,7 +216,7 @@ class Session_File_Driver extends Session_Driver {
 	protected function _write_file($session_id, $payload)
 	{
 		// create the session file
-		$file = $this->config['config']['path'].$this->config['cookie_name'].'_'.$session_id;
+		$file = $this->config['path'].$this->config['cookie_name'].'_'.$session_id;
 		$handle = fopen($file,'c');
 		if ($handle)
 		{
@@ -231,7 +249,7 @@ class Session_File_Driver extends Session_Driver {
 	{
 		$payload = false;
 
-		$file = $this->config['config']['path'].$this->config['cookie_name'].'_'.$session_id;
+		$file = $this->config['path'].$this->config['cookie_name'].'_'.$session_id;
 		if (file_exists($file))
 		{
 			$handle = fopen($file,'r');
