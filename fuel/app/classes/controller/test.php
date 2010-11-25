@@ -1,8 +1,6 @@
 <?php
 
-use Fuel\Controller;
-
-class Controller_Test extends Controller\Base {
+class Controller_Test extends Fuel\Controller\Base {
 
 	public function action_index()
 	{
