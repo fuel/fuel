@@ -16,7 +16,7 @@ namespace Fuel;
 
 // --------------------------------------------------------------------
 
-class Session_Memcached_Driver extends Session_Driver {
+class Session_Memcached extends Session_Driver {
 
 	/*
 	 * @var	storage for the memcached object
