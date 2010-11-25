@@ -103,6 +103,9 @@ class Fuel {
 			date_default_timezone_set('UTC');
 		}
 
+		// Clean input
+		Security::clean_input();
+
 		static::$initialized = true;
 	}
 	

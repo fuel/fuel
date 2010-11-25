@@ -73,6 +73,15 @@ return array(
 	'log_threshold'		=> Log::ERROR,
 	'log_path'			=> APPPATH . 'logs/',
 	'log_date_format' 	=> 'Y-m-d H:i:s',
+
+	/**
+	 * Security settings
+	 */
+	'security' => array(
+		'csrf_autoload'		=> false,
+		'csrf_token_key'	=> 'fuel_csrf_token',
+		'csrf_exparation'	=> 0,
+	),
 	
 	/**
 	 * These packages are loaded on Fuel's startup.  You can specify them in
