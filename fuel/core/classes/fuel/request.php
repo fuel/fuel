@@ -20,7 +20,7 @@ class Request {
 	 * @var	object	Holds the main request instance
 	 */
 	protected static $main = false;
-	
+
 	/**
 	 * @var	object	Holds the global request instance
 	 */
@@ -32,7 +32,7 @@ class Request {
 	 * request for the app.
 	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>Request::factory('hello/world');</code>
 	 *
 	 * @access	public
@@ -58,7 +58,7 @@ class Request {
 	 * Returns the main request instance.
 	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>Request::main();</code>
 	 *
 	 * @access	public
@@ -75,7 +75,7 @@ class Request {
 	 * Returns the active request currently being used.
 	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>Request::active();</code>
 	 *
 	 * @access	public
@@ -91,9 +91,9 @@ class Request {
 	/**
 	 * Shows a 404.  Checks to see if a 404_override route is set, if not show
 	 * a default 404.
-	 * 
+	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>Request::show_404();</code>
 	 *
 	 * @access	public
@@ -134,7 +134,7 @@ class Request {
 					{
 						$controller->after();
 					}
-					
+
 					// Get the controller's output
 					static::active()->output =& $controller->output;
 				}
@@ -183,7 +183,7 @@ class Request {
 	/**
 	 * Creates the new Request object by getting a new URI object, then parsing
 	 * the uri with the Route class.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the uri string
 	 * @return	void
@@ -192,7 +192,7 @@ class Request {
 	{
 		$this->uri = new URI($uri);
 		$route = Route::parse($this->uri);
-		
+
 		$this->controller = $route['controller'];
 		$this->action = $route['action'];
 		$this->method_params = $route['method_params'];
@@ -202,18 +202,18 @@ class Request {
 
 	/**
 	 * This executes the request and sets the output to be used later.
-	 * 
+	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>$request = Request::factory('hello/world')->execute();</code>
-	 * 
+	 *
 	 * @access	public
 	 * @return	void
 	 */
 	public function execute()
 	{
 		Log::info('Called', __METHOD__);
-		
+
 		$controller_prefix = APP_NAMESPACE.'\\Controller_';
 		$class = $controller_prefix.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
@@ -223,32 +223,34 @@ class Request {
 		{
 			Log::info('Loading controller '.$class, __METHOD__);
 			$controller = new $class($this);
-			if (method_exists($controller, $method))
+			foreach(array($method, 'action_404') as $action)
 			{
-				// Call the before method if it exists
-				if (method_exists($controller, 'before'))
+				if (method_exists($controller, $action))
 				{
-					Log::info('Calling '.$class.'::before', __METHOD__);
-					$controller->before();
+					// Call the before method if it exists
+					if (method_exists($controller, 'before'))
+					{
+						Log::info('Calling '.$class.'::before', __METHOD__);
+						$controller->before();
+					}
+
+					Log::info('Calling '.$class.'::'.$action, __METHOD__);
+					call_user_func_array(array($controller, $action), $this->method_params);
+
+					// Call the after method if it exists
+					if (method_exists($controller, 'after'))
+					{
+						Log::info('Calling '.$class.'::after', __METHOD__);
+						$controller->after();
+					}
+
+					// Get the controller's output
+					$this->output =& $controller->output;
+
+					return $this;
 				}
-
-				Log::info('Calling '.$class.'::'.$method, __METHOD__);
-				call_user_func_array(array($controller, $method), $this->method_params);
-
-				// Call the after method if it exists
-				if (method_exists($controller, 'after'))
-				{
-					Log::info('Calling '.$class.'::after', __METHOD__);
-					$controller->after();
-				}
-
-				// Get the controller's output
-				$this->output =& $controller->output;
 			}
-			else
-			{
-				static::show_404();
-			}
+			static::show_404();
 		}
 		else
 		{
@@ -259,14 +261,14 @@ class Request {
 
 	/**
 	 * PHP magic function returns the Output of the request.
-	 * 
+	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>
 	 * $request = Request::factory('hello/world')->execute();
 	 * echo $request;
 	 * </code>
-	 * 
+	 *
 	 * @access	public
 	 * @return	string
 	 */
