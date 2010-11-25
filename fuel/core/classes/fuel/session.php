@@ -91,7 +91,7 @@ class Session
 		$driver->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
 		$driver->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
 		$driver->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
-		$driver->set_config('write_on_set', isset($config['write_on_set']) ? (bool) $config['write_on_set'] : true);
+		$driver->set_config('write_on_set', isset($config['write_on_set']) ? (bool) $config['write_on_set'] : false);
 
 		// if the driver has an init method, call it
 		if (method_exists($driver, 'init'))
@@ -148,7 +148,7 @@ class Session
 	 */
 	public static function set($name, $value)
 	{
-		return static::autowrite(static::instance()->set($name, $value));
+		return static::instance()->set($name, $value);
 	}
 
 	// --------------------------------------------------------------------
@@ -177,7 +177,7 @@ class Session
 	 */
 	public static function delete($name)
 	{
-		return static::autowrite(static::instance()->delete($name));
+		return static::instance()->delete($name);
 	}
 
 	// --------------------------------------------------------------------
@@ -192,7 +192,7 @@ class Session
 	 */
 	public static function set_flash($name, $value)
 	{
-		return static::autowrite(static::instance()->set_flash($name, $value));
+		return static::instance()->set_flash($name, $value);
 	}
 
 	// --------------------------------------------------------------------
@@ -220,7 +220,7 @@ class Session
 	 */
 	public static function keep_flash($name)
 	{
-		return static::autowrite(static::instance()->keep_flash($name));
+		return static::instance()->keep_flash($name);
 	}
 
 	// --------------------------------------------------------------------
@@ -235,7 +235,7 @@ class Session
 	 */
 	public static function delete_flash($name)
 	{
-		return static::autowrite(static::instance()->delete_flash($name));
+		return static::instance()->delete_flash($name);
 	}
 
 	// --------------------------------------------------------------------
@@ -288,25 +288,6 @@ class Session
 	public static function destroy()
 	{
 		return static::instance()->destroy();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * if write_on_set, write the session
-	 *
-	 * @param	result of the orginal call
-	 * @access	private
-	 * @return	result of the orginal call
-	 */
-	final private function autowrite($result)
-	{
-		if (static::instance()->get_config('write_on_set') === true)
-		{
-			static::write();
-		}
-
-		return $result;
 	}
 
 }
