@@ -33,11 +33,6 @@ class Session
 	 */
 	protected static $instance = false;
 
-	/*
-	 * list of supported session drivers
-	 */
-	protected static $valid_storage = array('cookie', 'file', 'memcached', 'db');
-
 	// --------------------------------------------------------------------
 	// session initialisation methods
 	// --------------------------------------------------------------------
@@ -71,11 +66,6 @@ class Session
 			if ( ! isset($config['driver']))
 			{
 				$config['driver'] = isset($config['default']) ? $config['default'] : NULL;
-			}
-
-			if ( ! in_array($config['driver'], static::$valid_storage))
-			{
-				throw new Exception('You have specified an invalid session storage system.');
 			}
 
 			// instantiate the driver
