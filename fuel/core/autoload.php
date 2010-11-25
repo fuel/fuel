@@ -67,6 +67,7 @@ $loader->add_aliases(array(
 	'Session'					=> 'Fuel\\Session',
 	'Session_Driver'			=> 'Fuel\\Session_Driver',
 	'Session_Exception'			=> 'Fuel\\Session_Exception',
+	'Session_Db_Driver'			=> 'Fuel\\Session_Db_Driver',
 	'Session_Cookie_Driver'		=> 'Fuel\\Session_Cookie_Driver',
 	'Session_File_Driver'		=> 'Fuel\\Session_File_Driver',
 	'Session_Memcached_Driver'	=> 'Fuel\\Session_Memcached_Driver',

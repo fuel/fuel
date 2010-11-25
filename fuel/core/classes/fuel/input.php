@@ -15,7 +15,7 @@
 namespace Fuel;
 
 class Input {
-	
+
 	/**
 	 * Get the real ip address of the user.  Even if they are using a proxy.
 	 *
@@ -134,7 +134,7 @@ class Input {
 		{
 			return NULL;
 		}
-		
+
 		if ( ! isset($_PUT))
 		{
 			static $_PUT;
@@ -225,7 +225,7 @@ class Input {
 
 		return $array[$index];
 	}
-	
+
 }
 
 /* End of file input.php */

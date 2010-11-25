@@ -305,9 +305,11 @@ class Session_Driver {
 			case 'match_ua':
 			case 'flash_auto_expire':
 			case 'write_on_finish':
+			case 'expire_on_close':
 				$this->config[$name] = (bool) $value;
 				break;
 			// strings
+			case 'driver':
 			case 'flash_id':
 			case 'cookie_name':
 			case 'cookie_domain':
@@ -320,8 +322,14 @@ class Session_Driver {
 				$this->config[$name] = (int) $value;
 				break;
 			// arrays
+			case '_none_defined_yet_':
+				break;
+			// driver config
 			case 'config':
-				$this->config[$name] = (array) $value;
+				foreach($value as $ck => $cv)
+				{
+					$this->config[$ck] = $this->validate_config($ck, $cv);
+				}
 			default:
 				break;
 		}
@@ -367,14 +375,17 @@ class Session_Driver {
 		if ($cookie = Cookie::get($this->config['cookie_name'], false))
 		{
 			// fetch the payload
-			$cookie = $this->_unserialize(Encrypt::decrypt($cookie));
+			$cookie = $this->_unserialize(Crypt::decode($cookie));
+
+			// get a time object
+			$time = Date::time();
 
 			// validate the cookie
 			if ( ! isset($cookie[0]) )
 			{
 				// not a valid cookie payload
 			}
-			elseif ($this->config['expiration_time'] && $cookie[0]['updated'] + $this->config['expiration_time'] <= $this->_gmttime())
+			elseif ($this->config['expiration_time'] && $cookie[0]['updated'] + $this->config['expiration_time'] <= $time->get_timestamp())
 			{
 				// session has expired
 			}
@@ -411,6 +422,9 @@ class Session_Driver {
 	 */
 	protected function _set_cookie($session_id = null, array $payload = array())
 	{
+		// get a time object
+		$time = Date::time();
+
 		// do we have a valid session
 		if (is_null($session_id))
 		{
@@ -418,33 +432,40 @@ class Session_Driver {
 			$this->keys['session_id']	= $this->_new_session_id();
 			$this->keys['ip_address']	= Input::real_ip();
 			$this->keys['user_agent']	= Input::user_agent();
-			$this->keys['created'] 		= $this->_gmttime();
+			$this->keys['created'] 		= $time->get_timestamp();
 		}
 		else
 		{
 			// existing session. need to rotate the session id?
-			if ($this->config['rotation_time'] && $this->keys['created'] + $this->config['rotation_time'] <= $this->_gmttime())
+			if ($this->config['rotation_time'] && $this->keys['created'] + $this->config['rotation_time'] <= $time->get_timestamp())
 			{
 				// create a new session id, and update the create timestamp
 				$this->keys['session_id']	= $this->_new_session_id();
-				$this->keys['created'] 		= $this->_gmttime();
+				$this->keys['created'] 		= $time->get_timestamp();
 			}
 		}
 		// record the last update time of the session
-		$this->keys['updated'] = $this->_gmttime();
+		$this->keys['updated'] = $time->get_timestamp();
 
 		// add the session keys to the payload
 		array_unshift($payload, $this->keys);
 
 		// encrypt the payload
-		$payload = Encrypt::encrypt($this->_serialize($payload));
+		$payload = Crypt::encode($this->_serialize($payload));
 		if (strlen($payload) > 4000)
 		{
 			throw new Exception('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
 		}
 
 		// write the session cookie
-		Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
+		if ($this->config['expire_on_close'])
+		{
+			Cookie::set($this->config['cookie_name'], $payload, 0);
+		}
+		else
+		{
+			Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -565,20 +586,6 @@ class Session_Driver {
 		}
 
 		return (is_string($data)) ? str_replace('{{slash}}', '\\', $data) : $data;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * generates a GMT timestamp
-	 *
-	 * @access	private
-	 * @return  void
-	 */
-	protected function _gmttime()
-	{
-		$now = time();
-		return mktime(gmdate("H", $now), gmdate("i", $now), gmdate("s", $now), gmdate("m", $now), gmdate("d", $now), gmdate("Y", $now));
 	}
 
 }
