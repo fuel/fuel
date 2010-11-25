@@ -91,23 +91,7 @@ abstract class Session_Driver {
 	 */
 	public function write()
 	{
-		static $write_on_finish_event = false;
-
-		// do we need to set a write_on_finish event?
-		if ($this->config['write_on_finish'])
-		{
-			// check if we need to register the shutdown event
-			if ( ! $write_on_finish_event)
-			{
-				// register a shutdown event to update the session
-				Event::register('shutdown', array($this, 'write_session'));
-				$write_on_finish_event = true;
-			}
-		}
-		else
-		{
 			$this->write_session();
-		}
 	}
 
 	// --------------------------------------------------------------------
@@ -304,7 +288,7 @@ abstract class Session_Driver {
 			case 'match_ip':
 			case 'match_ua':
 			case 'flash_auto_expire':
-			case 'write_on_finish':
+			case 'write_on_set':
 			case 'expire_on_close':
 				$this->config[$name] = (bool) $value;
 				break;

@@ -25,7 +25,7 @@ return array(
 	'rotation_time'		=> 300,							// session ID rotation time  (optional, default = 300)
 	'flash_id'			=> 'flash',						// default ID for flash variables  (optional, default = 'flash')
 	'flash_auto_expire'	=> false,						// if false, expire flash values only after it's used  (optional, default = true)
-	'write_on_finish'	=> true,						// if true, writes are only done once, at the end of a page request (optional, default = false)
+	'write_on_set'		=> true,						// if true, writes are only done when you set a variable. if false, only at the end of a page request (optional, default = false)
 
 	// special configuration settings for cookie based sessions
 	'cookie'			=> array(
