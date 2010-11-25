@@ -26,11 +26,23 @@ namespace Fuel;
  * @category	Core
  * @author		Jelmer Schreuder
  */
-class Validation extends Singleton {
+class Validation {
+
+	protected static $_instance = null;
 
 	public static function factory()
 	{
 		return new Validation_Object();
+	}
+
+	public static function instance()
+	{
+		if (is_null(static::$_instance))
+		{
+			static::$_instance = static::factory();
+		}
+		
+		return static::$_instance;
 	}
 
 	final private function __construct() {}
