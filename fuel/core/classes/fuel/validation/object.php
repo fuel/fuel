@@ -32,22 +32,22 @@ namespace Fuel;
 class Validation_Object {
 
 	/**
-	 * @var array consists of fieldnames, field titles & rules to be used on them
+	 * @var	array	consists of fieldnames, field titles & rules to be used on them
 	 */
 	protected $fields = array();
 
 	/**
-	 * @var array consists of objects and classnames that don't need a full callback passed
+	 * @var	array	consists of objects and classnames that don't need a full callback passed
 	 */
 	protected $callables = array();
 
 	/**
-	 * @var array consists of the fieldnames and their values when validation succeeded for that field
+	 * @var	array	consists of the fieldnames and their values when validation succeeded for that field
 	 */
 	protected $output = array();
 
 	/**
-	 * @var array consists of errors given during validation
+	 * @var	array	consists of Validation_error objects thrown during validation
 	 */
 	protected $errors = array();
 
@@ -124,6 +124,13 @@ class Validation_Object {
 		}
 	}
 
+	/**
+	 * Add model
+	 *
+	 * Add a Fuel Model to callables and expect it to add fields.
+	 *
+	 * @param	Model
+	 */
 	public function add_model($model)
 	{
 		if ( ! is_callable(array($model, '_fuel_validation')))
@@ -131,10 +138,25 @@ class Validation_Object {
 			throw new Fuel_Exception('Invalid model or no _fuel_validation() method to return fields.');
 		}
 
-		$this->fields = array_merge($model->_fuel_validation(), $this->fields);
+		/**
+		 * The _fuel_validation() method should do a bunch of add_field() calls
+		 * on the object it's given (this one).
+		 * Note: they don't need to include their model in the callback, can be only string
+		 * because $model is added as new first callable.
+		 */
 		$this->add_callable($model);
+		$model->_fuel_validation($this);
 	}
 
+	/**
+	 * Add Callable
+	 *
+	 * Adds an object for which you don't need to write a full callback, just
+	 * the method as a string will do. This also allows for overwriting functionality
+	 * from this object because the new class is prepended.
+	 *
+	 * @param	object|string	Class or object
+	 */
 	public function add_callable($class)
 	{
 		if ( ! (is_object($class) || class_exists($class)))
@@ -142,9 +164,18 @@ class Validation_Object {
 			throw new Fuel_Exception('Input for add_callable is not a valid object or class.');
 		}
 		
-		$this->callables[] = $class;
+		array_unshift($this->callables, $class);
 	}
 
+	/**
+	 * Run validation
+	 *
+	 * Performs validation on current field and on given input, will try POST when input
+	 * wasn't given.
+	 *
+	 * @param	array	input that overwrites POST values
+	 * @return	bool	whether validation succeeded
+	 */
 	public function run($input = null)
 	{
 		$this->output = array();
@@ -171,6 +202,17 @@ class Validation_Object {
 		return empty($this->errors);
 	}
 
+	/**
+	 * Run rule
+	 *
+	 * Performs a single rule on a field and its value
+	 *
+	 * @throws	Validation_Error
+	 * @param	callback
+	 * @param	mixed	Value by reference, will be edited
+	 * @param	array	Extra parameters
+	 * @param	array	Validation field description
+	 */
 	protected function _run_rule($rule, &$value, $params, $field)
 	{
 		$output = call_user_func_array($rule, array_merge(array($value), $params));
@@ -185,6 +227,15 @@ class Validation_Object {
 		}
 	}
 
+	/**
+	 * Validated
+	 *
+	 * Returns specific validated value or all validated field=>value pairs
+	 *
+	 * @param	string		fieldname
+	 * @param	mixed		value to return when not validated
+	 * @return	array|mixed
+	 */
 	public function validated($field = false, $default = false)
 	{
 		if ($field === false)
@@ -195,6 +246,15 @@ class Validation_Object {
 		return array_key_exists($field, $this->output) ? $this->output[$field] : $default;
 	}
 
+	/**
+	 * Errors
+	 *
+	 * Return specific error or all errors thrown during validation
+	 *
+	 * @param	string	fieldname
+	 * @param	mixed	value to return when not validated
+	 * @return	array|Validation_Error
+	 */
 	public function errors($field = false, $default = false)
 	{
 		if ($field === false)
@@ -205,6 +265,14 @@ class Validation_Object {
 		return array_key_exists($field, $this->errors) ? $this->errors[$field] : $default;
 	}
 
+	/**
+	 * Show errors
+	 *
+	 * Returns all errors in a list or with set markup from $options param
+	 *
+	 * @param	array	uses keys open_list, close_list, open_error, close_error & no_errors
+	 * @return	string
+	 */
 	public function show_errors($options = array())
 	{
 		$default = array(
@@ -237,6 +305,14 @@ class Validation_Object {
 	 * Some validation methods
 	 */
 
+	/**
+	 * Required
+	 *
+	 * Value may not be empty
+	 *
+	 * @param	mixed
+	 * @return	bool
+	 */
 	public function required($val)
 	{
 		return ! empty($val);

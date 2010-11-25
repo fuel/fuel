@@ -32,6 +32,14 @@ class Validation_Error extends Exception {
 	public $callback = '';
 	public $params = array();
 
+	/**
+	 * Constructor
+	 *
+	 * @param	array		Validation field description
+	 * @param	mixed		Unvalidated value
+	 * @param	callback	Failed rule callback
+	 * @param	array		Failed rule callback params
+	 */
 	public function __construct($field, $value, $callback, $params)
 	{
 		$this->field = $field;
@@ -41,6 +49,16 @@ class Validation_Error extends Exception {
 		$this->callback = is_string($callback) ? str_replace('::', ':', $callback) : get_class($callback[0]).':'.$callback[1];
 	}
 
+	/**
+	 * Get Message
+	 *
+	 * Shows the error message which can be taken from loaded language file.
+	 *
+	 * @param	string	Message to use, or false to try and load it from Lang class
+	 * @param	string	HTML to prefix error message
+	 * @param	string	HTML to postfix error message
+	 * @return	string
+	 */
 	public function get_message($msg = false, $open = '', $close = '')
 	{
 		$msg = is_null($msg) ? __('validation.'.$this->callback) : $msg;
