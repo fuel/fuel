@@ -67,7 +67,9 @@ class Validation_Error extends Exception {
 	 */
 	public function get_message($msg = false, $open = '', $close = '')
 	{
-		$msg = is_null($msg) ? __('validation.'.$this->callback) : $msg;
+		$msg = $msg === false
+				? __('validation.'.$this->callback) ?: __('validation.'.array_pop(explode(':', $this->callback)))
+				: $msg;
 		if ($msg == false)
 		{
 			return $open.'Validation rule '.$this->callback.' failed for '.$this->field['title'].$close;
@@ -79,20 +81,15 @@ class Validation_Error extends Exception {
 			return $msg;
 		}
 
-		$replace = array(
-			'name'	=> $this->field['name'],
-			'title'	=> $this->field['title']
-		);
-		foreach($this->fields as $key => $val)
-		{
-			$replace['field:'.$key] = $val;
-		}
+		$find			= array(':field', ':title', ':value', ':rule');
+		$replace		= array($this->field['name'], $this->field['title'], $this->value, $this->callback);
 		foreach($this->params as $key => $val)
 		{
-			$replace['param:'.$key] = $val;
+			$find[]		= ':param:'.$key;
+			$replace[]	= $val;
 		}
 
-		return $open.__('validation.'.$this->callback, $replace).$close;
+		return $open.str_replace($find, $replace, $msg).$close;
 	}
 
 	public function __toString()
