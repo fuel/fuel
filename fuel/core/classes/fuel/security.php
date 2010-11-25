@@ -109,6 +109,7 @@ class Security {
 	{
 		if (document.cookie.length > 0)
 		{
+			var c_name = "'.static::$csrf_token_key.'";
 			c_start = document.cookie.indexOf(c_name + "=");
 			if (c_start != -1)
 			{
