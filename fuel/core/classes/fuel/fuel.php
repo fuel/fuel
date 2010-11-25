@@ -80,7 +80,7 @@ class Fuel {
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
-				$base_url = dirname($_SERVER['SCRIPT_NAME']);
+				$base_url = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 
 				// Add a slash if it is missing
 				substr($base_url, -1, 1) == '/' OR $base_url .= '/';
