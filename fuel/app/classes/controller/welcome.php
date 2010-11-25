@@ -7,7 +7,7 @@ class Controller_Welcome extends Controller\Base {
 	public function action_index()
 	{
 		$data['css'] = Asset::css(array('reset.css','960.css','main.css'));
-		$data['controller_file'] = __FILE__;
+		$data['controller_file'] = Fuel::clean_path(__FILE__);
 
 		$bm = Benchmark::app_total();
 		$data['exec_time'] = round($bm[0], 4);
@@ -19,7 +19,7 @@ class Controller_Welcome extends Controller\Base {
 	public function action_404()
 	{
 		$data['css'] = Asset::css(array('reset.css','960.css','main.css'));
-		$data['controller_file'] = __FILE__;
+		$data['controller_file'] = Fuel::clean_path(__FILE__);
 
 		$this->output = View::factory('welcome/404', $data);
 	}
