@@ -118,7 +118,7 @@ class Validation_Object {
 				// not found, give a notice but don't break
 				if ( ! $callable_rule)
 				{
-					trigger_error('Invalid rule passed to Validation, not used.', E_USER_WARNING);
+					Error::notice('Invalid rule passed to Validation, not used.');
 				}
 			}
 		}
@@ -151,7 +151,7 @@ class Validation_Object {
 		$this->errors = array();
 		foreach($this->fields as $field => $settings)
 		{
-			$value = is_null($input) ? Input::post($field) : @$input[$field];
+			$value = is_null($input) ? Input::post($field, null) : @$input[$field];
 			try
 			{
 				foreach ($settings['rules'] as $rule)
@@ -159,8 +159,8 @@ class Validation_Object {
 					$callback	= $rule[0];
 					$params		= (array) @$rule[1];
 					$this->_run_rule($callback, $value, $params, $settings);
-					$this->output[$field] = $value;
 				}
+				$this->output[$field] = $value;
 			}
 			catch (Validation_Error $v)
 			{
@@ -229,6 +229,17 @@ class Validation_Object {
 		$output .= $options['close_list'];
 
 		return $output;
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Some validation methods
+	 */
+
+	public function required($val)
+	{
+		return ! empty($val);
 	}
 }
 

@@ -55,4 +55,17 @@ class Controller_Welcome extends Controller\Base {
 		
 		$this->output = View::factory('welcome/pagination', $data);
 	}
+
+	public function action_validation()
+	{
+		$input = array('test' => '   Fuel ', 'empty' => '');
+		Validation::add_field('test', 'Testfield', array('trim', 'required', function($val) { return $val.'PHP'; } ));
+		Validation::add_field('empty', 'Empty field', array('required'));
+		Validation::run($input);
+		echo '<pre>';
+		var_dump(Validation::validated());
+		foreach(Validation::errors() as $e)
+			echo "\t".$e."\n";
+		exit('</pre>');
+	}
 }

@@ -38,7 +38,7 @@ class Validation_Error extends Exception {
 		$this->value = $value;
 		$this->params = $params;
 
-		$callback = is_string($callback) ? strstr($callback, array('::', ':')) : get_class($callback[0]).':'.$callback[1];
+		$this->callback = is_string($callback) ? str_replace('::', ':', $callback) : get_class($callback[0]).':'.$callback[1];
 	}
 
 	public function get_message($msg = false, $open = '', $close = '')
@@ -46,7 +46,7 @@ class Validation_Error extends Exception {
 		$msg = is_null($msg) ? __('validation.'.$this->callback) : $msg;
 		if ($msg == false)
 		{
-			return $open.'Validation rule '.$this->callback.' failed for '.$this->field['field'].$close;
+			return $open.'Validation rule '.$this->callback.' failed for '.$this->field['title'].$close;
 		}
 
 		// to safe some performance when there are no variables in the $msg
