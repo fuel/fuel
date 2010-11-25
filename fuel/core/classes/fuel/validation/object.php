@@ -86,39 +86,44 @@ class Validation_Object {
 		// array(callback, params) or just callbacks in an array.
 		foreach ($rules as $r)
 		{
-			if (is_array($r) && (empty($r[1]) || is_array($r[1])) && is_callable($r[0]))
+			// first try callables
+			$callable_rule = false;
+			if ((is_string($r) || (is_array($r) && is_string($r[0])))			// whether callback is a string
+				&& ( ! is_array($r) || ( ! isset($r[1]) || is_array($r[1]))))	// whether arguements are valid
 			{
-				$this->fields[$field]['rules'][] = $r;
-			}
-			elseif (is_callable($r))
-			{
-				$this->fields[$field]['rules'][] = array($r, array());
-			}
-			else
-			{
-				// try on callable objects
-				$callable_rule = false;
-				if (is_string($r) || (is_array($r) && (empty($r[1]) || is_array($r[1]))))
+				foreach ($this->callables as $class)
 				{
-					foreach ($this->callables as $class)
+					if (is_array($r) || is_callable(array($class, $r[0])))
 					{
-						if (is_array($r) || is_callable(array($class, $r[0])))
-						{
-							$callable_rule = true;
-							$this->fields[$field]['rules'][] = array(array($class, $r[0]), $r[1]);
-						}
-						elseif (is_string($r) && is_callable(array($class, $r)))
-						{
-							$callable_rule = true;
-							$this->fields[$field]['rules'][] = array(array($class, $r), array());
-						}
+						$callable_rule = true;
+						$this->fields[$field]['rules'][] = array(array($class, $r[0]), $r[1]);
+					}
+					elseif (is_string($r) && is_callable(array($class, $r)))
+					{
+						$callable_rule = true;
+						$this->fields[$field]['rules'][] = array(array($class, $r), array());
 					}
 				}
+			}
 
-				// not found, give a notice but don't break
-				if ( ! $callable_rule)
+			// when no callable function was found, try regular callbacks
+			if ( ! $callable_rule)
+			{
+				if (is_array($r) && (empty($r[1]) || is_array($r[1])) && is_callable($r[0]))
 				{
-					Error::notice('Invalid rule passed to Validation, not used.');
+					$this->fields[$field]['rules'][] = $r;
+				}
+				elseif (is_callable($r))
+				{
+					$this->fields[$field]['rules'][] = array($r, array());
+				}
+				else
+				{
+					// not found, give a notice but don't break
+					if ( ! $callable_rule)
+					{
+						Error::notice('Invalid rule passed to Validation, not used.');
+					}
 				}
 			}
 		}
