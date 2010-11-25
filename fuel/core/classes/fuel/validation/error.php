@@ -46,7 +46,13 @@ class Validation_Error extends Exception {
 		$this->value = $value;
 		$this->params = $params;
 
-		$this->callback = is_string($callback) ? str_replace('::', ':', $callback) : get_class($callback[0]).':'.$callback[1];
+		/**
+		 * Simplify callback for rule, class/object and method are seperated by 1 colon
+		 * and objects become their classname without the namespace.
+		 */
+		$this->callback = is_string($callback)
+				? str_replace('::', ':', $callback)
+				: preg_replace('#^([a-z_]*\\\\)*#i', '', get_class($callback[0])).':'.$callback[1];
 	}
 
 	/**
