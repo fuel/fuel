@@ -9,7 +9,7 @@
 	<div id="container" class="container_12">
 		
 		<header class="grid_12">
-		<h1>Pagination</h1>
+		<h1 >You are now running on FUEL.</h1>
 		</header>
 		
 		<div class="clear"></div>
@@ -17,15 +17,15 @@
 		<div id="content" class="grid_12">
 			
 		<section class="grid_8 alpha">
-			<p><strong>This is a pagination example!</strong></p>
-			<hr>
+			<p>You have successfully initiated the FUEL PHP Framework.</p>
 	
-			<?php foreach($items as $item): ?>
-    		<p><?php echo $item['name']; ?></p>
-			<?php endforeach; ?>
+			<p>Your default controller, 'Controller_Welcome' is located at: <br/><strong><?php echo $controller_file; ?></strong></p>
 			
-			<p><?php echo Pagination::prev_link('< Previous') . ' | ' .Pagination::next_link('Next >'); ?></p>
-			<p><?php echo $pagination; ?></p>
+			<p>The Controller_Welcome is using the view: <br/><strong><?php echo Fuel::clean_path(__FILE__); ?></strong></p>
+		
+			<p>The assets for this page(css, js, img) have been loaded using the built in Asset Helper.</p>
+			
+			<p></p>
 		</section>
 		
 		<section id="sidebar" class="grid_4 omega">
@@ -41,9 +41,12 @@
 		<section id="footer" class="grid_12">
 			
 			<p>MIT License - <a href="http://fuelphp.com/" target="_blank">FuelPHP</a> 2010</p>
-	
+			<p>
+				Execution Time (sec): <?php echo $exec_time; ?><br />
+				Memory Used (MB): <?php echo $mem_usage; ?>
+			</p>
 		</section>	
-		<div class="clear"></div> 		
+		<div class="clear"></div> 
 	</div>
 </body>
 </html>
