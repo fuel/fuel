@@ -31,8 +31,8 @@
 		</div>
 		<div id="footer">
 			<p>
-				<a href="""http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
-				Executed in <?php echo $exec_time; ?>s using <?php echo $mem_usage; ?>mb of memory.
+				<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+				Executed in {exec_time}s using {mem_usage}mb of memory.
 			</p>
 		</div>
 	</div>

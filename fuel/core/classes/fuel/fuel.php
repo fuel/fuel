@@ -113,6 +113,16 @@ class Fuel {
 		// Grab the output buffer
 		$output = ob_get_clean();
 
+		$bm = Benchmark::app_total();
+
+		// TODO: There is probably a better way of doing this, but this works for now.
+		$output = \str_replace(
+				array('{exec_time}', '{mem_usage}'),
+				array(round($bm[0], 4), round($bm[1] / pow(1024, 2), 3)),
+				$output
+		);
+
+
 		// Send the buffer to the browser.
 		echo $output;
 	}
