@@ -91,7 +91,7 @@ class Session
 		$driver->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
 		$driver->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
 		$driver->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
-		$driver->set_config('write_on_set', isset($config['write_on_set']) ? (bool) $config['write_on_set'] : false);
+		$driver->set_config('write_on_set', isset($config['write_on_set']) ? (bool) $config['write_on_set'] : true);
 
 		// if the driver has an init method, call it
 		if (method_exists($driver, 'init'))
