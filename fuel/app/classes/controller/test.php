@@ -2,7 +2,7 @@
 
 use Fuel\Controller;
 
-class Controller_Welcome extends Controller\Base {
+class Controller_Test extends Controller\Base {
 
 	public function action_index()
 	{
