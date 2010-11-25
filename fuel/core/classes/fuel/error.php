@@ -15,7 +15,7 @@
 namespace Fuel;
 
 class Error {
-	
+
 	public static $levels = array(
 		E_ERROR				=>	'Error',
 		E_WARNING			=>	'Warning',
@@ -45,10 +45,13 @@ class Error {
 	public static function shutdown_handler()
 	{
 		$last_error = error_get_last();
-		
+
 		// Only show valid fatal errors
 		if ($last_error AND in_array($last_error['type'], static::$fatal_levels))
 		{
+			$severity = static::$levels[$last_error['type']];
+			Log::error($severity.' - '.$last_error['message'].' in '.$last_error['file'].' on line '.$last_error['line']);
+
 			static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
 
 			exit(1);
@@ -57,21 +60,36 @@ class Error {
 
 	public static function exception_handler(\Exception $e)
 	{
+		$severity = ( ! isset(static::$levels[$e->getCode()])) ? $e->getCode() : static::$levels[$e->getCode()];
+		Log::error($severity.' - '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
+
 		static::show_php_error($e);
 	}
 
 	public static function error_handler($severity, $message, $filepath, $line)
 	{
-		if (($severity & error_reporting()) == $severity)
+		if (static::$count <= Config::get('error_throttling', 10))
 		{
-			static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
+			Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
+	
+			if (($severity & error_reporting()) == $severity)
+			{
+				static::$count++;
+				static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
+			}
 		}
+		elseif (static::$count == (Config::get('error_throttling', 10) + 1)
+				&& ($severity & error_reporting()) == $severity)
+		{
+			static::$count++;
+			static::notice('Error throttling threshold was reached, no more full error reports are shown.', true);
+		}
+
 		return true;
 	}
 
 	public static function show_php_error(\Exception $e)
 	{
-		static::$count++;
 		$data['type']		= get_class($e);
 		$data['severity']	= $e->getCode();
 		$data['message']	= $e->getMessage();
@@ -79,19 +97,8 @@ class Error {
 		$data['error_line']	= $e->getLine();
 		$data['backtrace']	= $e->getTrace();
 
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-		{
-			for ($i = count($data['backtrace']) - 1; $i > 0; --$i)
-			{
-				if (isset($data['backtrace'][$i - 1]['args']))
-				{
-					$data['backtrace'][$i]['args'] = $data['backtrace'][$i - 1]['args'];
-					unset($data['backtrace'][$i - 1]['args']);
-				}
-			}
-		}
 		array_shift($data['backtrace']);
-		
+
 		foreach ($data['backtrace'] as $key => $trace)
 		{
 			if ( ! isset($trace['file']))
@@ -108,13 +115,32 @@ class Error {
 
 		$data['debug_lines'] = Debug::file_lines($data['filepath'], $data['error_line']);
 
-		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
-
 		$data['filepath'] = Fuel::clean_path($data['filepath']);
+
+		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
 
 		echo View::factory('errors'.DS.'php_error', $data);
 	}
 
+	public static function notice($msg, $always_show = false)
+	{
+		if ( ! $always_show && (Fuel::$env == Env::PRODUCTION || Config::get('show_notices', true) === false))
+		{
+			return;
+		}
+
+		$trace = Arr::element(debug_backtrace(), 1);
+
+		Log::debug('Notice - '.$msg.' in '.$trace['file'].' on line '.$trace['line']);
+
+		$data['message']	= $msg;
+		$data['type']		= 'Notice';
+		$data['filepath']	= str_replace("\\", "/", Fuel::clean_path($trace['file']));
+		$data['line']		= $trace['line'];
+		$data['function']	= $trace['function'];
+
+		echo View::factory('errors'.DS.'php_short', $data);
+	}
 
 }
 

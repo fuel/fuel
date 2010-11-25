@@ -106,7 +106,7 @@ class Date {
 	 * @param	string	valid PHP timezone from www.php.net/timezones
 	 * @return	Date
 	 */
-	public function factory($timestamp = null, $timezone = null)
+	public static function factory($timestamp = null, $timezone = null)
 	{
 		$timestamp	= is_null($timestamp) ? time() + static::$server_gmt_offset : $timestamp;
 		$timezone	= is_null($timezone) ? static::$default_timezone : $timezone;
@@ -141,7 +141,7 @@ class Date {
 		$time = strptime($input, $pattern);
 		if ($time === false)
 		{
-			trigger_error('Input was not recognized by pattern.', E_USER_WARNING);
+			Error::notice('Input was not recognized by pattern.');
 			return false;
 		}
 		$timestamp = mktime($time['tm_hour'], $time['tm_min'], $time['tm_sec'],
@@ -166,7 +166,7 @@ class Date {
 
 		if ($interval <= 0)
 		{
-			trigger_error('Input was not recognized by pattern.', E_USER_WARNING);
+			Error::notice('Input was not recognized by pattern.');
 			return false;
 		}
 
@@ -196,7 +196,7 @@ class Date {
 
 		if ($month < 1 || $month > 12)
 		{
-			trigger_error('Invalid input for month given.', E_USER_WARNING);
+			Error::notice('Invalid input for month given.');
 			return false;
 		}
 		elseif ($month == 2)

@@ -91,7 +91,7 @@ class Input {
 	 */
 	public static function user_agent()
 	{
-		return isset($_SERVER['HTTP_USER_AGENT']) ? isset($_SERVER['HTTP_USER_AGENT']) : '';
+		return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 	}
 
 	/**

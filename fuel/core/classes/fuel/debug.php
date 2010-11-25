@@ -32,7 +32,7 @@ class Debug {
 		$arguments = func_get_args();
 		$total_arguments = count($arguments);
 
-		$callee['file'] = str_replace(array(APPPATH, COREPATH), array('APPPATH/', 'COREPATH/'), $callee['file']);
+		$callee['file'] = str_replace("\\", "/", Fuel::clean_path($callee['file']));
 
 		echo '<div style="background: #EEE !important; border:1px solid #666; padding:10px;">';
 		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 18px sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1><pre>';

@@ -71,6 +71,7 @@ $loader->add_aliases(array(
 
 	'URI'			=> 'Fuel\\URI',
 	'URL'			=> 'Fuel\\URL',
+	'Pagination'	=> 'Fuel\\Pagination',
 
 	'Validation'		=> 'Fuel\\Validation',
 	'Validation_Object'	=> 'Fuel\\Validation_Object',
