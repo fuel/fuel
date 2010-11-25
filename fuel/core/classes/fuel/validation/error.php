@@ -46,7 +46,13 @@ class Validation_Error extends Exception {
 		$this->value = $value;
 		$this->params = $params;
 
-		$this->callback = is_string($callback) ? str_replace('::', ':', $callback) : get_class($callback[0]).':'.$callback[1];
+		/**
+		 * Simplify callback for rule, class/object and method are seperated by 1 colon
+		 * and objects become their classname without the namespace.
+		 */
+		$this->callback = is_string($callback)
+				? str_replace('::', ':', $callback)
+				: preg_replace('#^([a-z_]*\\\\)*#i', '', get_class($callback[0])).':'.$callback[1];
 	}
 
 	/**
@@ -54,14 +60,16 @@ class Validation_Error extends Exception {
 	 *
 	 * Shows the error message which can be taken from loaded language file.
 	 *
-	 * @param	string	Message to use, or false to try and load it from Lang class
 	 * @param	string	HTML to prefix error message
 	 * @param	string	HTML to postfix error message
+	 * @param	string	Message to use, or false to try and load it from Lang class
 	 * @return	string
 	 */
-	public function get_message($msg = false, $open = '', $close = '')
+	public function get_message($open = '', $close = '', $msg = false)
 	{
-		$msg = is_null($msg) ? __('validation.'.$this->callback) : $msg;
+		$msg = $msg === false
+				? __('validation.'.$this->callback) ?: __('validation.'.array_pop(explode(':', $this->callback)))
+				: $msg;
 		if ($msg == false)
 		{
 			return $open.'Validation rule '.$this->callback.' failed for '.$this->field['title'].$close;
@@ -73,20 +81,15 @@ class Validation_Error extends Exception {
 			return $msg;
 		}
 
-		$replace = array(
-			'name'	=> $this->field['name'],
-			'title'	=> $this->field['title']
-		);
-		foreach($this->fields as $key => $val)
-		{
-			$replace['field:'.$key] = $val;
-		}
+		$find			= array(':field', ':title', ':value', ':rule');
+		$replace		= array($this->field['name'], $this->field['title'], $this->value, $this->callback);
 		foreach($this->params as $key => $val)
 		{
-			$replace['param:'.$key] = $val;
+			$find[]		= ':param:'.$key;
+			$replace[]	= $val;
 		}
 
-		return $open.__('validation.'.$this->callback, $replace).$close;
+		return $open.str_replace($find, $replace, $msg).$close;
 	}
 
 	public function __toString()

@@ -16,7 +16,7 @@ namespace Fuel;
 
 // --------------------------------------------------------------------
 
-class Session_Cookie_Driver extends Session_Driver {
+class Session_Cookie extends Session_Driver {
 
 	// --------------------------------------------------------------------
 

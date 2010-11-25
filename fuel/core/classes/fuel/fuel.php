@@ -97,6 +97,11 @@ class Fuel {
 		{
 			date_default_timezone_set($timezone);
 		}
+		// ... or set it to UTC when none was set
+		elseif ( ! ini_get('date.timezone'))
+		{
+			date_default_timezone_set('UTC');
+		}
 
 		static::$initialized = true;
 	}
@@ -218,8 +223,8 @@ class Fuel {
 	 */
 	public static function clean_path($path)
 	{
-		static $search = array(APPPATH, COREPATH, DOCROOT);
-		static $replace = array('APPPATH/', 'COREPATH/', 'DOCROOT/');
+		static $search = array(APPPATH, COREPATH, DOCROOT, '\\');
+		static $replace = array('APPPATH/', 'COREPATH/', 'DOCROOT/', '/');
 		return str_replace($search, $replace, $path);
 	}
 }

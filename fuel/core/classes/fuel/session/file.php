@@ -16,7 +16,7 @@ namespace Fuel;
 
 // --------------------------------------------------------------------
 
-class Session_File_Driver extends Session_Driver {
+class Session_File extends Session_Driver {
 
 	// --------------------------------------------------------------------
 
@@ -30,7 +30,8 @@ class Session_File_Driver extends Session_Driver {
 	{
 		// check for required config values
 		$this->config['path'] = $this->validate_config('path', $this->config['path']);
-		$this->config['gc_probability'] = $this->validate_config('gc_probability', isset($this->config['gc_probability']) ? $this->config['gc_probability'] : 5);
+		$this->config['gc_probability'] = $this->validate_config('gc_probability', isset($this->config['gc_probability'])
+				? $this->config['gc_probability'] : 5);
 	}
 
 	// --------------------------------------------------------------------

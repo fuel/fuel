@@ -14,7 +14,7 @@
 
 return array(
 	// global defaults
-	'default'			=> 'cookie',					// if no session type is requested, use the default
+	'driver'			=> 'cookie',					// if no session type is requested, use the default
 	'match_ip'			=> false,						// check for an IP address match after loading the cookie (optional, default = false)
 	'match_ua'			=> true,						// check for a user agent match after loading the cookie (optional, default = true)
 	'cookie_name'		=> 'fuelid',					// name of the session cookie  (optional, default = 'fuelid')

@@ -16,7 +16,7 @@ namespace Fuel;
 
 // --------------------------------------------------------------------
 
-class Session_Driver {
+abstract class Session_Driver {
 
 	/*
 	 * @var	session class configuration

@@ -53,6 +53,7 @@ $loader->add_aliases(array(
 	'Error'			=> 'Fuel\\Error',
 	'Form'			=> 'Fuel\\Form',
 	'Ftp'			=> 'Fuel\\Ftp',
+	'Html'			=> 'Fuel\\Html',
 	'Input'			=> 'Fuel\\Input',
 	'Lang'			=> 'Fuel\\Lang',
 	'Log'			=> 'Fuel\\Log',
@@ -63,13 +64,12 @@ $loader->add_aliases(array(
 	'Request'		=> 'Fuel\\Request',
 	'Route'			=> 'Fuel\\Route',
 
-	'Session'					=> 'Fuel\\Session',
-	'Session_Driver'			=> 'Fuel\\Session_Driver',
-	'Session_Exception'			=> 'Fuel\\Session_Exception',
-	'Session_Db_Driver'			=> 'Fuel\\Session_Db_Driver',
-	'Session_Cookie_Driver'		=> 'Fuel\\Session_Cookie_Driver',
-	'Session_File_Driver'		=> 'Fuel\\Session_File_Driver',
-	'Session_Memcached_Driver'	=> 'Fuel\\Session_Memcached_Driver',
+	'Session'			=> 'Fuel\\Session',
+	'Session_Driver'	=> 'Fuel\\Session_Driver',
+	'Session_Db'		=> 'Fuel\\Session_Db',
+	'Session_Cookie'	=> 'Fuel\\Session_Cookie',
+	'Session_File'		=> 'Fuel\\Session_File',
+	'Session_Memcached'	=> 'Fuel\\Session_Memcached',
 
 	'URI'			=> 'Fuel\\URI',
 	'URL'			=> 'Fuel\\URL',
@@ -82,6 +82,10 @@ $loader->add_aliases(array(
 	'View_Exception'	=> 'Fuel\\View_Exception',
 
 	'Fuel'			=> 'Fuel\\Fuel',
+
+	'Controller\\Base'		=> 'Fuel\\Controller\\Base',
+	'Controller\\Rest'		=> 'Fuel\\Controller\\Rest',
+	'Controller\\Template'	=> 'Fuel\\Controller\\Template'
 ));
 
 $loader->register();
