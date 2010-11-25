@@ -16,7 +16,7 @@ return array(
 	'default'	=> 'welcome',
 	'404'		=> 'welcome/404',
 
-	'hello/:name'	=> 'welcome/hello',
+	'hello/:name'	=> 'test/hello',
 
 	/**
 	 * Basic Routing
