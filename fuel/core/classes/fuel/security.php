@@ -67,7 +67,7 @@ class Security {
 		}
 
 		static::$csrf_token = Input::cookie(static::$csrf_token_key, null);
-		if (static::$csrf_token === null || Config::get('security.csrf_exparation', 0) <= 0)
+		if (static::$csrf_token === null || Config::get('security.csrf_expiration', 0) <= 0)
 		{
 			// set new token for next session when necessary
 			static::regenerate_token();
@@ -90,7 +90,7 @@ class Security {
 
 		static::$csrf_new_token = md5(uniqid().time());
 
-		$expiration = Config::get('security.exparation', 0);
+		$expiration = Config::get('security.csrf_expiration', 0);
 		Cookie::set(static::$csrf_token_key, static::$csrf_new_token, $expiration);
 	}
 
