@@ -82,6 +82,10 @@ $loader->add_aliases(array(
 	'View_Exception'	=> 'Fuel\\View_Exception',
 
 	'Fuel'			=> 'Fuel\\Fuel',
+
+	'Controller\\Base'		=> 'Fuel\\Controller\\Base',
+	'Controller\\Rest'		=> 'Fuel\\Controller\\Rest',
+	'Controller\\Template'	=> 'Fuel\\Controller\\Template'
 ));
 
 $loader->register();

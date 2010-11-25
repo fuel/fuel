@@ -1,6 +1,6 @@
 <?php
 
-class Controller_Welcome extends Fuel\Controller\Base {
+class Controller_Welcome extends Controller\Base {
 
 	public function action_index()
 	{
