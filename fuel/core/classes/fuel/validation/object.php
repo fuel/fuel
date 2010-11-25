@@ -58,6 +58,7 @@ class Validation_Object {
 
 	/**
 	 * Add field to be validated with title and rules
+	 * Note: valid callbacks are everything that is_callable() accepts, including closures
 	 *
 	 * @param	string	field variable name
 	 * @param	string	field title
@@ -150,14 +151,14 @@ class Validation_Object {
 		$this->errors = array();
 		foreach($this->fields as $field => $settings)
 		{
-			$value = is_null($input) ? $_POST[$field] : @$input[$field];
+			$value = is_null($input) ? Input::post($field) : @$input[$field];
 			try
 			{
 				foreach ($settings['rules'] as $rule)
 				{
 					$callback	= $rule[0];
 					$params		= (array) @$rule[1];
-					$this->_run_rule($rule, $value, $params, $settings);
+					$this->_run_rule($callback, $value, $params, $settings);
 					$this->output[$field] = $value;
 				}
 			}
