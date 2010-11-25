@@ -59,6 +59,7 @@ $loader->add_aliases(array(
 	'Migrate'		=> 'Fuel\\Migrate',
 	'Model'			=> 'Fuel\\Model',
 	'Output'		=> 'Fuel\\Output',
+	'Pagination'	=> 'Fuel\\Pagination',
 	'Request'		=> 'Fuel\\Request',
 	'Route'			=> 'Fuel\\Route',
 
@@ -71,7 +72,6 @@ $loader->add_aliases(array(
 
 	'URI'			=> 'Fuel\\URI',
 	'URL'			=> 'Fuel\\URL',
-	'Pagination'	=> 'Fuel\\Pagination',
 
 	'Validation'		=> 'Fuel\\Validation',
 	'Validation_Object'	=> 'Fuel\\Validation_Object',
