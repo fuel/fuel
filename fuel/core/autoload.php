@@ -71,7 +71,10 @@ $loader->add_aliases(array(
 
 	'URI'			=> 'Fuel\\URI',
 	'URL'			=> 'Fuel\\URL',
-	'Validation'	=> 'Fuel\\Validation',
+
+	'Validation'		=> 'Fuel\\Validation',
+	'Validation_Object'	=> 'Fuel\\Validation_Object',
+	'Validation_Error'	=> 'Fuel\\Validation_Error',
 
 	'View'				=> 'Fuel\\View',
 	'View_Exception'	=> 'Fuel\\View_Exception',
