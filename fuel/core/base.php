@@ -62,11 +62,12 @@ if ( ! function_exists('html_tag'))
 {
 	function html_tag($tag, $attr = array(), $content = false)
 	{
+		$has_content = (bool) ($content !== false && $content !== null);
 		$html = '<'.$tag;
 
 		$html .= ( ! empty($attr)) ? ' '.(is_array($attr) ? array_to_attr($attr) : $attr) : '';
-		$html .= empty($content) ? ' />' : '>';
-		$html .= ($content !== false && $content !== null) ? $content.'</'.$tag.'>' : '';
+		$html .= $has_content ? '>' : ' />';
+		$html .= $has_content ? $content.'</'.$tag.'>' : '';
 
 		return $html;
 	}
