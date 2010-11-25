@@ -2,51 +2,39 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>FUEL PHP Framework.</title>
-	<?php echo $css; ?>
+	<title>Fuel PHP Framework.</title>
+	<style type="text/css">
+		body { background-color: #F2F2F2; margin: 45px 0 0 0; font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif; font-size: 18px }
+		#wrapper { width: 740px; margin: 0 auto; }
+		h1 { color: #333333; font: normal normal normal 62px/1em Impact, Charcoal, sans-serif; margin: 0 0 15px 0; }
+		pre { padding: 15px; background-color: #FFF; border: 1px solid #CCC; font-size: 16px;}
+		#footer p { font-size: 14px; text-align: right; }
+		a { color: #000; }
+	</style>
 </head>
 <body>
-	<div id="container" class="container_12">
+	<div id="wrapper">
+		<h1>FUEL</h1>
 		
-		<header class="grid_12">
-		<h1 >You are now running on FUEL.</h1>
-		</header>
-		
-		<div class="clear"></div>
-		
-		<div id="content" class="grid_12">
-			
-		<section class="grid_8 alpha">
-			<p>You have successfully initiated the FUEL PHP Framework.</p>
+		<div id="content">
+			<p>You have successfully installed the Fuel PHP Framework.</p>
 	
-			<p>Your default controller, 'Controller_Welcome' is located at: <br/><strong><?php echo $controller_file; ?></strong></p>
+			<p>Your default controller, 'Controller_Welcome' is located at:</p>
+
+			<pre><code><?php echo $controller_file; ?></code></pre>
+
+			<p>The Controller_Welcome is using the view:</p>
 			
-			<p>The Controller_Welcome is using the view: <br/><strong><?php echo Fuel::clean_path(__FILE__); ?></strong></p>
+			<pre><code><?php echo Fuel::clean_path(__FILE__); ?></code></pre>
 		
-			<p>The assets for this page(css, js, img) have been loaded using the built in Asset Helper.</p>
-			
 			<p></p>
-		</section>
-		
-		<section id="sidebar" class="grid_4 omega">
-			<p><strong>Get Started</strong></p>
-			<ul>
-				<li><a href="http://fuelphp.com/" target="_blank">Fuel Home</a></li>
-				<li><a href="http://fuelphp.com/docs" target="_blank">Documentation</a></li>
-				<li><a href="http://fuelphp.com/forum" target="_blank">Forums</a></li>
-				<li><a href="http://fuelphp.com/tutorials" target="_blank">Tutorials</a></li>
-			</ul>
-		</section>
 		</div>
-		<section id="footer" class="grid_12">
-			
-			<p>MIT License - <a href="http://fuelphp.com/" target="_blank">FuelPHP</a> 2010</p>
+		<div id="footer">
 			<p>
-				Execution Time (sec): <?php echo $exec_time; ?><br />
-				Memory Used (MB): <?php echo $mem_usage; ?>
+				<a href="""http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+				Executed in <?php echo $exec_time; ?>s using <?php echo $mem_usage; ?>mb of memory.
 			</p>
-		</section>	
-		<div class="clear"></div> 
+		</div>
 	</div>
 </body>
 </html>
