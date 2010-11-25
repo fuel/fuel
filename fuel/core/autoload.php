@@ -53,6 +53,7 @@ $loader->add_aliases(array(
 	'Error'			=> 'Fuel\\Error',
 	'Form'			=> 'Fuel\\Form',
 	'Ftp'			=> 'Fuel\\Ftp',
+	'Html'			=> 'Fuel\\Html',
 	'Input'			=> 'Fuel\\Input',
 	'Lang'			=> 'Fuel\\Lang',
 	'Log'			=> 'Fuel\\Log',
