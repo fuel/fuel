@@ -249,7 +249,7 @@ class Autoloader {
 
 			if (array_key_exists($prefix, $this->prefixes))
 			{
-				$class = substr($class, 1);
+				$class = ltrim($class, '\\');
 				$file_path = $this->prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower($class)).'.php';
 				if (is_file($file_path))
 				{
