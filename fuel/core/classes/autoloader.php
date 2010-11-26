@@ -242,6 +242,25 @@ class Autoloader {
 			return true;
 		}
 
+		// Or try the active module when
+		if (class_exists('Fuel\\Request', false) && Fuel\Request::active()->module != '')
+		{
+			$prefix = ucfirst(Fuel\Request::active()->module).'_';
+
+			if (array_key_exists($prefix, $this->prefixes))
+			{
+				$class = substr($class, 1);
+				$file_path = $this->prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower($class)).'.php';
+				if (is_file($file_path))
+				{
+					require $file_path;
+					class_alias($prefix.$class, $class);
+					$this->_init_class($class);
+					return true;
+				}
+			}
+		}
+
 		// Still nothin? Lets see if its an alias then.
 		if ($this->is_alias($class))
 		{
