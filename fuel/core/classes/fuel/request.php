@@ -308,7 +308,7 @@ class Request {
 		// Allow to do in controller routing if method router(action, params) exists
 		if (method_exists($controller, 'router'))
 		{
-			$action = 'router';
+			$method = 'router';
 			$this->method_params = array($this->action, $this->method_params);
 		}
 		
