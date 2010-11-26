@@ -37,7 +37,10 @@ class Session
 	{
 		Config::load('session', true);
 
-		static::instance();
+		if (Config::get('session.auto_initialize', true))
+		{
+			static::instance();
+		}
 	}
 
 	/**
