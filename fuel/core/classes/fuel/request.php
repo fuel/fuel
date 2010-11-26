@@ -315,8 +315,18 @@ class Request {
 					$controller->before();
 				}
 
-				Log::info('Calling '.$class.'::'.$action, __METHOD__);
-				call_user_func_array(array($controller, $action), $this->method_params);
+				// Call the router with action and params if it exists
+				if (method_exists($controller, 'router'))
+				{
+					Log::info('Calling '.$class.'::router('.$this->action.')', __METHOD__);
+					$controller->router($this->action, $this->method_params);
+				}
+				// ...otherwise call the method in $action with params
+				else
+				{
+					Log::info('Calling '.$class.'::'.$action, __METHOD__);
+					call_user_func_array(array($controller, $action), $this->method_params);
+				}
 
 				// Call the after method if it exists
 				if (method_exists($controller, 'after'))
