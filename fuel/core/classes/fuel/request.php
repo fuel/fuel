@@ -161,6 +161,16 @@ class Request {
 	public $uri = '';
 
 	/**
+	 * @var	string	Controller module
+	 */
+	public $module = '';
+
+	/**
+	 * @var	string	Controller directory
+	 */
+	public $directory = '';
+
+	/**
 	 * @var	string	The request's controller
 	 */
 	public $controller = '';
@@ -193,9 +203,51 @@ class Request {
 		$this->uri = new URI($uri);
 		$route = Route::parse($this->uri);
 
-		$this->controller = $route['controller'];
-		$this->action = $route['action'];
-		$this->method_params = $route['method_params'];
+		// Check for module
+		$module = Fuel::$packages['app']->prefix_path(ucfirst($route['uri_array'][0]).'_');
+		if ($module === false)
+		{
+			foreach (Config::get('module_paths', array()) as $path)
+			{
+				if (is_dir($mod_path = $path.strtolower($route['uri_array'][0].DS)))
+				{
+					// Load module and end search
+					Fuel::$packages['app']->add_prefix(ucfirst($route['uri_array'][0]).'_', $mod_path);
+					$this->module = array_shift($route['uri_array']);
+					break;
+				}
+			}
+		}
+
+		// Check for directory
+		if ($route['uri_array'][0] != 'index' && $route['uri_array'][1] != 'index')
+		{
+			$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
+			if (is_dir($dirpath = $path.strtolower($route['uri_array'][0])))
+			{
+				$this->directory = ucfirst($route['uri_array'][0]).'_';
+				array_shift($route['uri_array']);
+			}
+		}
+
+		// When emptied the controller defaults to module or dirname, action still defaults to index
+		$controller = empty($this->directory) ? $this->module : $this->directory;
+		if (count($route['uri_array']) == 0)
+		{
+			$route['uri_array'] = array($controller, 'index');
+		}
+		elseif ($route['uri_array'][0] == 'index')
+		{
+			array_unshift($route['uri_array'], $controller);
+		}
+		elseif (count($route['uri_array']) == 1)
+		{
+			$route['uri_array'][] = 'index';
+		}
+
+		$this->controller = $route['uri_array'][0];
+		$this->action = $route['uri_array'][1];
+		$this->method_params = array_slice($route['uri_array'], 2);
 		$this->named_params = $route['named_params'];
 		unset($route);
 	}
@@ -215,9 +267,8 @@ class Request {
 		Log::info('Called', __METHOD__);
 
 		$controller_prefix = APP_NAMESPACE.'\\Controller_';
-		$class = $controller_prefix.ucfirst($this->controller);
+		$class = $controller_prefix.$this->directory.ucfirst($this->controller);
 		$method = 'action_'.$this->action;
-
 
 		if (class_exists($class))
 		{

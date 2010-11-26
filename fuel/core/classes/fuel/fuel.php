@@ -33,7 +33,7 @@ class Fuel {
 
 	protected static $_paths = array();
 
-	protected static $packages = array();
+	public static $packages = array();
 
 	final private function __construct() { }
 

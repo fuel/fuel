@@ -66,6 +66,22 @@ class Autoloader {
 	}
 
 	/**
+	 * Returns the prefix's path or false when it doesn't exist
+	 *
+	 * @param  string
+	 * @return array|bool
+	 */
+	public function prefix_path($prefix)
+	{
+		if ( ! array_key_exists($prefix, $this->prefixes))
+		{
+			return false;
+		}
+
+		return $this->prefixes[$prefix];
+	}
+
+	/**
 	 * Adds a namespace and path
 	 * 
 	 * @access	public
