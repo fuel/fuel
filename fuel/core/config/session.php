@@ -13,6 +13,10 @@
  */
 
 return array(
+	// Set it to false to prevent the static session from auto-initializing, know that it might make your session
+	// expire sooner because it's not updated when it's not used.
+	'auto_initialize'	=> true,
+
 	// global defaults
 	'driver'			=> 'cookie',					// if no session type is requested, use the default
 	'match_ip'			=> false,						// check for an IP address match after loading the cookie (optional, default = false)
