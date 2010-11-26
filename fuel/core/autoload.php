@@ -44,7 +44,9 @@ $loader->add_aliases(array(
 
 	'Cookie'		=> 'Fuel\\Cookie',
 	'DB'			=> 'Fuel\\DB',
+	'DBUtil'		=> 'Fuel\\DBUtil',
 	'Database'		=> 'Fuel\\Database',
+	'Database_Exception'	=> 'Fuel\\Database_Exception',
 	'Date'			=> 'Fuel\\Date',
 	'Debug'			=> 'Fuel\\Debug',
 	'Crypt'			=> 'Fuel\\Crypt',
