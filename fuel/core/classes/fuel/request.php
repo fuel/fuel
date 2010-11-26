@@ -220,12 +220,12 @@ class Request {
 		}
 
 		// Check for directory
-		if ($route['uri_array'][0] != 'index' && $route['uri_array'][1] != 'index')
+		if ($route['uri_array'][0] != 'index')
 		{
 			$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
 			if (is_dir($dirpath = $path.strtolower($route['uri_array'][0])))
 			{
-				$this->directory = ucfirst($route['uri_array'][0]).'_';
+				$this->directory = $route['uri_array'][0];
 				array_shift($route['uri_array']);
 			}
 		}
@@ -267,46 +267,67 @@ class Request {
 		Log::info('Called', __METHOD__);
 
 		$controller_prefix = APP_NAMESPACE.'\\Controller_';
-		$class = $controller_prefix.$this->directory.ucfirst($this->controller);
+		$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
-		if (class_exists($class))
+		// if it's in a subdirectory or module, allow omitting the controller name if it's the same
+		if ( ! class_exists($class))
 		{
-			Log::info('Loading controller '.$class, __METHOD__);
-			$controller = new $class($this);
-			foreach(array($method, 'action_404') as $action)
+			// only try again for directory or module controller and if that changes the controller name
+			if (($controller = empty($this->directory) ? $this->module : $this->directory) && $controller != $this->controller)
 			{
-				if (method_exists($controller, $action))
+				$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($controller);
+				if ($this->action != 'index')
 				{
-					// Call the before method if it exists
-					if (method_exists($controller, 'before'))
-					{
-						Log::info('Calling '.$class.'::before', __METHOD__);
-						$controller->before();
-					}
-
-					Log::info('Calling '.$class.'::'.$action, __METHOD__);
-					call_user_func_array(array($controller, $action), $this->method_params);
-
-					// Call the after method if it exists
-					if (method_exists($controller, 'after'))
-					{
-						Log::info('Calling '.$class.'::after', __METHOD__);
-						$controller->after();
-					}
-
-					// Get the controller's output
-					$this->output =& $controller->output;
-
-					return $this;
+					array_unshift($this->method_params, $this->action);
 				}
+				$this->action = $this->controller;
+				$method = 'action_'.$this->action;
+				$this->controller = $controller;
+
+				// autoload
+				class_exists($class);
 			}
-			static::show_404();
+
+			// 404 if it's still not found
+			if ( ! class_exists($class, false))
+			{
+				static::show_404();
+				return $this;
+			}
 		}
-		else
+
+		Log::info('Loading controller '.$class, __METHOD__);
+		$controller = new $class($this);
+		foreach(array($method, 'action_404') as $action)
 		{
-			static::show_404();
+			if (method_exists($controller, $action))
+			{
+				// Call the before method if it exists
+				if (method_exists($controller, 'before'))
+				{
+					Log::info('Calling '.$class.'::before', __METHOD__);
+					$controller->before();
+				}
+
+				Log::info('Calling '.$class.'::'.$action, __METHOD__);
+				call_user_func_array(array($controller, $action), $this->method_params);
+
+				// Call the after method if it exists
+				if (method_exists($controller, 'after'))
+				{
+					Log::info('Calling '.$class.'::after', __METHOD__);
+					$controller->after();
+				}
+
+				// Get the controller's output
+				$this->output =& $controller->output;
+
+				return $this;
+			}
 		}
+		static::show_404();
+
 		return $this;
 	}
 
