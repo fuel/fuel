@@ -106,6 +106,9 @@ class Fuel {
 		// Clean input
 		Security::clean_input();
 
+		// Autoload classes, config & language
+		static::autoload();
+
 		static::$initialized = true;
 	}
 	
@@ -215,6 +218,32 @@ class Fuel {
 	{
 		spl_autoload_unregister(array(static::$packages[$name], 'load'));
 		unset(static::$packages[$name]);
+	}
+
+	/**
+	 * Autoloads classes, config & language files
+	 */
+	protected static function autoload()
+	{
+		Config::load('autoload', true);
+
+		foreach (Config::get('autoload.classes', array()) as $class)
+		{
+			if ( ! class_exists($class))
+			{
+				throw new Exception('Autoload class does not exist.');
+			}
+		}
+
+		foreach (Config::get('autoload.config', array()) as $c_key => $config)
+		{
+			Config::load($config, (is_string($c_key) ? $c_key : true));
+		}
+
+		foreach (Config::get('autoload.language', array()) as $l_key => $lang)
+		{
+			Lang::load($lang, (is_string($l_key) ? $l_key : true));
+		}
 	}
 
 	/**
