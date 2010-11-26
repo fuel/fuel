@@ -2,52 +2,58 @@
 
 namespace Fuel;
 
+/**
+ * Base driver for Emails.
+ * Some code taken from the CodeIgniter Email Class, and is noted in the PHPDocs of those methods.
+ *
+ * @author DudeAmI aka Kris
+ */
 class Email_Driver {
 
 	// Recipient Related things
 	/** @var Array An array of all recipients to add in the To: header */
-	public $recipients = Array();
+	protected $recipients = Array();
 	/** @var Array An array of all recipients to add in the CC: header */
-	public $cc_recipients = Array();
+	protected $cc_recipients = Array();
 	/** @var Array An array of all recipients to add in the BCC: header */
-	public $bcc_recipients = Array();
+	protected $bcc_recipients = Array();
 	/** @var String The email address of the email sender. */
-	public $sender = '';
+	protected $sender = '';
 
 	// Content related
 	/** @var String The subject of the email. */
-	public $subject = '';
+	protected $subject = '';
 	/** @var String The html contents of the email. */
-	public $html_contents = '';
+	protected $html_contents = '';
 	/** @var String The plain text contents of the email. */
-	public $text_contents = '';
+	protected $text_contents = '';
 	/** @var Array An array of filesystem and dynamic attachments. */
-	public $attachments = Array();
+	protected $attachments = Array();
 	// Other email related things
 	/** @var Array An array of headers for the email. */
-	public $headers = Array();
+	protected $headers = Array();
 	/** @var Integer The priority of the email. 1-5 are acceptable. */
-	public $priority = 3;
+	protected $priority = 3;
 	/** @var String The encoding of the email. Currently only accepts quoted-printable. */
-	public $encoding = "quoted-printable";
+	protected $encoding = "quoted-printable";
 	/** @var String The charset of the email. */
-	public $charset = 'utf-8';
+	protected $charset = 'utf-8';
 	/** @var String The useragent of the email, placed in both */
-	public $useragent = 'CodeIgniter';
+	protected $useragent = 'FuelPHP';
 	/** @var String Used for supporting the original Email Class, chooses which method to use in message() and set_alt_message(). */
-	public $mailtype = 'text';
+	protected $mailtype = 'text';
 	// Options for the class
 	/** @var String New line character. \r\n according to specs, but \n for compatability. */
-	public $newline = "\n";
+	protected $newline = "\n";
 	/** @var String New line character. \r\n according to specs, but \n for compatability. */
-	public $crlf = "\n";
-	public $protocol = 'mail';
+	protected $crlf = "\n";
+	protected $protocol = 'mail';
 	/** @var String The location of the sendmail program. Must include the applications name at the end. */
-	public $sendmail_path = '/usr/bin/sendmail';
+	protected $sendmail_path = '/usr/bin/sendmail';
 	/** @var Boolean If true, validates all emails. */
-	public $validity_check = true;
+	protected $validity_check = false;
 	/** @var Array Contains SMTP host, user, pass, port, and timeout. */
-	public $smtp_vars = Array(
+	protected $smtp_vars = Array(
 		'host' => '',
 		'user' => '',
 		'pass' => '',
@@ -56,34 +62,37 @@ class Email_Driver {
 		'auth' => false
 	);
 	/** @var String Used to set wordwrap on or off. */
-	public $wordwrap = true;
+	protected $wordwrap = true;
 	/** @var Integer How many characters are allowed a line with wordwrapping. */
-	public $wordwrap_width = 76;
+	protected $wordwrap_width = 76;
 	/** @var Enables or disables BCC Batch Mode */
-	public $bcc_batch_mode = false;
+	protected $bcc_batch_mode = false;
 	/** @var Sets the size of the BCC Batch Mode */
-	public $bcc_batch_size = 200;
+	protected $bcc_batch_size = 200;
 	/** @var Boolean Automatically generate a multipart message if only html or text is given. **/
-	public $send_multipart = true;
+	protected $send_multipart = true;
 
 	// Variables used within the class
 	/** @var String Used to see if were in safe mode or not. */
-	public $safe_mode = false;
+	protected $safe_mode = false;
 	/** @var String Contains the message to be sent in the email after compiling */
-	public $_message = '';
+	protected $_message = '';
 	/** @var String Contains the headers to be sent in the email after compiling */
-	public $_headers = '';
+	protected $_headers = '';
 	/** @var Array A list of priorities */
-	public $_priorities = array('1 (Highest)', '2 (High)', '3 (Normal)', '4 (Low)', '5 (Lowest)');
+	protected $_priorities = array('1 (Highest)', '2 (High)', '3 (Normal)', '4 (Low)', '5 (Lowest)');
 	/** @var Array A list of mime types loaded from application/config/mimes.php */
-	public $_mimes = array();
+	protected $_mimes = array();
 	/** @var Array Determines how headers are compiled when running BCC batch mode. */
-	public $_bcc_batch_running = false;
+	protected $_bcc_batch_running = false;
 
-	public function __construct() {
+	public function __construct($config=array()) {
 		$this->smtp_vars['auth'] = (!empty($this->smtp_vars['user']) && !empty($this->smtp_vars['pass'])) ? FALSE : TRUE;
 		$this->safe_mode = ((boolean)@ini_get("safe_mode") === FALSE) ? FALSE : TRUE;
-		$this->factory(Config::load('email'));
+		$initconfig = Config::load('email');
+		if (is_array($config))
+			$initconfig = array_merge($initconfig, $config);
+		$this->init($initconfig);
 		// See if our mimes have been loaded.
 		if (count($this->_mimes) == 0) {
 			// Load the mimes!
@@ -95,7 +104,7 @@ class Email_Driver {
 	 * Used to set class information.
 	 * @param Array $config
 	 */
-	public function factory($config) {
+	public function init($config) {
 
 		// Go through each config options and set it.
 		foreach ($config AS $name => $value) {
@@ -104,8 +113,6 @@ class Email_Driver {
 					case 'useragent': $this->useragent = (string) $value;
 						break;
 					case 'protocol': $this->protocol = (string) $value;
-						break;
-					case 'mailpath': $this->sendmail_path = (string) $value;
 						break;
 					case 'smtp_host': $this->smtp_vars['host'] = (string) $value;
 						break;
@@ -139,7 +146,7 @@ class Email_Driver {
 						break;
 					case 'bcc_batch_size': $this->bcc_batch_size = (int) $value;
 						break;
-					case 'send_multipart': $this->send_multipart = (bool) $value;
+					case 'force_multipart': $this->send_multipart = (bool) $value;
 				}
 			}
 		}
@@ -285,7 +292,7 @@ class Email_Driver {
 					$length = $count >= $offset + $this->bcc_batch_size ? $this->bcc_batch_size : $count % $this->bcc_batch_size;
 					$this->bcc_recipients = array_slice($origbcc, $offset, $length);
 					$this->_debug_message('BCC header: ' . implode(', ', $this->bcc_recipients));
-					$return = $return && $protocol->send();
+					$return = $return && $this->_send();
 					$offset += $this->bcc_batch_size;
 					$this->_bcc_batch_running = true;
 				}
@@ -294,7 +301,7 @@ class Email_Driver {
 				$this->_bcc_batch_running = false;
 			} else {
 				// Send using the normal methods.
-				$return = $protocol->send();
+				$return = $this->_send();
 			}
 		} else {
 			$return = false;
@@ -307,25 +314,6 @@ class Email_Driver {
 			$this->_debug_message('Message was not successfully send using ' . $this->protocol . '.', 'info');
 		}
 		return $return;
-	}
-
-	/**
-	 * Clears the email class for sending another email.
-	 */
-	public function clear() {
-		$this->recipients = Array();
-		$this->cc_recipients = Array();
-		$this->bcc_recipients = Array();
-		$this->subject = '';
-		$this->html_contents = '';
-		$this->text_contents = '';
-		$this->attachments = Array();
-		$this->headers = Array();
-		$this->priority = 3;
-		$this->_message = '';
-		$this->_headers = '';
-		$this->_bcc_batch_running = false;
-		return $this;
 	}
 
 	/**
@@ -373,7 +361,7 @@ class Email_Driver {
 	 * @author CodeIgniter <http://www.codeigniter.com/>
 	 * @param String $address The email address to check for validity
 	 */
-	public function valid_email($address) {
+	protected function _valid_email($address) {
 		// Instead of checking if validity is to be checked elsewhere, check it here :)
 		return ($this->validity_check && !preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
 	}
@@ -382,7 +370,7 @@ class Email_Driver {
 	 * Adds a recipient to the email.
 	 * @param String $address Either a string, comma seperated string, or an array is accepted
 	 */
-	public function _add_recipient($type, $args) {
+	protected function _add_recipient($type, $args) {
 		$additions = Array();
 		foreach ($args AS $arg) {
 			// If is a string, make it an array
@@ -415,7 +403,7 @@ class Email_Driver {
 	 * @author CodeIgniter <http://www.codeigniter.com/>
 	 * @return	string The message ID for the message.
 	 */
-	public function _get_message_id() {
+	protected function _get_message_id() {
 		$from = $this->sender;
 		$from = str_replace(">", "", $from);
 		$from = str_replace("<", "", $from);
@@ -429,7 +417,7 @@ class Email_Driver {
 	 * Compiles the message to be sent.
 	 * @return string The message.
 	 */
-	public function _compile_message() {
+	protected function _compile_message() {
 		$return = false;
 		// First off create alternative content if requested.
 		$this->_compile_alt_message();
@@ -517,7 +505,7 @@ class Email_Driver {
 	 * Compiles the headers to be sent in the email.
 	 * @return string The headers.
 	 */
-	public function _compile_headers($for_debug=false) {
+	protected function _compile_headers($for_debug=false) {
 		// Setup out return variable
 		$return = '';
 		// Set the from, carbon ccopy, and blind carbon copy fields
@@ -554,16 +542,16 @@ class Email_Driver {
 	 * @param Array|String $email An array of emails or a single email
 	 * @return Array|String An array of emails or a single email.
 	 */
-	public function _sanitize_emails($emails) {
+	protected function _sanitize_emails($emails) {
 		$return = '';
 		if (!is_array($emails)) {
-			if ($this->valid_email($this->_clean_email($emails))) {
+			if ($this->_valid_email($this->_clean_email($emails))) {
 				$return = $this->_format_email($emails);
 			}
 		} else {
 			$return = Array();
 			for ($i = 0; $i < count($emails); $i++) {
-				if ($this->valid_email($this->_clean_email($emails[$i]))) {
+				if ($this->_valid_email($this->_clean_email($emails[$i]))) {
 					$return[] = $this->_format_email($emails[$i]);
 				}
 			}
@@ -576,7 +564,7 @@ class Email_Driver {
 	 * @param String $address The email address to format
 	 * @return String The formatted email address
 	 */
-	public function _format_email($address) {
+	protected function _format_email($address) {
 		$return = '';
 		$name = '';
 		if (preg_match('#^(.*?) ?<(.*?)>$#', $address, $match) == 1) {
@@ -604,7 +592,7 @@ class Email_Driver {
 	 * @author CodeIgniter <http://www.codeigniter.com/>
 	 * @param Array|String $email Either an array of emails or just a single email
 	 */
-	public function _clean_email($email) {
+	protected function _clean_email($email) {
 		$return = null;
 		if (!is_array($email)) {
 			if (preg_match('/\<(.*)\>/', $email, $match)) {
@@ -670,7 +658,7 @@ class Email_Driver {
 	 *
 	 * @author CodeIgniter <http://www.codeigniter.com/>
 	 */
-	public function _prep_quoted_printable($str, $charlim = '') {
+	protected function _prep_quoted_printable($str, $charlim = '') {
 		// Set the character limit
 		// Don't allow over 76, as that will make servers and MUAs barf
 		// all over quoted-printable data
@@ -750,7 +738,7 @@ class Email_Driver {
 	 *
 	 * @author CodeIgniter <http://www.codeigniter.com/>
 	 */
-	public function _prep_q_encoding($str, $from = FALSE) {
+	protected function _prep_q_encoding($str, $from = FALSE) {
 		$str = str_replace(array("\r", "\n"), array('', ''), $str);
 
 		// Line length must not exceed 76 characters, so we adjust for
@@ -810,7 +798,7 @@ class Email_Driver {
 	 * @param String $str The string of text to wordwrap
 	 * @return String The wordwrapped string.
 	 */
-	public function _word_wrap($str) {
+	protected function _word_wrap($str) {
 		$output = '';
 		if ($this->wordwrap) {
 			// Se the character limit
@@ -910,7 +898,7 @@ class Email_Driver {
 	 * @param string $message The debug message.
 	 * @param string $severity The severity of the message. Info/Debug, Warning, Error.
 	 */
-	public function _debug_message($message, $severity='info') {
+	protected function _debug_message($message, $severity='info') {
 		$microtime = microtime();
 		$microtime = substr($microtime, 2, 4);
 		$this->_debug[] = Array(

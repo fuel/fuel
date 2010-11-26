@@ -3,44 +3,40 @@
 namespace Fuel;
 
 /**
- * Driver for sending with smtp
- * Based heavily on the code from the Email class in Codeigniter.
+ * Driver for sending using the SMTP protocol.
+ * Based on the CodeIgniter Email class.
  */
-class Email_Smtp {
+class Email_Smtp extends Email_Driver {
 
-	protected $email = null;
+	protected $_smtp_connect;
 
-	private $_smtp_connect;
-
-	public function __construct($that) {
-		$this->email =& $that;
+	public function __construct($config=Array()) {
+		parent::__construct($config);
 	}
-
+	
 	/**
-	 * Send using SMTP
-	 *
-	 * @access	private
+	 * Send using the SMTP protocol.
 	 * @return boolean True if successful, false if not.
 	 */
-	public function send() {
+	protected function _send() {
 		$return = false;
-		if ($this->email->smtp_vars['host'] == '') {
-			$this->email->_debug_message('SMTP Host is not set.', 'error');
+		if ($this->smtp_vars['host'] == '') {
+			$this->_debug_message('SMTP Host is not set.', 'error');
 			$return = false;
 		} else {
 			$this->_smtp_connect();
 			$this->_smtp_authenticate();
 
-			if ($this->_send_command('from', $this->email->sender)) {
+			if ($this->_send_command('from', $this->sender)) {
 				$continue = true;
-				$to = $this->email->recipients;
-				if (!$this->email->_bcc_batch_running) {
+				$to = $this->recipients;
+				if (!$this->_bcc_batch_running) {
 					foreach ($to as $val) {
 						$continue = $continue && $this->_send_command('to', $val);
 					}
 				}
 				if ($continue) {
-					$cc = $this->email->_sanitize_emails($this->email->cc_recipients);
+					$cc = $this->_sanitize_emails($this->cc_recipients);
 					if (count($cc) > 0) {
 						foreach ($cc as $val) {
 							if ($val != "") {
@@ -49,7 +45,7 @@ class Email_Smtp {
 						}
 					}
 					if ($continue) {
-						$bcc = $this->email->_sanitize_emails($this->email->bcc_recipients);
+						$bcc = $this->_sanitize_emails($this->bcc_recipients);
 						if (count($bcc) > 0) {
 							foreach ($bcc as $val) {
 								if ($val != "") {
@@ -58,12 +54,12 @@ class Email_Smtp {
 							}
 						}
 						if ($this->_send_command('data')) {
-							if ($this->_send_data($this->email->_headers . preg_replace('/^\./m', '..$1', $this->email->_message) . '.')) {
+							if ($this->_send_data($this->_headers . preg_replace('/^\./m', '..$1', $this->_message) . '.')) {
 
 								$reply = $this->_get_smtp_data();
 
 								if (strncmp($reply, '250', 3) != 0) {
-									$this->email->_debug_message('SMTP Errored out, replied ' . $reply, 'error');
+									$this->_debug_message('SMTP Errored out, replied ' . $reply, 'error');
 								} else {
 									$return = true;
 									$this->_send_command('quit');
@@ -88,16 +84,16 @@ class Email_Smtp {
 	 */
 	private function _smtp_connect() {
 		$return = false;
-		$this->_smtp_connect = fsockopen($this->email->smtp_vars['host'],
+		$this->_smtp_connect = fsockopen($this->smtp_vars['host'],
 						25,
 						$errno,
 						$errstr,
-						$this->email->smtp_vars['timeout']);
+						$this->smtp_vars['timeout']);
 
 		if (!is_resource($this->_smtp_connect)) {
-			$this->email->_debug_message('Could not send using SMTP. (#' . $errno . ') ' . $errstr);
+			$this->_debug_message('Could not send using SMTP. (#' . $errno . ') ' . $errstr);
 		} else {
-			$this->email->_debug_message('SMTP Sent: ' . $this->_get_smtp_data());
+			$this->_debug_message('SMTP Sent: ' . $this->_get_smtp_data());
 			return $this->_send_command('hello');
 		}
 		return $return;
@@ -117,7 +113,7 @@ class Email_Smtp {
 		switch ($cmd) {
 			case 'hello' :
 
-				if ($this->email->smtp_vars['auth'] || $this->email->encoding == '8bit')
+				if ($this->smtp_vars['auth'] || $this->encoding == '8bit')
 					$this->_send_data('EHLO ' . $this->_get_hostname());
 				else
 					$this->_send_data('HELO ' . $this->_get_hostname());
@@ -152,10 +148,10 @@ class Email_Smtp {
 
 		$reply = $this->_get_smtp_data();
 
-		$this->email->_debug_message($cmd . ": " . ($cmd == 'data' ? 'Headers and Message Body (printed below)' : $reply), 'info');
+		$this->_debug_message($cmd . ": " . ($cmd == 'data' ? 'Headers and Message Body (printed below)' : $reply), 'info');
 
 		if (substr($reply, 0, 3) != $resp) {
-			$this->email->_debug_message('Error code returned was ' . $reply . ', expecting ' . $resp, 'error');
+			$this->_debug_message('Error code returned was ' . $reply . ', expecting ' . $resp, 'error');
 			return FALSE;
 		}
 
@@ -176,32 +172,32 @@ class Email_Smtp {
 	 */
 	private function _smtp_authenticate() {
 		$return = true;
-		if ($this->email->smtp_vars['auth']) {
-			if ($this->email->smtp_vars['user'] == "" AND $this->email->smtp_vars['pass'] == "") {
+		if ($this->smtp_vars['auth']) {
+			if ($this->smtp_vars['user'] == "" AND $this->smtp_vars['pass'] == "") {
 				$this->_debug_message('Failed to authenticate with SMTP, no username and password set.', 'error');
 				$return = false;
 			} else {
 				$this->_send_data('AUTH LOGIN');
 				$reply = $this->_get_smtp_data();
 				if (strncmp($reply, '334', 3) != 0) {
-					$this->email->_debug_message('Failed to authenticate with SMTP, invalid user/pass.', 'error');
+					$this->_debug_message('Failed to authenticate with SMTP, invalid user/pass.', 'error');
 					$return = false;
 				} else {
-					$this->_send_data(base64_encode($this->email->smtp_vars['user']));
+					$this->_send_data(base64_encode($this->smtp_vars['user']));
 
 					$reply = $this->_get_smtp_data();
 
 					if (strncmp($reply, '334', 3) != 0) {
-						$this->email->_debug_message('Failed to authenticate with SMTP, incorrect username.', 'error');;
+						$this->_debug_message('Failed to authenticate with SMTP, incorrect username.', 'error');;
 						$return = false;
 					} else {
 
-						$this->_send_data(base64_encode($this->email->smtp_vars['pass']));
+						$this->_send_data(base64_encode($this->smtp_vars['pass']));
 
 						$reply = $this->_get_smtp_data();
 
 						if (strncmp($reply, '235', 3) != 0) {
-							$this->email->_debug_message('Failed to authenticate with SMTP, incorrect password.', 'error');
+							$this->_debug_message('Failed to authenticate with SMTP, incorrect password.', 'error');
 							$return = false;
 						}
 					}
@@ -220,8 +216,8 @@ class Email_Smtp {
 	 * @return	bool
 	 */
 	private function _send_data($data) {
-		if (!fwrite($this->_smtp_connect, $data . $this->email->newline)) {
-			$this->email->_debug_message('Failed to send SMTP data.', 'error');
+		if (!fwrite($this->_smtp_connect, $data . $this->newline)) {
+			$this->_debug_message('Failed to send SMTP data.', 'error');
 			return FALSE;
 		} else {
 			return TRUE;
