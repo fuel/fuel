@@ -135,6 +135,14 @@ class DB {
 	 */
 	public static function quote_identifier($string, $db = null)
 	{
+		if (is_array($string))
+		{
+			foreach ($string as $k => $s)
+			{
+				$string[$k] = static::quote_identifier($s, $db);
+			}
+			return $string;
+		}
 		return Database::instance($db)->quote_identifier($string);
 	}
 
