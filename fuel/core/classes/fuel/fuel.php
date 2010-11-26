@@ -106,8 +106,8 @@ class Fuel {
 		// Clean input
 		Security::clean_input();
 
-		// Autoload classes, config & language
-		static::autoload();
+		// Always load classes, config & language set in alwaysload.php config
+		static::alwaysload();
 
 		static::$initialized = true;
 	}
@@ -221,26 +221,26 @@ class Fuel {
 	}
 
 	/**
-	 * Autoloads classes, config & language files
+	 * Always load classes, config & language files set in alwaysload.php config
 	 */
-	protected static function autoload()
+	protected static function alwaysload()
 	{
-		Config::load('autoload', true);
+		Config::load('alwaysload', true);
 
-		foreach (Config::get('autoload.classes', array()) as $class)
+		foreach (Config::get('alwaysload.classes', array()) as $class)
 		{
 			if ( ! class_exists($class))
 			{
-				throw new Exception('Autoload class does not exist.');
+				throw new Exception('Always load class does not exist.');
 			}
 		}
 
-		foreach (Config::get('autoload.config', array()) as $c_key => $config)
+		foreach (Config::get('alwaysload.config', array()) as $c_key => $config)
 		{
 			Config::load($config, (is_string($c_key) ? $c_key : true));
 		}
 
-		foreach (Config::get('autoload.language', array()) as $l_key => $lang)
+		foreach (Config::get('alwaysload.language', array()) as $l_key => $lang)
 		{
 			Lang::load($lang, (is_string($l_key) ? $l_key : true));
 		}
