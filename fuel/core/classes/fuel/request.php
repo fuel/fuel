@@ -273,8 +273,13 @@ class Request {
 		// if it's in a subdirectory or module, allow omitting the controller name if it's the same
 		if ( ! class_exists($class))
 		{
-			// only try again for directory or module controller and if that changes the controller name
-			if (($controller = empty($this->directory) ? $this->module : $this->directory) && $controller != $this->controller)
+			// set the new controller to directory or module when applicable
+			$controller = empty($this->directory) ? $this->module : $this->directory;
+			// ... or to the default controller if neither was
+			$controller = empty($controller) ? array_shift(explode('/', Route::$routes['default'])) : $controller;
+
+			// try again with new controller if it changed
+			if ($controller != $this->controller)
 			{
 				$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($controller);
 				if ($this->action != 'index')
