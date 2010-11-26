@@ -54,17 +54,17 @@ class Migrate
 		DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
 
 		// Check if there is a version
-		$foo = DB::query('SELECT `current` FROM `migration`')->execute()->current();
+		$current = DB::select('current')->from('migration')->execute()->get('current');
 
 		// Not set, so we are on 0
-		if ( ! isset($foo['current']))
+		if ($current === null)
 		{
-			DB::query('INSERT INTO `migration` (`current`) VALUES (0)')->execute();
+			DB::insert('migration')->set(array('current' => '0'))->execute();
 		}
 
 		else
 		{
-			static::$version = (int) $foo['current'];
+			static::$version = (int) $current;
 		}
 	}
 
@@ -270,6 +270,6 @@ class Migrate
 	 */
 	private function _update_schema_version($old_version, $version)
 	{
-		DB::query('UPDATE `migration` SET `current` = '.(int)$version.' WHERE `current` = '.(int)$old_version)->execute();
+		DB::update('migration')->set(array('current' => (int) $version))->where('current', '=', (int) $old_version)->execute();
 	}
 }
