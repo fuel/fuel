@@ -243,7 +243,7 @@ class Autoloader {
 		}
 
 		// Or try the active module when
-		if (class_exists('Fuel\\Request', false) && Fuel\Request::active()->module != '')
+		if (class_exists('Fuel\\Request', false) && is_object(Fuel\Request::active()) && Fuel\Request::active()->module != '')
 		{
 			$prefix = ucfirst(Fuel\Request::active()->module).'_';
 
