@@ -4,13 +4,12 @@ class Controller_Welcome extends Controller\Base {
 
 	public function action_index()
 	{
-		Email::initalize(Array(
+		Email::factory(Array(
 			'protocol' => 'smtp',
 			'smtp_host' => 'localhost.com',
 			'smtp_timeout' => 1,
 			'send_multipart' => true
-		));
-		Email::to('kris@localhost.com')
+		))->to('kris@localhost.com')
 			->from('admin@localhost.com')
 			->message('Hello World!')
 			->subject('Hello.')

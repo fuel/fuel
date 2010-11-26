@@ -1,6 +1,6 @@
 <?php
 
-namespace Email;
+namespace Fuel;
 
 /**
  * Class used to server up the email 
@@ -11,7 +11,7 @@ class Email {
 
 	public static function instance() {
 		if (static::$email_base == null) {
-			static::$email_base = new Emailer();
+			static::$email_base = new Email_Driver();
 		}
 		return static::$email_base;
 	}

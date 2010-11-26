@@ -1,8 +1,8 @@
 <?php
 
-namespace Email;
+namespace Fuel;
 
-class Emailer {
+class Email_Driver {
 
 	// Recipient Related things
 	/** @var Array An array of all recipients to add in the To: header */
@@ -83,17 +83,17 @@ class Emailer {
 	public function __construct() {
 		$this->smtp_vars['auth'] = (!empty($this->smtp_vars['user']) && !empty($this->smtp_vars['pass'])) ? FALSE : TRUE;
 		$this->safe_mode = ((boolean)@ini_get("safe_mode") === FALSE) ? FALSE : TRUE;
-		$this->initalize(\Fuel\Config::load('email'));
+		$this->factory(Config::load('email'));
 		// See if our mimes have been loaded.
 		if (count($this->_mimes) == 0) {
 			// Load the mimes!
-			$this->_mimes = \Fuel\Config::load('mimes');
+			$this->_mimes = Config::load('mimes');
 		}
 	}
 
 	/**
 	 * Used to set class information.
-	 * @param <type> $config
+	 * @param Array $config
 	 */
 	public function factory($config) {
 
@@ -270,8 +270,8 @@ class Emailer {
 		// Headers always compiled last!
 		$this->_headers = $this->_compile_headers();
 		$this->_debug_message('Using protocol ' . $this->protocol . ' for sending.', 'info');
-		$protocol = 'Email\\' . strtoupper(substr($this->protocol, 0, 1)) . strtolower(substr($this->protocol, 1));
-		if (class_exists($protocol)) {
+		$protocol = 'Email_' . ucfirst($this->protocol);
+		if (true) {
 			$protocol = new $protocol($this);
 			if ($this->bcc_batch_mode && count($this->bcc_recipients) > $this->bcc_batch_size) {
 				$count = count($this->bcc_recipients);

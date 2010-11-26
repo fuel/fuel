@@ -85,7 +85,13 @@ $loader->add_aliases(array(
 
 	'Controller\\Base'		=> 'Fuel\\Controller\\Base',
 	'Controller\\Rest'		=> 'Fuel\\Controller\\Rest',
-	'Controller\\Template'	=> 'Fuel\\Controller\\Template'
+	'Controller\\Template'	=> 'Fuel\\Controller\\Template',
+
+	'Email' => 'Fuel\\Email',
+	'Email_Driver' => 'Fuel\\Email_Driver',
+	'Email_Mail' => 'Fuel\\Email_Mail',
+	'Email_Sendmail' => 'Fuel\\Email_Sendmail',
+	'Email_Smtp' => 'Fuel\\Email_Smtp'
 ));
 
 $loader->register();

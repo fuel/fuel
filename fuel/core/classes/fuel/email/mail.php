@@ -1,12 +1,12 @@
 <?php
 
-namespace Email;
+namespace Fuel;
 
 /**
  * Driver for sending with mail
  * Based heavily on the code from the Email class in Codeigniter.
  */
-class Mail {
+class Email_Mail {
 
 	protected $email = null;
 

@@ -94,7 +94,7 @@ return array(
 	 *     array('auth'	=> PKGPATH.'auth/')
 	 * );
 	 */
-	'packages'	=> array('email'),
+	'packages'	=> array(),
 
 );
 
