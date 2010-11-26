@@ -66,6 +66,22 @@ class Autoloader {
 	}
 
 	/**
+	 * Returns the prefix's path or false when it doesn't exist
+	 *
+	 * @param  string
+	 * @return array|bool
+	 */
+	public function prefix_path($prefix)
+	{
+		if ( ! array_key_exists($prefix, $this->prefixes))
+		{
+			return false;
+		}
+
+		return $this->prefixes[$prefix];
+	}
+
+	/**
 	 * Adds a namespace and path
 	 * 
 	 * @access	public
@@ -224,6 +240,25 @@ class Autoloader {
 			require $file_path;
 			$this->_init_class($class);
 			return true;
+		}
+
+		// Or try the active module when
+		if (class_exists('Fuel\\Request', false) && Fuel\Request::active()->module != '')
+		{
+			$prefix = ucfirst(Fuel\Request::active()->module).'_';
+
+			if (array_key_exists($prefix, $this->prefixes))
+			{
+				$class = ltrim($class, '\\');
+				$file_path = $this->prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower($class)).'.php';
+				if (is_file($file_path))
+				{
+					require $file_path;
+					class_alias($prefix.$class, $class);
+					$this->_init_class($class);
+					return true;
+				}
+			}
 		}
 
 		// Still nothin? Lets see if its an alias then.

@@ -96,6 +96,14 @@ return array(
 	 */
 	'packages'	=> array(),
 
+	/**
+	 * To enable you to split up your application into modules which can be
+	 * routed by the first uri segment you have to define their basepaths
+	 * here. By default empty, but to use them you can add something
+	 * like this:
+	 *      array(APPPATH.'modules'.DS)
+	 */
+	'module_paths' => array()
 );
 
 /* End of file config.php */

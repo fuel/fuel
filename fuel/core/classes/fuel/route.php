@@ -69,11 +69,6 @@ class Route {
 		$method_params = array();
 
 		$segments = array_pad(explode('/', $route), 2, 'index');
-		
-		if (count($segments) > 2)
-		{
-			$method_params = array_slice($segments, 2);
-		}
 
 		// Clean out all the non-named stuff out of $named_params
 		foreach($named_params as $key => $val)
@@ -86,9 +81,7 @@ class Route {
 
 		return array(
 			'uri'			=> $route,
-			'controller'	=> $segments[0],
-			'action'		=> $segments[1],
-			'method_params'	=> $method_params,
+			'uri_array'		=> $segments,
 			'named_params'	=> $named_params,
 		);
 	}
