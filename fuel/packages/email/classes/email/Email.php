@@ -20,8 +20,8 @@ class Email {
 	 * Used to set class information.
 	 * @param <type> $config
 	 */
-	public static function initalize($config) {
-		return static::instance()->initalize($config);
+	public static function factory($config) {
+		return static::instance()->factory($config);
 	}
 
 	/**

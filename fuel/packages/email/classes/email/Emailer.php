@@ -95,7 +95,7 @@ class Emailer {
 	 * Used to set class information.
 	 * @param <type> $config
 	 */
-	public function initalize($config) {
+	public function factory($config) {
 
 		// Go through each config options and set it.
 		foreach ($config AS $name => $value) {
