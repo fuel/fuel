@@ -28,16 +28,6 @@ $app_namespace = '';
 ini_set('short_open_tag', 0);
 
 /**
- * The apps default timezone
- *
- * @see http://www.php.net/timezones
- */
-if ( ! ini_get('date.timezone'))
-{
-	date_default_timezone_set('GMT');
-}
-
-/**
  * Define the internal encoding to use.
  *
  * @todo Re-evaluate how to handle this.

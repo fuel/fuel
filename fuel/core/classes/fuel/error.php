@@ -135,7 +135,7 @@ class Error {
 
 		$data['message']	= $msg;
 		$data['type']		= 'Notice';
-		$data['filepath']	= str_replace("\\", "/", Fuel::clean_path($trace['file']));
+		$data['filepath']	= Fuel::clean_path($trace['file']);
 		$data['line']		= $trace['line'];
 		$data['function']	= $trace['function'];
 

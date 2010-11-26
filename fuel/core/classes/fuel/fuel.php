@@ -80,7 +80,7 @@ class Fuel {
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
-				$base_url = dirname($_SERVER['SCRIPT_NAME']);
+				$base_url = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 
 				// Add a slash if it is missing
 				substr($base_url, -1, 1) == '/' OR $base_url .= '/';
@@ -97,6 +97,14 @@ class Fuel {
 		{
 			date_default_timezone_set($timezone);
 		}
+		// ... or set it to UTC when none was set
+		elseif ( ! ini_get('date.timezone'))
+		{
+			date_default_timezone_set('UTC');
+		}
+
+		// Clean input
+		Security::clean_input();
 
 		static::$initialized = true;
 	}
@@ -218,8 +226,8 @@ class Fuel {
 	 */
 	public static function clean_path($path)
 	{
-		static $search = array(APPPATH, COREPATH, DOCROOT);
-		static $replace = array('APPPATH/', 'COREPATH/', 'DOCROOT/');
+		static $search = array(APPPATH, COREPATH, DOCROOT, '\\');
+		static $replace = array('APPPATH/', 'COREPATH/', 'DOCROOT/', '/');
 		return str_replace($search, $replace, $path);
 	}
 }

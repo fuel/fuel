@@ -59,7 +59,7 @@ return array(
 	 * default_timezone		optional, if you want to change the server's default timezone 
 	 */
 	'server_gmt_offset'	=> 0,
-	//'default_timezone'	=> '',
+	//'default_timezone'	=> 'UTC',
 
 	/**
 	 * Logging Threshold.  Can be set to any of the following:
@@ -73,6 +73,15 @@ return array(
 	'log_threshold'		=> Log::ERROR,
 	'log_path'			=> APPPATH . 'logs/',
 	'log_date_format' 	=> 'Y-m-d H:i:s',
+
+	/**
+	 * Security settings
+	 */
+	'security' => array(
+		'csrf_autoload'		=> false,
+		'csrf_token_key'	=> 'fuel_csrf_token',
+		'csrf_expiration'	=> 0,
+	),
 	
 	/**
 	 * These packages are loaded on Fuel's startup.  You can specify them in
