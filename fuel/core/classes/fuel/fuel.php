@@ -106,8 +106,8 @@ class Fuel {
 		// Clean input
 		Security::clean_input();
 
-		// Always load classes, config & language set in alwaysload.php config
-		static::alwaysload();
+		// Always load classes, config & language set in always_load.php config
+		static::always_load();
 
 		static::$initialized = true;
 	}
@@ -221,11 +221,11 @@ class Fuel {
 	}
 
 	/**
-	 * Always load classes, config & language files set in alwaysload.php config
+	 * Always load classes, config & language files set in always_load.php config
 	 */
-	public static function alwaysload($array = null)
+	public static function always_load($array = null)
 	{
-		$array = is_null($array) ? Fuel::load(APPPATH.'config'.DS.'alwaysload.php') : $array;
+		$array = is_null($array) ? Fuel::load(APPPATH.'config'.DS.'always_load.php') : $array;
 
 		foreach ($array['classes'] as $class)
 		{

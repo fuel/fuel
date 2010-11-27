@@ -239,10 +239,10 @@ class Request {
 						array_shift($route['uri_array']);
 					}
 
-					// Does the module need alwaysloading?
-					if (is_file($alwaysload_path = $mod_path.'config'.DS.'alwaysload.php'))
+					// Does the module need always_loading?
+					if (is_file($always_load_path = $mod_path.'config'.DS.'always_load.php'))
 					{
-						Fuel::alwaysload(Fuel::load($alwaysload_path));
+						Fuel::always_load(Fuel::load($always_load_path));
 					}
 
 					break;
