@@ -214,6 +214,28 @@ class Request {
 					// Load module and end search
 					Fuel::$packages['app']->add_prefix(ucfirst($route['uri_array'][0]).'_', $mod_path);
 					$this->module = array_shift($route['uri_array']);
+
+					// Optionally load module routes & reparse, must be relative to module
+					//     so it only allows routing within module
+					if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
+					{
+						$mod_routes = require $route_path;
+						foreach ($mod_routes as $orig_route => $reroute)
+						{
+							$prefix = in_array($orig_route, array('404')) ? '' : $this->module.'/';
+							if ($orig_route == 'default')
+							{
+								Route::$routes[$this->module] = $prefix.$reroute;
+							}
+							else
+							{
+								Route::$routes[$prefix.$orig_route] = $prefix.$reroute;
+							}
+						}
+						$route = Route::parse($this->uri);
+						array_shift($route['uri_array']);
+					}
+
 					break;
 				}
 			}
@@ -311,7 +333,7 @@ class Request {
 			$method = 'router';
 			$this->method_params = array($this->action, $this->method_params);
 		}
-		
+
 		foreach(array($method, 'action_404') as $action)
 		{
 			if (method_exists($controller, $action))
