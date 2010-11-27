@@ -225,7 +225,7 @@ class Fuel {
 	 */
 	public static function alwaysload($array = null)
 	{
-		$array = is_null($array) ? require APPPATH.'config'.DS.'alwaysload.php' : $array;
+		$array = is_null($array) ? Fuel::load(APPPATH.'config'.DS.'alwaysload.php') : $array;
 
 		foreach ($array['classes'] as $class)
 		{
@@ -235,14 +235,19 @@ class Fuel {
 			}
 		}
 
-		foreach ($array['config'] as $c_key => $config)
+		/**
+		 * Config and Lang must be either just the filename, example: array(filename)
+		 * or the filename as key and the group as value, example: array(filename => some_group)
+		 */
+
+		foreach ($array['config'] as $config => $config_group)
 		{
-			Config::load($config, (is_string($c_key) ? $c_key : true));
+			Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
 		}
 
-		foreach ($array['language'] as $l_key => $lang)
+		foreach ($array['language'] as $lang => $lang_group)
 		{
-			Lang::load($lang, (is_string($l_key) ? $l_key : true));
+			Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
 		}
 	}
 

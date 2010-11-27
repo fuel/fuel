@@ -21,11 +21,21 @@ return array(
 
 	/**
 	 * Configs to autoload
+	 *
+	 * Examples: if you want to load 'session' config into a group session you only have to
+	 * add 'session'. If you want to add it to another group (example: 'auth') you have to
+	 * add it like 'session' => 'auth'.
+	 * If you don't want the config in a group use null as groupname.
 	 */
 	'config'	=> array(),
 
 	/**
 	 * Language files to autoload
+	 *
+	 * Examples: if you want to load 'validation' lang into a group validation you only have to
+	 * add 'validation'. If you want to add it to another group (example: 'forms') you have to
+	 * add it like 'validation' => 'forms'.
+	 * If you don't want the config in a group use null as groupname. 
 	 */
 	'language'	=> array(),
 );

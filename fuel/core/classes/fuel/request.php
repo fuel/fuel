@@ -219,7 +219,8 @@ class Request {
 					//     so it only allows routing within module
 					if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
 					{
-						$mod_routes = require $route_path;
+						// Load module routes and add to router
+						$mod_routes = Fuel::load($route_path);
 						foreach ($mod_routes as $orig_route => $reroute)
 						{
 							$prefix = in_array($orig_route, array('404')) ? '' : $this->module.'/';
@@ -232,14 +233,16 @@ class Request {
 								Route::$routes[$prefix.$orig_route] = $prefix.$reroute;
 							}
 						}
+
+						// Reparse route after added module routes 
 						$route = Route::parse($this->uri);
 						array_shift($route['uri_array']);
 					}
 
-					// Also allow alwaysloading from module
+					// Does the module need alwaysloading?
 					if (is_file($alwaysload_path = $mod_path.'config'.DS.'alwaysload.php'))
 					{
-						Fuel::alwaysload(require $alwaysload_path);
+						Fuel::alwaysload(Fuel::load($alwaysload_path));
 					}
 
 					break;
@@ -253,12 +256,11 @@ class Request {
 			$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
 			if (is_dir($dirpath = $path.strtolower($route['uri_array'][0])))
 			{
-				$this->directory = $route['uri_array'][0];
-				array_shift($route['uri_array']);
+				$this->directory = array_shift($route['uri_array']);
 			}
 		}
 
-		// When emptied the controller defaults to module or dirname, action still defaults to index
+		// When emptied the controller defaults to directory or module, action still defaults to index
 		$controller = empty($this->directory) ? $this->module : $this->directory;
 		if (count($route['uri_array']) == 0)
 		{
@@ -298,15 +300,15 @@ class Request {
 		$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
-		// if it's in a subdirectory or module, allow omitting the controller name if it's the same
+		// Allow omitting the controller name when in an equally named directory or module
 		if ( ! class_exists($class))
 		{
 			// set the new controller to directory or module when applicable
 			$controller = empty($this->directory) ? $this->module : $this->directory;
-			// ... or to the default controller if neither was
+			// ... or to the default controller if it was in neither
 			$controller = empty($controller) ? array_shift(explode('/', Route::$routes['default'])) : $controller;
 
-			// try again with new controller if it changed
+			// try again with new controller if it differs from the previous attempt
 			if ($controller != $this->controller)
 			{
 				$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($controller);
@@ -318,7 +320,7 @@ class Request {
 				$method = 'action_'.$this->action;
 				$this->controller = $controller;
 
-				// autoload
+				// attempt autoload
 				class_exists($class);
 			}
 
