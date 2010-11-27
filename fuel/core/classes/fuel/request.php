@@ -334,32 +334,29 @@ class Request {
 			$this->method_params = array($this->action, $this->method_params);
 		}
 
-		foreach(array($method, 'action_404') as $action)
+		// Call the before method if it exists
+		if (method_exists($controller, 'before'))
 		{
-			if (method_exists($controller, $action))
+			Log::info('Calling '.$class.'::before', __METHOD__);
+			$controller->before();
+		}
+
+		if (method_exists($controller, $method))
+		{
+			Log::info('Calling '.$class.'::'.$method, __METHOD__);
+			call_user_func_array(array($controller, $method), $this->method_params);
+
+			// Call the after method if it exists
+			if (method_exists($controller, 'after'))
 			{
-				// Call the before method if it exists
-				if (method_exists($controller, 'before'))
-				{
-					Log::info('Calling '.$class.'::before', __METHOD__);
-					$controller->before();
-				}
-
-				Log::info('Calling '.$class.'::'.$action, __METHOD__);
-				call_user_func_array(array($controller, $action), $this->method_params);
-
-				// Call the after method if it exists
-				if (method_exists($controller, 'after'))
-				{
-					Log::info('Calling '.$class.'::after', __METHOD__);
-					$controller->after();
-				}
-
-				// Get the controller's output
-				$this->output =& $controller->output;
-
-				return $this;
+				Log::info('Calling '.$class.'::after', __METHOD__);
+				$controller->after();
 			}
+
+			// Get the controller's output
+			$this->output =& $controller->output;
+
+			return $this;
 		}
 		static::show_404();
 
