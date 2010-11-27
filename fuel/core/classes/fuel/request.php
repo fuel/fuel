@@ -236,6 +236,12 @@ class Request {
 						array_shift($route['uri_array']);
 					}
 
+					// Also allow alwaysloading from module
+					if (is_file($alwaysload_path = $mod_path.'config'.DS.'alwaysload.php'))
+					{
+						Fuel::alwaysload(require $alwaysload_path);
+					}
+
 					break;
 				}
 			}

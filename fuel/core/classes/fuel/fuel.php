@@ -223,11 +223,11 @@ class Fuel {
 	/**
 	 * Always load classes, config & language files set in alwaysload.php config
 	 */
-	protected static function alwaysload()
+	public static function alwaysload($array = null)
 	{
-		Config::load('alwaysload', true);
+		$array = is_null($array) ? require APPPATH.'config'.DS.'alwaysload.php' : $array;
 
-		foreach (Config::get('alwaysload.classes', array()) as $class)
+		foreach ($array['classes'] as $class)
 		{
 			if ( ! class_exists($class))
 			{
@@ -235,12 +235,12 @@ class Fuel {
 			}
 		}
 
-		foreach (Config::get('alwaysload.config', array()) as $c_key => $config)
+		foreach ($array['config'] as $c_key => $config)
 		{
 			Config::load($config, (is_string($c_key) ? $c_key : true));
 		}
 
-		foreach (Config::get('alwaysload.language', array()) as $l_key => $lang)
+		foreach ($array['language'] as $l_key => $lang)
 		{
 			Lang::load($lang, (is_string($l_key) ? $l_key : true));
 		}
