@@ -66,15 +66,18 @@ if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 
 // Initialize the framework
 // and start buffering the output.
-Fuel\Fuel::init($autoloaders);
+$class_fuel = APP_NAMESPACE.'\\Fuel';
+$class_fuel::init($autoloaders);
 
-$request = Fuel\Request::factory();
+$class_request = APP_NAMESPACE.'\\Request';
+$request = $class_request::factory();
 $request->execute();
 echo $request->output;
 
 // Call all the shutdown events
-Fuel\Event::shutdown();
+$class_event = APP_NAMESPACE.'\\Event';
+$class_event::shutdown();
 
-Fuel\Fuel::finish();
+$class_fuel::finish();
 
 /* End of file boot.php */

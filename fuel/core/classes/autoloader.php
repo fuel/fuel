@@ -195,6 +195,9 @@ class Autoloader {
 	 */
 	public function load($class)
 	{
+		// Cleanup backslash prefix, messes up class_alias and other stuff
+		$class = ltrim($class, '\\');
+
 		// Checks if there is a \ in the class name.  This indicates it is a
 		// namespace.  It sets $pos to the position of the last \.
 		if (($pos = strripos($class, '\\')) !== false)
@@ -249,7 +252,6 @@ class Autoloader {
 
 			if (array_key_exists($prefix, $this->prefixes))
 			{
-				$class = ltrim($class, '\\');
 				$file_path = $this->prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower($class)).'.php';
 				if (is_file($file_path))
 				{
