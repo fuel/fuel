@@ -152,6 +152,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Used to set class information.
+	 * 
 	 * @param	array	$config		An array of configuration settings.
 	 */
 	public function init($config)
