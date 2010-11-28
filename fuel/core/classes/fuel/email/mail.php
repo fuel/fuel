@@ -1,20 +1,34 @@
 <?php
+/**
+ * Fuel
+ *
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * Driver for sending using the PHP mail() function.
+ *
+ * Based on the CodeIgniter Email class.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		DudeAmI aka Kris <dudeami0@gmail.com>
+ * @license		MIT License
+ * @copyright	2010 Dan Horrigan
+ * @link		http://fuelphp.com
+ * @link		http://codeigniter.com/
+ */
 
 namespace Fuel;
 
-/**
- * Driver for sending using the PHP mail() function.
- * Based on the CodeIgniter Email class.
- */
 class Email_Mail extends Email_Driver {
 
-	public function __construct($config=Array()) {
+	public function __construct($config = array()) {
 		parent::__construct($config);
 	}
 
 	/**
 	 * Used to send an email using mail function of php.
-	 * @return boolean True if successful, false if not.
+	 * 
+	 * @return boolean	True if successful, false if not.
 	 */
 	protected function _send() {
 		$return = false;

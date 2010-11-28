@@ -1,12 +1,23 @@
 <?php
+/**
+ * Fuel
+ *
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * Class used to server up the email
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		DudeAmI aka Kris <dudeami0@gmail.com>
+ * @license		MIT License
+ * @copyright	2010 Dan Horrigan
+ * @link		http://fuelphp.com
+ */
 
 namespace Fuel;
 
-/**
- * Class used to server up the email
- */
 class Email {
-
+	
 	protected static $_instance = null;
 
 	public static function instance() {
@@ -18,9 +29,10 @@ class Email {
 
 	/**
 	 * Creates a new instance of the email driver
-	 * @param <type> $config
+	 * 
+	 * @param array $config
 	 */
-	public static function factory($config=Array()) {
+	public static function factory($config = Array()) {
 		$protocol = ucfirst(!empty($config['protocol']) ? $config['protocol'] : 'mail');
 		$class = 'Email_' . $protocol;
 		if ($protocol == 'Driver' || !class_exists($class)) {
@@ -60,7 +72,7 @@ class Email {
 	 * @param String $address The email address of the sender.
 	 * @return Dmail
 	 */
-	public static function from($address, $name='') {
+	public static function from($address, $name = '') {
 		return static::instance()->from($address, $name);
 	}
 
