@@ -73,6 +73,15 @@ return array(
 	'log_threshold'		=> Log::ERROR,
 	'log_path'			=> APPPATH . 'logs/',
 	'log_date_format' 	=> 'Y-m-d H:i:s',
+
+	/**
+	 * Security settings
+	 */
+	'security' => array(
+		'csrf_autoload'		=> false,
+		'csrf_token_key'	=> 'fuel_csrf_token',
+		'csrf_expiration'	=> 0,
+	),
 	
 	/**
 	 * These packages are loaded on Fuel's startup.  You can specify them in
@@ -87,6 +96,14 @@ return array(
 	 */
 	'packages'	=> array(),
 
+	/**
+	 * To enable you to split up your application into modules which can be
+	 * routed by the first uri segment you have to define their basepaths
+	 * here. By default empty, but to use them you can add something
+	 * like this:
+	 *      array(APPPATH.'modules'.DS)
+	 */
+	'module_paths' => array()
 );
 
 /* End of file config.php */

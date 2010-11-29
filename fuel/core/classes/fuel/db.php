@@ -126,4 +126,36 @@ class DB {
 		return new Database_Expression($string);
 	}
 
+	/**
+	 * Quotes an identifier so it is ready to use in a query.
+	 *
+	 * @param	string	$string	the string to quote
+	 * @param	string	$db		the database connection to use
+	 * @return	string	the quoted identifier
+	 */
+	public static function quote_identifier($string, $db = null)
+	{
+		if (is_array($string))
+		{
+			foreach ($string as $k => $s)
+			{
+				$string[$k] = static::quote_identifier($s, $db);
+			}
+			return $string;
+		}
+		return Database::instance($db)->quote_identifier($string);
+	}
+
+	/**
+	 * Escapes a string to be ready for use in a sql query
+	 * 
+	 * @param	string	$string	the string to escape
+	 * @param	string	$db		the database connection to use
+	 * @return	string	the escaped string
+	 */
+	public static function escape($string, $db = null)
+	{
+		return Database::instance($db)->escape($string);
+	}
+
 } // End DB

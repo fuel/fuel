@@ -33,7 +33,7 @@ class Fuel {
 
 	protected static $_paths = array();
 
-	protected static $packages = array();
+	public static $packages = array();
 
 	final private function __construct() { }
 
@@ -80,7 +80,7 @@ class Fuel {
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
-				$base_url = dirname($_SERVER['SCRIPT_NAME']);
+				$base_url = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 
 				// Add a slash if it is missing
 				substr($base_url, -1, 1) == '/' OR $base_url .= '/';
@@ -102,6 +102,12 @@ class Fuel {
 		{
 			date_default_timezone_set('UTC');
 		}
+
+		// Clean input
+		Security::clean_input();
+
+		// Always load classes, config & language set in always_load.php config
+		static::always_load();
 
 		static::$initialized = true;
 	}
@@ -212,6 +218,37 @@ class Fuel {
 	{
 		spl_autoload_unregister(array(static::$packages[$name], 'load'));
 		unset(static::$packages[$name]);
+	}
+
+	/**
+	 * Always load classes, config & language files set in always_load.php config
+	 */
+	public static function always_load($array = null)
+	{
+		$array = is_null($array) ? Fuel::load(APPPATH.'config'.DS.'always_load.php') : $array;
+
+		foreach ($array['classes'] as $class)
+		{
+			if ( ! class_exists($class))
+			{
+				throw new Exception('Always load class does not exist.');
+			}
+		}
+
+		/**
+		 * Config and Lang must be either just the filename, example: array(filename)
+		 * or the filename as key and the group as value, example: array(filename => some_group)
+		 */
+
+		foreach ($array['config'] as $config => $config_group)
+		{
+			Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
+		}
+
+		foreach ($array['language'] as $lang => $lang_group)
+		{
+			Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
+		}
 	}
 
 	/**

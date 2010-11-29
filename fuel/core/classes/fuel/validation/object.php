@@ -297,7 +297,7 @@ class Validation_Object {
 		$output = $options['open_list'];
 		foreach($this->errors as $e)
 		{
-			$output .= $e->get_message(false, $options['open_error'], $options['close_error']);
+			$output .= $e->get_message($options['open_error'], $options['close_error']);
 		}
 		$output .= $options['close_list'];
 

@@ -16,14 +16,12 @@ namespace Fuel;
 
 // --------------------------------------------------------------------
 
-class Session_Cookie_Driver extends Session_Driver {
+class Session_Cookie extends Session_Driver {
 
 	// --------------------------------------------------------------------
 
 	/**
 	 * Sets or creates the session cookie
-	 *
-	 * the cookie driver stores data and flash in the cookie payload
 	 *
 	 * @access	private
 	 * @return  void
@@ -37,8 +35,6 @@ class Session_Cookie_Driver extends Session_Driver {
 
 	/**
 	 * Gets the session cookie
-	 *
-	 * the cookie driver stores data and flash in the cookie payload
 	 *
 	 * @access	private
 	 * @return  boolean, true if found, false if not
@@ -62,6 +58,28 @@ class Session_Cookie_Driver extends Session_Driver {
 		return ! empty($this->keys);
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * validate a driver config value
+	 *
+	 * @param	string	name of the config variable to validate
+	 * @param	mixed	value
+	 * @access	public
+	 * @return  mixed
+	 */
+	public function validate_config($name, $value)
+	{
+		switch ($name)
+		{
+			// cookie driver doesn't have any special config values
+			default:
+				break;
+		}
+
+		// return the validated value
+		return $value;
+	}
 }
 
 /* End of file driver.php */

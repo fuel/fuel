@@ -6,7 +6,6 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Harro "WanWizard" Verton
  * @license		MIT License
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
@@ -16,112 +15,131 @@ namespace Fuel;
 
 // --------------------------------------------------------------------
 
+/**
+ * Session Class
+ *
+ * @package		Fuel
+ * @subpackage	Core
+ * @category	Core
+ * @author		Harro "WanWizard" Verton
+ */
 class Session
 {
-	/*
+	/**
 	 * loaded session driver instance
 	 */
-	protected static $instance = false;
+	protected static $_instance = null;
 
-	/*
-	 * list of supported session drivers
+	/**
+	 * Initialize by loading config & starting default session
 	 */
-	protected static $valid_storage = array('cookie', 'file', 'memcached');
-
-	// --------------------------------------------------------------------
-
-	/*
-	 * class uses as a static object, automatically read everything
-	 */
-	public function _init($parms = array())
+	public static function _init()
 	{
-		// If loaded as an instance or first load of static
-		if (isset($this) OR ( ! isset($this) AND self::$instance === false))
+		Config::load('session', true);
+
+		if (Config::get('session.auto_initialize', true))
 		{
-			// load the session configuration
-			if ( ! empty($parms) && is_array($parms))
-			{
-				$config = $parms;
-			}
-			else
-			{
-				$config = Config::load('session', true);
-			}
+			static::instance();
+		}
+	}
 
-			// if the parm is a string, it's the desired session type
-			if (is_string($parms))
-			{
-				$config['type'] = $parms;
-			}
+	/**
+	 * Factory
+	 *
+	 * Produces fully configured session driver instances
+	 *
+	 * @param	array|string	full driver config or just driver type
+	 */
+	public static function factory($config = array())
+	{
+		$defaults = Config::get('session', array());
 
-			// validate the config, set some defaults if needed
-			if ( ! isset($config['default']) OR ! in_array($config['default'], self::$valid_storage))
-			{
-				throw new Fuel_Exception('You have specified an invalid default session storage system.');
-			}
-
-			// was a specific session storage backend requested?
-			if ( ! isset($config['type']) OR ! in_array($config['type'], self::$valid_storage))
-			{
-				throw new Exception('You have specified an invalid session storage system.');
-			}
-
-			// instantiate the driver
-			$driver = 'Session_'.ucfirst($config['type']).'_Driver';
-			self::$instance = new $driver;
-
-			// and configure it
-			self::$instance->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : true);
-			self::$instance->set_config('match_ua', isset($config['match_ua']) ? (bool) $config['match_ua'] : true);
-			self::$instance->set_config('cookie_name', isset($config['cookie_name']) ? (string) $config['cookie_name'] : 'fuelsession');
-			self::$instance->set_config('cookie_domain', isset($config['cookie_domain']) ? (string) $config['cookie_domain'] : '');
-			self::$instance->set_config('cookie_path', isset($config['cookie_path']) ? (string) $config['cookie_path'] : '/');
-			self::$instance->set_config('expiration_time', isset($config['expiration_time']) ? (int) $config['expiration_time'] : 0);
-			self::$instance->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
-			self::$instance->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
-			self::$instance->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
-			self::$instance->set_config('write_on_finish', isset($config['write_on_finish']) ? (bool) $config['write_on_finish'] : false);
-			if (isset($config[$config['type']]))
-			{
-				self::$instance->set_config('config', $config[$config['type']]);
-			}
-
-			// if the driver has an init method, call it
-			if (method_exists(self::$instance, 'init'))
-			{
-				self::$instance->init();
-			}
-
-			// load the session
-			self::read();
+		// When a string was entered it's just the driver type
+		if ( ! empty($config) && ! is_array($config))
+		{
+			$config = array('driver' => $config);
 		}
 
-		return self::$instance;
+		// Overwrite default values with given config
+		$config = array_merge($defaults, $config);
+
+		if (empty($config['driver']))
+		{
+			throw new Exception('No session driver given or no default session driver set.');
+		}
+
+		// Instantiate the driver
+		$class = 'Session_'.ucfirst($config['driver']);
+		$driver = new $class;
+
+		// And configure it, specific driver config first
+		if (isset($config[$config['driver']]))
+		{
+			$driver->set_config('config', $config[$config['driver']]);
+		}
+
+		// Then load globals and/or set defaults
+		$driver->set_config('driver', $config['driver']);
+		$driver->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : true);
+		$driver->set_config('match_ua', isset($config['match_ua']) ? (bool) $config['match_ua'] : true);
+		$driver->set_config('cookie_name', isset($config['cookie_name']) ? (string) $config['cookie_name'] : 'fuelsession');
+		$driver->set_config('cookie_domain', isset($config['cookie_domain']) ? (string) $config['cookie_domain'] : '');
+		$driver->set_config('cookie_path', isset($config['cookie_path']) ? (string) $config['cookie_path'] : '/');
+		$driver->set_config('expire_on_close', isset($config['expire_on_close']) ? (bool) $config['expire_on_close'] : false);
+		$driver->set_config('expiration_time', isset($config['expiration_time'])
+				? ((int) $config['expiration_time'] > 0
+						? (int) $config['expiration_time']
+						: 86400 * 365 * 2)
+				: 7200);
+		$driver->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
+		$driver->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
+		$driver->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
+		$driver->set_config('write_on_set', isset($config['write_on_set']) ? (bool) $config['write_on_set'] : false);
+
+		// if the driver has an init method, call it
+		if (method_exists($driver, 'init'))
+		{
+			$driver->init();
+		}
+
+		// do we need to set a shutdown event for this driver?
+		if ($driver->get_config('write_on_set') === false)
+		{
+			// register a shutdown event to update the session
+			Event::register('shutdown', array($driver, 'write_session'));
+		}
+
+		// load the session
+		$driver->read();
+
+		return $driver;
 	}
 
-	/*
-	 * class autoload initialisation, and driver instantiation
+	/**
+	 * class constructor
+	 *
+	 * @param	void
+	 * @access	private
+	 * @return	void
 	 */
-	public function __construct($config = array())
-	{
-		self::_init($config);
-	}
+	final private function __construct() {}
 
-	/*
-	 * allows instantiation of a named session driver
+	/**
+	 * create or return the driver instance
+	 *
+	 * @param	void
+	 * @access	public
+	 * @return	Session_Driver object
 	 */
-	public static function factory($config = NULL)
+	public static function instance()
 	{
-		// reset the current instance
-		self::$instance = false;
+		if (is_null(static::$_instance))
+		{
+			static::$_instance = static::factory();
+		}
 
-		// run the instance initialisation again, return the instance
-		return self::_init($config);
+		return static::$_instance;
 	}
-
-	// --------------------------------------------------------------------
-	// mapping of the static public methods to the driver instance methods
-	// --------------------------------------------------------------------
 
 	/**
 	 * set session variables
@@ -131,14 +149,9 @@ class Session
 	 * @access	public
 	 * @return	void
 	 */
-	public function set($name, $value)
+	public static function set($name, $value)
 	{
-		$return = self::$instance->set($name, $value);
-
-		// Automatically write if static
-		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
-
-		return $return;
+		return static::instance()->set($name, $value);
 	}
 
 	// --------------------------------------------------------------------
@@ -150,9 +163,9 @@ class Session
 	 * @param	string	name of the variable to get
 	 * @return	mixed
 	 */
-	public function get($name)
+	public static function get($name)
 	{
-		return self::$instance->get($name);
+		return static::instance()->get($name);
 	}
 
 	// --------------------------------------------------------------------
@@ -165,14 +178,9 @@ class Session
 	 * @access	public
 	 * @return	void
 	 */
-	public function delete($name)
+	public static function delete($name)
 	{
-		$return = self::$instance->delete($name);
-
-		// Automatically write if static
-		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
-
-		return $return;
+		return static::instance()->delete($name);
 	}
 
 	// --------------------------------------------------------------------
@@ -185,14 +193,9 @@ class Session
 	 * @access	public
 	 * @return	void
 	 */
-	public function set_flash($name, $value)
+	public static function set_flash($name, $value)
 	{
-		$return = self::$instance->set_flash($name, $value);
-
-		// Automatically write if static
-		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
-
-		return $return;
+		return static::instance()->set_flash($name, $value);
 	}
 
 	// --------------------------------------------------------------------
@@ -204,9 +207,9 @@ class Session
 	 * @param	string	name of the variable to get
 	 * @return	mixed
 	 */
-	public function get_flash($name)
+	public static function get_flash($name)
 	{
-		return self::$instance->get_flash($name);
+		return static::instance()->get_flash($name);
 	}
 
 	// --------------------------------------------------------------------
@@ -218,14 +221,9 @@ class Session
 	 * @param	string	name of the variable to keep
 	 * @return	void
 	 */
-	public function keep_flash($name)
+	public static function keep_flash($name)
 	{
-		$return = self::$instance->keep_flash($name);
-
-		// Automatically write if static
-		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
-
-		return $return;
+		return static::instance()->keep_flash($name);
 	}
 
 	// --------------------------------------------------------------------
@@ -238,14 +236,9 @@ class Session
 	 * @access	public
 	 * @return	void
 	 */
-	public function delete_flash($name)
+	public static function delete_flash($name)
 	{
-		$return = self::$instance->delete_flash($name);
-
-		// Automatically write if static
-		('Fuel_'.get_class($this) == __CLASS__) OR self::write();
-
-		return $return;
+		return static::instance()->delete_flash($name);
 	}
 
 	// --------------------------------------------------------------------
@@ -256,9 +249,9 @@ class Session
 	 * @access	public
 	 * @return	void
 	 */
-	public function create()
+	public static function create()
 	{
-		return self::$instance->create();
+		return static::instance()->create();
 	}
 
 	// --------------------------------------------------------------------
@@ -269,9 +262,9 @@ class Session
 	 * @access	public
 	 * @return	void
 	 */
-	public function read()
+	public static function read()
 	{
-		return self::$instance->read();
+		return static::instance()->read();
 	}
 
 	// --------------------------------------------------------------------
@@ -282,9 +275,9 @@ class Session
 	 * @access	public
 	 * @return	void
 	 */
-	public function write()
+	public static function write()
 	{
-		return self::$instance->write();
+		return static::instance()->write();
 	}
 
 	// --------------------------------------------------------------------
@@ -295,9 +288,9 @@ class Session
 	 * @access	public
 	 * @return	void
 	 */
-	public function destroy()
+	public static function destroy()
 	{
-		return self::$instance->destroy();
+		return static::instance()->destroy();
 	}
 
 }

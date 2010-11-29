@@ -44,7 +44,9 @@ $loader->add_aliases(array(
 
 	'Cookie'		=> 'Fuel\\Cookie',
 	'DB'			=> 'Fuel\\DB',
+	'DBUtil'		=> 'Fuel\\DBUtil',
 	'Database'		=> 'Fuel\\Database',
+	'Database_Exception'	=> 'Fuel\\Database_Exception',
 	'Date'			=> 'Fuel\\Date',
 	'Debug'			=> 'Fuel\\Debug',
 	'Crypt'			=> 'Fuel\\Crypt',
@@ -65,12 +67,12 @@ $loader->add_aliases(array(
 	'Request'		=> 'Fuel\\Request',
 	'Route'			=> 'Fuel\\Route',
 
-	'Session'					=> 'Fuel\\Session',
-	'Session_Driver'			=> 'Fuel\\Session_Driver',
-	'Session_Exception'			=> 'Fuel\\Session_Exception',
-	'Session_Cookie_Driver'		=> 'Fuel\\Session_Cookie_Driver',
-	'Session_File_Driver'		=> 'Fuel\\Session_File_Driver',
-	'Session_Memcached_Driver'	=> 'Fuel\\Session_Memcached_Driver',
+	'Session'			=> 'Fuel\\Session',
+	'Session_Driver'	=> 'Fuel\\Session_Driver',
+	'Session_Db'		=> 'Fuel\\Session_Db',
+	'Session_Cookie'	=> 'Fuel\\Session_Cookie',
+	'Session_File'		=> 'Fuel\\Session_File',
+	'Session_Memcached'	=> 'Fuel\\Session_Memcached',
 
 	'URI'			=> 'Fuel\\URI',
 	'URL'			=> 'Fuel\\URL',

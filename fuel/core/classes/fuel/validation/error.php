@@ -60,12 +60,12 @@ class Validation_Error extends Exception {
 	 *
 	 * Shows the error message which can be taken from loaded language file.
 	 *
-	 * @param	string	Message to use, or false to try and load it from Lang class
 	 * @param	string	HTML to prefix error message
 	 * @param	string	HTML to postfix error message
+	 * @param	string	Message to use, or false to try and load it from Lang class
 	 * @return	string
 	 */
-	public function get_message($msg = false, $open = '', $close = '')
+	public function get_message($open = '', $close = '', $msg = false)
 	{
 		$msg = $msg === false
 				? __('validation.'.$this->callback) ?: __('validation.'.array_pop(explode(':', $this->callback)))

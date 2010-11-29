@@ -20,7 +20,7 @@ class Request {
 	 * @var	object	Holds the main request instance
 	 */
 	protected static $main = false;
-	
+
 	/**
 	 * @var	object	Holds the global request instance
 	 */
@@ -32,7 +32,7 @@ class Request {
 	 * request for the app.
 	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>Request::factory('hello/world');</code>
 	 *
 	 * @access	public
@@ -58,7 +58,7 @@ class Request {
 	 * Returns the main request instance.
 	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>Request::main();</code>
 	 *
 	 * @access	public
@@ -75,7 +75,7 @@ class Request {
 	 * Returns the active request currently being used.
 	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>Request::active();</code>
 	 *
 	 * @access	public
@@ -91,9 +91,9 @@ class Request {
 	/**
 	 * Shows a 404.  Checks to see if a 404_override route is set, if not show
 	 * a default 404.
-	 * 
+	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>Request::show_404();</code>
 	 *
 	 * @access	public
@@ -134,7 +134,7 @@ class Request {
 					{
 						$controller->after();
 					}
-					
+
 					// Get the controller's output
 					static::active()->output =& $controller->output;
 				}
@@ -161,6 +161,16 @@ class Request {
 	public $uri = '';
 
 	/**
+	 * @var	string	Controller module
+	 */
+	public $module = '';
+
+	/**
+	 * @var	string	Controller directory
+	 */
+	public $directory = '';
+
+	/**
 	 * @var	string	The request's controller
 	 */
 	public $controller = '';
@@ -183,7 +193,7 @@ class Request {
 	/**
 	 * Creates the new Request object by getting a new URI object, then parsing
 	 * the uri with the Route class.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the uri string
 	 * @return	void
@@ -192,81 +202,185 @@ class Request {
 	{
 		$this->uri = new URI($uri);
 		$route = Route::parse($this->uri);
-		
-		$this->controller = $route['controller'];
-		$this->action = $route['action'];
-		$this->method_params = $route['method_params'];
+
+		// Check for module
+		$module = Fuel::$packages['app']->prefix_path(ucfirst($route['uri_array'][0]).'_');
+		if ($module === false)
+		{
+			foreach (Config::get('module_paths', array()) as $path)
+			{
+				if (is_dir($mod_path = $path.strtolower($route['uri_array'][0].DS)))
+				{
+					// Load module and end search
+					Fuel::$packages['app']->add_prefix(ucfirst($route['uri_array'][0]).'_', $mod_path);
+					$this->module = array_shift($route['uri_array']);
+
+					// Optionally load module routes & reparse, must be relative to module
+					//     so it only allows routing within module
+					if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
+					{
+						// Load module routes and add to router
+						$mod_routes = Fuel::load($route_path);
+						foreach ($mod_routes as $orig_route => $reroute)
+						{
+							$prefix = in_array($orig_route, array('404')) ? '' : $this->module.'/';
+							if ($orig_route == 'default')
+							{
+								Route::$routes[$this->module] = $prefix.$reroute;
+							}
+							else
+							{
+								Route::$routes[$prefix.$orig_route] = $prefix.$reroute;
+							}
+						}
+
+						// Reparse route after added module routes 
+						$route = Route::parse($this->uri);
+						array_shift($route['uri_array']);
+					}
+
+					// Does the module need always_loading?
+					if (is_file($always_load_path = $mod_path.'config'.DS.'always_load.php'))
+					{
+						Fuel::always_load(Fuel::load($always_load_path));
+					}
+
+					break;
+				}
+			}
+		}
+
+		// Check for directory
+		if ($route['uri_array'][0] != 'index')
+		{
+			$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
+			if (is_dir($dirpath = $path.strtolower($route['uri_array'][0])))
+			{
+				$this->directory = array_shift($route['uri_array']);
+			}
+		}
+
+		// When emptied the controller defaults to directory or module, action still defaults to index
+		$controller = empty($this->directory) ? $this->module : $this->directory;
+		if (count($route['uri_array']) == 0)
+		{
+			$route['uri_array'] = array($controller, 'index');
+		}
+		elseif ($route['uri_array'][0] == 'index')
+		{
+			array_unshift($route['uri_array'], $controller);
+		}
+		elseif (count($route['uri_array']) == 1)
+		{
+			$route['uri_array'][] = 'index';
+		}
+
+		$this->controller = $route['uri_array'][0];
+		$this->action = $route['uri_array'][1];
+		$this->method_params = array_slice($route['uri_array'], 2);
 		$this->named_params = $route['named_params'];
 		unset($route);
 	}
 
 	/**
 	 * This executes the request and sets the output to be used later.
-	 * 
+	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>$request = Request::factory('hello/world')->execute();</code>
-	 * 
+	 *
 	 * @access	public
 	 * @return	void
 	 */
 	public function execute()
 	{
 		Log::info('Called', __METHOD__);
-		
+
 		$controller_prefix = APP_NAMESPACE.'\\Controller_';
-		$class = $controller_prefix.ucfirst($this->controller);
+		$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
-
-		if (class_exists($class))
+		// Allow omitting the controller name when in an equally named directory or module
+		if ( ! class_exists($class))
 		{
-			Log::info('Loading controller '.$class, __METHOD__);
-			$controller = new $class($this);
-			if (method_exists($controller, $method))
+			// set the new controller to directory or module when applicable
+			$controller = empty($this->directory) ? $this->module : $this->directory;
+			// ... or to the default controller if it was in neither
+			$controller = empty($controller) ? array_shift(explode('/', Route::$routes['default'])) : $controller;
+
+			// try again with new controller if it differs from the previous attempt
+			if ($controller != $this->controller)
 			{
-				// Call the before method if it exists
-				if (method_exists($controller, 'before'))
+				$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($controller);
+				if ($this->action != 'index')
 				{
-					Log::info('Calling '.$class.'::before', __METHOD__);
-					$controller->before();
+					array_unshift($this->method_params, $this->action);
 				}
+				$this->action = $this->controller;
+				$method = 'action_'.$this->action;
+				$this->controller = $controller;
 
-				Log::info('Calling '.$class.'::'.$method, __METHOD__);
-				call_user_func_array(array($controller, $method), $this->method_params);
-
-				// Call the after method if it exists
-				if (method_exists($controller, 'after'))
-				{
-					Log::info('Calling '.$class.'::after', __METHOD__);
-					$controller->after();
-				}
-
-				// Get the controller's output
-				$this->output =& $controller->output;
+				// attempt autoload
+				class_exists($class);
 			}
-			else
+
+			// 404 if it's still not found
+			if ( ! class_exists($class, false))
 			{
 				static::show_404();
+				return $this;
 			}
 		}
-		else
+
+		Log::info('Loading controller '.$class, __METHOD__);
+		$controller = new $class($this);
+
+		// Allow to do in controller routing if method router(action, params) exists
+		if (method_exists($controller, 'router'))
 		{
-			static::show_404();
+			$method = 'router';
+			$this->method_params = array($this->action, $this->method_params);
 		}
+
+		// Call the before method if it exists
+		if (method_exists($controller, 'before'))
+		{
+			Log::info('Calling '.$class.'::before', __METHOD__);
+			$controller->before();
+		}
+
+		if (method_exists($controller, $method))
+		{
+			Log::info('Calling '.$class.'::'.$method, __METHOD__);
+			call_user_func_array(array($controller, $method), $this->method_params);
+
+			// Call the after method if it exists
+			if (method_exists($controller, 'after'))
+			{
+				Log::info('Calling '.$class.'::after', __METHOD__);
+				$controller->after();
+			}
+
+			// Get the controller's output
+			$this->output =& $controller->output;
+
+			return $this;
+		}
+		static::show_404();
+
 		return $this;
 	}
 
 	/**
 	 * PHP magic function returns the Output of the request.
-	 * 
+	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>
 	 * $request = Request::factory('hello/world')->execute();
 	 * echo $request;
 	 * </code>
-	 * 
+	 *
 	 * @access	public
 	 * @return	string
 	 */

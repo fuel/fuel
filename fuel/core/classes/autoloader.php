@@ -66,6 +66,22 @@ class Autoloader {
 	}
 
 	/**
+	 * Returns the prefix's path or false when it doesn't exist
+	 *
+	 * @param  string
+	 * @return array|bool
+	 */
+	public function prefix_path($prefix)
+	{
+		if ( ! array_key_exists($prefix, $this->prefixes))
+		{
+			return false;
+		}
+
+		return $this->prefixes[$prefix];
+	}
+
+	/**
 	 * Adds a namespace and path
 	 * 
 	 * @access	public
@@ -179,6 +195,9 @@ class Autoloader {
 	 */
 	public function load($class)
 	{
+		// Cleanup backslash prefix, messes up class_alias and other stuff
+		$class = ltrim($class, '\\');
+
 		// Checks if there is a \ in the class name.  This indicates it is a
 		// namespace.  It sets $pos to the position of the last \.
 		if (($pos = strripos($class, '\\')) !== false)
@@ -224,6 +243,24 @@ class Autoloader {
 			require $file_path;
 			$this->_init_class($class);
 			return true;
+		}
+
+		// Or try the active module when
+		if (class_exists('Fuel\\Request', false) && is_object(Fuel\Request::active()) && Fuel\Request::active()->module != '')
+		{
+			$prefix = ucfirst(Fuel\Request::active()->module).'_';
+
+			if (array_key_exists($prefix, $this->prefixes))
+			{
+				$file_path = $this->prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower($class)).'.php';
+				if (is_file($file_path))
+				{
+					require $file_path;
+					class_alias($prefix.$class, $class);
+					$this->_init_class($class);
+					return true;
+				}
+			}
 		}
 
 		// Still nothin? Lets see if its an alias then.
