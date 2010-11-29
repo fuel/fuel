@@ -209,7 +209,7 @@ class Request {
 		{
 			foreach (Config::get('module_paths', array()) as $path)
 			{
-				if (is_dir($mod_check_path = $path.strtolower($route['uri_array'][0].DS)))
+				if (is_dir($mod_check_path = $path.strtolower($route['uri_array'][0]).DS))
 				{
 					// Load module and end search
 					$mod_path = $mod_check_path;
