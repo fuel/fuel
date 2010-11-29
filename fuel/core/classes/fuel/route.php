@@ -44,7 +44,7 @@ class Route {
 		foreach (static::$routes as $search => $route)
 		{
 			$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+'), $search);
-			$search = preg_replace('#:([a-z]+)#uD', '(?P<$1>.+)', $search);
+			$search = preg_replace('#:([a-z\_]+)#uD', '(?P<$1>.+)', $search);
 
 			if (preg_match('#'.$search.'#uD', $uri->uri, $params) != false)
 			{
