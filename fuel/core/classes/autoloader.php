@@ -310,8 +310,11 @@ class Autoloader {
 			if (strpos($class, $alias) === 0)
 			{
 				$alias = $actual.substr($class, strlen($alias));
-				class_alias($alias, $class);
-				return true;
+				if (class_exists($alias))
+				{
+					class_alias($alias, $class);
+					return true;
+				}
 			}
 		}
 		return false;
