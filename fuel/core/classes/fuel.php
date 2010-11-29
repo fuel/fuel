@@ -55,9 +55,9 @@ class Fuel {
 		// Add the core and optional application loader to the packages array
 		static::$packages = $autoloaders;
 
-		register_shutdown_function('Error::shutdown_handler');
-		set_exception_handler('Error::exception_handler');
-		set_error_handler('Error::error_handler');
+		register_shutdown_function('Fuel\\Application\\Error::shutdown_handler');
+		set_exception_handler('Fuel\\Application\\Error::exception_handler');
+		set_error_handler('Fuel\\Application\\Error::error_handler');
 
 		// Start up output buffering
 		ob_start();

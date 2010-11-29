@@ -20,75 +20,72 @@ $loader->add_namespaces(array(
 	'Fuel'	=>	__DIR__.'/classes/',
 ));
 
-
-$loader->add_namespace_alias(APP_NAMESPACE, 'Fuel');
+$loader->add_namespace_alias('Fuel\\Application', 'Fuel');
 
 $loader->add_prefixes(array(
 	'Fuel_'		=> COREPATH.'classes/',
 ));
 
 $loader->add_aliases(array(
-	'Arr'			=> 'Fuel\\Arr',
-	'Asset'			=> 'Fuel\\Asset',
-	'Benchmark'		=> 'Fuel\\Benchmark',
+	'Arr'			=> 'Fuel\\Application\\Arr',
+	'Asset'			=> 'Fuel\\Application\\Asset',
+	'Benchmark'		=> 'Fuel\\Application\\Benchmark',
 
-	'Cache'						=> 'Fuel\\Cache',
-	'Cache_Handler_Driver'		=> 'Fuel\\Cache_Handler_Driver',
-	'Cache_Handler_Json'		=> 'Fuel\\Cache_Handler_Json',
-	'Cache_Handler_Serialized'	=> 'Fuel\\Cache_Handler_Serialized',
-	'Cache_Handler_String'		=> 'Fuel\\Cache_Handler_String',
-	'Cache_Storage_Driver'		=> 'Fuel\\Cache_Storage_Driver',
-	'Cache_Storage_File'		=> 'Fuel\\Cache_Storage_File',
+	'Cache'						=> 'Fuel\\Application\\Cache',
+	'Cache_Handler_Driver'		=> 'Fuel\\Application\\Cache_Handler_Driver',
+	'Cache_Handler_Json'		=> 'Fuel\\Application\\Cache_Handler_Json',
+	'Cache_Handler_Serialized'	=> 'Fuel\\Application\\Cache_Handler_Serialized',
+	'Cache_Handler_String'		=> 'Fuel\\Application\\Cache_Handler_String',
+	'Cache_Storage_Driver'		=> 'Fuel\\Application\\Cache_Storage_Driver',
+	'Cache_Storage_File'		=> 'Fuel\\Application\\Cache_Storage_File',
 
-	'Config'		=> 'Fuel\\Config',
+	'Config'		=> 'Fuel\\Application\\Config',
 
-	'Cookie'		=> 'Fuel\\Cookie',
-	'DB'			=> 'Fuel\\DB',
-	'DBUtil'		=> 'Fuel\\DBUtil',
-	'Database'		=> 'Fuel\\Database',
-	'Database_Exception'	=> 'Fuel\\Database_Exception',
-	'Date'			=> 'Fuel\\Date',
-	'Debug'			=> 'Fuel\\Debug',
-	'Crypt'			=> 'Fuel\\Crypt',
-	'Env'			=> 'Fuel\\Env',
-	'Event'			=> 'Fuel\\Event',
-	'Error'			=> 'Fuel\\Error',
-	'Form'			=> 'Fuel\\Form',
-	'Ftp'			=> 'Fuel\\Ftp',
-	'Html'			=> 'Fuel\\Html',
-	'Input'			=> 'Fuel\\Input',
-	'Lang'			=> 'Fuel\\Lang',
-	'Log'			=> 'Fuel\\Log',
-	'Migrate'		=> 'Fuel\\Migrate',
-	'Migration'		=> 'Fuel\\Migrate',
-	'Model'			=> 'Fuel\\Model',
-	'Output'		=> 'Fuel\\Output',
-	'Pagination'	=> 'Fuel\\Pagination',
-	'Request'		=> 'Fuel\\Request',
-	'Route'			=> 'Fuel\\Route',
+	'Cookie'		=> 'Fuel\\Application\\Cookie',
+	'DB'			=> 'Fuel\\Application\\DB',
+	'DBUtil'		=> 'Fuel\\Application\\DBUtil',
 
-	'Session'			=> 'Fuel\\Session',
-	'Session_Driver'	=> 'Fuel\\Session_Driver',
-	'Session_Db'		=> 'Fuel\\Session_Db',
-	'Session_Cookie'	=> 'Fuel\\Session_Cookie',
-	'Session_File'		=> 'Fuel\\Session_File',
-	'Session_Memcached'	=> 'Fuel\\Session_Memcached',
+	'Database'				=> 'Fuel\\Application\\Database',
+	'Database_Exception'	=> 'Fuel\\Application\\Database_Exception',
 
-	'URI'			=> 'Fuel\\URI',
-	'URL'			=> 'Fuel\\URL',
+	'Date'			=> 'Fuel\\Application\\Date',
+	'Debug'			=> 'Fuel\\Application\\Debug',
+	'Crypt'			=> 'Fuel\\Application\\Crypt',
+	'Env'			=> 'Fuel\\Application\\Env',
+	'Event'			=> 'Fuel\\Application\\Event',
+	'Error'			=> 'Fuel\\Application\\Error',
+	'Form'			=> 'Fuel\\Application\\Form',
+	'Ftp'			=> 'Fuel\\Application\\Ftp',
+	'Html'			=> 'Fuel\\Application\\Html',
+	'Input'			=> 'Fuel\\Application\\Input',
+	'Lang'			=> 'Fuel\\Application\\Lang',
+	'Log'			=> 'Fuel\\Application\\Log',
+	'Migrate'		=> 'Fuel\\Application\\Migrate',
+	'Migration'		=> 'Fuel\\Application\\Migrate',
+	'Model'			=> 'Fuel\\Application\\Model',
+	'Output'		=> 'Fuel\\Application\\Output',
+	'Pagination'	=> 'Fuel\\Application\\Pagination',
+	'Request'		=> 'Fuel\\Application\\Request',
+	'Route'			=> 'Fuel\\Application\\Route',
 
-	'Validation'		=> 'Fuel\\Validation',
-	'Validation_Object'	=> 'Fuel\\Validation_Object',
-	'Validation_Error'	=> 'Fuel\\Validation_Error',
+	'Session'			=> 'Fuel\\Application\\Session',
+	'Session_Driver'	=> 'Fuel\\Application\\Session_Driver',
+	'Session_Db'		=> 'Fuel\\Application\\Session_Db',
+	'Session_Cookie'	=> 'Fuel\\Application\\Session_Cookie',
+	'Session_File'		=> 'Fuel\\Application\\Session_File',
+	'Session_Memcached'	=> 'Fuel\\Application\\Session_Memcached',
 
-	'View'				=> 'Fuel\\View',
-	'View_Exception'	=> 'Fuel\\View_Exception',
+	'URI'			=> 'Fuel\\Application\\URI',
+	'URL'			=> 'Fuel\\Application\\URL',
 
-	'Fuel'			=> 'Fuel\\Fuel',
+	'Validation'		=> 'Fuel\\Application\\Validation',
+	'Validation_Object'	=> 'Fuel\\Application\\Validation_Object',
+	'Validation_Error'	=> 'Fuel\\Application\\Validation_Error',
 
-	'Controller\\Base'		=> 'Fuel\\Controller\\Base',
-	'Controller\\Rest'		=> 'Fuel\\Controller\\Rest',
-	'Controller\\Template'	=> 'Fuel\\Controller\\Template'
+	'View'				=> 'Fuel\\Application\\View',
+	'View_Exception'	=> 'Fuel\\Application\\View_Exception',
+
+	'Fuel'			=> 'Fuel\\Application\\Fuel',
 ));
 
 $loader->register();

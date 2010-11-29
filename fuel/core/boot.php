@@ -55,7 +55,7 @@ $autoloaders['app'] = require APPPATH.'autoload.php';
 
 
 // Load in the core class
-require COREPATH.'classes'.DS.'fuel'.DS.'fuel.php';
+require COREPATH.'classes'.DS.'fuel.php';
 
 // If the Fuel class is overrided in the application folder
 // load that, else load the core class.
@@ -66,18 +66,15 @@ if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 
 // Initialize the framework
 // and start buffering the output.
-$class_fuel = APP_NAMESPACE.'\\Fuel';
-$class_fuel::init($autoloaders);
+Fuel\Application\Fuel::init($autoloaders);
 
-$class_request = APP_NAMESPACE.'\\Request';
-$request = $class_request::factory();
+$request = Fuel\Application\Request::factory();
 $request->execute();
 echo $request->output;
 
 // Call all the shutdown events
-$class_event = APP_NAMESPACE.'\\Event';
-$class_event::shutdown();
+Fuel\Application\Event::shutdown();
 
-$class_fuel::finish();
+Fuel\Application\Fuel::finish();
 
 /* End of file boot.php */

@@ -202,6 +202,12 @@ class Autoloader {
 		// namespace.  It sets $pos to the position of the last \.
 		if (($pos = strripos($class, '\\')) !== false)
 		{
+			if ($this->namespace_alias($class))
+			{
+				$this->_init_class($class);
+				return true;
+			}
+
 			$namespace = substr($class, 0, $pos);
 
 			foreach ($this->namespaces as $ns => $path)
@@ -209,7 +215,8 @@ class Autoloader {
 				if (strncmp($ns, $namespace, $ns_len = strlen($ns)) === 0)
 				{
 					$class_no_ns = substr($class, $pos + 1);
-					$file_path = $path.str_replace('\\', DS, strtolower($namespace)).DS.str_replace('_', DS, strtolower($class_no_ns)).'.php';
+
+					$file_path = strtolower($path.substr($namespace, strlen($ns) + 1).DS.str_replace('_', DS, $class_no_ns).'.php');
 					if (file_exists($file_path))
 					{
 						require $file_path;
@@ -221,6 +228,14 @@ class Autoloader {
 		}
 		else
 		{
+			if ($this->is_alias($class))
+			{
+				$this->create_alias_class($class);
+				$this->_init_class($class);
+				return true;
+			}
+
+
 			foreach ($this->prefixes as $prefix => $path)
 			{
 				if (strncmp($class, $prefix, strlen($prefix)) === 0)
@@ -263,20 +278,6 @@ class Autoloader {
 			}
 		}
 
-		// Still nothin? Lets see if its an alias then.
-		if ($this->is_alias($class))
-		{
-			$this->create_alias_class($class);
-			$this->_init_class($class);
-			return true;
-		}
-
-		if ($this->namespace_alias($class))
-		{
-			$this->_init_class($class);
-			return true;
-		}
-
 		return false;
 	}
 
@@ -308,7 +309,7 @@ class Autoloader {
 			}
 			if (strpos($class, $alias) === 0)
 			{
-				$alias = $actual.substr($class, strlen($actual) - 1);
+				$alias = $actual.substr($class, strlen($alias));
 				class_alias($alias, $class);
 				return true;
 			}

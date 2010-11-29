@@ -1,4 +1,6 @@
 <?php
+
+	namespace Fuel;
 	if ( ! defined('FUEL_EXCEPTION_CSS')):
 		define('FUEL_EXCEPTION_CSS', true);
 ?>
@@ -127,7 +129,7 @@
 				echo ')'; ?></li>
 		<?php endforeach; ?>
 		</ol>
-			<?php \Debug::dump($backtrace); ?>
+			<?php Debug::dump($backtrace); ?>
 		</div>
 	</div>
 </div>

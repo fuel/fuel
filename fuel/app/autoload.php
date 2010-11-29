@@ -16,7 +16,7 @@ $loader = new Autoloader;
 $loader->default_path(__DIR__.'/classes/');
 
 $loader->add_namespaces(array(
-	APP_NAMESPACE		=> __DIR__.'/classes/',
+	'Fuel\\Application'		=> __DIR__.'/classes/',
 ));
 
 $loader->register();
