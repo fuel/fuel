@@ -1,5 +1,7 @@
 <?php
 
+use Fuel\Application as App;
+
 // Get the start time and memory for use later
 defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
@@ -66,15 +68,15 @@ if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 
 // Initialize the framework
 // and start buffering the output.
-Fuel\Application\Fuel::init($autoloaders);
+App\Fuel::init($autoloaders);
 
-$request = Fuel\Application\Request::factory();
+$request = App\Request::factory();
 $request->execute();
 echo $request->output;
 
 // Call all the shutdown events
-Fuel\Application\Event::shutdown();
+App\Event::shutdown();
 
-Fuel\Application\Fuel::finish();
+App\Fuel::finish();
 
 /* End of file boot.php */
