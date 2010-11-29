@@ -204,49 +204,54 @@ class Request {
 		$route = Route::parse($this->uri);
 
 		// Check for module
-		$module = Fuel::$packages['app']->prefix_path(ucfirst($route['uri_array'][0]).'_');
-		if ($module === false)
+		$mod_path = Fuel::$packages['app']->prefix_path(ucfirst($route['uri_array'][0]).'_');
+		if ($mod_path === false)
 		{
 			foreach (Config::get('module_paths', array()) as $path)
 			{
-				if (is_dir($mod_path = $path.strtolower($route['uri_array'][0].DS)))
+				if (is_dir($mod_check_path = $path.strtolower($route['uri_array'][0].DS)))
 				{
 					// Load module and end search
+					$mod_path = $mod_check_path;
 					Fuel::$packages['app']->add_prefix(ucfirst($route['uri_array'][0]).'_', $mod_path);
-					$this->module = array_shift($route['uri_array']);
-
-					// Optionally load module routes & reparse, must be relative to module
-					//     so it only allows routing within module
-					if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
-					{
-						// Load module routes and add to router
-						$mod_routes = Fuel::load($route_path);
-						foreach ($mod_routes as $orig_route => $reroute)
-						{
-							$prefix = in_array($orig_route, array('404')) ? '' : $this->module.'/';
-							if ($orig_route == 'default')
-							{
-								Route::$routes[$this->module] = $prefix.$reroute;
-							}
-							else
-							{
-								Route::$routes[$prefix.$orig_route] = $prefix.$reroute;
-							}
-						}
-
-						// Reparse route after added module routes 
-						$route = Route::parse($this->uri);
-						array_shift($route['uri_array']);
-					}
-
-					// Does the module need always_loading?
-					if (is_file($always_load_path = $mod_path.'config'.DS.'always_load.php'))
-					{
-						Fuel::always_load(Fuel::load($always_load_path));
-					}
-
 					break;
 				}
+			}
+		}
+
+		// Register module as such when found
+		if ( ! empty($mod_path))
+		{
+			$this->module = array_shift($route['uri_array']);
+
+			// Optionally load module routes & reparse, must be relative to module
+			//     so it only allows routing within module
+			if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
+			{
+				// Load module routes and add to router
+				$mod_routes = Fuel::load($route_path);
+				foreach ($mod_routes as $orig_route => $reroute)
+				{
+					$prefix = in_array($orig_route, array('404')) ? '' : $this->module.'/';
+					if ($orig_route == 'default')
+					{
+						Route::$routes[$this->module] = $prefix.$reroute;
+					}
+					else
+					{
+						Route::$routes[$prefix.$orig_route] = $prefix.$reroute;
+					}
+				}
+
+				// Reparse route after added module routes
+				$route = Route::parse($this->uri);
+				array_shift($route['uri_array']);
+			}
+
+			// Does the module need always_loading?
+			if (is_file($always_load_path = $mod_path.'config'.DS.'always_load.php'))
+			{
+				Fuel::always_load(Fuel::load($always_load_path));
 			}
 		}
 
