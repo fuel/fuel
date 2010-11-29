@@ -81,7 +81,7 @@ class Route {
 
 		return array(
 			'uri'			=> $route,
-			'uri_array'		=> $segments,
+			'segments'		=> $segments,
 			'named_params'	=> $named_params,
 		);
 	}

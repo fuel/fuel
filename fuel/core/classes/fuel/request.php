@@ -43,7 +43,7 @@ class Request {
 	{
 		Log::info('Creating a new Request with URI = "'.$uri.'"', __METHOD__);
 
-		static::$active = new Request($uri);
+		static::$active = new static($uri);
 
 		if ( ! static::$main)
 		{
@@ -204,16 +204,16 @@ class Request {
 		$route = Route::parse($this->uri);
 
 		// Check for module
-		$mod_path = Fuel::$packages['app']->prefix_path(ucfirst($route['uri_array'][0]).'_');
+		$mod_path = Fuel::$packages['app']->prefix_path(ucfirst($route['segments'][0]).'_');
 		if ($mod_path === false)
 		{
 			foreach (Config::get('module_paths', array()) as $path)
 			{
-				if (is_dir($mod_check_path = $path.strtolower($route['uri_array'][0]).DS))
+				if (is_dir($mod_check_path = $path.strtolower($route['segments'][0]).DS))
 				{
 					// Load module and end search
 					$mod_path = $mod_check_path;
-					Fuel::$packages['app']->add_prefix(ucfirst($route['uri_array'][0]).'_', $mod_path);
+					Fuel::$packages['app']->add_prefix(ucfirst($route['segments'][0]).'_', $mod_path);
 					break;
 				}
 			}
@@ -222,7 +222,7 @@ class Request {
 		// Register module as such when found
 		if ( ! empty($mod_path))
 		{
-			$this->module = array_shift($route['uri_array']);
+			$this->module = array_shift($route['segments']);
 
 			// Optionally load module routes & reparse, must be relative to module
 			//     so it only allows routing within module
@@ -245,7 +245,7 @@ class Request {
 
 				// Reparse route after added module routes
 				$route = Route::parse($this->uri);
-				array_shift($route['uri_array']);
+				array_shift($route['segments']);
 			}
 
 			// Does the module need always_loading?
@@ -256,33 +256,30 @@ class Request {
 		}
 
 		// Check for directory
-		if ($route['uri_array'][0] != 'index')
+		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
+		if (is_dir($dirpath = $path.strtolower($route['segments'][0])))
 		{
-			$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
-			if (is_dir($dirpath = $path.strtolower($route['uri_array'][0])))
-			{
-				$this->directory = array_shift($route['uri_array']);
-			}
+			$this->directory = array_shift($route['segments']);
 		}
 
 		// When emptied the controller defaults to directory or module, action still defaults to index
 		$controller = empty($this->directory) ? $this->module : $this->directory;
-		if (count($route['uri_array']) == 0)
+		if (count($route['segments']) == 0)
 		{
-			$route['uri_array'] = array($controller, 'index');
+			$route['segments'] = array($controller, 'index');
 		}
-		elseif ($route['uri_array'][0] == 'index')
+		elseif ($route['segments'][0] == 'index' and count($route['segments']) == 1)
 		{
-			array_unshift($route['uri_array'], $controller);
+			array_unshift($route['segments'], $controller);
 		}
-		elseif (count($route['uri_array']) == 1)
+		elseif (count($route['segments']) == 1)
 		{
-			$route['uri_array'][] = 'index';
+			$route['segments'][] = 'index';
 		}
 
-		$this->controller = $route['uri_array'][0];
-		$this->action = $route['uri_array'][1];
-		$this->method_params = array_slice($route['uri_array'], 2);
+		$this->controller = $route['segments'][0];
+		$this->action = $route['segments'][1];
+		$this->method_params = array_slice($route['segments'], 2);
 		$this->named_params = $route['named_params'];
 		unset($route);
 	}
@@ -302,7 +299,7 @@ class Request {
 		Log::info('Called', __METHOD__);
 
 		$controller_prefix = APP_NAMESPACE.'\\Controller_';
-		$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($this->controller);
+		$class = $controller_prefix.(empty($this->directory) ? '' : \ucfirst($this->directory).'_').ucfirst($this->controller);
 		$method = 'action_'.$this->action;
 
 		// Allow omitting the controller name when in an equally named directory or module
