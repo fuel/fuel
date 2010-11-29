@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 /**
  * The core of the framework.
  *
@@ -33,7 +35,7 @@ class Fuel {
 
 	protected static $_paths = array();
 
-	public static $packages = array();
+	protected static $packages = array();
 
 	final private function __construct() { }
 
@@ -62,21 +64,21 @@ class Fuel {
 		// Start up output buffering
 		ob_start();
 
-		Config::load('config');
+		App\Config::load('config');
 
-		static::$bm = Config::get('benchmarking', true);
-		static::$env = Config::get('environment');
-		static::$locale = Config::get('locale');
+		static::$bm = App\Config::get('benchmarking', true);
+		static::$env = App\Config::get('environment');
+		static::$locale = App\Config::get('locale');
 
-		Route::$routes = Config::load('routes', true);
+		App\Route::$routes = App\Config::load('routes', true);
 
 		//Load in the packages
-		foreach (Config::get('packages', array()) as $package)
+		foreach (App\Config::get('packages', array()) as $package)
 		{
 			static::add_package($package);
 		}
 
-		if (Config::get('base_url') === false)
+		if (App\Config::get('base_url') === false)
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
@@ -85,7 +87,7 @@ class Fuel {
 				// Add a slash if it is missing
 				substr($base_url, -1, 1) == '/' OR $base_url .= '/';
 
-				Config::set('base_url', $base_url);
+				App\Config::set('base_url', $base_url);
 			}
 		}
 
@@ -93,7 +95,7 @@ class Fuel {
 		setlocale(LC_ALL, static::$locale);
 
 		// Set default timezone when given in config
-		if (($timezone = Config::get('default_timezone', null)) != null)
+		if (($timezone = App\Config::get('default_timezone', null)) != null)
 		{
 			date_default_timezone_set($timezone);
 		}
@@ -104,7 +106,7 @@ class Fuel {
 		}
 
 		// Clean input
-		Security::clean_input();
+		App\Security::clean_input();
 
 		// Always load classes, config & language set in always_load.php config
 		static::always_load();
@@ -124,7 +126,7 @@ class Fuel {
 		// Grab the output buffer
 		$output = ob_get_clean();
 
-		$bm = Benchmark::app_total();
+		$bm = App\Benchmark::app_total();
 
 		// TODO: There is probably a better way of doing this, but this works for now.
 		$output = \str_replace(
@@ -221,11 +223,43 @@ class Fuel {
 	}
 
 	/**
+	 * Module path
+	 *
+	 * Takes a module name and searches if there's a matching module.
+	 * It will also register the module as a prefix when found.
+	 *
+	 * @param	string	module name (lowercase prefix without underscore)
+	 */
+	public static function module_path($name)
+	{
+		// First attempt registered prefixes
+		$mod_path = static::$packages['app']->prefix_path(ucfirst($name).'_');
+		if ($mod_path !== false)
+		{
+			return $mod_path;
+		}
+
+		// Or try registered module paths
+		foreach (App\Config::get('module_paths', array()) as $path)
+		{
+			if (is_dir($mod_path = $path.strtolower($name).DS))
+			{
+				// Load module and end search
+				App\Fuel::$packages['app']->add_prefix(ucfirst($name).'_', $mod_path);
+				return $mod_path;
+			}
+		}
+
+		// not found
+		return false;
+	}
+
+	/**
 	 * Always load classes, config & language files set in always_load.php config
 	 */
 	public static function always_load($array = null)
 	{
-		$array = is_null($array) ? Fuel::load(APPPATH.'config'.DS.'always_load.php') : $array;
+		$array = is_null($array) ? App\Fuel::load(APPPATH.'config'.DS.'always_load.php') : $array;
 
 		foreach ($array['classes'] as $class)
 		{
@@ -242,12 +276,12 @@ class Fuel {
 
 		foreach ($array['config'] as $config => $config_group)
 		{
-			Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
+			App\Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
 		}
 
 		foreach ($array['language'] as $lang => $lang_group)
 		{
-			Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
+			App\Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
 		}
 	}
 

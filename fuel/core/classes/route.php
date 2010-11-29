@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class Route {
 	
 	public static $routes = array();
@@ -56,6 +58,41 @@ class Route {
 		
 		return static::parse_match($uri->uri);
 	}
+
+	/**
+	 * Parse module routes
+	 *
+	 * This first adds the given routes to the current loaded routes and then
+	 * reparses the given uri.
+	 *
+	 * @param	string	current module name
+	 * @param	array	new routes
+	 * @param	string	uri to reparse
+	 * @return	array	parsed routing info
+	 */
+	public static function parse_module($module, Array $routes, $current_uri)
+	{
+		// Load module routes and add to router
+		foreach ($routes as $uri => $route)
+		{
+			$prefix = in_array($uri, array('404')) ? '' : $module.'/';
+			if ($uri == 'default')
+			{
+				static::$routes[$module] = $prefix.$route;
+			}
+			else
+			{
+				static::$routes[$prefix.$uri] = $prefix.$route;
+			}
+		}
+
+		// Reroute with module routes
+		$route = static::parse($current_uri);
+		// Remove first segment, that's the module
+		array_shift($route['segments']);
+
+		return $route;
+	}
 	
 	/**
 	 * Parses a route match and returns the controller, action and params.
@@ -68,7 +105,7 @@ class Route {
 	{
 		$method_params = array();
 
-		$segments = array_pad(explode('/', $route), 2, 'index');
+		$segments = explode('/', $route);
 
 		// Clean out all the non-named stuff out of $named_params
 		foreach($named_params as $key => $val)
@@ -85,7 +122,6 @@ class Route {
 			'named_params'	=> $named_params,
 		);
 	}
-	
 }
 
 /* End of file route.php */

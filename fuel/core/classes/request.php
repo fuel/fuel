@@ -180,7 +180,7 @@ class Request {
 	/**
 	 * @var	string	The request's action
 	 */
-	public $action = 'index';
+	public $action = '';
 
 	/**
 	 * @var	string	The request's method params
@@ -205,23 +205,8 @@ class Request {
 		$this->uri = new App\URI($uri);
 		$route = App\Route::parse($this->uri);
 
-		// Check for module
-		$mod_path = App\Fuel::$packages['app']->prefix_path(ucfirst($route['segments'][0]).'_');
-		if ($mod_path === false)
-		{
-			foreach (App\Config::get('module_paths', array()) as $path)
-			{
-				if (is_dir($mod_check_path = $path.strtolower($route['segments'][0]).DS))
-				{
-					// Load module and end search
-					$mod_path = $mod_check_path;
-					App\Fuel::$packages['app']->add_prefix(ucfirst($route['segments'][0]).'_', $mod_path);
-					break;
-				}
-			}
-		}
-
 		// Register module as such when found
+		$mod_path = App\Fuel::module_path($route['segments'][0]);
 		if ( ! empty($mod_path))
 		{
 			$this->module = array_shift($route['segments']);
@@ -230,24 +215,7 @@ class Request {
 			//     so it only allows routing within module
 			if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
 			{
-				// Load module routes and add to router
-				$mod_routes = App\Fuel::load($route_path);
-				foreach ($mod_routes as $orig_route => $reroute)
-				{
-					$prefix = in_array($orig_route, array('404')) ? '' : $this->module.'/';
-					if ($orig_route == 'default')
-					{
-						Route::$routes[$this->module] = $prefix.$reroute;
-					}
-					else
-					{
-						Route::$routes[$prefix.$orig_route] = $prefix.$reroute;
-					}
-				}
-
-				// Reparse route after added module routes
-				$route = App\Route::parse($this->uri);
-				array_shift($route['segments']);
+				$route = App\Route::parse_module($this->module, App\Fuel::load($route_path), $this->uri);
 			}
 
 			// Does the module need always_loading?
@@ -264,23 +232,15 @@ class Request {
 			$this->directory = array_shift($route['segments']);
 		}
 
-		// When emptied the controller defaults to directory or module, action still defaults to index
+		// When emptied the controller defaults to directory or module
 		$controller = empty($this->directory) ? $this->module : $this->directory;
 		if (count($route['segments']) == 0)
 		{
-			$route['segments'] = array($controller, 'index');
-		}
-		elseif ($route['segments'][0] == 'index' and count($route['segments']) == 1)
-		{
-			array_unshift($route['segments'], $controller);
-		}
-		elseif (count($route['segments']) == 1)
-		{
-			$route['segments'][] = 'index';
+			$route['segments'] = array($controller);
 		}
 
 		$this->controller = $route['segments'][0];
-		$this->action = $route['segments'][1];
+		$this->action = ! empty($route['segments'][1]) ? $route['segments'][1] : '';
 		$this->method_params = array_slice($route['segments'], 2);
 		$this->named_params = $route['named_params'];
 		unset($route);
@@ -302,7 +262,7 @@ class Request {
 
 		$controller_prefix = 'Fuel\\Application\\Controller_';
 		$class = $controller_prefix.(empty($this->directory) ? '' : \ucfirst($this->directory).'_').ucfirst($this->controller);
-		$method = 'action_'.$this->action;
+		$method = 'action_'.($this->action ?: 'index');
 
 		// Allow omitting the controller name when in an equally named directory or module
 		if ( ! class_exists($class))
@@ -316,12 +276,9 @@ class Request {
 			if ($controller != $this->controller)
 			{
 				$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($controller);
-				if ($this->action != 'index')
-				{
-					array_unshift($this->method_params, $this->action);
-				}
+				array_unshift($this->method_params, $this->action);
 				$this->action = $this->controller;
-				$method = 'action_'.$this->action;
+				$method = 'action_'.($this->action ?: 'index');
 				$this->controller = $controller;
 
 				// attempt autoload
