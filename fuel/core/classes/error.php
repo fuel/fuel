@@ -129,7 +129,7 @@ class Error {
 			return;
 		}
 
-		$trace = Arr::element(debug_backtrace(), 1);
+		$trace = array_merge(array('file' => '(unknown)', 'line' => '(unknown)'), Arr::element(debug_backtrace(), 1));
 
 		Log::debug('Notice - '.$msg.' in '.$trace['file'].' on line '.$trace['line']);
 

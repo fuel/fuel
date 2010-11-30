@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel\Application;
+
 return array(
 	'default'	=> 'welcome',
 	'404'		=> 'welcome/404',
