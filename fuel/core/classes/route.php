@@ -76,14 +76,7 @@ class Route {
 		foreach ($routes as $uri => $route)
 		{
 			$prefix = in_array($uri, array('404')) ? '' : $module.'/';
-			if ($uri == 'default')
-			{
-				static::$routes[$module] = $prefix.$route;
-			}
-			else
-			{
-				static::$routes[$prefix.$uri] = $prefix.$route;
-			}
+			static::$routes[$prefix.$uri] = $prefix.$route;
 		}
 
 		// Reroute with module routes
