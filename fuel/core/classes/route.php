@@ -32,14 +32,14 @@ class Route {
 		// This handles the default route
 		if ($uri->uri == '')
 		{
-			if ( ! isset(static::$routes['default']) || static::$routes['default'] == '')
+			if ( ! isset(static::$routes['#']) || static::$routes['#'] == '')
 			{
 				// TODO: write logic to deal with missing default route.
 				return FALSE;
 			}
 			else
 			{
-				return static::parse_match(static::$routes['default']);
+				return static::parse_match(static::$routes['#']);
 			}
 		}
 

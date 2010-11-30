@@ -13,7 +13,11 @@
  */
 
 return array(
-	'default'	=> 'welcome',
+
+	// This is the default route.  We use a "#" here so that we do not have any
+	// reserved routes.
+	'#'	=> 'welcome',
+
 	'404'		=> 'welcome/404',
 
 	'hello/:name'	=> 'test/hello',
