@@ -261,8 +261,10 @@ class Request {
 		App\Log::info('Called', __METHOD__);
 
 		$controller_prefix = 'Fuel\\Application\\Controller_';
+		$method_prefix = 'action_';
+
 		$class = $controller_prefix.(empty($this->directory) ? '' : \ucfirst($this->directory).'_').ucfirst($this->controller);
-		$method = 'action_'.($this->action ?: 'index');
+		$method = $this->action ?: '';
 
 		// Allow omitting the controller name when in an equally named directory or module
 		if ( ! class_exists($class))
@@ -270,7 +272,7 @@ class Request {
 			// set the new controller to directory or module when applicable
 			$controller = empty($this->directory) ? $this->module : $this->directory;
 			// ... or to the default controller if it was in neither
-			$controller = empty($controller) ? preg_replace('#/([a-z0-9/_]*)$#uiD', '', App\Route::$routes['default']) : $controller;
+			$controller = empty($controller) ? preg_replace('#/([a-z0-9/_]*)$#uiD', '', App\Route::$routes['#']) : $controller;
 
 			// try again with new controller if it differs from the previous attempt
 			if ($controller != $this->controller)
@@ -278,7 +280,7 @@ class Request {
 				$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($controller);
 				array_unshift($this->method_params, $this->action);
 				$this->action = $this->controller;
-				$method = 'action_'.($this->action ?: 'index');
+				$method = $this->action ?: '';
 				$this->controller = $controller;
 
 				// attempt autoload
@@ -295,6 +297,8 @@ class Request {
 
 		App\Log::info('Loading controller '.$class, __METHOD__);
 		$controller = new $class($this);
+
+		$method = $method_prefix.($method ?: (isset($controller->default_action) ? $controller->default_action : 'index'));
 
 		// Allow to do in controller routing if method router(action, params) exists
 		if (method_exists($controller, 'router'))
