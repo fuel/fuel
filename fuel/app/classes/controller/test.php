@@ -1,5 +1,7 @@
 <?php
 
+namespace Fuel\Application;
+
 class Controller_Test extends Controller\Base {
 
 	public function action_index()
