@@ -11,7 +11,6 @@
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
  */
-namespace Fuel\Application;
 
 return array(
 
