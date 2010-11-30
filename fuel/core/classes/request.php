@@ -270,7 +270,7 @@ class Request {
 			// set the new controller to directory or module when applicable
 			$controller = empty($this->directory) ? $this->module : $this->directory;
 			// ... or to the default controller if it was in neither
-			$controller = empty($controller) ? array_shift(explode('/', App\Route::$routes['default'])) : $controller;
+			$controller = empty($controller) ? preg_replace('#/([a-z0-9/_]*)$#uiD', '', App\Route::$routes['default']) : $controller;
 
 			// try again with new controller if it differs from the previous attempt
 			if ($controller != $this->controller)
