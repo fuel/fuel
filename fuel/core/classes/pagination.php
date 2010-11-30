@@ -153,7 +153,8 @@ class Pagination {
 			}
 			else
 			{
-				$pagination .= URL::anchor(rtrim(static::$pagination_url, '/').'/'.$i, $i);
+				$url = ($i == 1) ? '' : '/'.$i;
+				$pagination .= URL::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
 			}
 		}
 
@@ -212,7 +213,8 @@ class Pagination {
 		else
 		{
 			$previous_page = static::$current_page - 1;
-			return URL::anchor(rtrim(static::$pagination_url, '/').'/'.$previous_page, $value);
+			$previous_page = ($previous_page == 1) ? '' : '/' . $previous_page;
+			return URL::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
 		}
 	}
 }
