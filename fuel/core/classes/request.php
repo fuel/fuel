@@ -43,7 +43,7 @@ class Request {
 	 */
 	public static function factory($uri = null)
 	{
-		Log::info('Creating a new Request with URI = "'.$uri.'"', __METHOD__);
+		App\Log::info('Creating a new Request with URI = "'.$uri.'"', __METHOD__);
 
 		static::$active = new static($uri);
 
@@ -68,7 +68,7 @@ class Request {
 	 */
 	public static function main()
 	{
-		Log::info('Called', __METHOD__);
+		App\Log::info('Called', __METHOD__);
 
 		return static::$main;
 	}
@@ -85,7 +85,7 @@ class Request {
 	 */
 	public static function active()
 	{
-		Log::info('Called', __METHOD__);
+		App\Log::info('Called', __METHOD__);
 
 		return static::$active;
 	}
@@ -103,7 +103,7 @@ class Request {
 	 */
 	public static function show_404()
 	{
-		Log::info('Called', __METHOD__);
+		App\Log::info('Called', __METHOD__);
 
 		if (Config::get('routes.404') === false)
 		{
