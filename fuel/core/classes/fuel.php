@@ -223,14 +223,14 @@ class Fuel {
 	}
 
 	/**
-	 * Module path
+	 * Add module
 	 *
-	 * Takes a module name and searches if there's a matching module.
-	 * It will also register the module as a prefix when found.
+	 * Registers a given module as a class prefix and returns the path to the
+	 * module. Won't register twice, will just return the path on a second call.
 	 *
 	 * @param	string	module name (lowercase prefix without underscore)
 	 */
-	public static function module_path($name)
+	public static function add_module($name)
 	{
 		// First attempt registered prefixes
 		$mod_path = static::$packages['app']->prefix_path(ucfirst($name).'_');

@@ -206,7 +206,7 @@ class Request {
 		$route = App\Route::parse($this->uri);
 
 		// Register module as such when found
-		$mod_path = App\Fuel::module_path($route['segments'][0]);
+		$mod_path = App\Fuel::add_module($route['segments'][0]);
 		if ( ! empty($mod_path))
 		{
 			$this->module = array_shift($route['segments']);
@@ -227,7 +227,7 @@ class Request {
 
 		// Check for directory
 		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
-		if (is_dir($dirpath = $path.strtolower($route['segments'][0])))
+		if ( ! empty($route['segments']) && is_dir($dirpath = $path.strtolower($route['segments'][0])))
 		{
 			$this->directory = array_shift($route['segments']);
 		}
