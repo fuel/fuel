@@ -24,7 +24,7 @@ class Config {
 	{
 		if (array_key_exists($file, static::$loaded_files))
 		{
-			return;
+			return false;
 		}
 
 		$config = array();
@@ -46,6 +46,7 @@ class Config {
 			static::$items[$group] = static::$items[$group] + $config;
 		}
 
+		static::$loaded_files[$file] = true;
 		return $config;
 	}
 	
