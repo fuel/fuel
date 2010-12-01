@@ -31,12 +31,12 @@ class Html
 	/**
 	 * Generates a html heading tag
 	 *
+	 * @param	string			heading text
 	 * @param	int				1 through 6 for h1-h6
 	 * @param	array|string	tag attributes
-	 * @param	string			heading text
 	 * @return	string
 	 */
-	public static function h($num = 1, $attr = false, $content = '')
+	public static function h($content = '', $num = 1, $attr = false)
 	{
 		return html_tag('h'.$num, $attr, $content);
 	}
@@ -211,27 +211,29 @@ class Html
 	 * @param	string	list type (ol or ul)
 	 * @param	array	list items, may be nested
 	 * @param	array	tag attributes
+	 * @param	string	indentation
 	 * @return	string
 	 */
-	protected static function build_list($type = 'ul', Array $list = array(), $attr = false)
+	protected static function build_list($type = 'ul', Array $list = array(), $attr = false, $indent = '')
 	{
 		if ( ! is_array($list))
 		{
 			$result = false;
 		}
 
+		$out = '';
 		foreach ($list as $key => $val)
 		{
 			if ( ! is_array($val))
 			{
-				$out .= html_tag('li', false, $val);
+				$out .= $indent."\t".html_tag('li', false, $val).PHP_EOL;
 			}
 			else
 			{
-				$out .= html_tag('li', false, $key . static::build_list($type, $val, ''));
+				$out .= $indent."\t".html_tag('li', false, $key.PHP_EOL.static::build_list($type, $val, '', $indent."\t\t").$indent."\t").PHP_EOL;
 			}
 		}
-		$result = html_tag($type, $attr, $out);
+		$result = $indent.html_tag($type, $attr, PHP_EOL.$out.$indent).PHP_EOL;
 		return $result;
 	}
 }
