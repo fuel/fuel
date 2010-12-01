@@ -78,7 +78,7 @@ class Fuel {
 			static::add_package($package);
 		}
 
-		if (App\Config::get('base_url') === false)
+		if (App\Config::get('base_url') === null)
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
