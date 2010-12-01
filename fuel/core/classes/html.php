@@ -162,12 +162,12 @@ class Html
 	 * @param	array			tag attributes
 	 * @return	string
 	 */
-	public static function audio($src = array(), $attr = '')
+	public static function audio($src = array(), $attr = false)
 	{
 		if(static::$html5)
 		{
 			if(is_array($src))
-			{			
+			{
 				foreach($src as $item)
 				{
 					$source .= html_tag('source', array('src' => $item));
