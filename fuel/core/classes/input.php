@@ -189,7 +189,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	function cookie($index = '', $default = false)
+	public static function cookie($index = '', $default = false)
 	{
 		return static::_fetch_from_array($_COOKIE, $index, $default);
 	}
@@ -202,7 +202,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	function server($index = '', $default = false)
+	public static function server($index = '', $default = false)
 	{
 		return static::_fetch_from_array($_SERVER, $index, $default);
 	}
@@ -216,7 +216,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	private function _fetch_from_array(&$array, $index = '', $default = false)
+	private static function _fetch_from_array(&$array, $index = '', $default = false)
 	{
 		if ( ! isset($array[$index]))
 		{
