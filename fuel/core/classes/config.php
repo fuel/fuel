@@ -50,7 +50,7 @@ class Config {
 		return $config;
 	}
 	
-	public static function get($item, $default = false)
+	public static function get($item, $default = null)
 	{
 		if (isset(static::$items[$item]))
 		{
