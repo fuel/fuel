@@ -4,6 +4,8 @@ namespace Fuel\Application;
 
 class Controller_Welcome extends Controller\Base {
 
+	public $default_action = 'index';
+
 	public function action_index()
 	{
 		$data['controller_file'] = Fuel::clean_path(__FILE__);

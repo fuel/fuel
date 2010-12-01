@@ -31,12 +31,12 @@ class Html
 	/**
 	 * Generates a html heading tag
 	 *
+	 * @param	string			heading text
 	 * @param	int				1 through 6 for h1-h6
 	 * @param	array|string	tag attributes
-	 * @param	string			heading text
 	 * @return	string
 	 */
-	public static function h($num = 1, $attr = false, $content = '')
+	public static function h($content = '', $num = 1, $attr = false)
 	{
 		return html_tag('h'.$num, $attr, $content);
 	}
@@ -50,7 +50,7 @@ class Html
 	 */
 	public static function br($num = 1, $attr = false)
 	{
-		return str_repeat(html_tag('br', $attr), $num);		
+		return str_repeat(html_tag('br', $attr), $num);
 	}
 	
 	/**
@@ -70,7 +70,7 @@ class Html
 	 * @param	string	page title
 	 * @return	string
 	 */
-	public static function title($content = false)
+	public static function title($content = '')
 	{
 		return html_tag('title', array(), $content);
 	}
@@ -94,7 +94,7 @@ class Html
 	 * @param	string			name or http-equiv
 	 * @return	string
 	 */
-	public static function meta($name, $content = '', $type = 'name')
+	public static function meta($name = '', $content = '', $type = 'name')
 	{
 		if( ! is_array($name))
 		{
@@ -142,7 +142,7 @@ class Html
 	 * @param	array	tag attributes
 	 * @return	string
 	 */
-	public static function header($content, $attr = array())
+	public static function header($content = '', $attr = array())
 	{
 		if(static::$html5)
 		{
@@ -162,12 +162,12 @@ class Html
 	 * @param	array			tag attributes
 	 * @return	string
 	 */
-	public static function audio($src = array(), $attr = '')
+	public static function audio($src = array(), $attr = false)
 	{
 		if(static::$html5)
 		{
 			if(is_array($src))
-			{			
+			{
 				foreach($src as $item)
 				{
 					$source .= html_tag('source', array('src' => $item));
@@ -188,7 +188,7 @@ class Html
 	 * @param	array|string	outer list attributes
 	 * @return	string
 	 */
-	public static function ul($list, $style = false)
+	public static function ul(Array $list = array(), $style = false)
 	{
 		return static::build_list('ul', $list, $style);
 	}
@@ -200,7 +200,7 @@ class Html
 	 * @param	array|string	outer list attributes
 	 * @return	string
 	 */
-	public static function ol($list, $style = false)
+	public static function ol(Array $list = array(), $style = false)
 	{
 		return static::build_list('ol', $list, $style);
 	}
@@ -211,27 +211,29 @@ class Html
 	 * @param	string	list type (ol or ul)
 	 * @param	array	list items, may be nested
 	 * @param	array	tag attributes
+	 * @param	string	indentation
 	 * @return	string
 	 */
-	protected static function build_list($type = 'ul', $list, $attr = false)
+	protected static function build_list($type = 'ul', Array $list = array(), $attr = false, $indent = '')
 	{
 		if ( ! is_array($list))
 		{
 			$result = false;
 		}
 
+		$out = '';
 		foreach ($list as $key => $val)
 		{
 			if ( ! is_array($val))
 			{
-				$out .= html_tag('li', false, $val);
+				$out .= $indent."\t".html_tag('li', false, $val).PHP_EOL;
 			}
 			else
 			{
-				$out .= html_tag('li', false, $key . static::build_list($type, $val, ''));
+				$out .= $indent."\t".html_tag('li', false, $key.PHP_EOL.static::build_list($type, $val, '', $indent."\t\t").$indent."\t").PHP_EOL;
 			}
 		}
-		$result = html_tag($type, $attr, $out);
+		$result = $indent.html_tag($type, $attr, PHP_EOL.$out.$indent).PHP_EOL;
 		return $result;
 	}
 }

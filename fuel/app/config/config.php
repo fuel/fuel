@@ -11,6 +11,7 @@
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
  */
+
 namespace Fuel\Application;
 
 return array(
@@ -31,7 +32,7 @@ return array(
 	 * Env::PRODUCTION
 	 */
 	'environment'	=> Env::DEVELOPMENT,
-	
+
 	/**
 	 * Show notices
 	 *
@@ -44,20 +45,20 @@ return array(
 	/**
 	 * Error throttling
 	 *
-	 * Limits the number of errors that recieve full reporting and/or logging to prevent 
+	 * Limits the number of errors that receive full reporting and/or logging to prevent
 	 * out-of-memory crashes.
 	 */
 	'error_throttling'	=> 10,
 
 	'language'		=> 'en',
-	
+
 	'locale'		=> 'en_US',
 
 	/**
 	 * DateTime settings
 	 *
 	 * server_gmt_offset	in seconds the server offset from gmt timestamp when time() is used
-	 * default_timezone		optional, if you want to change the server's default timezone 
+	 * default_timezone		optional, if you want to change the server's default timezone
 	 */
 	'server_gmt_offset'	=> 0,
 	//'default_timezone'	=> 'UTC',
@@ -72,7 +73,7 @@ return array(
 	 * Log::ALL
 	 */
 	'log_threshold'		=> Log::ERROR,
-	'log_path'			=> APPPATH . 'logs/',
+	'log_path'			=> APPPATH.'logs/',
 	'log_date_format' 	=> 'Y-m-d H:i:s',
 
 	/**
@@ -83,13 +84,13 @@ return array(
 		'csrf_token_key'	=> 'fuel_csrf_token',
 		'csrf_expiration'	=> 0,
 	),
-	
+
 	/**
 	 * These packages are loaded on Fuel's startup.  You can specify them in
 	 * the following manner:
-	 * 
+	 *
 	 * array('auth'); // This will assume the packages are in PKGPATH
-	 * 
+	 *
 	 * // Use this format to specify the path to the package explicitly
 	 * array(
 	 *     array('auth'	=> PKGPATH.'auth/')
@@ -104,7 +105,7 @@ return array(
 	 * like this:
 	 *      array(APPPATH.'modules'.DS)
 	 */
-	'module_paths' => array()
+	// 'module_paths' => array(APPPATH.'modules'.DS),
 );
 
 /* End of file config.php */

@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel\Application;
+
 return array(
 	'salt'			=> 'sup3rs3Cr3tk3y564'				// Encryption salt. Make sure to update this to something random!!!!
 );

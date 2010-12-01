@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel\Application;
+
 return array(
 	'active' => Config::get('environment'),
 

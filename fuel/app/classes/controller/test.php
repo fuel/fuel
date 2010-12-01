@@ -1,5 +1,7 @@
 <?php
 
+namespace Fuel\Application;
+
 class Controller_Test extends Controller\Base {
 
 	public function action_index()
@@ -34,7 +36,7 @@ class Controller_Test extends Controller\Base {
 		$config = array(
 			'total_items' => $count,
 			'per_page' => 5,
-			'pagination_url' => 'welcome/pagination',
+			'pagination_url' => 'test/pagination',
 			'uri_segment' => 3,
 			'num_links' => 5, // this is not required and is the number of links on each side of the current page
 		);

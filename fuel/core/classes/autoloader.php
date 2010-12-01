@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+use Fuel\Application as App;
+
 class Autoloader {
 
 	/**
@@ -198,6 +200,24 @@ class Autoloader {
 		// Cleanup backslash prefix, messes up class_alias and other stuff
 		$class = ltrim($class, '\\');
 
+		// First attempt loading from module
+		if (class_exists('Fuel\\Application\\Request', false) && is_object(App\Request::active()) && App\Request::active()->module != '')
+		{
+			$prefix = ucfirst(App\Request::active()->module).'_';
+
+			if (array_key_exists($prefix, $this->prefixes))
+			{
+				$file_path = $this->prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower(substr($class, 17))).'.php';
+				if (is_file($file_path))
+				{
+					require $file_path;
+					class_alias(substr($class, 0, 17).$prefix.substr($class, 17), $class);
+					$this->_init_class($class);
+					return true;
+				}
+			}
+		}
+
 		// Checks if there is a \ in the class name.  This indicates it is a
 		// namespace.  It sets $pos to the position of the last \.
 		if (($pos = strripos($class, '\\')) !== false)
@@ -260,24 +280,6 @@ class Autoloader {
 			return true;
 		}
 
-		// Or try the active module when
-		if (class_exists('Fuel\\Request', false) && is_object(Fuel\Request::active()) && Fuel\Request::active()->module != '')
-		{
-			$prefix = ucfirst(Fuel\Request::active()->module).'_';
-
-			if (array_key_exists($prefix, $this->prefixes))
-			{
-				$file_path = $this->prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower($class)).'.php';
-				if (is_file($file_path))
-				{
-					require $file_path;
-					class_alias($prefix.$class, $class);
-					$this->_init_class($class);
-					return true;
-				}
-			}
-		}
-
 		return false;
 	}
 
@@ -310,8 +312,11 @@ class Autoloader {
 			if (strpos($class, $alias) === 0)
 			{
 				$alias = $actual.substr($class, strlen($alias));
-				class_alias($alias, $class);
-				return true;
+				if (class_exists($alias))
+				{
+					class_alias($alias, $class);
+					return true;
+				}
 			}
 		}
 		return false;

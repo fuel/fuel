@@ -24,7 +24,7 @@ class Config {
 	{
 		if (array_key_exists($file, static::$loaded_files))
 		{
-			return;
+			return false;
 		}
 
 		$config = array();
@@ -46,10 +46,11 @@ class Config {
 			static::$items[$group] = static::$items[$group] + $config;
 		}
 
+		static::$loaded_files[$file] = true;
 		return $config;
 	}
 	
-	public static function get($item, $default = false)
+	public static function get($item, $default = null)
 	{
 		if (isset(static::$items[$item]))
 		{
@@ -60,23 +61,49 @@ class Config {
 		{
 			$parts = explode('.', $item);
 
-			$return = false;
-			foreach ($parts as $part)
+			switch (count($parts))
 			{
-				if ($return === false and isset(static::$items[$part]))
-				{
-					$return = static::$items[$part];
-				}
-				elseif (isset($return[$part]))
-				{
-					$return = $return[$part];
-				}
-				else
-				{
-					return $default;
-				}
+				case 2:
+					if (isset(static::$items[$parts[0]][$parts[1]]))
+					{
+						return static::$items[$parts[0]][$parts[1]];
+					}
+				break;
+
+				case 3:
+					if (isset(static::$items[$parts[0]][$parts[1]][$parts[2]]))
+					{
+						return static::$items[$parts[0]][$parts[1]][$parts[2]];
+					}
+				break;
+
+				case 4:
+					if (isset(static::$items[$parts[0]][$parts[1]][$parts[2]][$parts[3]]))
+					{
+						return static::$items[$parts[0]][$parts[1]][$parts[2]][$parts[3]];
+					}
+				break;
+
+				default:
+					$return = false;
+					foreach ($parts as $part)
+					{
+						if ($return === false and isset(static::$items[$part]))
+						{
+							$return = static::$items[$part];
+						}
+						elseif (isset($return[$part]))
+						{
+							$return = $return[$part];
+						}
+						else
+						{
+							return $default;
+						}
+					}
+					return $return;
+				break;
 			}
-			return $return;
 		}
 
 		return $default;
@@ -86,25 +113,45 @@ class Config {
 	{
 		$parts = explode('.', $item);
 
-		$item =& static::$items;
-		foreach ($parts as $part)
+		switch (count($parts))
 		{
-			// if it's not an array it can't have a subvalue
-			if ( ! is_array($item))
-			{
-				return false;
-			}
-			
-			// if the part didn't exist yet: add it
-			if ( ! isset($item[$part]))
-			{
-				$item[$part] = array();
-			}
-			
-			$item =& $item[$part];
+			case 1:
+				static::$items[$parts[0]] = $value;
+			break;
+
+			case 2:
+				static::$items[$parts[0]][$parts[1]] = $value;
+			break;
+
+			case 3:
+				static::$items[$parts[0]][$parts[1]][$parts[2]] = $value;
+			break;
+
+			case 4:
+				static::$items[$parts[0]][$parts[1]][$parts[2]][$parts[3]] = $value;
+			break;
+
+			default:
+				$item =& static::$items;
+				foreach ($parts as $part)
+				{
+					// if it's not an array it can't have a subvalue
+					if ( ! is_array($item))
+					{
+						return false;
+					}
+
+					// if the part didn't exist yet: add it
+					if ( ! isset($item[$part]))
+					{
+						$item[$part] = array();
+					}
+
+					$item =& $item[$part];
+				}
+				$item = $value;
+			break;
 		}
-		$item = $value;
-		
 		return true;
 	}
 }
