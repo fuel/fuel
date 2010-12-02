@@ -14,4 +14,4 @@
 
 namespace Fuel;
 
-class ViewException extends Exception { }
+class View_Exception extends Exception { }
