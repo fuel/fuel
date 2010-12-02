@@ -14,6 +14,8 @@
 
 namespace Fuel\Controller;
 
+use Fuel\Application as App;
+
 /**
  * Template Controller class
  *
@@ -23,7 +25,7 @@ namespace Fuel\Controller;
  * @category	Core
  * @author		Fuel Development Team
  */
-abstract class Template extends Controller\Base {
+abstract class Template extends Base {
 
 	/**
 	* @var string page template
@@ -41,7 +43,7 @@ abstract class Template extends Controller\Base {
 		if ($this->auto_render === true)
 		{
 			// Load the template
-			$this->template = View::factory($this->template);
+			$this->template = App\View::factory($this->template);
 		}
 
 		return parent::before();
