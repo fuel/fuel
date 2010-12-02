@@ -28,11 +28,14 @@ class Config {
 		}
 
 		$config = array();
-		if ($path = Fuel::find_file('config', $file, '.php', true))
+		if ($paths = Fuel::find_file('config', $file, '.php', true))
 		{
-			foreach ($path as $p)
+			// Reverse the file list so that we load the core configs first and
+			// the app can override anything.
+			$paths = array_reverse($paths);
+			foreach ($paths as $path)
 			{
-				$config = $config + Fuel::load($p);
+				$config = $config + Fuel::load($path);
 			}
 		}
 		if ($group === null)
