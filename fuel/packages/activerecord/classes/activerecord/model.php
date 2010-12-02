@@ -14,6 +14,8 @@
 
 namespace ActiveRecord;
 
+use Fuel\Application as App;
+
 class Model {
 
 	protected $columns = array();
@@ -87,7 +89,7 @@ class Model {
 		elseif (preg_match('/^(.+?)_ids$/', $name, $matches))
 		{
 			/* allow for $p->comment_ids type gets on HasMany associations */
-			$assoc_name = Inflector::pluralize($matches[1]);
+			$assoc_name = App\Inflector::pluralize($matches[1]);
 			if ($this->associations[$assoc_name] instanceof HasMany)
 				return $this->associations[$assoc_name]->get_ids($this);
 		}
@@ -95,7 +97,7 @@ class Model {
 				Exception::AttributeNotFound);
 	}
 
-	function __set($name, $value)
+	public function __set($name, $value)
 	{
 		if ($this->frozen)
 			throw new Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
@@ -103,7 +105,7 @@ class Model {
 		/* allow for $p->comment_ids type sets on HasMany associations */
 		if (preg_match('/^(.+?)_ids$/', $name, $matches))
 		{
-			$assoc_name = Inflector::pluralize($matches[1]);
+			$assoc_name = App\Inflector::pluralize($matches[1]);
 		}
 
 		if (in_array($name, $this->columns))
@@ -140,7 +142,7 @@ class Model {
 	  This calls push([$comment], $p) on the comments association
 	 */
 
-	function __call($name, $args)
+	public function __call($name, $args)
 	{
 		// find longest available association that matches beginning of method
 		$longest_assoc = '';
@@ -164,97 +166,58 @@ class Model {
 		}
 	}
 
-	/* various getters */
 
-	function get_columns()
+	public function get_columns()
 	{
 		return $this->columns;
 	}
 
-	function get_primary_key()
+	public function get_primary_key()
 	{
 		return $this->primary_key;
 	}
 
-	function is_frozen()
+	public function is_frozen()
 	{
 		return $this->frozen;
 	}
 
-	function is_new_record()
+	public function is_new_record()
 	{
 		return $this->new_record;
 	}
 
-	function is_modified()
+	public function is_modified()
 	{
 		return $this->is_modified;
 	}
 
-	function set_modified($val)
+	public function set_modified($val)
 	{
 		$this->is_modified = $val;
 	}
 
-	static function get_query_count()
-	{
-		return self::$query_count;
-	}
-
-
-	/*
-	  DB specific stuff
-	 */
-
-	static function &get_dbh()
-	{
-		if (!self::$dbh)
-		{
-			self::$dbh = call_user_func_array(array(AR_ADAPTER . "Adapter", __FUNCTION__),
-							array(AR_HOST, AR_DB, AR_USER, AR_PASS, AR_DRIVER));
-		}
-		return self::$dbh;
-	}
-
-	static function query($query)
-	{
-		$dbh = & self::get_dbh();
-		#var_dump($query);
-		self::$query_count++;
-		return call_user_func_array(array(AR_ADAPTER . "Adapter", __FUNCTION__),
-				array($query, $dbh));
-	}
-
-	static function quote($string, $type = null)
-	{
-		$dbh = & self::get_dbh();
-		return call_user_func_array(array(AR_ADAPTER . 'Adapter', __FUNCTION__),
-				array($string, $dbh, $type));
-	}
-
-	static function last_insert_id($resource = null)
-	{
-		$dbh = & self::get_dbh();
-		return call_user_func_array(array(AR_ADAPTER . 'Adapter', __FUNCTION__),
-				array($dbh, $resource));
-	}
-
-	function update_attributes($attributes)
+	public function update_attributes($attributes)
 	{
 		foreach ($attributes as $key => $value)
+		{
 			$this->$key = $value;
+		}
+
 		return $this->save();
 	}
 
-	function save()
+	public function save()
 	{
 		if (method_exists($this, 'before_save'))
+		{
 			$this->before_save();
+		}
+
 		foreach ($this->associations as $name => $assoc)
 		{
 			if ($assoc instanceOf BelongsTo && $assoc->needs_saving())
 			{
-				/* save the object referenced by this association */
 				$this->$name->save();
 				/* after our save, $this->$name might have new id;
 				  we want to update the foreign key of $this to match;
@@ -267,50 +230,67 @@ class Model {
 		if ($this->new_record)
 		{
 			if (method_exists($this, 'before_create'))
+			{
 				$this->before_create();
-			/* insert new record */
+			}
+
 			foreach ($this->columns as $column)
 			{
 				if ($column == $this->primary_key)
+				{
 					continue;
-				$columns[] = '`' . $column . '`';
+				}
+
 				if (is_null($this->$column))
+				{
 					$values[] = 'NULL';
+				}
 				else
-					$values[] = self::quote($this->$column);
+				{
+					$values[] = $this->$column;
+				}
 			}
-			$columns = implode(", ", $columns);
-			$values = implode(", ", $values);
-			$query = "INSERT INTO {$this->table_name} ($columns) VALUES ($values)";
-			$res = self::query($query);
-			$this->{$this->primary_key} = self::last_insert_id();
+			$res = DB::insert($this->table_name, $this->columns)->values($values)->execute();
+
+			$this->{$this->primary_key} = $res[0];
 			$this->new_record = false;
 			$this->is_modified = false;
+
 			if (method_exists($this, 'after_create'))
+			{
 				$this->after_create();
+			}
 		}
 		elseif ($this->is_modified)
 		{
 			if (method_exists($this, 'before_update'))
+			{
 				$this->before_update();
-			/* update existing record */
-			$col_vals = array();
+			}
+
+			$values = array();
+
 			foreach ($this->columns as $column)
 			{
 				if ($column == $this->primary_key)
+				{
 					continue;
-				$value = is_null($this->$column) ? 'NULL' : self::quote($this->$column);
-				$col_vals[] = "`$column` = $value";
+				}
+				$values[$column] = is_null($this->$column) ? 'NULL' : $this->$column;
 			}
-			$columns_values = implode(", ", $col_vals);
-			$query = "UPDATE {$this->table_name} SET $columns_values "
-					. " WHERE {$this->primary_key} = {$this->{$this->primary_key}} "
-					. " LIMIT 1";
-			$res = self::query($query);
+			$res = DB::update($this->table_name)
+						->set($values)
+						->where($this->primary_key, '=', $this->{$this->primary_key})
+						->limit(1)
+						->execute();
+
 			$this->new_record = false;
 			$this->is_modified = false;
+			
 			if (method_exists($this, 'after_update'))
+			{
 				$this->after_update();
+			}
 		}
 		foreach ($this->associations as $name => $assoc)
 		{
@@ -327,24 +307,33 @@ class Model {
 			}
 		}
 		if (method_exists($this, 'after_save'))
+		{
 			$this->after_save();
+		}
 	}
 
-	function destroy()
+	public function destroy()
 	{
 		if (method_exists($this, 'before_destroy'))
+		{
 			$this->before_destroy();
+		}
 		foreach ($this->associations as $name => $assoc)
 		{
 			$assoc->destroy($this);
 		}
-		$query = "DELETE FROM {$this->table_name} "
-				. "WHERE {$this->primary_key} = {$this->{$this->primary_key}} "
-				. "LIMIT 1";
-		self::query($query);
+
+		DB::delete($this->table_name)
+				->where($this->primary_key, '=', $this->{$this->primary_key})
+				->limit(1)
+				->execute();
+
 		$this->frozen = true;
+		
 		if (method_exists($this, 'after_destroy'))
+		{
 			$this->after_destroy();
+		}
 		return true;
 	}
 
@@ -364,9 +353,8 @@ class Model {
 		return $object;
 	}
 
-	static function find($class, $id, $options=null)
+	public static function find($id, $options = null)
 	{
-		$class = str_replace('Base', '', $class);
 		$query = self::generate_find_query($class, $id, $options);
 		$rows = self::query($query['query']);
 		#var_dump($query['query']);
@@ -385,7 +373,7 @@ class Model {
 			if (count($query['column_lookup']) > 0)
 			{
 				$objects = self::transform_row($row, $query['column_lookup']);
-				$ob_key = md5(serialize($objects[Inflector::tableize($class)]));
+				$ob_key = md5(serialize($objects[App\Inflector::tableize($class)]));
 				/* set cur_object to base object for this row; reusing if possible */
 				if (array_key_exists($ob_key, $base_objects))
 				{
