@@ -127,7 +127,7 @@ class Error {
 		{
 			$debug_lines = array(
 				'file'	=> $data['filepath'],
-				'line'	=> $trace['error_line']
+				'line'	=> $data['error_line']
 			);
 		}
 
