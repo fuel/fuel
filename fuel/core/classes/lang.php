@@ -29,9 +29,13 @@ class Lang {
 		// Use the current language, failing that use the fallback language
 		foreach (array(Config::get('language'), static::$fallback) as $language)
 		{
-			if ($path = Fuel::find_file('lang/'.$language, $file))
+			if ($path = Fuel::find_file('lang/'.$language, $file, '.php', true))
 			{
-				$lang = Fuel::load($path);
+				$lang = array();
+				foreach ($path as $p)
+				{
+					$lang = $lang + Fuel::load($p);
+				}
 				break;
 			}
 		}

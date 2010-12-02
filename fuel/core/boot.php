@@ -9,6 +9,9 @@ defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 // This is purely for ease of use, creating an alias of DS
 define('DS', DIRECTORY_SEPARATOR);
 
+define('CRLF', sprintf('%s%s', chr(13), chr(10)));
+
+
 /**
  * Do we have access to mbstring?
  * We need this in order to work with UTF-8 strings

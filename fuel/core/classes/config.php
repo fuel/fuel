@@ -20,17 +20,23 @@ class Config {
 	
 	public static $items = array();
 	
-	public static function load($file, $group = null)
+	public static function load($file, $group = null, $reload = false)
 	{
-		if (array_key_exists($file, static::$loaded_files))
+		if (array_key_exists($file, static::$loaded_files) and ! $reload)
 		{
 			return false;
 		}
 
 		$config = array();
-		if ($path = Fuel::find_file('config', $file))
+		if ($paths = Fuel::find_file('config', $file, '.php', true))
 		{
-			$config = Fuel::load($path);
+			// Reverse the file list so that we load the core configs first and
+			// the app can override anything.
+			$paths = array_reverse($paths);
+			foreach ($paths as $path)
+			{
+				$config = $config + Fuel::load($path);
+			}
 		}
 		if ($group === null)
 		{

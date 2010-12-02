@@ -61,7 +61,7 @@ $loader->add_aliases(array(
 	'Lang'			=> 'Fuel\\Application\\Lang',
 	'Log'			=> 'Fuel\\Application\\Log',
 	'Migrate'		=> 'Fuel\\Application\\Migrate',
-	'Migration'		=> 'Fuel\\Application\\Migrate',
+	'Migration'		=> 'Fuel\\Application\\Migration',
 	'Model'			=> 'Fuel\\Application\\Model',
 	'Output'		=> 'Fuel\\Application\\Output',
 	'Pagination'	=> 'Fuel\\Application\\Pagination',

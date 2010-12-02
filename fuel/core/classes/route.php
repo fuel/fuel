@@ -20,6 +20,15 @@ class Route {
 	
 	public static $routes = array();
 
+	public static function load_routes($reload = false)
+	{
+		if ($routes = App\Config::load('routes', true, $reload))
+		{
+			static::$routes = $routes;
+			unset($routes);
+		}
+	}
+
 	/**
 	 * Attemptes to find the correct route for the given URI
 	 *
@@ -27,8 +36,10 @@ class Route {
 	 * @param	object	The URI object
 	 * @return	array
 	 */
-	public static function parse($uri)
+	public static function parse($uri, $reload = false)
 	{
+		static::load_routes();
+
 		// This handles the default route
 		if ($uri->uri == '')
 		{

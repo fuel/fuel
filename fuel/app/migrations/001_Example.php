@@ -1,14 +1,21 @@
-<?php defined('COREPATH') OR exit('No direct script access allowed');
+<?php
+
+namespace Fuel\Application;
 
 class Migration_Example extends Migration {
 
     function up()
     {
-        DB::query('CREATE TABLE `articles` (`id` INT(11), `title` VARCHAR(100), `body` TEXT);')->execute();
+		$columns = array(
+			'id'	=> array('type' => 'int', 'constraint' => 11, 'auto_increment' => true),
+			'title'	=> array('type' => 'varchar', 'constraint' => 100),
+			'body'	=> array('type' => 'text'),
+		);
+        DBUtil::create_table('articles', $columns, array('id'));
     }
 
     function down()
     {
-        DB::query('DROP TABLE `articles`')->execute();
+        DBUtil::drop_table('articles');
     }
 }
