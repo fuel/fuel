@@ -20,17 +20,20 @@ class Config {
 	
 	public static $items = array();
 	
-	public static function load($file, $group = null)
+	public static function load($file, $group = null, $reload = false)
 	{
-		if (array_key_exists($file, static::$loaded_files))
+		if (array_key_exists($file, static::$loaded_files) and ! $reload)
 		{
 			return false;
 		}
 
 		$config = array();
-		if ($path = Fuel::find_file('config', $file))
+		if ($path = Fuel::find_file('config', $file, '.php', true))
 		{
-			$config = Fuel::load($path);
+			foreach ($path as $p)
+			{
+				$config = $config + Fuel::load($p);
+			}
 		}
 		if ($group === null)
 		{

@@ -70,8 +70,6 @@ class Fuel {
 		static::$env = App\Config::get('environment');
 		static::$locale = App\Config::get('locale');
 
-		App\Route::$routes = App\Config::load('routes', true);
-
 		//Load in the packages
 		foreach (App\Config::get('packages', array()) as $package)
 		{
@@ -149,20 +147,40 @@ class Fuel {
 	 * @param	string	The file extension
 	 * @return	string	The path to the file
 	 */
-	public static function find_file($directory, $file, $ext = '.php')
+	public static function find_file($directory, $file, $ext = '.php', $multiple = false)
 	{
 		$path = $directory.DS.strtolower($file).$ext;
 
-		$found = false;
+		$found = $multiple ? array() : false;
 		foreach (static::$_paths as $dir)
 		{
-			if (is_file($dir.$path))
+			$file_path = $dir.$path;
+			if (is_file($file_path))
 			{
-				$found = $dir.$path;
-				break;
+				if ($multiple)
+				{
+					$found[] = $file_path;
+				}
+				else
+				{
+					$found = $file_path;
+					break;
+				}
 			}
 		}
 		return $found;
+	}
+
+	public static function add_path($path)
+	{
+		// Bump off APPPATH
+		\array_shift(static::$_paths);
+
+		// Add the new path
+		\array_unshift(static::$_paths, $path);
+
+		// Add APPPATH back
+		\array_unshift(static::$_paths, APPPATH);
 	}
 
 	/**
@@ -201,6 +219,8 @@ class Fuel {
 			{
 				continue;
 			}
+			static::add_path($path);
+			App\Route::load_routes(true);
 			static::$packages[$name] = static::load($path.'autoload.php');
 		}
 
@@ -246,6 +266,11 @@ class Fuel {
 			{
 				// Load module and end search
 				App\Fuel::$packages['app']->add_prefix(ucfirst($name).'_', $mod_path);
+
+				static::add_path($mod_path);
+
+				// We want modules to be able to have their own routes, so we reload routes.
+				App\Route::load_routes(true);
 				return $mod_path;
 			}
 		}
@@ -296,7 +321,7 @@ class Fuel {
 	{
 		static $search = array(APPPATH, COREPATH, DOCROOT, '\\');
 		static $replace = array('APPPATH/', 'COREPATH/', 'DOCROOT/', '/');
-		return str_replace($search, $replace, $path);
+		return str_ireplace($search, $replace, $path);
 	}
 }
 
