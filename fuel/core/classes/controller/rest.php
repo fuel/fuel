@@ -4,7 +4,7 @@ namespace Fuel\Controller;
 
 use Fuel\Application as App;
 
-abstract class Rest extends Base
+abstract class Rest extends App\Base
 {
 	protected $rest_format = NULL; // Set this in a controller to use a default format
 
