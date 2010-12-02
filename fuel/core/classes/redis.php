@@ -64,7 +64,7 @@ class Redis {
 
 	public function  __construct(array $config = array())
 	{
-		$this->connection = fsockopen($config['hostname'], $config['port'], $errno, $errstr);
+		$this->connection = @fsockopen($config['hostname'], $config['port'], $errno, $errstr);
 
 		if ( ! $this->connection)
 		{
