@@ -25,7 +25,7 @@ use Fuel\Application as App;
  * @category	Core
  * @author		Fuel Development Team
  */
-abstract class Template extends App\Base {
+abstract class Template extends App\Controller\Base {
 
 	/**
 	* @var string page template
