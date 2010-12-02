@@ -99,25 +99,46 @@ class Error {
 
 		array_shift($data['backtrace']);
 
+		$debug_lines = array();
+
 		foreach ($data['backtrace'] as $key => $trace)
 		{
 			if ( ! isset($trace['file']))
 			{
 				unset($data['backtrace'][$key]);
 			}
-			elseif (strncmp($trace['file'], APPPATH, strlen(APPPATH)) !== 0)
+			elseif (strncmp(strtolower($trace['file']), strtolower(APPPATH), strlen(APPPATH)) !== 0)
 			{
 				unset($data['backtrace'][$key]);
 			}
+			else
+			{
+				if (empty($debug_lines))
+				{
+					$debug_lines = array(
+						'file'	=> $trace['file'],
+						'line'	=> $trace['line']
+					);
+				}
+			}
+		}
+
+		if (empty($debug_lines))
+		{
+			$debug_lines = array(
+				'file'	=> $data['filepath'],
+				'line'	=> $trace['error_line']
+			);
 		}
 
 		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
 
-		$data['debug_lines'] = Debug::file_lines($data['filepath'], $data['error_line']);
+		$data['debug_lines'] = Debug::file_lines($debug_lines['file'], $debug_lines['line']);
 
-		$data['filepath'] = Fuel::clean_path($data['filepath']);
+		$data['filepath'] = Fuel::clean_path($debug_lines['file']);
 
 		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
+		$data['error_line'] = $debug_lines['line'];
 
 		echo View::factory('errors'.DS.'php_error', $data);
 	}

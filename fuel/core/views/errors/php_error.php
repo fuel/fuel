@@ -106,31 +106,9 @@ namespace Fuel\Application;
 		<?php foreach($backtrace as $trace): ?>
 			<li><?php
 				echo Fuel::clean_path($trace['file']).' @ line '.$trace['line'];
-				if (isset($trace['function']))
-				{
-					echo ': '.$trace['function'];
-					$args_temp = '(';
-					foreach ($trace['args'] as $a)
-					{
-						if (is_array($a))
-						{
-							$args_temp .= 'Array('.count($a).'), ';
-						}
-						elseif (is_object($a))
-						{
-							$args_temp .= get_class($a).', ';
-						}
-						else
-						{
-							$args_temp .= $a.', ';
-						}
-					}
-					echo substr($args_temp, 0, -2);
-				}
-				echo ')'; ?></li>
+			?></li>
 		<?php endforeach; ?>
 		</ol>
-			<?php Debug::dump($backtrace); ?>
 		</div>
 	</div>
 </div>
