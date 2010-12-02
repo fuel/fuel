@@ -1,7 +1,7 @@
-<?php defined('COREPATH') or exit('No direct script access allowed');
+<?php
 
 namespace Fuel\Controller;
-
+defined('COREPATH') or exit('No direct script access allowed');
 
 abstract class Rest extends Controller\Base
 {

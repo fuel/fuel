@@ -1,4 +1,4 @@
-<?php defined('COREPATH') or exit('No direct script access allowed');
+<?php
 
 /**
  * Fuel
@@ -14,6 +14,7 @@
  */
 
 namespace Fuel\Controller;
+defined('COREPATH') or exit('No direct script access allowed');
 
 /**
  * Template Controller class
@@ -24,7 +25,7 @@ namespace Fuel\Controller;
  * @category	Core
  * @author		Fuel Development Team
  */
-abstract class Template extends Controller\Base {
+abstract class Template extends Base{
 
 	/**
 	* @var string page template
@@ -42,7 +43,7 @@ abstract class Template extends Controller\Base {
 		if ($this->auto_render === true)
 		{
 			// Load the template
-			$this->template = View::factory($this->template);
+			$this->template = \Fuel\View::factory($this->template);
 		}
 
 		return parent::before();
