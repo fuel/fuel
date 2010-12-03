@@ -15,8 +15,11 @@
 namespace ActiveRecord;
 
 use Fuel\Application as App;
+use Fuel\Application\DB;
 
 class Model {
+
+	protected static $class = null;
 
 	protected $columns = array();
 
@@ -28,9 +31,9 @@ class Model {
 
 	protected $frozen = false;
 
-	protected $primary_key = 'id';
+	protected static $primary_key = 'id';
 
-	protected $table_name;
+	protected static $table_name;
 
 	public $new_record = true;
 
@@ -174,7 +177,7 @@ class Model {
 
 	public function get_primary_key()
 	{
-		return $this->primary_key;
+		return static::$primary_key;
 	}
 
 	public function is_frozen()
@@ -233,14 +236,14 @@ class Model {
 			{
 				$this->before_create();
 			}
-
+			$columns = array();
 			foreach ($this->columns as $column)
 			{
-				if ($column == $this->primary_key)
+				if ($column == static::$primary_key)
 				{
 					continue;
 				}
-
+				$columns[] = $column;
 				if (is_null($this->$column))
 				{
 					$values[] = 'NULL';
@@ -250,9 +253,9 @@ class Model {
 					$values[] = $this->$column;
 				}
 			}
-			$res = DB::insert($this->table_name, $this->columns)->values($values)->execute();
+			$res = DB::insert(static::$table_name, $columns)->values($values)->execute();
 
-			$this->{$this->primary_key} = $res[0];
+			$this->{static::$primary_key} = $res[0];
 			$this->new_record = false;
 			$this->is_modified = false;
 
@@ -272,15 +275,15 @@ class Model {
 
 			foreach ($this->columns as $column)
 			{
-				if ($column == $this->primary_key)
+				if ($column == static::$primary_key)
 				{
 					continue;
 				}
 				$values[$column] = is_null($this->$column) ? 'NULL' : $this->$column;
 			}
-			$res = DB::update($this->table_name)
+			$res = DB::update(static::$table_name)
 						->set($values)
-						->where($this->primary_key, '=', $this->{$this->primary_key})
+						->where(static::$primary_key, '=', $this->{static::$primary_key})
 						->limit(1)
 						->execute();
 
@@ -323,8 +326,8 @@ class Model {
 			$assoc->destroy($this);
 		}
 
-		DB::delete($this->table_name)
-				->where($this->primary_key, '=', $this->{$this->primary_key})
+		DB::delete(static::$table_name)
+				->where(static::$primary_key, '=', $this->{static::$primary_key})
 				->limit(1)
 				->execute();
 
@@ -335,6 +338,19 @@ class Model {
 			$this->after_destroy();
 		}
 		return true;
+	}
+
+	/**
+	 * A static constructor that gets called by the autoloader.  Gets the class
+	 * name of the model that was loaded.
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public static function _init()
+	{
+		// TODO: write logic to get the table name from the Model name
+		static::$class = get_called_class();
 	}
 
 	/* transform_row -- transforms a row into its various objects
@@ -353,12 +369,11 @@ class Model {
 		return $object;
 	}
 
-	public static function find($id, $options = null)
+	public static function find($id, $options = array())
 	{
-		$query = self::generate_find_query($class, $id, $options);
-		$rows = self::query($query['query']);
-		#var_dump($query['query']);
-		#$objects = self::transform_rows($rows, $query['column_lookup']);
+		$query = static::_find_query($id, $options);
+		$rows = $query['result']->as_array();
+
 		$base_objects = array();
 		foreach ($rows as $row)
 		{
@@ -373,7 +388,8 @@ class Model {
 			if (count($query['column_lookup']) > 0)
 			{
 				$objects = self::transform_row($row, $query['column_lookup']);
-				$ob_key = md5(serialize($objects[App\Inflector::tableize($class)]));
+				$ob_key = md5(serialize($objects[static::$table_name]));
+
 				/* set cur_object to base object for this row; reusing if possible */
 				if (array_key_exists($ob_key, $base_objects))
 				{
@@ -381,7 +397,7 @@ class Model {
 				}
 				else
 				{
-					$cur_object = new $class($objects[Inflector::tableize($class)], false);
+					$cur_object = new $class($objects[static::$table_name], false);
 					$base_objects[$ob_key] = $cur_object;
 				}
 
@@ -399,71 +415,80 @@ class Model {
 			}
 			else
 			{
-				$item = new $class($row, false);
+				$item = new static($row, false);
 				array_push($base_objects, $item);
 			}
 		}
 		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
+		{
 			throw new Exception("Couldn't find anything.", Exception::RecordNotFound);
+		}
 		return (is_array($id) || $id == 'all') ?
 				array_values($base_objects) :
 				array_shift($base_objects);
 	}
 
-	function generate_find_query($class_name, $id, $options=null)
+	protected static function _find_query($id, $options = array())
 	{
 		//$dbh =& $this->get_dbh();
-		$item = new $class_name;
-		$options = self::decode_if_json($options);
+		$item = new static;
 
-		/* first sanitize what we can */
+		($id == 'first') and $options['limit'] = 1;
+
+		$select = array_key_exists('select', $options) ? $options['select'] : '*';
+		
+		// Start building the query
+		$query = DB::select($select)->from(static::$table_name);
+
+
+		// Get the limit
+		if (array_key_exists('limit', $options) and is_numeric($options['limit']))
+		{
+			$query->limit($options['limit']);
+		}
+
+		// Get the offset
+		if (array_key_exists('offset', $options) and is_numeric($options['offset']))
+		{
+			$query->offset($options['offset']);
+		}
+
+		// Get the order
+		if (array_key_exists('order', $options) && is_array($options['order']))
+		{
+			$query->order_by($options['order'][0], $options['order'][1]);
+		}
+
+		// Get the group
+		if (array_key_exists('group', $options))
+		{
+			$query->group_by($options['group']);
+		}
 		if (is_array($id))
 		{
-			foreach ($id as $k => $v)
+			$query->where(static::$primary_key, 'IN', $id);
+		}
+		elseif ($id != 'all')
+		{
+			$query->where(static::$primary_key, '=', $id);;
+		}
+
+		if (array_key_exists('where', $options) and is_array($options['where']))
+		{
+			foreach ($where as $conditional)
 			{
-				$id[$k] = self::quote($v);
+				$query->where($conditional[0], $conditional[1], $conditional[2]);
 			}
 		}
-		elseif ($id != 'all' && $id != 'first')
-		{
-			$id = self::quote($id);
-		}
-		/* regex for limit, order, group */
-		$regex = '/^[A-Za-z0-9\-_ ,\(\)]+$/';
-		if (!isset($options['limit']) || !preg_match($regex, $options['limit']))
-			$options['limit'] = '';
-		if (!isset($options['order']) || !preg_match($regex, $options['order']))
-			$options['order'] = '';
-		if (!isset($options['group']) || !preg_match($regex, $options['group']))
-			$options['group'] = '';
-		if (!isset($options['offset']) || !is_numeric($options['offset']))
-			$options['offset'] = '';
 
-		$select = '*';
-		if (is_array($id))
-			$where = "{$item->primary_key} IN (" . implode(",", $id) . ")";
-		elseif ($id == 'first')
-			$limit = '1';
-		elseif ($id != 'all')
-			$where = "{$item->table_name}.{$item->primary_key} = $id";
-
-		if (isset($options['conditions']))
-		{
-			$cond = self::convert_conditions_to_where($options['conditions']);
-			$where = (isset($where) && $where) ? $where . " AND " . $cond : $cond;
-		}
-
-		if ($options['offset'])
-			$offset = $options['offset'];
-		if ($options['limit'] && !isset($limit))
-			$limit = $options['limit'];
-		if (isset($options['select']))
-			$select = $options['select'];
+		$column_lookup = array();
+/*
+TODO: Write the join madness
 		$joins = array();
 		$tables_to_columns = array();
-		$column_lookup = array();
 		if (isset($options['include']))
 		{
+			$includes = array_walk(explode(',', $options['include']), 'trim');
 			array_push($tables_to_columns,
 					array(Inflector::tableize(get_class($item)) => $item->get_columns()));
 			$includes = preg_split('/[\s,]+/', $options['include']);
@@ -490,81 +515,14 @@ class Model {
 					}
 			}
 			$select = implode(", ", $selects);
-		}
+		}*/
 		// joins (?), include
 
-		$query = "SELECT $select FROM {$item->table_name}";
-		$query .= ( count($joins) > 0) ? " " . implode(" ", $joins) : "";
-		$query .= ( isset($where)) ? " WHERE $where" : "";
-		$query .= ( $options['group']) ? " GROUP BY {$options['group']}" : "";
-		$query .= ( $options['order']) ? " ORDER BY {$options['order']}" : "";
-		$query .= ( isset($limit) && $limit) ? " LIMIT $limit" : "";
-		$query .= ( isset($offset) && $offset) ? " OFFSET $offset" : "";
-		return array('query' => $query, 'column_lookup' => $column_lookup);
+		// It's all built, now lets execute
+		$result = $query->execute();
+
+		return array('result' => $result, 'column_lookup' => $column_lookup);
 	}
-
-	public static function convert_conditions_to_where($conditions)
-	{
-		if (is_string($conditions))
-		{
-			return " ( " . $conditions . " ) ";
-		}
-		/* handle both normal array with place holders
-		  and associative array */
-		if (is_array($conditions))
-		{
-			// simple array
-			if (reset(array_keys($conditions)) === 0 &&
-					end(array_keys($conditions)) === count($conditions) - 1 &&
-					!is_array(end($conditions)))
-			{
-				$condition = " ( " . array_shift($conditions) . " ) ";
-				foreach ($conditions as $value)
-				{
-					$value = self::quote($value);
-					$condition = preg_replace('|\?|', $value, $condition, 1);
-				}
-				return $condition;
-			}
-			/* array starts with a key of 0
-			  next element can be an associative array of bind variables
-			  or array can continue with bind variables with keys specified */
-			elseif (reset(array_keys($conditions)) === 0)
-			{
-				$condition = " ( " . array_shift($conditions) . " ) ";
-				if (is_array(reset($conditions)))
-				{
-					$conditions = reset($conditions);
-				}
-
-				foreach ($conditions as $key => $value)
-				{
-					$value = self::quote($value);
-					$condition = preg_replace("|:$key|", $value, $condition, 1);
-				}
-				return $condition;
-			}
-			// associative array
-			else
-			{
-				$condition = " ( ";
-				$w = array();
-				foreach ($conditions as $key => $value)
-				{
-					if (is_array($value))
-					{
-						$w[] = '`' . $key . '` IN ( ' . join(", ", $value) . ' )';
-					}
-					else
-					{
-						$w[] = '`' . $key . '` = ' . self::quote($value);
-					}
-				}
-				return $condition . join(" AND ", $w) . " ) ";
-			}
-		}
-	}
-
 }
 
 
