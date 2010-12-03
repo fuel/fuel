@@ -14,7 +14,6 @@ $package_path = '../fuel/packages';
  */
 $core_path = '../fuel/core';
 
-
 /**
  * If you want to use a default namespace for your application you must specify
  * it here.

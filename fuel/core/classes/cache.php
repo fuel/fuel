@@ -50,7 +50,7 @@ class Cache {
 		}
 		else
 		{
-			$storage = (Config::get('cache.storage') !== false ) ? Config::get('cache.storage') : 'file';
+			$storage = (Config::get('cache.storage', false) !== false ) ? Config::get('cache.storage') : 'file';
 		}
 		$class = 'Cache_Storage_'.ucfirst($storage);
 

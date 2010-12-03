@@ -127,14 +127,20 @@ class Asset {
 	 * @access	public
 	 * @param	mixed	The group to render
 	 * @param	bool	Whether to return the raw file or not
+	 * @param	bool	Whether to cache file(s) (except images) into one (outputs as raw)
 	 * @return	string	The group's output
 	 */
-	public static function render($group, $raw = false)
+	public static function render($group, $raw = false, $cache = false)
 	{
 		if (is_string($group))
 		{
 			$group = isset(static::$_groups[$group]) ? static::$_groups[$group] : array();
 		}
+
+		$css_filemtime = '';
+		$css_files = array();
+		$js_filemtime = '';
+		$js_files = array();
 
 		$return = '';
 		foreach ($group as $key => $item)
@@ -149,7 +155,7 @@ class Asset {
 				{
 					throw new Exception('Could not find asset: '.$filename);
 				}
-				
+
 				$file = static::$_asset_url.$file;
 			}
 			else
@@ -164,6 +170,14 @@ class Asset {
 					{
 						return '<style type="text/css">'.PHP_EOL.file_get_contents($file).PHP_EOL.'</style>';
 					}
+					if ($cache)
+					{
+						$file = static::find_file($filename, static::$_folders[$type]);
+						$css_filemtime .= filemtime($file);
+						$css_files[] = $file;
+						continue;
+					}
+
 					$attr['rel'] = 'stylesheet';
 					$attr['type'] = 'text/css';
 					$attr['href'] = $file;
@@ -175,6 +189,14 @@ class Asset {
 					{
 						return html_tag('script', array('type' => 'text/javascript'), PHP_EOL.file_get_contents($file).PHP_EOL).PHP_EOL;
 					}
+					if ($cache)
+					{
+						$file = static::find_file($filename, static::$_folders[$type]);
+						$js_filemtime .= filemtime($file);
+						$js_files[] = $file;
+						continue;
+					}
+
 					$attr['type'] = 'text/javascript';
 					$attr['src'] = $file;
 
@@ -188,6 +210,43 @@ class Asset {
 					break;
 			}
 
+		}
+
+		if ($cache)
+		{
+			if ($css_filemtime != '')
+			{
+				$css_filemtime = md5($css_filemtime);
+				if ( ! Cache::get('css.'.$css_filemtime, false))
+				{
+					$contents = '';
+					foreach ($css_files as $file)
+					{
+						$contents .= PHP_EOL.file_get_contents($file).PHP_EOL;
+					}
+
+					Cache::set('css.'.$css_filemtime, '<style type="text/css">'.$contents.'</style>');
+				}
+
+				return Cache::get('css.'.$css_filemtime, false);
+			}
+
+			if ( $js_filemtime != '')
+			{
+				$js_filemtime = md5($js_filemtime);
+				if ( ! Cache::get('js.'.$js_filemtime, false))
+				{
+					$contents = '';
+					foreach ($js_files as $file)
+					{
+						$contents .= PHP_EOL.file_get_contents($file).PHP_EOL;
+					}
+
+					Cache::set('js.'.$js_filemtime, html_tag('script', array('type' => 'text/javascript'), PHP_EOL.$contents.PHP_EOL).PHP_EOL);
+				}
+
+				return Cache::get('js.'.$js_filemtime, false);
+			}
 		}
 		
 		return $return;
@@ -204,16 +263,18 @@ class Asset {
 	 * @param	mixed	The file name, or an array files.
 	 * @param	array	An array of extra attributes
 	 * @param	string	The asset group name
+	 * @param	bool	Whether to return the raw file or not
+	 * @param	bool	Whether to cache file(s) (except images) into one (outputs as raw)
 	 * @return	string
 	 */
-	public static function css($stylesheets = array(), $attr = array(), $group = NULL, $raw = false)
+	public static function css($stylesheets = array(), $attr = array(), $group = NULL, $raw = false, $cache = false)
 	{
 		static $temp_group = 1000000;
 
 		$render = false;
-		if ($group === NULL)
+		if ( ! isset($group))
 		{
-			$group = (string) (++$temp_group);
+			$group = (string) $temp_group++;
 			$render = true;
 		}
 
@@ -221,7 +282,7 @@ class Asset {
 
 		if ($render)
 		{
-			return static::render($group, $raw);
+			return static::render($group, $raw, $cache);
 		}
 
 		return '';
@@ -238,9 +299,11 @@ class Asset {
 	 * @param	mixed	The file name, or an array files.
 	 * @param	array	An array of extra attributes
 	 * @param	string	The asset group name
+	 * @param	bool	Whether to return the raw file or not
+	 * @param	bool	Whether to cache file(s) (except images) into one (outputs as raw)
 	 * @return	string
 	 */
-	public static function js($scripts = array(), $attr = array(), $group = NULL, $raw = false)
+	public static function js($scripts = array(), $attr = array(), $group = NULL, $raw = false, $cache = false)
 	{
 		static $temp_group = 2000000;
 
@@ -255,7 +318,7 @@ class Asset {
 
 		if ($render)
 		{
-			return static::render($group, $raw);
+			return static::render($group, $raw, $cache);
 		}
 
 		return '';
