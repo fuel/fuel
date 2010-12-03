@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Event Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Event Class</h2>
+
+		<p>The event class allows you to interact with the Fuel Core without having to alter any core files.</p>
+
+		<article>
+			<h4>register()</h4>
+			<p>The <strong>register</strong> method allows files to register an object that will be ran when the <kbd>trigger</kbd> method is called.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$event</kbd></th>
+								<td><i>required</i></td>
+								<td>The event you are registering your code to.</td>
+							</tr>
+							<tr>
+								<th><kbd>$callback</kbd></th>
+								<td><i>required</i></td>
+								<td>The callback method. </td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Event::register('user_login', 'Class::method')</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>trigger()</h4>
+			<p>The <strong>trigger</strong> method is used to trigger or activate callbacks that are associated through the register method.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$event</kbd></th>
+								<td><i>required</i></td>
+								<td>The event you are triggering.</td>
+							</tr>
+							<tr>
+								<th><kbd>$data</kbd></th>
+								<td><i>optional</i></td>
+								<td>Any data you want to send to the method registered.</td>
+							</tr>
+							<tr>
+								<th><kbd>$return_type</kbd></th>
+								<td><i>optional</i></td>
+								<td>What type of return data you expect. (string, array, json, none, serialized) - <strong>Default is string</strong></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed - Dependent on the <var>$return_type</var>.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>Event::trigger('user_login', $data)</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>has_events()</h4>
+			<p>The <strong>has_events</strong> method is available so you can check if a particular registered event has triggers.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$event</kbd></th>
+								<td><i>required</i></td>
+								<td>The event you are checking.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>Event::has_events('user_login')</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 Dan Horrigan
+		</p>
+	</section>
+
+</body>
+</html>
