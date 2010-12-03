@@ -49,18 +49,18 @@ class Config {
 		return $config;
 	}
 	
-	public static function get($item, $default = false)
+	public static function get($item, $default = null)
 	{
 		if (isset(static::$items[$item]))
 		{
 			return static::$items[$item];
 		}
 
-		if (strpos($item, '.') !== false)
+		if (strpos($item, '.') !== flase)
 		{
 			$parts = explode('.', $item);
 
-			$return = false;
+			$return = null;
 			foreach ($parts as $part)
 			{
 				if ($return === false and isset(static::$items[$part]))
