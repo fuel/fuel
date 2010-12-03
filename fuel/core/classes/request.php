@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class Request {
 
 	/**
@@ -41,13 +43,13 @@ class Request {
 	 */
 	public static function factory($uri = null)
 	{
-		Log::info('Creating a new Request with URI = "'.$uri.'"', __METHOD__);
+		App\Log::info('Creating a new Request with URI = "'.$uri.'"', __METHOD__);
 
-		static::$active = new Request($uri);
+		static::$active = new static($uri);
 
 		if ( ! static::$main)
 		{
-			Log::info('Setting main Request', __METHOD__);
+			App\Log::info('Setting main Request', __METHOD__);
 			static::$main = static::$active;
 		}
 
@@ -66,7 +68,7 @@ class Request {
 	 */
 	public static function main()
 	{
-		Log::info('Called', __METHOD__);
+		App\Log::info('Called', __METHOD__);
 
 		return static::$main;
 	}
@@ -83,7 +85,7 @@ class Request {
 	 */
 	public static function active()
 	{
-		Log::info('Called', __METHOD__);
+		App\Log::info('Called', __METHOD__);
 
 		return static::$active;
 	}
@@ -101,11 +103,11 @@ class Request {
 	 */
 	public static function show_404()
 	{
-		Log::info('Called', __METHOD__);
+		App\Log::info('Called', __METHOD__);
 
 		if (Config::get('routes.404') === false)
 		{
-			static::active()->output = View::factory('404');
+			static::active()->output = App\View::factory('404');
 		}
 		else
 		{
@@ -113,7 +115,7 @@ class Request {
 
 			$action or $action = 'index';
 
-			$class = APP_NAMESPACE.'\\Controller_'.ucfirst($controller);
+			$class = 'Fuel\\Application\\Controller_'.ucfirst($controller);
 			$method = 'action_'.$action;
 
 			if (class_exists($class))
@@ -178,7 +180,7 @@ class Request {
 	/**
 	 * @var	string	The request's action
 	 */
-	public $action = 'index';
+	public $action = '';
 
 	/**
 	 * @var	string	The request's method params
@@ -200,84 +202,46 @@ class Request {
 	 */
 	public function __construct($uri)
 	{
-		$this->uri = new URI($uri);
-		$route = Route::parse($this->uri);
+		$this->uri = new App\URI($uri);
+		$route = App\Route::parse($this->uri);
 
-		// Check for module
-		$module = Fuel::$packages['app']->prefix_path(ucfirst($route['uri_array'][0]).'_');
-		if ($module === false)
+		// Register module as such when found
+		$mod_path = App\Fuel::add_module($route['segments'][0]);
+		if ( ! empty($mod_path))
 		{
-			foreach (Config::get('module_paths', array()) as $path)
+			$this->module = array_shift($route['segments']);
+
+			// Optionally load module routes & reparse, must be relative to module
+			//     so it only allows routing within module
+			if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
 			{
-				if (is_dir($mod_path = $path.strtolower($route['uri_array'][0].DS)))
-				{
-					// Load module and end search
-					Fuel::$packages['app']->add_prefix(ucfirst($route['uri_array'][0]).'_', $mod_path);
-					$this->module = array_shift($route['uri_array']);
+				$route = App\Route::parse_module($this->module, App\Fuel::load($route_path), $this->uri);
+			}
 
-					// Optionally load module routes & reparse, must be relative to module
-					//     so it only allows routing within module
-					if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
-					{
-						// Load module routes and add to router
-						$mod_routes = Fuel::load($route_path);
-						foreach ($mod_routes as $orig_route => $reroute)
-						{
-							$prefix = in_array($orig_route, array('404')) ? '' : $this->module.'/';
-							if ($orig_route == 'default')
-							{
-								Route::$routes[$this->module] = $prefix.$reroute;
-							}
-							else
-							{
-								Route::$routes[$prefix.$orig_route] = $prefix.$reroute;
-							}
-						}
-
-						// Reparse route after added module routes 
-						$route = Route::parse($this->uri);
-						array_shift($route['uri_array']);
-					}
-
-					// Does the module need always_loading?
-					if (is_file($always_load_path = $mod_path.'config'.DS.'always_load.php'))
-					{
-						Fuel::always_load(Fuel::load($always_load_path));
-					}
-
-					break;
-				}
+			// Does the module need always_loading?
+			if (is_file($always_load_path = $mod_path.'config'.DS.'always_load.php'))
+			{
+				App\Fuel::always_load(Fuel::load($always_load_path));
 			}
 		}
 
 		// Check for directory
-		if ($route['uri_array'][0] != 'index')
+		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
+		if ( ! empty($route['segments']) && is_dir($dirpath = $path.strtolower($route['segments'][0])))
 		{
-			$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
-			if (is_dir($dirpath = $path.strtolower($route['uri_array'][0])))
-			{
-				$this->directory = array_shift($route['uri_array']);
-			}
+			$this->directory = array_shift($route['segments']);
 		}
 
-		// When emptied the controller defaults to directory or module, action still defaults to index
+		// When emptied the controller defaults to directory or module
 		$controller = empty($this->directory) ? $this->module : $this->directory;
-		if (count($route['uri_array']) == 0)
+		if (count($route['segments']) == 0)
 		{
-			$route['uri_array'] = array($controller, 'index');
-		}
-		elseif ($route['uri_array'][0] == 'index')
-		{
-			array_unshift($route['uri_array'], $controller);
-		}
-		elseif (count($route['uri_array']) == 1)
-		{
-			$route['uri_array'][] = 'index';
+			$route['segments'] = array($controller);
 		}
 
-		$this->controller = $route['uri_array'][0];
-		$this->action = $route['uri_array'][1];
-		$this->method_params = array_slice($route['uri_array'], 2);
+		$this->controller = $route['segments'][0];
+		$this->action = ! empty($route['segments'][1]) ? $route['segments'][1] : '';
+		$this->method_params = array_slice($route['segments'], 2);
 		$this->named_params = $route['named_params'];
 		unset($route);
 	}
@@ -294,11 +258,13 @@ class Request {
 	 */
 	public function execute()
 	{
-		Log::info('Called', __METHOD__);
+		App\Log::info('Called', __METHOD__);
 
-		$controller_prefix = APP_NAMESPACE.'\\Controller_';
-		$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($this->controller);
-		$method = 'action_'.$this->action;
+		$controller_prefix = 'Fuel\\Application\\Controller_';
+		$method_prefix = 'action_';
+
+		$class = $controller_prefix.(empty($this->directory) ? '' : \ucfirst($this->directory).'_').ucfirst($this->controller);
+		$method = $this->action ?: '';
 
 		// Allow omitting the controller name when in an equally named directory or module
 		if ( ! class_exists($class))
@@ -306,18 +272,15 @@ class Request {
 			// set the new controller to directory or module when applicable
 			$controller = empty($this->directory) ? $this->module : $this->directory;
 			// ... or to the default controller if it was in neither
-			$controller = empty($controller) ? array_shift(explode('/', Route::$routes['default'])) : $controller;
+			$controller = empty($controller) ? preg_replace('#/([a-z0-9/_]*)$#uiD', '', App\Route::$routes['#']) : $controller;
 
 			// try again with new controller if it differs from the previous attempt
 			if ($controller != $this->controller)
 			{
 				$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($controller);
-				if ($this->action != 'index')
-				{
-					array_unshift($this->method_params, $this->action);
-				}
+				array_unshift($this->method_params, $this->action);
 				$this->action = $this->controller;
-				$method = 'action_'.$this->action;
+				$method = $this->action ?: '';
 				$this->controller = $controller;
 
 				// attempt autoload
@@ -332,8 +295,10 @@ class Request {
 			}
 		}
 
-		Log::info('Loading controller '.$class, __METHOD__);
+		App\Log::info('Loading controller '.$class, __METHOD__);
 		$controller = new $class($this);
+
+		$method = $method_prefix.($method ?: (isset($controller->default_action) ? $controller->default_action : 'index'));
 
 		// Allow to do in controller routing if method router(action, params) exists
 		if (method_exists($controller, 'router'))
@@ -345,19 +310,19 @@ class Request {
 		// Call the before method if it exists
 		if (method_exists($controller, 'before'))
 		{
-			Log::info('Calling '.$class.'::before', __METHOD__);
+			App\Log::info('Calling '.$class.'::before', __METHOD__);
 			$controller->before();
 		}
 
 		if (method_exists($controller, $method))
 		{
-			Log::info('Calling '.$class.'::'.$method, __METHOD__);
+			App\Log::info('Calling '.$class.'::'.$method, __METHOD__);
 			call_user_func_array(array($controller, $method), $this->method_params);
 
 			// Call the after method if it exists
 			if (method_exists($controller, 'after'))
 			{
-				Log::info('Calling '.$class.'::after', __METHOD__);
+				App\Log::info('Calling '.$class.'::after', __METHOD__);
 				$controller->after();
 			}
 

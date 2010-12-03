@@ -1,11 +1,16 @@
 <?php
 
+use Fuel\Application as App;
+
 // Get the start time and memory for use later
 defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 
 // This is purely for ease of use, creating an alias of DS
 define('DS', DIRECTORY_SEPARATOR);
+
+define('CRLF', sprintf('%s%s', chr(13), chr(10)));
+
 
 /**
  * Do we have access to mbstring?
@@ -55,7 +60,7 @@ $autoloaders['app'] = require APPPATH.'autoload.php';
 
 
 // Load in the core class
-require COREPATH.'classes'.DS.'fuel'.DS.'fuel.php';
+require COREPATH.'classes'.DS.'fuel.php';
 
 // If the Fuel class is overrided in the application folder
 // load that, else load the core class.
@@ -66,18 +71,15 @@ if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 
 // Initialize the framework
 // and start buffering the output.
-$class_fuel = APP_NAMESPACE.'\\Fuel';
-$class_fuel::init($autoloaders);
+App\Fuel::init($autoloaders);
 
-$class_request = APP_NAMESPACE.'\\Request';
-$request = $class_request::factory();
+$request = App\Request::factory();
 $request->execute();
 echo $request->output;
 
 // Call all the shutdown events
-$class_event = APP_NAMESPACE.'\\Event';
-$class_event::shutdown();
+App\Event::shutdown();
 
-$class_fuel::finish();
+App\Fuel::finish();
 
 /* End of file boot.php */

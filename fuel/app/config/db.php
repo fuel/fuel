@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel\Application;
+
 return array(
 	'active' => Config::get('environment'),
 
@@ -73,6 +75,13 @@ return array(
 		'charset'      => 'utf8',
 		'caching'      => false,
 		'profiling'    => false,
+	),
+
+	'redis' => array(
+		'default' => array(
+			'hostname'	=> '127.0.0.1',
+			'port'		=> 6379,
+		)
 	),
 
 );

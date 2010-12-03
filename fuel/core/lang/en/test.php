@@ -11,6 +11,8 @@
  * @copyright	2010 Dan Horrigan
  */
 
+namespace Fuel\Application;
+
 return array(
 	'hello' => 'Hello there :name!'
 );

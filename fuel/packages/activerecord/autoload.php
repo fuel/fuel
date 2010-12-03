@@ -12,6 +12,14 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+$loader = new Autoloader;
+$loader->default_path(__DIR__.'/classes/');
 
-class ViewException extends Exception { }
+$loader->add_namespaces(array(
+	'ActiveRecord'		=> __DIR__.'/classes/',
+));
+
+$loader->register();
+return $loader;
+
+/* End of file autoload.php */

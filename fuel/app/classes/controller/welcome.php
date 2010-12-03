@@ -1,6 +1,10 @@
 <?php
 
+namespace Fuel\Application;
+
 class Controller_Welcome extends Controller\Base {
+
+	public $default_action = 'index';
 
 	public function action_index()
 	{

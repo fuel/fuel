@@ -12,14 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-$loader = new Autoloader;
-$loader->default_path(__DIR__.'/classes/');
+namespace Fuel;
 
-$loader->add_namespaces(array(
-	'Fuel\\Application'		=> __DIR__.'/classes/',
-));
-
-$loader->register();
-return $loader;
-
-/* End of file autoload.php */
+class View_Exception extends Exception { }

@@ -168,7 +168,7 @@ class Migrate
 				}
 
 				include $f[0];
-				$class = 'Migration_' . ucfirst($match[1]);
+				$class = 'Fuel\\Application\\Migration_' . ucfirst($match[1]);
 
 				if ( ! class_exists($class))
 				{
@@ -204,7 +204,7 @@ class Migrate
 		{
 			Log::info('Migrating to: ' . static::$version + $step);
 
-			$class = 'Migration_' . ucfirst($migration);
+			$class = 'Fuel\\Application\\Migration_' . ucfirst($migration);
 			call_user_func(array(new $class, $method));
 
 			static::$version += $step;
