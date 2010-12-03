@@ -13,14 +13,18 @@ var nav = {
 			"License":		"license.html",
 			"Credits":		"credits.html"
 		},
-/*		"Installation": {
-
-		},*/
+		"Installation": {
+			"Instructions":	"installation/instructions.html",
+			"Download":		"installation/download.html"
+		},
 		"General": {
+			"Controllers":		"general/controllers.html",
+			"Views":			"general/views.html",
 			"Coding Standards":	"general/coding_standards.html"
 		},
 		"Classes": {
 			"Config":	"classes/config.html",
+			"Event":	"classes/event.html",
 			"Html":		"classes/html.html"
 		}
 };

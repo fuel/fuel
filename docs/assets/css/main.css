@@ -1,4 +1,4 @@
-/* 
+/*
     Document   : main
     Created on : Nov 29, 2010, 8:39:50 PM
     Author     : dhorrigan
@@ -149,6 +149,13 @@ dfn, var, samp, kbd {
  font-family: Tahoma, Geneva, sans-serif;
  font-weight: bold;
  font-style: normal;
+}
+
+.note {
+	background: #FEFCAF;
+	border: 3px solid #CCCCCC;
+	color: #333333;
+	padding: 10px;
 }
 
 article {
