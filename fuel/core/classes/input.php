@@ -102,7 +102,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function get($index = '', $default = false)
+	public static function get($index = '', $default = null)
 	{
 		return static::_fetch_from_array($_GET, $index, $default);
 	}
@@ -115,7 +115,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function post($index = '', $default = false)
+	public static function post($index = '', $default = null)
 	{
 		return static::_fetch_from_array($_POST, $index, $default);
 	}
@@ -128,11 +128,11 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function put($index = '', $default = false)
+	public static function put($index = '', $default = null)
 	{
 		if (static::method() !== 'PUT')
 		{
-			return NULL;
+			return null;
 		}
 
 		if ( ! isset($_PUT))
@@ -152,11 +152,11 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function delete($index = '', $default = false)
+	public static function delete($index = '', $default = null)
 	{
 		if (static::method() !== 'DELETE')
 		{
-			return NULL;
+			return null;
 		}
 
 		if ( ! isset($_DELETE))
@@ -176,7 +176,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function get_post($index = '', $default = false)
+	public static function get_post($index = '', $default = null)
 	{
 		return isset($_POST[$index]) ? static::post($index, $default) : static::get($index, $default);
 	}
@@ -189,7 +189,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function cookie($index = '', $default = false)
+	public static function cookie($index = '', $default = null)
 	{
 		return static::_fetch_from_array($_COOKIE, $index, $default);
 	}
@@ -202,7 +202,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function server($index = '', $default = false)
+	public static function server($index = '', $default = null)
 	{
 		return static::_fetch_from_array($_SERVER, $index, $default);
 	}
@@ -216,7 +216,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	private static function _fetch_from_array(&$array, $index = '', $default = false)
+	private static function _fetch_from_array(&$array, $index = '', $default = null)
 	{
 		if ( ! isset($array[$index]))
 		{
