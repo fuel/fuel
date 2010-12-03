@@ -48,6 +48,12 @@ $loader->add_aliases(array(
 	'Database'				=> 'Fuel\\Application\\Database',
 	'Database_Exception'	=> 'Fuel\\Application\\Database_Exception',
 
+	'Email'				=> 'Fuel\\Application\\Email',
+	'Email_Driver'		=> 'Fuel\\Application\\Email_Driver',
+	'Email_Mail'		=> 'Fuel\\Application\\Email_Mail',
+	'Email_Sendmail'	=> 'Fuel\\Application\\Email_Sendmail',
+	'Email_Smtp'		=> 'Fuel\\Application\\Email_Smtp',
+
 	'Date'			=> 'Fuel\\Application\\Date',
 	'Debug'			=> 'Fuel\\Application\\Debug',
 	'Crypt'			=> 'Fuel\\Application\\Crypt',
@@ -86,6 +92,7 @@ $loader->add_aliases(array(
 	'View_Exception'	=> 'Fuel\\Application\\View_Exception',
 
 	'Fuel'			=> 'Fuel\\Application\\Fuel',
+
 ));
 
 $loader->register();
