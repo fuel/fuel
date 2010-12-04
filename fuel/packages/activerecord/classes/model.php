@@ -46,7 +46,7 @@ class Model {
 		{
 			if (isset($this->{$type}))
 			{
-				$class_name = Inflector::classify($type);
+				$class_name = App\Inflector::classify($type);
 
 				foreach ($this->{$type} as $assoc)
 				{
@@ -63,6 +63,10 @@ class Model {
 				}
 			}
 		}
+
+		static::$table_name = App\Inflector::pluralize(end(explode('Model_', get_called_class())));
+
+		$this->columns = array_keys(App\Database::instance()->list_columns(static::$table_name));
 
 		if (is_array($params))
 		{
@@ -94,10 +98,12 @@ class Model {
 			/* allow for $p->comment_ids type gets on HasMany associations */
 			$assoc_name = App\Inflector::pluralize($matches[1]);
 			if ($this->associations[$assoc_name] instanceof HasMany)
+			{
 				return $this->associations[$assoc_name]->get_ids($this);
+			}
 		}
-		throw new Exception("attribute called '$name' doesn't exist",
-				Exception::AttributeNotFound);
+		
+		throw new Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 	}
 
 	public function __set($name, $value)
@@ -255,6 +261,12 @@ class Model {
 			}
 			$res = DB::insert(static::$table_name, $columns)->values($values)->execute();
 
+			// Failed to save the new record
+			if ($res[0] === 0)
+			{
+				return false;
+			}
+
 			$this->{static::$primary_key} = $res[0];
 			$this->new_record = false;
 			$this->is_modified = false;
@@ -295,6 +307,7 @@ class Model {
 				$this->after_update();
 			}
 		}
+		
 		foreach ($this->associations as $name => $assoc)
 		{
 			if ($assoc instanceOf HasOne && $assoc->needs_saving())
@@ -309,10 +322,13 @@ class Model {
 				$assoc->save_as_needed($this);
 			}
 		}
+		
 		if (method_exists($this, 'after_save'))
 		{
 			$this->after_save();
 		}
+
+		return true;
 	}
 
 	public function destroy()
@@ -349,7 +365,6 @@ class Model {
 	 */
 	public static function _init()
 	{
-		// TODO: write logic to get the table name from the Model name
 		static::$class = get_called_class();
 	}
 
