@@ -46,7 +46,7 @@ class Model {
 		{
 			if (isset($this->{$type}))
 			{
-				$class_name = App\Inflector::classify($type);
+				$class_name = 'ActiveRecord\\'.App\Inflector::classify($type);
 
 				foreach ($this->{$type} as $assoc)
 				{
@@ -64,7 +64,7 @@ class Model {
 			}
 		}
 
-		static::$table_name = App\Inflector::pluralize(end(explode('Model_', get_called_class())));
+		static::$table_name = App\Inflector::tableize(get_called_class());
 
 		$this->columns = array_keys(App\Database::instance()->list_columns(static::$table_name));
 
@@ -109,7 +109,9 @@ class Model {
 	public function __set($name, $value)
 	{
 		if ($this->frozen)
+		{
 			throw new Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
+		}
 
 		/* allow for $p->comment_ids type sets on HasMany associations */
 		if (preg_match('/^(.+?)_ids$/', $name, $matches))
@@ -393,7 +395,7 @@ class Model {
 		foreach ($rows as $row)
 		{
 			/* if we've done a join we have some fancy footwork to do
-			  we're going to process one row at a time.
+			  we're going to process one rows at a time.
 			  each row has a "base" object and objects that've been joined.
 			  the base object is whatever class we've been passed as $class.
 			  we only want to create one instance of each unique base object.
@@ -402,7 +404,7 @@ class Model {
 			 */
 			if (count($query['column_lookup']) > 0)
 			{
-				$objects = self::transform_row($row, $query['column_lookup']);
+				$objects = static::transform_row($row, $query['column_lookup']);
 				$ob_key = md5(serialize($objects[static::$table_name]));
 
 				/* set cur_object to base object for this row; reusing if possible */
@@ -412,19 +414,23 @@ class Model {
 				}
 				else
 				{
-					$cur_object = new $class($objects[static::$table_name], false);
+					$cur_object = new static($objects[static::$table_name], false);
 					$base_objects[$ob_key] = $cur_object;
 				}
 
 				/* now add association data as needed */
 				foreach ($objects as $table_name => $attributes)
 				{
-					if ($table_name == Inflector::tableize($class))
+					if ($table_name == App\Inflector::tableize(get_called_class()))
+					{
 						continue;
+					}
 					foreach ($cur_object->associations as $assoc_name => $assoc)
 					{
-						if ($table_name == Inflector::pluralize($assoc_name))
+						if ($table_name == App\Inflector::pluralize($assoc_name))
+						{
 							$assoc->populate_from_find($attributes);
+						}
 					}
 				}
 			}
@@ -445,16 +451,57 @@ class Model {
 
 	protected static function _find_query($id, $options = array())
 	{
-		//$dbh =& $this->get_dbh();
 		$item = new static;
 
 		($id == 'first') and $options['limit'] = 1;
 
-		$select = array_key_exists('select', $options) ? $options['select'] : '*';
-		
-		// Start building the query
-		$query = DB::select($select)->from(static::$table_name);
+		$select = array_key_exists('select', $options)  ? $options['select'] : array();
 
+		$joins = array();
+		$column_lookup = array();
+		if (isset($options['include']))
+		{
+			$tables_to_columns = array();
+			$includes = array_map('trim', explode(',', $options['include']));
+
+			array_push($tables_to_columns, array(App\Inflector::tableize(get_class($item)) => $item->get_columns()));
+
+			// get join part of query from association and column names
+			foreach ($includes as $include)
+			{
+				if (isset($item->associations[$include]))
+				{
+					list($cols, $join) = $item->associations[$include]->join();
+					array_push($joins, $join);
+					array_push($tables_to_columns, $cols);
+				}
+			}
+
+			foreach ($tables_to_columns as $table_key => $columns)
+			{
+				foreach ($columns as $table => $cols)
+				{
+					foreach ($cols as $key => $col)
+					{
+						// Add this to the select array
+						array_push($select, array($table.'.'.$col, "t{$table_key}_r$key"));
+
+						$column_lookup["t{$table_key}_r{$key}"]["table"] = $table;
+						$column_lookup["t{$table_key}_r{$key}"]["column"] = $col;
+					}
+				}
+			}
+		}
+
+		// Start building the query
+		$query = call_user_func_array('DB::select', $select);
+
+		$query->from(static::$table_name);
+
+		foreach ($joins as $join)
+		{
+			$query->join($join['table'], $join['type'])->on($join['on'][0], $join['on'][1], $join['on'][2]);
+		}
 
 		// Get the limit
 		if (array_key_exists('limit', $options) and is_numeric($options['limit']))
@@ -483,55 +530,20 @@ class Model {
 		{
 			$query->where(static::$primary_key, 'IN', $id);
 		}
-		elseif ($id != 'all')
+		elseif ($id != 'all' && $id != 'first')
 		{
 			$query->where(static::$primary_key, '=', $id);;
 		}
 
 		if (array_key_exists('where', $options) and is_array($options['where']))
 		{
-			foreach ($where as $conditional)
+			foreach ($options['where'] as $conditional)
 			{
 				$query->where($conditional[0], $conditional[1], $conditional[2]);
 			}
 		}
 
-		$column_lookup = array();
-/*
-TODO: Write the join madness
-		$joins = array();
-		$tables_to_columns = array();
-		if (isset($options['include']))
-		{
-			$includes = array_walk(explode(',', $options['include']), 'trim');
-			array_push($tables_to_columns,
-					array(Inflector::tableize(get_class($item)) => $item->get_columns()));
-			$includes = preg_split('/[\s,]+/', $options['include']);
-			// get join part of query from association and column names
-			foreach ($includes as $include)
-			{
-				if (isset($item->associations[$include]))
-				{
-					list($cols, $join) = $item->associations[$include]->join();
-					array_push($joins, $join);
-					array_push($tables_to_columns, $cols);
-				}
-			}
-			// set the select variable so all column names are unique
-			$selects = array();
-			foreach ($tables_to_columns as $table_key => $columns)
-			{
-				foreach ($columns as $table => $cols)
-					foreach ($cols as $key => $col)
-					{
-						array_push($selects, "$table.`$col` AS t{$table_key}_r$key");
-						$column_lookup["t{$table_key}_r{$key}"]["table"] = $table;
-						$column_lookup["t{$table_key}_r{$key}"]["column"] = $col;
-					}
-			}
-			$select = implode(", ", $selects);
-		}*/
-		// joins (?), include
+
 
 		// It's all built, now lets execute
 		$result = $query->execute();
