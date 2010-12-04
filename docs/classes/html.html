@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>HTML Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Html Class</h2>
+
+		<p>The html class is an html wrapper for nearly all html tags.</p>
+
+		<h5>Doctypes</h5>
+
+		<p>We have included a configuration file located at <kbd>fuel/core/config/doctypes.php</kbd> which has all the doctypes.</p>
+
+		<article>
+			<h4>h($content = '', $num = 1, $attr = false)</h4>
+			<p>The <strong>h</strong> method returns an html heading tag. As you might be aware off the html heading tags come in 6 variations from h1 to h6.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$content</kbd></th>
+								<td><i>required</i></td>
+								<td>Content to be found between the heading tags.</td>
+							</tr>
+							<tr>
+								<th><kbd>$num</kbd></th>
+								<td><strong>1</strong></td>
+								<td>Designated number of the heading tag, if no value is supplied, will default to 1.</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>false</strong></td>
+								<td>Array of attributes to be applied to the heading tag.Content to be found between the heading tags.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated heading tags with its content(and attributes if supplied).</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;h1&gt;Example&lt;/h1&gt;
+echo Html::h('Example');
+
+//returns &lt;h2 id="h2" class="sample" style="color:red;"&gt;Some other example&lt;/h2&gt;
+echo Html::h('Some other example', '2', array('id' => 'h2', 'class' => 'sample', 'style' => 'color:red'));
+
+//returns &lt;h3 id="sample" class="sample" style="color:blue;"&gt;Variable!&lt;/h3&gt;
+$attributes = array('id' => 'sample', 'class' => 'sample', 'style' => 'color:blue');
+echo Html::h('Variable!', '3', $attributes);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>br($num = 1, $attr = false)</h4>
+			<p>The <strong>br</strong> method returns an html break tag.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$num</kbd></th>
+								<td><strong>1</strong></td>
+								<td>Number of times the break tag should be outputted. If no value is given will default to 1.</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>false</strong></td>
+								<td>Array of attributes to be applied to the break tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated break tags with its attributes if supplied.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;br /&gt;
+echo Html::br();
+
+//returns &lt;br id="example" class="sample" style="color:red;" /&gt;&lt;br id="h2" class="sample" style="color:red;" /&gt;
+echo Html::br('2', array('id' => 'example', 'class' => 'sample', 'style' => 'color:red'));
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>hr($attr = false)</h4>
+			<p>The <strong>hr</strong> method returns an html ruler tag.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>false</strong></td>
+								<td>Array of attributes to be applied to the ruler tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated ruler tag with its attributes if supplied.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;hr /&gt;
+echo Html::hr();
+
+//returns &lt;hr id="example" class="sample" style="color:red;" /&gt;
+echo Html::hr(array('id' => 'example', 'class' => 'sample', 'style' => 'color:red'));
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>title($content = '')</h4>
+			<p>The <strong>title</strong> method returns an html title tag.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$content</kbd></th>
+								<td><i>required</i></td>
+								<td>Content to be found between the title tags.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated title tag with its content.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;title&gt;Some Title!&lt;/title&gt;
+echo Html::title('Some title!');
+
+//returns &lt;title&gt;&lt;/title&gt;
+echo Html::title('');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>nbs($num = 1)</h4>
+			<p>The <strong>nbs</strong> method returns ascii code for non-breaking whitespaces.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$num</kbd></th>
+								<td><strong>1</strong></td>
+								<td>Number of non-breaking spaces to be outputted.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated ascii code for non-breaking whitespaces.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &amp;nbsp;
+echo Html::nbs();
+
+//returns &amp;nbsp;&amp;nbsp;
+echo Html::nbs(2);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>meta($name, $content = '', $type = 'name')</h4>
+			<p>The <strong>meta</strong> method returns meta tag or tags if multi-level array is supplied.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$name</kbd></th>
+								<td><i>required</i></td>
+								<td>Can be array containing single or multiple meta parameters or can be name/http-equiv value.</td>
+							</tr>
+							<tr>
+								<th><kbd>$content</kbd></th>
+								<td><i>required</i></td>
+								<td>If no array is supplied on the $name parameter, $content equals to the meta attribute content's value.</td>
+							</tr>
+							<tr>
+								<th><kbd>$type</kbd></th>
+								<td><strong>'name'</strong></td>
+								<td>If no value is supplied will default to name. Can be name or http-equiv.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated meta tags.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;meta name="description" content="Meta Example!" /&gt;
+echo Html::meta('description', 'Meta Example!');
+
+//returns &lt;meta name="robots" content="no-cache" /&gt;
+echo Html::meta('robots', 'no-cache');
+
+$meta = array(
+	array('name' => 'robots', 'content' => 'no-cache'),
+	array('name' => 'description', 'content' => 'Meta Example'),
+	array('name' => 'keywords', 'content' => 'fuel, rocks'),
+);
+
+//returns &lt;meta name="robots" content="no-cache" /&gt;
+//returns &lt;meta name="description" content="Meta Example!" /&gt;
+//returns &lt;meta name="keywords" content="fuel, rocks" /&gt;
+echo Html::meta($meta);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>doctype($type = 'xhtml1-trans')</h4>
+			<p>The <strong>doctype</strong> method returns a correctly formated doctype tag.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$type</kbd></th>
+								<td>'xhtml1-trans'</td>
+								<td>Type of html doctype tag to be outputted.<br />Accepted Values: <kbd>xhtml11</kbd>, <kbd>xhtml1-strict</kbd>, <kbd>xhtml1-trans</kbd>, <kbd>xhtml1-frame</kbd>, <kbd>html5</kbd>, <kbd>html4-strict</kbd>, <kbd>html4-trans</kbd>, <kbd>html4-frame</kbd></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated doctype tag.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns the XHTML1 Transitional doctype tag.
+echo Html::doctype();
+
+//returns &lt;!DOCTYPE html&gt;
+echo Html::doctype('html5');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>header($content, $attr = false)</h4>
+			<p>The <strong>header</strong> method returns a div tag with the id of header. When used along with the Html::doctype('html5') method will default to a header tag.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$content</kbd></th>
+								<td><i>required</i></td>
+								<td>Content to be found between the tags.</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>array()</strong></td>
+								<td>Array of attributes to be applied to the tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated header or div tag.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//if html5 is set returns &lt;header&gt;Oh Yeah baby.&lt;/header&gt;
+echo Html::header('Oh Yeah baby');
+
+//without html5 returns &lt;div id="header"&gt;Oh Yeah baby.&lt;/div&gt;
+echo Html::header('Oh Yeah baby');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>audio($src, $attr = false)</h4>
+			<p>The <strong>audio</strong> method requires you to set html5 as the doctype in order to be used.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$src</kbd></th>
+								<td><i>required</i></td>
+								<td>Location of the source file or array containing multiple locations.</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>false</strong></td>
+								<td>Array of attributes to be applied to the audio tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated audio tag with its sources.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;audio&gt;&lt;source src="../sounds/beep.mp3" /&gt;&lt;/audio&gt;
+echo Html::audio('../sounds/beep.mp3');
+
+//returns &lt;audio&gt;&lt;source src="../sounds/beep.mp3" /&gt;&lt;source src="../sounds/frog.mp4" /&gt;&lt;/audio&gt;
+echo Html::audio(array('../sounds/beep.mp3','../sounds/frog.mp4'));</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>ul($list, $style = false)</h4>
+			<p>The <strong>ul</strong> method returns correctly formated single or multi-level unordered list.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$list</kbd></th>
+								<td><i>required</i></td>
+								<td>Array containing single or multi-level items to be outputed as list items.</td>
+							</tr>
+							<tr>
+								<th><kbd>$style</kbd></th>
+								<td><strong>false</strong></td>
+								<td>Array of attributes to be applied to the ul tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated list.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>/* returns
+&lt;ul id="todo" class="pending"&gt;
+	&lt;li&gt;red&lt;/li&gt;
+	&lt;li&gt;blue&lt;/li&gt;
+	&lt;li&gt;green&lt;/li&gt;
+	&lt;li&gt;yellow&lt;/li&gt;
+&lt;/ul&gt;
+*/
+$items = array('red', 'blue', 'green', 'yellow');
+$attr = array('id' => 'todo','class' => 'pending');
+echo Html::ul($items, $attr);
+
+/* returns
+&lt;ul class="order"&gt;
+	&lt;li&gt;colors
+		&lt;ul&gt;
+			&lt;li&gt;blue&lt;/li&gt;
+			&lt;li&gt;red&lt;/li&gt;
+			&lt;li&gt;green&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/li&gt;
+	&lt;li&gt;sky&lt;/li&gt;
+	&lt;li&gt;tools
+		&lt;ul&gt;
+			&lt;li&gt;screwdriver&lt;/li&gt;
+			&lt;li&gt;hammer&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/li&gt;
+&lt;/ul&gt;
+*/
+$items = array(
+	'colors' => array('blue', 'red', 'green'),
+	'sky',
+	'tools' => array('screw driver','hammer')
+);
+$attr = array('class' => 'order');
+echo Html::ol($items, $attr);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>ol($list, $style = false)</h4>
+			<p>The <strong>ol</strong> method returns correctly formated single or multi-level ordered list.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$list</kbd></th>
+								<td><i>required</i></td>
+								<td>Array containing single or multi-level items to be outputed as list items.</td>
+							</tr>
+							<tr>
+								<th><kbd>$style</kbd></th>
+								<td><strong>false</strong></td>
+								<td>(Optional) Array of attributes to be applied to the ol tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated list.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>/* returns
+&lt;ol id="todo" class="pending"&gt;
+	&lt;li&gt;red&lt;/li&gt;
+	&lt;li&gt;blue&lt;/li&gt;
+	&lt;li&gt;green&lt;/li&gt;
+	&lt;li&gt;yellow&lt;/li&gt;
+&lt;/ol&gt;
+*/
+$items = array('red', 'blue', 'green', 'yellow');
+$attr = array('id' => 'todo','class' => 'pending');
+echo Html::ol($items, $attr);
+
+/* returns
+&lt;ol class="order"&gt;
+	&lt;li&gt;colors
+		&lt;ol&gt;
+			&lt;li&gt;blue&lt;/li&gt;
+			&lt;li&gt;red&lt;/li&gt;
+			&lt;li&gt;green&lt;/li&gt;
+		&lt;/ol&gt;
+	&lt;/li&gt;
+	&lt;li&gt;sky&lt;/li&gt;
+	&lt;li&gt;tools
+		&lt;ol&gt;
+			&lt;li&gt;screwdriver&lt;/li&gt;
+			&lt;li&gt;hammer&lt;/li&gt;
+		&lt;/ol&gt;
+	&lt;/li&gt;
+&lt;/ol&gt;
+*/
+$items = array(
+	'colors' => array('blue', 'red', 'green'),
+	'sky',
+	'tools' => array('screw driver','hammer'));
+$attr = array('class' => 'order');
+echo Html::ol($items, $attr);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 Dan Horrigan
+		</p>
+	</section>
+
+</body>
+</html>

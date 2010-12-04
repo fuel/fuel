@@ -19,5 +19,5 @@ class Controller_Welcome extends Controller\Base {
 
 		$this->output = View::factory('welcome/404', $data);
 	}
-	
+
 }

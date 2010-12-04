@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Config Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Config Class</h2>
+
+		<p>The Config class handles nearly all configuration options in Fuel.  You use this class whenever you need to load in a config file, get a value or set a value.</p>
+
+		<h5>Config Groups</h5>
+
+		<p>A config group is simply a way to scope config options.  This avoids naming collisions.  All config files (db.php, routes.php, etc.) are loaded into groups of the same name, with the exception of the main <kbd>config.php</kbd> file.</p>
+
+		<article>
+			<h4>get($item, $default = null)</h4>
+			<p>The <strong>get</strong> method returns the desired config item.  If the item does not exist then <kbd>$default</kbd> is returned.  If the item you are retrieving is a group, then the entire group is returned.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$item</kbd></th>
+								<td><i>required</i></td>
+								<td>The name of the item to retrieve.  Groups and multi-dimensional arrays can be accessed by separating the levels by a dot (<kbd>.</kbd>)</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><kbd>null</kbd></td>
+								<td>(Optional) The default value to return if <kbd>$item</kbd> is not found.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Either <kbd>$item</kbd>, or <kbd>$default</kbd> if <kbd>$item</kbd> does not exist.  If <kbd>$item</kbd> is a group than an <kbd>array</kbd> containing the entire group.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// Outputs the current language set in config.php
+echo Config::get('language');
+
+// By default a non-existent item will return null
+if (Config::get('items_to_display') === null)
+{
+	throw new Exception('You must set the number of items to display in config.php');
+}
+
+// You can set a default for non-existent items as well
+$items_to_display = Config::get('items_to_display', 10);
+
+// This will load in the entire db group, which is the contents of config/db.php
+$db_configs = Config::get('db');
+
+// This will get which db connection is set to 'active' in the db config
+$active_db = Config::get('db.active');
+
+// You can go multiple levels deep as well.
+// This will fetch the hostname of the 'dev' db group
+$dev_host = Config::get('db.dev.connection.hostname');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		<article>
+			<h4>set($item, $value)</h4>
+			<p>The <strong>set</strong> method Sets a given <kbd>$item</kbd> to <kbd>$value</kbd>.  <kbd>$item</kbd> can be dot (<kbd>.</kbd>) separated, just like <kbd>get()</kbd>.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$item</kbd></th>
+								<td><i>required</i></td>
+								<td>The name of the item to set.  Groups and multi-dimensional arrays can be set by separating the levels by a dot (<kbd>.</kbd>).  If <kbd>$item</kbd> does not exist it will be created.</td>
+							</tr>
+							<tr>
+								<th><kbd>$value</kbd></th>
+								<td><i>required</i></td>
+								<td>The value to set <kbd>$item</kbd> to.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>This method always returns <kbd>true</kbd>.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// Sets the current language
+Config::set('language', 'en');
+
+// Sets the active db connection
+Config::set('db.active', 'test');
+
+// This sets a custom value that you can use later
+Config::set('items_to_display', 5);
+
+// You can also use dots to create custom groups and items
+Config::set('blog.items_to_display', 5);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		<article>
+			<h4>load($file, $group = null)</h4>
+			<p>The <strong>load</strong> method reads in a config file into the system.  It searches through the config directories for the requested file.  You can optionally group the config files to avoid naming collisions.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$file</kbd></th>
+								<td><i>required</i></td>
+								<td>The path to the config file, relative to the config directory.  Do not include the file extension (".php" is assumed).</td>
+							</tr>
+							<tr>
+								<th><kbd>$group</kbd></th>
+								<td><kbd>null</kbd></td>
+								<td>(Optional) A group name to use.  If set to <kbd>true</kbd> then a group of the same name as <kbd>$file</kbd> will be created.  If this is not set or is <kbd>null</kbd> then the loaded config will be merged with the root config.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>An <kbd>array</kbd> containing the configuration that has been loaded.  If the config file has already been loaded then it will return <kbd>false</kbd></td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// This merges the "custom" config file in with the root config.
+Config::load('custom');
+
+// This loads the "custom" config file in a group named "custom".
+Config::load('custom', true);
+
+// This loads the "custom" config file in a group named "foo".
+Config::load('custom', 'foo');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 Dan Horrigan
+		</p>
+	</section>
+
+</body>
+</html>
