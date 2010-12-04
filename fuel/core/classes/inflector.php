@@ -179,6 +179,21 @@ class Inflector {
 	}
 
 	/**
+	 * Takes the namespace off the given class name.
+	 *
+	 * @param	string	$class_name	the class name
+	 * @return	string	the string without the namespace
+	 */
+	public static function denamespace($class_name)
+	{
+		if ($last_separator = strrpos($class_name, '\\'))
+		{
+			$class_name = substr($class_name, $last_separator + 1);
+		}
+		return $class_name;
+	}
+
+	/**
 	 * Takes a class name and determines the table name.  The table name is a
 	 * pluralized version of the class name.
 	 *
@@ -187,6 +202,11 @@ class Inflector {
 	 */
 	public static function tableize($class_name)
 	{
+		$class_name = static::denamespace(strtolower($class_name));
+		if (strncasecmp($class_name, 'Model_', 6) === 0)
+		{
+			$class_name = substr($class_name, 6);
+		}
 		return static::pluralize(static::underscore($class_name));
 	}
 
@@ -210,6 +230,11 @@ class Inflector {
 	 */
 	public static function foreign_key($class_name, $use_underscore = true)
 	{
+		$class_name = static::denamespace(strtolower($class_name));
+		if (strncasecmp($class_name, 'Model_', 6) === 0)
+		{
+			$class_name = substr($class_name, 6);
+		}
 		return static::underscore(static::demodulize($class_name)).($use_underscore ? "_id" : "id");
 	}
 
