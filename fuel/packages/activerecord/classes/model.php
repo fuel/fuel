@@ -33,7 +33,7 @@ class Model {
 
 	protected static $primary_key = 'id';
 
-	protected static $table_name;
+	protected $table_name;
 
 	public $new_record = true;
 
@@ -64,9 +64,9 @@ class Model {
 			}
 		}
 
-		static::$table_name = App\Inflector::tableize(get_called_class());
+		$this->table_name = App\Inflector::tableize(get_called_class());
 
-		$this->columns = array_keys(App\Database::instance()->list_columns(static::$table_name));
+		$this->columns = array_keys(App\Database::instance()->list_columns($this->table_name));
 
 		if (is_array($params))
 		{
@@ -261,7 +261,7 @@ class Model {
 					$values[] = $this->$column;
 				}
 			}
-			$res = DB::insert(static::$table_name, $columns)->values($values)->execute();
+			$res = DB::insert($this->table_name, $columns)->values($values)->execute();
 
 			// Failed to save the new record
 			if ($res[0] === 0)
@@ -295,7 +295,7 @@ class Model {
 				}
 				$values[$column] = is_null($this->$column) ? 'NULL' : $this->$column;
 			}
-			$res = DB::update(static::$table_name)
+			$res = DB::update($this->table_name)
 						->set($values)
 						->where(static::$primary_key, '=', $this->{static::$primary_key})
 						->limit(1)
@@ -344,7 +344,7 @@ class Model {
 			$assoc->destroy($this);
 		}
 
-		DB::delete(static::$table_name)
+		DB::delete($this->table_name)
 				->where(static::$primary_key, '=', $this->{static::$primary_key})
 				->limit(1)
 				->execute();
@@ -388,7 +388,8 @@ class Model {
 
 	public static function find($id, $options = array())
 	{
-		$query = static::_find_query($id, $options);
+		$table_name = App\Inflector::tableize(get_called_class());
+		$query = static::_find_query($table_name, $id, $options);
 		$rows = $query['result']->as_array();
 
 		$base_objects = array();
@@ -405,7 +406,7 @@ class Model {
 			if (count($query['column_lookup']) > 0)
 			{
 				$objects = static::transform_row($row, $query['column_lookup']);
-				$ob_key = md5(serialize($objects[static::$table_name]));
+				$ob_key = md5(serialize($objects[$table_name]));
 
 				/* set cur_object to base object for this row; reusing if possible */
 				if (array_key_exists($ob_key, $base_objects))
@@ -414,7 +415,7 @@ class Model {
 				}
 				else
 				{
-					$cur_object = new static($objects[static::$table_name], false);
+					$cur_object = new static($objects[$table_name], false);
 					$base_objects[$ob_key] = $cur_object;
 				}
 
@@ -449,7 +450,7 @@ class Model {
 				array_shift($base_objects);
 	}
 
-	protected static function _find_query($id, $options = array())
+	protected static function _find_query($table_name, $id, $options = array())
 	{
 		$item = new static;
 
@@ -496,7 +497,7 @@ class Model {
 		// Start building the query
 		$query = call_user_func_array('DB::select', $select);
 
-		$query->from(static::$table_name);
+		$query->from($table_name);
 
 		foreach ($joins as $join)
 		{
@@ -532,7 +533,7 @@ class Model {
 		}
 		elseif ($id != 'all' && $id != 'first')
 		{
-			$query->where(static::$primary_key, '=', $id);;
+			$query->where($table_name.'.'.static::$primary_key, '=', $id);;
 		}
 
 		if (array_key_exists('where', $options) and is_array($options['where']))

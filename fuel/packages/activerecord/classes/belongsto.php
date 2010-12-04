@@ -17,26 +17,25 @@ namespace ActiveRecord;
 use Fuel\Application as App;
 use Fuel\Application\DB;
 
-class HasOne extends Association {
+class BelongsTo extends Association {
 
 	public function __construct(&$source, $dest, $options = null)
 	{
 		parent::__construct($source, $dest, $options);
-		$this->foreign_key = App\Inflector::foreign_key($this->source_class);
+		$this->foreign_key = App\Inflector::foreign_key($this->dest_class);
 	}
 
 	public function set($value, &$source)
 	{
 		if ($value instanceof $this->dest_class)
 		{
-			if ( ! $source->is_new_record())
+			if ( ! $value->is_new_record())
 			{
-				$value->{$this->foreign_key} = $source->{$source->get_primary_key()};
-				$value->save();
+				$source->{$this->foreign_key} = $value->{$value->get_primary_key()};
 			}
 			else
 			{
-				$value->{$this->foreign_key} = null;
+				$source->{$this->foreign_key} = null;
 			}
 			$this->value = $value;
 		}
@@ -46,38 +45,32 @@ class HasOne extends Association {
 		}
 	}
 
-	public function get(&$source, $force = false)
+	public function get(&$source, $force=false)
 	{
-		if ( ! ($this->value instanceof $this->dest_class) || $force)
+		if ($this->value instanceof $this->dest_class && !$force)
 		{
-			if ($source->is_new_record())
-			{
-				return null;
-			}
+			return $this->value;
+		}
+		else
+		{
 			$this->value = call_user_func_array(
 							array($this->dest_class, 'find'),
-							array('first',
-								array('where' => array(
-									array($this->foreign_key, '=', $source->{$source->get_primary_key()})),
-								)
-							)
-						);
+							array($source->{$this->foreign_key}));
+			return $this->value;
 		}
-		return $this->value;
 	}
 
 	public function join()
 	{
 		$dest_table = App\Inflector::tableize($this->dest_class);
 		$source_table = App\Inflector::tableize($this->source_class);
-		$source_inst = new $this->source_class;
 		$dest_inst = new $this->dest_class;
 		$columns = $dest_inst->get_columns();
 
 		$join = array(
 			'table'	=> $dest_table,
 			'type'	=> 'LEFT OUTER',
-			'on'	=> array($source_table.'.'.$source_inst->get_primary_key(), '=', $dest_table.'.'.$this->foreign_key)
+			'on'	=> array($source_table.'.'.$this->foreign_key, '=', $dest_table.'.'.$dest_inst->get_primary_key())
 		);
 
 		return array(array($dest_table => $columns), $join);
@@ -100,4 +93,4 @@ class HasOne extends Association {
 
 }
 
-/* End of file hasone.php */
+/* End of file belongsto.php */
