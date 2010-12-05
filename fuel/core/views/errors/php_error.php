@@ -102,6 +102,7 @@ namespace Fuel\Application;
 </span></span><?php endforeach; ?></pre>
 <?php endif; ?>
 		<div class="fuel_backtrace">
+			<strong>Backtrace</strong>
 		<ol>
 		<?php foreach($backtrace as $trace): ?>
 			<li><?php
