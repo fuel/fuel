@@ -33,7 +33,6 @@ class Session_Memcached extends Session_Driver {
 	 */
 	public function init()
 	{
-echo "<h2>Init</h2>";
 		// generic driver initialisation
 		parent::init();
 
@@ -75,7 +74,6 @@ echo "<h2>Init</h2>";
 	 */
 	public function create()
 	{
-echo "<h2>Create</h2>";
 		// create a new session
 		$this->keys['session_id']	= $this->_new_session_id();
 		$this->keys['previous_id']	= $this->keys['session_id'];	// prevents errors if previous_id has a unique index
@@ -102,7 +100,6 @@ echo "<h2>Create</h2>";
 	 */
 	public function read($force = false)
 	{
-echo "<h2>Read</h2>";
 		// get the session cookie
 		$cookie = $this->_get_cookie();
 
@@ -117,13 +114,11 @@ echo "<h2>Read</h2>";
 
 		if ($payload === false)
 		{
-echo "<h3>not found: ",$this->keys['session_id'],"</h3>";
 			// try to find the previous one
 			$payload = $this->_read_memcached($this->keys['previous_id']);
 
 			if ($payload === false)
 			{
-echo "<h3>not found: ",$this->keys['previous_id'],"</h3>";
 				// cookie present, but session record missing. force creation of a new session
 				$this->read(true);
 				return;
@@ -136,11 +131,9 @@ echo "<h3>not found: ",$this->keys['previous_id'],"</h3>";
 		// session referral?
 		if (isset($payload['rotated_session_id']))
 		{
-echo "<h3>Session referral</h3>";
 			$payload = $this->_read_memcached($payload['rotated_session_id']);
 			if ($payload === false)
 			{
-echo "<h3>not found: ",$this->keys['previous_id'],"</h3>";
 				// cookie present, but session record missing. force creation of a new session
 				$this->read(true);
 				return;
@@ -155,7 +148,7 @@ echo "<h3>not found: ",$this->keys['previous_id'],"</h3>";
 				$payload = $this->_unserialize($payload);
 			}
 		}
-Debug::dump($payload);
+
 		if (isset($payload[0])) $this->data = $payload[0];
 		if (isset($payload[1])) $this->flash = $payload[1];
 	}
@@ -170,7 +163,6 @@ Debug::dump($payload);
 	 */
 	public function write()
 	{
-echo "<h2>Write</h2>";
 		// do we have something to write?
 		if ( ! empty($this->keys))
 		{
