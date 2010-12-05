@@ -13,6 +13,9 @@ namespace Fuel;
 
 class DB {
 
+	public static $query_count = 0;
+
+
 	/**
 	 * Create a new [Database_Query] of the given type.
 	 *
