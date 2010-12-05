@@ -16,37 +16,93 @@ namespace ActiveRecord;
 
 use Fuel\Application as App;
 use Fuel\Application\DB;
+use Fuel\Application\Database;
+use Fuel\Application\Inflector;
 
 class Model {
 
-	protected static $class = null;
+	/**
+	 * Holds the class name of the child object that extends ActiveRecord\Model
+	 *
+	 * @var	string	the class name
+	 */
+	public $class_name = null;
 
+	/**
+	 * Holds the primary key for the table associated with this model
+	 *
+	 * @var	string	the primary key
+	 */
+	public $primary_key = 'id';
+
+	/**
+	 * Holds all the columns for this model
+	 * 
+	 * @var	array	the columns
+	 */
 	protected $columns = array();
 
-	protected $attributes = array();
+	/**
+	 * Holds all the data for the record
+	 *
+	 * @var	array	the date
+	 */
+	protected $data = array();
 
+	/**
+	 * Holds all the associations for the model
+	 * 
+	 * @var	array	the associations
+	 */
 	protected $associations = array();
 
+	/**
+	 * Holds the modified state of the current model.
+	 * 
+	 * @var	bool	the state
+	 */
 	protected $is_modified = false;
 
+	/**
+	 * Holds the frozen state of the model object.  An object is frozen once
+	 * it has been destroyed.
+	 * 
+	 * @var	bool	the state
+	 */
 	protected $frozen = false;
 
-	protected static $primary_key = 'id';
-
+	/**
+	 * The table name of the model.
+	 * 
+	 * @var	string	the table name
+	 */
 	protected $table_name;
 
+	/**
+	 * Holds if this is a new record or not.
+	 * 
+	 * @var	bool	the status
+	 */
 	public $new_record = true;
 
+	/**
+	 * The association types that ActiveRecord supports.
+	 * 
+	 * @var	array	the types
+	 */
 	private $assoc_types = array('belongs_to', 'has_many', 'has_one');
+
 
 	public function __construct($params=null, $new_record=true, $is_modified=false)
 	{
+		$this->class_name = get_class($this);
+
 		// Setup all the associations
 		foreach ($this->assoc_types as $type)
 		{
 			if (isset($this->{$type}))
 			{
-				$class_name = 'ActiveRecord\\'.App\Inflector::classify($type);
+				$class_name = 'ActiveRecord\\'.Inflector::classify($type);
 
 				foreach ($this->{$type} as $assoc)
 				{
@@ -64,9 +120,9 @@ class Model {
 			}
 		}
 
-		$this->table_name = App\Inflector::tableize(get_called_class());
+		$this->table_name = Inflector::tableize($this->class_name);
 
-		$this->columns = array_keys(App\Database::instance()->list_columns($this->table_name));
+		$this->columns = array_keys(Database::instance()->list_columns($this->table_name));
 
 		if (is_array($params))
 		{
@@ -81,9 +137,9 @@ class Model {
 
 	public function __get($name)
 	{
-		if (array_key_exists($name, $this->attributes))
+		if (array_key_exists($name, $this->data))
 		{
-			return $this->attributes[$name];
+			return $this->data[$name];
 		}
 		elseif (array_key_exists($name, $this->associations))
 		{
@@ -95,8 +151,7 @@ class Model {
 		}
 		elseif (preg_match('/^(.+?)_ids$/', $name, $matches))
 		{
-			/* allow for $p->comment_ids type gets on HasMany associations */
-			$assoc_name = App\Inflector::pluralize($matches[1]);
+			$assoc_name = Inflector::pluralize($matches[1]);
 			if ($this->associations[$assoc_name] instanceof HasMany)
 			{
 				return $this->associations[$assoc_name]->get_ids($this);
@@ -113,15 +168,14 @@ class Model {
 			throw new Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
 		}
 
-		/* allow for $p->comment_ids type sets on HasMany associations */
 		if (preg_match('#(.+?)_ids$#', $name, $matches))
 		{
-			$assoc_name = App\Inflector::pluralize($matches[1]);
+			$assoc_name = Inflector::pluralize($matches[1]);
 		}
 
 		if (in_array($name, $this->columns))
 		{
-			$this->attributes[$name] = $value;
+			$this->data[$name] = $value;
 			$this->is_modified = true;
 		}
 		elseif ($value instanceof Association)
@@ -186,7 +240,7 @@ class Model {
 
 	public function get_primary_key()
 	{
-		return static::$primary_key;
+		return $this->primary_key;
 	}
 
 	public function is_frozen()
@@ -248,7 +302,7 @@ class Model {
 			$columns = array();
 			foreach ($this->columns as $column)
 			{
-				if ($column == static::$primary_key)
+				if ($column == $this->primary_key)
 				{
 					continue;
 				}
@@ -270,7 +324,7 @@ class Model {
 				return false;
 			}
 
-			$this->{static::$primary_key} = $res[0];
+			$this->{$this->primary_key} = $res[0];
 			$this->new_record = false;
 			$this->is_modified = false;
 
@@ -290,7 +344,7 @@ class Model {
 
 			foreach ($this->columns as $column)
 			{
-				if ($column == static::$primary_key)
+				if ($column == $this->primary_key)
 				{
 					continue;
 				}
@@ -298,7 +352,7 @@ class Model {
 			}
 			$res = DB::update($this->table_name)
 						->set($values)
-						->where(static::$primary_key, '=', $this->{static::$primary_key})
+						->where($this->primary_key, '=', $this->{$this->primary_key})
 						->limit(1)
 						->execute();
 
@@ -346,7 +400,7 @@ class Model {
 		}
 
 		DB::delete($this->table_name)
-				->where(static::$primary_key, '=', $this->{static::$primary_key})
+				->where($this->primary_key, '=', $this->{$this->primary_key})
 				->limit(1)
 				->execute();
 
@@ -359,22 +413,78 @@ class Model {
 		return true;
 	}
 
-	/**
-	 * A static constructor that gets called by the autoloader.  Gets the class
-	 * name of the model that was loaded.
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public static function _init()
-	{
-		static::$class = get_called_class();
-	}
 
-	/* transform_row -- transforms a row into its various objects
-	  accepts: row from SQL query (array), lookup array of column names
-	  return: object keyed by table names and real columns names
+	/**
+	 * This allows for queries called by a static method on the model class.  It
+	 * supports both 'and' and 'or' queries, or a mixture of both:
+	 *
+	 * <code>
+	 * Model_User::find_by_group_id(2);
+	 * Model_User::find_by_username_and_password('demo', 'password');
+	 * Model_User::find_by_username_or_group_id('demo', 2);
+	 * Model_User::find_by_email_and_password_or_group_id('demo@example.com', 'password', 2);
+	 * </code>
+	 *
+	 * @param	string	$name		the method name called
+	 * @param	array	$arguments	the method arguments
+	 * @return	object|array	an instance or array of instances found
 	 */
+	public static function __callStatic($name, $arguments)
+	{
+		if ($name == '_init')
+		{
+			return;
+		}
+		if (strncmp($name, 'find_by_', 8) !== 0 && $name != '_init')
+		{
+			throw new Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
+		}
+		$name = substr($name, 8);
+		$table_name = Inflector::tableize(get_called_class());
+
+		$and_parts = explode('_and_', $name);
+
+		$where = array();
+		$or_where = array();
+
+		foreach ($and_parts as $and_part)
+		{
+			$or_parts = explode('_or_', $and_part);
+			if (count($or_parts) == 1)
+			{
+				$where[] = array($table_name.'.'.$or_parts[0], '=', array_shift($arguments));
+			}
+			else
+			{
+				foreach($or_parts as $or_part)
+				{
+					$or_where[] = array($table_name.'.'.$or_part, '=', array_shift($arguments));
+				}
+			}
+		}
+
+		$options = count($arguments) > 0 ? array_pop($arguments) : array();
+
+		if ( ! array_key_exists('where', $options))
+		{
+			$options['where'] = $where;
+		}
+		else
+		{
+			$options['where'] = $options['where'] + $where;
+		}
+
+		if ( ! array_key_exists('or_where', $options))
+		{
+			$options['or_where'] = $or_where;
+		}
+		else
+		{
+			$options['or_where'] = $options['or_where'] + $or_where;
+		}
+
+		return static::find('all', $options);
+	}
 
 	static function transform_row($row, $col_lookup)
 	{
@@ -389,21 +499,13 @@ class Model {
 
 	public static function find($id, $options = array())
 	{
-		$table_name = App\Inflector::tableize(get_called_class());
+		$table_name = Inflector::tableize(get_called_class());
 		$query = static::_find_query($table_name, $id, $options);
 		$rows = $query['result']->as_array();
 
 		$base_objects = array();
 		foreach ($rows as $row)
 		{
-			/* if we've done a join we have some fancy footwork to do
-			  we're going to process one rows at a time.
-			  each row has a "base" object and objects that've been joined.
-			  the base object is whatever class we've been passed as $class.
-			  we only want to create one instance of each unique base object.
-			  as we see more rows we may be re-using an exising base object to
-			  append more join objects to its association.
-			 */
 			if (count($query['column_lookup']) > 0)
 			{
 				$objects = static::transform_row($row, $query['column_lookup']);
@@ -420,16 +522,15 @@ class Model {
 					$base_objects[$ob_key] = $cur_object;
 				}
 
-				/* now add association data as needed */
 				foreach ($objects as $table_name => $attributes)
 				{
-					if ($table_name == App\Inflector::tableize(get_called_class()))
+					if ($table_name == Inflector::tableize(get_called_class()))
 					{
 						continue;
 					}
 					foreach ($cur_object->associations as $assoc_name => $assoc)
 					{
-						if ($table_name == App\Inflector::pluralize($assoc_name))
+						if ($table_name == Inflector::pluralize($assoc_name))
 						{
 							$assoc->populate_from_find($attributes);
 						}
@@ -466,7 +567,7 @@ class Model {
 			$tables_to_columns = array();
 			$includes = array_map('trim', explode(',', $options['include']));
 
-			array_push($tables_to_columns, array(App\Inflector::tableize(get_class($item)) => $item->get_columns()));
+			array_push($tables_to_columns, array(Inflector::tableize(get_class($item)) => $item->get_columns()));
 
 			// get join part of query from association and column names
 			foreach ($includes as $include)
@@ -540,11 +641,11 @@ class Model {
 		}
 		if (is_array($id))
 		{
-			$query->where(static::$primary_key, 'IN', $id);
+			$query->where($item->primary_key, 'IN', $id);
 		}
 		elseif ($id != 'all' && $id != 'first')
 		{
-			$query->where($table_name.'.'.static::$primary_key, '=', $id);;
+			$query->where($table_name.'.'.$item->primary_key, '=', $id);;
 		}
 
 		if (array_key_exists('where', $options) and is_array($options['where']))
@@ -555,7 +656,13 @@ class Model {
 			}
 		}
 
-
+		if (array_key_exists('or_where', $options) and is_array($options['or_where']))
+		{
+			foreach ($options['or_where'] as $conditional)
+			{
+				$query->or_where($conditional[0], $conditional[1], $conditional[2]);
+			}
+		}
 
 		// It's all built, now lets execute
 		$result = $query->execute();
