@@ -22,11 +22,18 @@ use Fuel\Application\Inflector;
 class Model {
 
 	/**
+	 * The table name of the model.
+	 *
+	 * @var	string	the table name
+	 */
+	protected $table_name = null;
+
+	/**
 	 * Holds the class name of the child object that extends ActiveRecord\Model
 	 *
 	 * @var	string	the class name
 	 */
-	public $class_name = null;
+	protected $class_name = null;
 
 	/**
 	 * Holds the primary key for the table associated with this model
@@ -72,13 +79,6 @@ class Model {
 	protected $frozen = false;
 
 	/**
-	 * The table name of the model.
-	 * 
-	 * @var	string	the table name
-	 */
-	protected $table_name;
-
-	/**
 	 * Holds if this is a new record or not.
 	 * 
 	 * @var	bool	the status
@@ -92,8 +92,9 @@ class Model {
 	 */
 	private $assoc_types = array('belongs_to', 'has_many', 'has_one');
 
+	protected static $foreign_keys = array();
 
-	public function __construct($params=null, $new_record=true, $is_modified=false)
+	public function __construct($params = null, $new_record = true, $is_modified = false)
 	{
 		$this->class_name = get_class($this);
 
@@ -120,9 +121,15 @@ class Model {
 			}
 		}
 
-		$this->table_name = Inflector::tableize($this->class_name);
+		if ($this->table_name === null)
+		{
+			$this->table_name = Inflector::tableize($this->class_name);
+		}
 
-		$this->columns = array_keys(Database::instance()->list_columns($this->table_name));
+		if (empty($this->columns))
+		{
+			$this->columns = array_keys(Database::instance()->list_columns($this->table_name));
+		}
 
 		if (is_array($params))
 		{
@@ -182,6 +189,7 @@ class Model {
 		{
 			/* call from constructor to setup association */
 			$this->associations[$name] = $value;
+			static::$foreign_keys[$this->associations[$name]->foreign_key] = array();
 		}
 		elseif (array_key_exists($name, $this->associations))
 		{
@@ -233,37 +241,181 @@ class Model {
 	}
 
 
+	/**
+	 * Gets tbe columns for the current model
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = new User;
+	 * $user->get_columns();
+	 * </code>
+	 *
+	 * @return	array	the columns
+	 */
 	public function get_columns()
 	{
 		return $this->columns;
 	}
 
+	/**
+	 * Gets tbe primary key for the current model
+	 * 
+	 * Usage:
+	 * 
+	 * <code>
+	 * $user = new User;
+	 * $user->get_primary_key();
+	 * </code>
+	 * 
+	 * @return	string	the primary key
+	 */
 	public function get_primary_key()
 	{
 		return $this->primary_key;
 	}
 
+	/**
+	 * Checks if the instance is frozen or not
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(3);
+	 * $user->destroy();
+	 * $user->is_frozen(); // Returns true
+	 * </code>
+	 *
+	 * @return	bool	frozen status
+	 */
 	public function is_frozen()
 	{
 		return $this->frozen;
 	}
 
+	/**
+	 * Checks if the instance is a new record or not
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = new User;
+	 * $user->is_new_record(); // Returns true
+	 * </code>
+	 *
+	 * @return	bool	new record status
+	 */
 	public function is_new_record()
 	{
 		return $this->new_record;
 	}
 
+	/**
+	 * Checks if the intance has been modified
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(2);
+	 * $user->is_modified(); // Returns false
+	 *
+	 * $user->name = "Joe";
+	 * $user->is_modified(); // Returns true
+	 * </code>
+	 *
+	 * @return	array	the columns
+	 */
 	public function is_modified()
 	{
 		return $this->is_modified;
 	}
 
+	/**
+	 * Sets the modified status
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(2);
+	 * $user->set_modified(true);
+	 */
 	public function set_modified($val)
 	{
 		$this->is_modified = $val;
 	}
 
-	public function update_attributes($attributes)
+	/**
+	 * Runs the find query.  This is called and used by the find() method, and
+	 * is separated out for simplicity.
+	 *
+	 * @param	int|string|array	$id			the primary key(s) to look up
+	 * @param	array				$options	a myriad of options
+	 * @return	array	the array of rows
+	 */
+	protected function _run_find($id, $options = array())
+	{
+		$query = $this->_find_query($this->table_name, $id, $options);
+		$rows = $query['result']->as_array();
+
+		$base_objects = array();
+		foreach ($rows as $row)
+		{
+			if (count($query['column_lookup']) > 0)
+			{
+				$foreign_keys = array();
+				$objects = static::transform_row($row, $query['column_lookup']);
+				$ob_key = md5(serialize($objects[$this->table_name]));
+
+				/* set cur_object to base object for this row; reusing if possible */
+				if (array_key_exists($ob_key, $base_objects))
+				{
+					$cur_object = $base_objects[$ob_key];
+				}
+				else
+				{
+					$cur_object = new $this->class_name($objects[$this->table_name], false);
+					$base_objects[$ob_key] = $cur_object;
+				}
+
+				foreach ($objects as $table => $attributes)
+				{
+					if ($table == $this->table_name)
+					{
+						continue;
+					}
+					foreach ($cur_object->associations as $assoc_name => $assoc)
+					{
+						$assoc->populate_from_find($attributes);
+					}
+				}
+			}
+			else
+			{
+				$item = new $this->class_name($row, false);
+				array_push($base_objects, $item);
+			}
+		}
+		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
+		{
+			throw new Exception("Couldn't find anything.", Exception::RecordNotFound);
+		}
+
+		return (is_array($id) || $id == 'all') ? array_values($base_objects) : array_shift($base_objects);
+	}
+
+	/**
+	 * Updates the given data then saves the record
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(2);
+	 * $user->update(array('name' => 'Joe'));
+	 * </code>
+	 *
+	 * @return	bool	save status
+	 */
+	public function update($attributes)
 	{
 		foreach ($attributes as $key => $value)
 		{
@@ -273,6 +425,21 @@ class Model {
 		return $this->save();
 	}
 
+	/**
+	 * Saves the current record.
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(2);
+	 * $user->is_modified(); // Returns false
+	 *
+	 * $user->name = "Joe";
+	 * $user->is_modified(); // Returns true
+	 * </code>
+	 *
+	 * @return	array	the columns
+	 */
 	public function save()
 	{
 		if (method_exists($this, 'before_save'))
@@ -316,7 +483,7 @@ class Model {
 					$values[] = $this->$column;
 				}
 			}
-			$res = DB::insert($this->table_name, $columns)->values($values)->execute();
+			$res = DB::insert(static::$table_name, $columns)->values($values)->execute();
 
 			// Failed to save the new record
 			if ($res[0] === 0)
@@ -399,7 +566,7 @@ class Model {
 			$assoc->destroy($this);
 		}
 
-		DB::delete($this->table_name)
+		DB::delete(static::$table_name)
 				->where($this->primary_key, '=', $this->{$this->primary_key})
 				->limit(1)
 				->execute();
@@ -412,7 +579,6 @@ class Model {
 		}
 		return true;
 	}
-
 
 	/**
 	 * This allows for queries called by a static method on the model class.  It
@@ -439,10 +605,14 @@ class Model {
 		{
 			throw new Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
 		}
+
 		$name = substr($name, 8);
-		$table_name = Inflector::tableize(get_called_class());
 
 		$and_parts = explode('_and_', $name);
+
+		$temp_model = new static;
+		$table_name = $temp_model->table_name;
+		unset($temp_model);
 
 		$where = array();
 		$or_where = array();
@@ -499,62 +669,16 @@ class Model {
 
 	public static function find($id, $options = array())
 	{
-		$table_name = Inflector::tableize(get_called_class());
-		$query = static::_find_query($table_name, $id, $options);
-		$rows = $query['result']->as_array();
+		$instance = new static;
+		$results = $instance->_run_find($id, $options);
+		unset($instance);
 
-		$base_objects = array();
-		foreach ($rows as $row)
-		{
-			if (count($query['column_lookup']) > 0)
-			{
-				$objects = static::transform_row($row, $query['column_lookup']);
-				$ob_key = md5(serialize($objects[$table_name]));
-
-				/* set cur_object to base object for this row; reusing if possible */
-				if (array_key_exists($ob_key, $base_objects))
-				{
-					$cur_object = $base_objects[$ob_key];
-				}
-				else
-				{
-					$cur_object = new static($objects[$table_name], false);
-					$base_objects[$ob_key] = $cur_object;
-				}
-
-				foreach ($objects as $table_name => $attributes)
-				{
-					if ($table_name == Inflector::tableize(get_called_class()))
-					{
-						continue;
-					}
-					foreach ($cur_object->associations as $assoc_name => $assoc)
-					{
-						if ($table_name == Inflector::pluralize($assoc_name))
-						{
-							$assoc->populate_from_find($attributes);
-						}
-					}
-				}
-			}
-			else
-			{
-				$item = new static($row, false);
-				array_push($base_objects, $item);
-			}
-		}
-		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
-		{
-			throw new Exception("Couldn't find anything.", Exception::RecordNotFound);
-		}
-		return (is_array($id) || $id == 'all') ?
-				array_values($base_objects) :
-				array_shift($base_objects);
+		return $results;
 	}
 
-	protected static function _find_query($table_name, $id, $options = array())
+	protected function _find_query($table_name, $id, $options = array())
 	{
-		$item = new static;
+		$item = new $this->class_name;
 
 		($id == 'first') and $options['limit'] = 1;
 
@@ -567,7 +691,7 @@ class Model {
 			$tables_to_columns = array();
 			$includes = array_map('trim', explode(',', $options['include']));
 
-			array_push($tables_to_columns, array(Inflector::tableize(get_class($item)) => $item->get_columns()));
+			array_push($tables_to_columns, array($table_name => $item->get_columns()));
 
 			// get join part of query from association and column names
 			foreach ($includes as $include)
