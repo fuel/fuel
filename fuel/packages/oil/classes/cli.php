@@ -37,7 +37,7 @@ class Cli
 					case 'model':
 					case 'view':
 					case 'views':
-					case 'model':
+					case 'migration':
 
 						call_user_func('Oil\Generate::'.$args[2], array_slice($args, 3));
 

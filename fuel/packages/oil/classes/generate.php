@@ -18,6 +18,11 @@ use Fuel\Application as App;
 
 class Generate
 {
+	private static $_default_constraints = array(
+		'varchar' => 255,
+		'int' => 11
+	);
+
 	public function controller($args)
 	{
 		$singular = strtolower(array_shift($args));
@@ -91,7 +96,7 @@ MODEL;
 
 		if (self::write($filepath, $model))
 		{
-			echo "Created model $singular";
+			echo "Created model: " . App\Fuel::clean_path($filepath);
 		}
 	}
 
@@ -137,6 +142,55 @@ VIEW;
 	}
 
 
+	public function migration($args)
+	{
+		$migration_name = strtolower(array_shift($args));
+
+		// Starts with create, so lets create a table
+		if (strpos($migration_name, 'create_') === 0)
+		{
+			$mode = 'create_table';
+			$table = str_replace('create_', '', $migration_name);
+		}
+
+		// add_field_to_table
+		else if (strpos($migration_name, 'add_') === 0)
+		{
+			$mode = 'add_fields';
+
+			preg_match('/add_[a-z0-9_]+_to_([a-z0-9_]+)/i', $migration_name, $matches);
+			
+			$table = $matches[1];
+		}
+
+		// remove_field_from_table
+		else if (strpos($migration_name, 'remove_') === 0)
+		{
+			$mode = 'remove_field';
+
+			preg_match('/remove_([a-z0-9_])+_from_([a-z0-9_]+)/i', $migration_name, $matches);
+
+			$remove_field = $matches[1];
+			$table = $matches[2];
+		}
+
+		// drop_table
+		else if (strpos($migration_name, 'drop_') === 0)
+		{
+			$mode = 'drop_table';
+			$table = str_replace('drop_', '', $migration_name);
+		}
+		unset($matches);
+
+		// Now that we know that, lets build the migration
+
+		if ($filepath = static::_build_migration($migration_name, $mode, $table, $args))
+		{
+			echo "\tCreated migration: " . App\Fuel::clean_path($filepath).PHP_EOL;
+		}
+	}
+
+
 	public function help()
 	{
 		echo <<<HELP
@@ -162,7 +216,11 @@ Examples:
 HELP;
 	}
 
-	public function write($filepath, $data)
+
+	// Helper functions
+	
+
+	private function write($filepath, $data)
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
@@ -183,7 +241,120 @@ HELP;
 
 		return $result;
 	}
-}
 
+
+	private function _build_migration($migration_name, $mode, $table, $args)
+	{
+		$migration_name = ucfirst(strtolower($migration_name));
+		
+		if ($mode == 'create_table' or $mode == 'add_fields')
+		{
+			$field_str = '';
+
+			foreach ($args as $arg)
+			{
+				// Parse the argument for each field in a pattern of name:type[constraint]
+				preg_match('/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i', $arg, $matches);
+
+				$name = $matches[1];
+				$type = $matches[2];
+				$constraint = isset($matches[4]) ? $matches[4] : null;
+
+				if ($type === 'string')
+				{
+					$type = 'varchar';
+				}
+
+				if (in_array($type, array('text', 'blob', 'datetime')))
+				{
+					$field_str .= "\t\t\t'$name' => array('type' => '$type'),".PHP_EOL;
+				}
+
+				else
+				{
+					if ($constraint === null)
+					{
+						$constraint = self::$_default_constraints[$type];
+					}
+
+					$field_str .= "\t\t\t'$name' => array('type' => '$type', 'constraint' => $constraint),".PHP_EOL;
+				}
+			}
+
+		}
+
+		// Make the up and down based on mode
+		switch ($mode)
+		{
+			case 'create_table':
+				$up = <<<UP
+		DBUtil::create_table('{$table}', array(
+$field_str
+		), array('id'));
+UP;
+
+				$down = <<<DOWN
+		DBUtil::drop_table('{$table}');
+DOWN;
+			break;
+
+			case 'drop_table':
+				$up = <<<UP
+		DBUtil::drop_table('{$table}');
+UP;
+
+				$down = '';
+			break;
+
+			default:
+				$up = '';
+				$down = '';
+		}
+
+
+		$migration = <<<MIGRATION
+<?php
+
+namespace Fuel\Application;
+
+class Migration_{$migration_name} extends Migration {
+
+	function up()
+	{
+{$up}
+	}
+
+	function down()
+	{
+{$down}
+	}
+}
+MIGRATION;
+
+		$number = self::_find_migration_number();
+		$filepath = APPPATH . 'migrations/'.$number.'_' . strtolower($migration_name) . '.php';
+
+		if (glob(APPPATH .'migrations/*_' . strtolower($migration_name) . '.php'))
+		{
+			throw new Exception('A migration with this name already exists.');
+		}
+
+		if (self::write($filepath, $migration))
+		{
+			return $filepath;
+		}
+
+		return false;
+	}
+
+
+	private function _find_migration_number()
+	{
+		list($last) = explode('_', basename(end(glob(APPPATH .'migrations/*_*.php'))));
+		
+		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
+	}
+		
+}
 
 /* End of file model.php */
