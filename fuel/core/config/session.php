@@ -15,45 +15,75 @@
 namespace Fuel\Application;
 
 return array(
-	// Set it to false to prevent the static session from auto-initializing, know that it might make your session
-	// expire sooner because it's not updated when it's not used.
-	'auto_initialize'	=> true,
+	/**
+	 * global configuration
+	*/
 
-	// global defaults
-	'driver'			=> 'cookie',					// if no session type is requested, use the default
-	'match_ip'			=> false,						// check for an IP address match after loading the cookie (optional, default = false)
-	'match_ua'			=> true,						// check for a user agent match after loading the cookie (optional, default = true)
-	'cookie_name'		=> 'fuelid',					// name of the session cookie  (optional, default = 'fuelid')
-	'cookie_domain' 	=> '',							// cookie domain  (optional, default = '')
-	'cookie_path'		=> '/',							// cookie path  (optional, default = '/')
-	'expire_on_close'	=> true,						// if true, the session expires when the browser is closed (optional, default = false)
-	'expiration_time'	=> 7200,						// session expiration time, <= 0 means 2 years! (optional, default = 2 hours)
-	'rotation_time'		=> 300,							// session ID rotation time  (optional, default = 300)
-	'flash_id'			=> 'flash',						// default ID for flash variables  (optional, default = 'flash')
-	'flash_auto_expire'	=> false,						// if false, expire flash values only after it's used  (optional, default = true)
-	'write_on_set'		=> false,						// if true, writes are only done when you set a variable. if false, only at the end of a page request (optional, default = false)
+	// set it to false to prevent the static session from auto-initializing, know that it might make your session
+	// expire sooner because it's not updated when it's not used. note that auto-initializing always loads the default driver
+	'auto_initialize'	=> false,
+
+	// if no session type is requested, use the default
+	'driver'			=> 'cookie',
+
+	// check for an IP address match after loading the cookie (optional, default = false)
+	'match_ip'			=> false,
+
+	// check for a user agent match after loading the cookie (optional, default = true)
+	'match_ua'			=> true,
+
+	// cookie domain  (optional, default = '')
+	'cookie_domain' 	=> '',
+
+	// cookie path  (optional, default = '/')
+	'cookie_path'		=> '/',
+
+	// if true, the session expires when the browser is closed (optional, default = false)
+	'expire_on_close'	=> true,
+
+	// session expiration time, <= 0 means 2 years! (optional, default = 2 hours)
+	'expiration_time'	=> 7200,
+
+	// session ID rotation time  (optional, default = 300)
+	'rotation_time'		=> 300,
+
+	// default ID for flash variables  (optional, default = 'flash')
+	'flash_id'			=> 'flash',
+
+	// if false, expire flash values only after it's used  (optional, default = true)
+	'flash_auto_expire'	=> false,
+
+	// if true, writes are only done when you set a variable. if false, only at the end of a page request (optional, default = false)
+	'write_on_set'		=> false,
+
+	/**
+	 * specific driver configurations. to override a global setting, just add it to the driver config with a different value
+	*/
 
 	// special configuration settings for cookie based sessions
 	'cookie'			=> array(
-		'cookie_name'		=> 'cookieid',				// you can override any global config value at driver level
+		'cookie_name'		=> 'fuelcid',				// name of the session cookie for cookie based sessions
 		'write_on_set'		=> true,					// write the session cookie as soon as it's set
 						),
 
-	// special configuration settings for file based sessions
+	// specific configuration settings for file based sessions
 	'file'				=> array(
+		'cookie_name'		=> 'fuelfid',				// name of the session cookie for file based sessions
 		'path'				=>	'/tmp',					// path where the session files should be stored
 		'gc_probability'	=>	5						// probability % (between 0 and 100) for garbage collection
 						),
 
-	// special configuration settings for memcached based sessions
+	// specific configuration settings for memcached based sessions
 	'memcached'			=> array(
+		'cookie_name'		=> 'fuelmid',				// name of the session cookie for memcached based sessions
 		'servers'			=> array(					// array of servers and portnumbers that run the memcached service
 								array('host' => '127.0.0.1', 'port' => 11211, 'weight' => 100)
 							),
 						),
 
-	// special configuration settings for database based sessions
+	// specific configuration settings for database based sessions
 	'db'			=> array(
+		'cookie_name'		=> 'fueldid',				// name of the session cookie for database based sessions
 		'database'			=>	'dev',					// name of the database config
 		'table'				=>	'sessions',				// name of the sessions table
 		'gc_probability'	=>	5						// probability % (between 0 and 100) for garbage collection
