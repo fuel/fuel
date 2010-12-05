@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Cli;
+namespace Oil;
 
 class Exception extends \Fuel\Application\Exception {
 

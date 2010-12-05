@@ -21,25 +21,28 @@ class Generate
 	public function controller($args)
 	{
 		$singular = strtolower(array_shift($args));
-
+		$actions = $args;
+		
 		$plural = App\Inflector::pluralize($singular);
 
-		$filepath = APPPATH . 'classes/controller/' . $singular .'.php';
+		$filepath = APPPATH . 'classes/controller/' . $plural .'.php';
 
-		$class_name = 'Controller_' . ucfirst($singular);
+		$class_name = 'Controller_' . ucfirst($plural);
+
+		// Stick "blogs" to the start of the array
+		array_unshift($args, $plural);
+
+		// Create views folder and each view file
+		static::views($args);
 
 		$action_str = '';
-
-		// Create views folder
-		static::views(array($plural, $args));
-
-		foreach ($args as $action)
+		foreach ($actions as $action)
 		{
-			$action_str .= PHP_EOL."
-	public function action_{$action}()
+			$action_str .= '
+	public function action_'.$action.'()
 	{
-
-	}";
+		$this->output = View::factory(\''.$plural .'/' . $action .'\');
+	}'.PHP_EOL;
 		}
 
 		// Build Controller
@@ -49,9 +52,7 @@ class Generate
 namespace Fuel\Application;
 
 class {$class_name} extends Controller\Base {
-
 {$action_str}
-
 }
 
 /* End of file $singular.php */
@@ -60,7 +61,7 @@ CONTROLLER;
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			echo "Created model $singular";
+			echo "Created controller $plural";
 		}
 	}
 
@@ -96,9 +97,6 @@ MODEL;
 
 	public function views($args)
 	{
-		echo json_debug($args);
-		exit;
-		
 		$folder = array_shift($args);
 		$controller_title = App\Inflector::humanize($folder);
 
@@ -111,13 +109,13 @@ MODEL;
 
 		if ( ! is_dir($view_dir))
 		{
-			mkdir($view_dir, '0777');
+			mkdir($view_dir, 0777);
 		}
 
 		foreach ($args as $action)
 		{
 			$view_title = App\Inflector::humanize($action);
-			$view_filepath = Fuel::clean_path($view_dir . $action . '.php');
+			$view_filepath = App\Fuel::clean_path($view_file = $view_dir . $action . '.php');
 
 			$view = <<<VIEW
 <h2>{$controller_title} &raquo; {$view_title}</h2>
@@ -125,9 +123,9 @@ MODEL;
 <p>Edit this content in {$view_filepath}</p>
 VIEW;
 
-			if (self::write($view_dir . $action . '.php', $view))
+			if (self::write($view_file, $view))
 			{
-
+				echo "\tCreated view: {$view_file}".PHP_EOL;
 			}
 		}
 	}
@@ -158,8 +156,6 @@ Examples:
 HELP;
 	}
 
-
-
 	public function write($filepath, $data)
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
@@ -176,6 +172,8 @@ HELP;
 		}
 
 		@fclose($handle);
+
+		chmod($filepath, 0777);
 
 		return $result;
 	}
