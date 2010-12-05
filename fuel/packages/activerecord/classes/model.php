@@ -483,7 +483,7 @@ class Model {
 					$values[] = $this->$column;
 				}
 			}
-			$res = DB::insert(static::$table_name, $columns)->values($values)->execute();
+			$res = DB::insert($this->table_name, $columns)->values($values)->execute();
 
 			// Failed to save the new record
 			if ($res[0] === 0)
