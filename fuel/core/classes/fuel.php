@@ -182,7 +182,7 @@ class Fuel {
 		if ($prefix)
 		{
 			// prefix the path to the paths array
-			\array_shift(static::$_paths, $path);
+			\array_unshift(static::$_paths, $path);
 		}
 		else
 		{
