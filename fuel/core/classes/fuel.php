@@ -25,6 +25,8 @@ use Fuel\Application as App;
  */
 class Fuel {
 
+	const VERSION = '1.0.0-dev';
+
 	public static $initialized = false;
 
 	public static $env;
@@ -45,7 +47,7 @@ class Fuel {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function init($autoloaders)
+	public static function init($autoloaders = array())
 	{
 		if (static::$initialized)
 		{
@@ -111,11 +113,11 @@ class Fuel {
 
 		static::$initialized = true;
 	}
-	
+
 	/**
 	 * Cleans up Fuel execution, ends the output buffering, and outputs the
 	 * buffer contents.
-	 * 
+	 *
 	 * @access	public
 	 * @return	void
 	 */
@@ -128,8 +130,8 @@ class Fuel {
 
 		// TODO: There is probably a better way of doing this, but this works for now.
 		$output = \str_replace(
-				array('{exec_time}', '{mem_usage}'),
-				array(round($bm[0], 4), round($bm[1] / pow(1024, 2), 3)),
+				array('{exec_time}', '{mem_usage}', '{query_count}'),
+				array(round($bm[0], 4), round($bm[1] / pow(1024, 2), 3), DB::$query_count),
 				$output
 		);
 
@@ -171,16 +173,26 @@ class Fuel {
 		return $found;
 	}
 
-	public static function add_path($path)
+	/**
+	 * Add to paths which are used by Fuel::find_file()
+	 *
+	 * @param	string	the new path
+	 * @param	bool	whether to add just behind the APPPATH or to prefix
+	 */
+	public static function add_path($path, $prefix = FALSE)
 	{
-		// Bump off APPPATH
-		\array_shift(static::$_paths);
-
-		// Add the new path
-		\array_unshift(static::$_paths, $path);
-
-		// Add APPPATH back
-		\array_unshift(static::$_paths, APPPATH);
+		if ($prefix)
+		{
+			// prefix the path to the paths array
+			\array_unshift(static::$_paths, $path);
+		}
+		else
+		{
+			// find APPPATH index
+			$insert_at = \array_search(APPPATH, static::$_paths) + 1;
+			// insert new path just behind the APPPATH
+			array_splice(static::$_paths, $insert_at, 0, $path);
+		}
 	}
 
 	/**
@@ -197,12 +209,12 @@ class Fuel {
 
 	/**
 	 * Adds a package or multiple packages to the stack.
-	 * 
+	 *
 	 * Examples:
-	 * 
+	 *
 	 * static::add_package('foo');
 	 * static::add_package(array('foo' => PKGPATH.'bar/foo/'));
-	 * 
+	 *
 	 * @access	public
 	 * @param	array|string	the package name or array of packages
 	 * @return	void
@@ -231,7 +243,7 @@ class Fuel {
 
 	/**
 	 * Removes a package from the stack.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the package name
 	 * @return	void
@@ -249,34 +261,45 @@ class Fuel {
 	 * module. Won't register twice, will just return the path on a second call.
 	 *
 	 * @param	string	module name (lowercase prefix without underscore)
+	 * @param	bool	whether it is an active package
 	 */
-	public static function add_module($name)
+	public static function add_module($name, $active = false)
 	{
 		// First attempt registered prefixes
 		$mod_path = static::$packages['app']->prefix_path(ucfirst($name).'_');
-		if ($mod_path !== false)
-		{
-			return $mod_path;
-		}
-
 		// Or try registered module paths
-		foreach (App\Config::get('module_paths', array()) as $path)
+		if ($mod_path === false)
 		{
-			if (is_dir($mod_path = $path.strtolower($name).DS))
+			foreach (App\Config::get('module_paths', array()) as $path)
 			{
-				// Load module and end search
-				App\Fuel::$packages['app']->add_prefix(ucfirst($name).'_', $mod_path);
-
-				static::add_path($mod_path);
-
-				// We want modules to be able to have their own routes, so we reload routes.
-				App\Route::load_routes(true);
-				return $mod_path;
+				if (is_dir($mod_check_path = $path.strtolower($name).DS))
+				{
+					// Load module and end search
+					$mod_path = $mod_check_path;
+					App\Fuel::$packages['app']->add_prefix(ucfirst($name).'_', $mod_path);
+					break;
+				}
 			}
 		}
 
 		// not found
-		return false;
+		if ($mod_path === false)
+		{
+			return false;
+		}
+
+		// Active modules get their path prefixed and routes loaded
+		if ($active)
+		{
+			static::add_path($mod_path, true);
+
+			// We want modules to be able to have their own routes, so we reload routes.
+			App\Route::load_routes(true);
+			return $mod_path;
+		}
+
+		static::add_path($mod_path);
+		return $mod_path;
 	}
 
 	/**
@@ -312,7 +335,7 @@ class Fuel {
 
 	/**
 	 * Cleans a file path so that it does not contain absolute file paths.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the filepath
 	 * @return	string

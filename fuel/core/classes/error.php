@@ -97,7 +97,7 @@ class Error {
 		$data['error_line']	= $e->getLine();
 		$data['backtrace']	= $e->getTrace();
 
-		array_shift($data['backtrace']);
+		//array_shift($data['backtrace']);
 
 		$debug_lines = array();
 
@@ -107,29 +107,16 @@ class Error {
 			{
 				unset($data['backtrace'][$key]);
 			}
-			elseif (strncmp(strtolower($trace['file']), strtolower(APPPATH), strlen(APPPATH)) !== 0)
+			elseif ($trace['file'] == COREPATH.'classes/error.php')
 			{
 				unset($data['backtrace'][$key]);
 			}
-			else
-			{
-				if (empty($debug_lines))
-				{
-					$debug_lines = array(
-						'file'	=> $trace['file'],
-						'line'	=> $trace['line']
-					);
-				}
-			}
 		}
 
-		if (empty($debug_lines))
-		{
-			$debug_lines = array(
-				'file'	=> $data['filepath'],
-				'line'	=> $data['error_line']
-			);
-		}
+		$debug_lines = array(
+			'file'	=> $data['filepath'],
+			'line'	=> $data['error_line']
+		);
 
 		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
 

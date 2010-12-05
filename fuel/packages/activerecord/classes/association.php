@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fuel
  *
@@ -15,6 +14,9 @@
 
 namespace ActiveRecord;
 
+use Fuel\Application as App;
+use Fuel\Application\DB;
+
 class Association {
 
 	protected $dest_class;
@@ -22,7 +24,7 @@ class Association {
 	protected $value;
 	protected $options;
 
-	public function __construct($source, $dest, $options=null)
+	public function __construct($source, $dest, $options = null)
 	{
 		$this->source_class = get_class($source);
 
@@ -32,7 +34,7 @@ class Association {
 		}
 		else
 		{
-			$this->dest_class = Inflector::classify($dest);
+			$this->dest_class = App\Inflector::classify($dest);
 		}
 
 		if (isset($options['foreign_key']))
@@ -41,7 +43,17 @@ class Association {
 		}
 		else
 		{
-			$this->foreign_key = Inflector::foreign_key($this->source_class);
+			$this->foreign_key = App\Inflector::foreign_key($this->source_class);
+		}
+
+		if ( ! class_exists($this->dest_class))
+		{
+			$this->dest_class = 'Fuel\\Application\\Model\\'.$this->dest_class;
+		}
+
+		if ( ! class_exists($this->source_class))
+		{
+			$this->source_class = 'Fuel\\Application\\Model\\'.$this->source_class;
 		}
 
 		$this->options = $options;
@@ -49,10 +61,14 @@ class Association {
 
 	public function needs_saving()
 	{
-		if (!$this->value instanceof $this->dest_class)
+		if ( ! $this->value instanceof $this->dest_class)
+		{
 			return false;
+		}
 		else
+		{
 			return $this->value->is_new_record() || $this->value->is_modified();
+		}
 	}
 
 	public function destroy(&$source)
@@ -63,7 +79,9 @@ class Association {
 			if (is_array($this->value))
 			{
 				foreach ($this->value as $val)
+				{
 					$val->destroy();
+				}
 			}
 			else
 			{

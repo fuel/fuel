@@ -11,6 +11,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class Database_Query {
 
 	// Query type
@@ -188,7 +190,7 @@ class Database_Query {
 		if ( ! is_object($db))
 		{
 			// Get the database instance
-			$db = Database::instance($db);
+			$db = App\Database::instance($db);
 		}
 
 		// Compile the SQL query
@@ -217,6 +219,8 @@ class Database_Query {
 				$this->_type = Database::INSERT;
 				break;
 		}
+		
+		App\DB::$query_count++;
 		// Execute the query
 		$result = $db->query($this->_type, $sql, $this->_as_object);
 

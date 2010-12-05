@@ -206,7 +206,7 @@ class Request {
 		$route = App\Route::parse($this->uri);
 
 		// Register module as such when found
-		$mod_path = App\Fuel::add_module($route['segments'][0]);
+		$mod_path = App\Fuel::add_module($route['segments'][0], true);
 		if ( ! empty($mod_path))
 		{
 			$this->module = array_shift($route['segments']);
