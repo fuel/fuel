@@ -48,6 +48,11 @@ class Cli
 				}
 			break;
 
+			case 'r':
+			case 'refine':
+				call_user_func('Oil\Refine::'.$args[2], array_slice($args, 3));
+			break;
+
 			case '-v':
 			case '--version':
 
