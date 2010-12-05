@@ -114,7 +114,7 @@ class Model {
 		}
 
 		/* allow for $p->comment_ids type sets on HasMany associations */
-		if (preg_match('/^(.+?)_ids$/', $name, $matches))
+		if (preg_match('#(.+?)_ids$#', $name, $matches))
 		{
 			$assoc_name = App\Inflector::pluralize($matches[1]);
 		}
@@ -142,8 +142,9 @@ class Model {
 			$this->associations[$assoc_name]->set_ids($value, $this);
 		}
 		else
-			throw new Exception("attribute called '$name' doesn't exist",
-					Exception::AttributeNotFound);
+		{
+			throw new Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+		}
 	}
 
 	/* on any ActiveRecord object we can make method calls to a specific assoc.
@@ -501,7 +502,17 @@ class Model {
 
 		foreach ($joins as $join)
 		{
-			$query->join($join['table'], $join['type'])->on($join['on'][0], $join['on'][1], $join['on'][2]);
+			if ( ! array_key_exists('table', $join))
+			{
+				foreach ($join as $j)
+				{
+					$query->join($j['table'], $j['type'])->on($j['on'][0], $j['on'][1], $j['on'][2]);
+				}
+			}
+			else
+			{
+				$query->join($join['table'], $join['type'])->on($join['on'][0], $join['on'][1], $join['on'][2]);
+			}
 		}
 
 		// Get the limit
