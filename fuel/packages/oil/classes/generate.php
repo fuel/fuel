@@ -41,7 +41,8 @@ class Generate
 			$action_str .= '
 	public function action_'.$action.'()
 	{
-		$this->output = View::factory(\''.$plural .'/' . $action .'\');
+		$this->template->title = \'' . App\Inflector::humanize($plural) .' &raquo ' . App\Inflector::humanize($action) . '\';
+		$this->template->content = View::factory(\''.$plural .'/' . $action .'\');
 	}'.PHP_EOL;
 		}
 
@@ -51,7 +52,7 @@ class Generate
 
 namespace Fuel\Application;
 
-class {$class_name} extends Controller\Base {
+class {$class_name} extends Controller\Template {
 {$action_str}
 }
 
@@ -105,12 +106,19 @@ MODEL;
 			$args = array('index');
 		}
 
-		$view_dir = APPPATH . 'views/'.$folder.'/';
-
-		if ( ! is_dir($view_dir))
+		// Make the directory for these views to be store in
+		if ( ! is_dir($view_dir = APPPATH . 'views/'.$folder.'/'))
 		{
 			mkdir($view_dir, 0777);
 		}
+
+		// Add the default template if it doesnt exist
+		if ( ! file_exists($app_template = APPPATH . 'views/template.php'))
+		{
+			copy(PKGPATH . 'oil/views/template.php', $app_template);
+			chmod($app_template, 0666);
+		}
+		unset($app_template);
 
 		foreach ($args as $action)
 		{
@@ -118,8 +126,6 @@ MODEL;
 			$view_filepath = App\Fuel::clean_path($view_file = $view_dir . $action . '.php');
 
 			$view = <<<VIEW
-<h2>{$controller_title} &raquo; {$view_title}</h2>
-
 <p>Edit this content in {$view_filepath}</p>
 VIEW;
 
@@ -173,7 +179,7 @@ HELP;
 
 		@fclose($handle);
 
-		chmod($filepath, 0777);
+		chmod($filepath, 0666);
 
 		return $result;
 	}
