@@ -38,8 +38,13 @@ abstract class Session_Driver {
 	 */
 	protected $flash = array();
 
+	/*
+	 * @var	session time object
+	 */
+	protected $time = null;
+
 	// --------------------------------------------------------------------
-	// driver generic methods
+	// abstract methods
 	// --------------------------------------------------------------------
 
 	/**
@@ -48,10 +53,7 @@ abstract class Session_Driver {
 	 * @access	public
 	 * @return	void
 	 */
-	public function create()
-	{
-		$this->_set_cookie();
-	}
+	abstract function create();
 
 	// --------------------------------------------------------------------
 
@@ -61,25 +63,7 @@ abstract class Session_Driver {
 	 * @access	public
 	 * @return	void
 	 */
-	public function read()
-	{
-		// do we need to read
-		if (empty($this->keys))
-		{
-			// fetch the session cookie
-			if( ! $this->_get_cookie())
-			{
-				// create a new session
-				$this->create();
-			}
-
-			// auto expire all flash variables if required
-			if ($this->config['flash_auto_expire'])
-			{
-				$this->_mark_flash();
-			}
-		}
-	}
+	abstract function read();
 
 	// --------------------------------------------------------------------
 
@@ -89,10 +73,7 @@ abstract class Session_Driver {
 	 * @access	public
 	 * @return	void
 	 */
-	public function write()
-	{
-			$this->write_session();
-	}
+	abstract function write();
 
 	// --------------------------------------------------------------------
 
@@ -102,15 +83,22 @@ abstract class Session_Driver {
 	 * @access	public
 	 * @return	void
 	 */
-	public function destroy()
-	{
-		// delete the session cookie
-		Cookie::delete($this->config['cookie_name']);
+	abstract function destroy();
 
-		// and reset all session storage
-		$this->keys = array();
-		$this->data = array();
-		$this->flash = array();
+	// --------------------------------------------------------------------
+	// generic driver methods
+	// --------------------------------------------------------------------
+
+	/**
+	 * generic driver initialisation
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function init()
+	{
+		// get a time object
+		$this->time = Date::time();
 	}
 
 	// --------------------------------------------------------------------
@@ -170,6 +158,31 @@ abstract class Session_Driver {
 		{
 			$this->write();
 		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * force a session_id rotation
+	 *
+	 * @access	public
+	 * @param	boolean, if true, force a session id rotation
+	 * @return  void
+	 */
+	public function rotate($force = true)
+	{
+		// existing session. need to rotate the session id?
+		if ($this->config['rotation_time'] &&
+			($force or $this->keys['created'] + $this->config['rotation_time'] <= $this->time->get_timestamp()))
+		{
+echo "<h3>Rotating ID...</h3>";
+			// generate a new session id, and update the create timestamp
+			$this->keys['previous_id']	= $this->keys['session_id'];
+			$this->keys['session_id']	= $this->_new_session_id();
+			$this->keys['created'] 		= $this->time->get_timestamp();
+			$this->keys['updated']		= $this->keys['created'];
+		}
+
 	}
 
 	// --------------------------------------------------------------------
@@ -321,7 +334,8 @@ abstract class Session_Driver {
 			case 'write_on_set':
 			case 'expire_on_close':
 				$this->config[$name] = (bool) $value;
-				break;
+			break;
+
 			// strings
 			case 'driver':
 			case 'flash_id':
@@ -329,156 +343,30 @@ abstract class Session_Driver {
 			case 'cookie_domain':
 			case 'cookie_path':
 				$this->config[$name] = (string) $value;
-				break;
+			break;
+
 			// integers
 			case 'expiration_time':
 			case 'rotation_time':
 				$this->config[$name] = (int) $value;
-				break;
+			break;
+
 			// arrays
 			case '_none_defined_yet_':
-				break;
+				// handle array's here
+			break;
+
 			// driver config
 			case 'config':
 				foreach($value as $ck => $cv)
 				{
 					$this->config[$ck] = $this->validate_config($ck, $cv);
 				}
+			break;
+
 			default:
-				break;
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Write the session
-	 *
-	 * This method is either called by every write operation, of at the
-	 * end of processing a page request by the shutdown event handler
-	 *
-	 * @access	public	(otherwise the event handler can't access it!)
-	 * @return  void
-	 */
-	public function write_session()
-	{
-		// cleanup any used flash variables
-		$this->_cleanup_flash();
-
-		// create the session if needed
-		if (empty($this->keys))
-		{
-			$this->create();
-		}
-
-		// write the session cookie
-		$this->_set_cookie($this->keys['session_id']);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Gets the session cookie
-	 *
-	 * @access	private
-	 * @return  array, cookie payload
-	 */
-	protected function _get_cookie()
-	{
-		// fetch the session cookie
-		if ($cookie = Cookie::get($this->config['cookie_name'], false))
-		{
-			// fetch the payload
-			$cookie = $this->_unserialize(Crypt::decode($cookie));
-
-			// get a time object
-			$time = Date::time();
-
-			// validate the cookie
-			if ( ! isset($cookie[0]) )
-			{
-				// not a valid cookie payload
-			}
-			elseif ($this->config['expiration_time'] && $cookie[0]['updated'] + $this->config['expiration_time'] <= $time->get_timestamp())
-			{
-				// session has expired
-			}
-			elseif ($this->config['match_ip'] && $cookie[0]['ip_address'] !== Input::real_ip())
-			{
-				// IP address doesn't match
-			}
-			elseif ($this->config['match_ua'] && $cookie[0]['user_agent'] !== Input::user_agent())
-			{
-				// user agent doesn't match
-			}
-			else
-			{
-				// session is valid, retrieve the session keys
-				if (isset($cookie[0])) $this->keys = $cookie[0];
-
-				// and return the cookie payload
-				array_shift($cookie);
-				return $cookie;
-			}
-		}
-
-		// no payload
-		return array();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Sets or creates the session cookie
-	 *
-	 * @access	private
-	 * @return  void
-	 */
-	protected function _set_cookie($session_id = null, array $payload = array())
-	{
-		// get a time object
-		$time = Date::time();
-
-		// do we have a valid session
-		if (is_null($session_id))
-		{
-			// no, create new one
-			$this->keys['session_id']	= $this->_new_session_id();
-			$this->keys['ip_address']	= Input::real_ip();
-			$this->keys['user_agent']	= Input::user_agent();
-			$this->keys['created'] 		= $time->get_timestamp();
-		}
-		else
-		{
-			// existing session. need to rotate the session id?
-			if ($this->config['rotation_time'] && $this->keys['created'] + $this->config['rotation_time'] <= $time->get_timestamp())
-			{
-				// create a new session id, and update the create timestamp
-				$this->keys['session_id']	= $this->_new_session_id();
-				$this->keys['created'] 		= $time->get_timestamp();
-			}
-		}
-		// record the last update time of the session
-		$this->keys['updated'] = $time->get_timestamp();
-
-		// add the session keys to the payload
-		array_unshift($payload, $this->keys);
-
-		// encrypt the payload
-		$payload = Crypt::encode($this->_serialize($payload));
-		if (strlen($payload) > 4000)
-		{
-			throw new Exception('FuelPHP is configured to use session cookies, but the session data exceeds 4Kb. Use a different session type.');
-		}
-
-		// write the session cookie
-		if ($this->config['expire_on_close'])
-		{
-			Cookie::set($this->config['cookie_name'], $payload, 0);
-		}
-		else
-		{
-			Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
+				// ignore unknown config keys
+			break;
 		}
 	}
 
@@ -540,6 +428,91 @@ abstract class Session_Driver {
 		}
 		return md5(uniqid($session_id, TRUE));
 	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * write a cookie
+	 *
+	 * @access	private
+	 * @param	array, cookie payload
+	 * @return  void
+	 */
+	 protected function _set_cookie($payload = array())
+	 {
+		// record the last update time of the session
+		$this->keys['updated'] = $this->time->get_timestamp();
+
+		// add the session keys to the payload
+		array_unshift($payload, $this->keys);
+
+		// encrypt the payload
+		$payload = Crypt::encode($this->_serialize($payload));
+
+		// make sure it doesn't exceed the cookie size specification
+		if (strlen($payload) > 4000)
+		{
+			throw new Exception('The session data stored by the application in the cookie exceeds 4Kb. Select a different session storage driver.');
+		}
+
+		// write the session cookie
+		if ($this->config['expire_on_close'])
+		{
+			return Cookie::set($this->config['cookie_name'], $payload, 0);
+		}
+		else
+		{
+			return Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * read a cookie
+	 *
+	 * @access	private
+	 * @return  void
+	 */
+	 protected function _get_cookie()
+	 {
+		// fetch the cookie
+		if ($cookie = Cookie::get($this->config['cookie_name'], false))
+		{
+			// fetch the payload
+			$cookie = $this->_unserialize(Crypt::decode($cookie));
+
+			// validate the cookie
+			if ( ! isset($cookie[0]) )
+			{
+				// not a valid cookie payload
+			}
+			elseif ($cookie[0]['updated'] + $this->config['expiration_time'] <= $this->time->get_timestamp())
+			{
+				// session has expired
+			}
+			elseif ($this->config['match_ip'] && $cookie[0]['ip_address'] !== Input::real_ip())
+			{
+				// IP address doesn't match
+			}
+			elseif ($this->config['match_ua'] && $cookie[0]['user_agent'] !== Input::user_agent())
+			{
+				// user agent doesn't match
+			}
+			else
+			{
+				// session is valid, retrieve the session keys
+				if (isset($cookie[0])) $this->keys = $cookie[0];
+
+				// and return the cookie payload
+				array_shift($cookie);
+				return $cookie;
+			}
+		}
+
+		// no payload
+		return FALSE;
+	 }
 
 	// --------------------------------------------------------------------
 
