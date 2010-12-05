@@ -25,6 +25,8 @@ use Fuel\Application as App;
  */
 class Fuel {
 
+	const VERSION = '1.0.0-dev';
+
 	public static $initialized = false;
 
 	public static $env;
@@ -45,7 +47,7 @@ class Fuel {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function init($autoloaders)
+	public static function init($autoloaders = array())
 	{
 		if (static::$initialized)
 		{

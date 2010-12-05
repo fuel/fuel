@@ -50,4 +50,3 @@ foreach ($tables as $table_row) {
   
   file_put_contents($generated_models_dir . $class_name . "Base.php", $gen_file);
 }
-?>
