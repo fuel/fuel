@@ -22,7 +22,152 @@ use Fuel\Application\Inflector;
 class Model {
 
 	/**
-	 * The table name of the model.
+	 * Queries the table for the given primary key value ($id).  $id can also
+	 * contain 2 special values:
+	 * 
+	 * <ul>
+	 * <li>'all' - Will return all of the records in the table</li>
+	 * <li>'first' - Will return the first record.  This will set automatically
+	 * set the 'limit' option to 1.</li>
+	 * </ul>
+	 * 
+	 * The following options are available to use in the $options parameter:
+	 * 
+	 * <ul>
+	 * <li>include - an array of associations to include in the query.  Example:
+	 * <code>array('group', 'posts')</code></li>
+	 * <li>select - an array of columns to select (defaults to '*').  Example:
+	 * <code>array('first_name', 'last_name')</code></li>
+	 * <li>limit - the maximum number of records to fetch</li>
+	 * <li>offset - the offset to start from</li>
+	 * <li>order - an array containing the ORDER BY clause.  Example:
+	 * <code>array('last_name', 'ASC')</code></li>
+	 * <li>where - an array of arrays containing the where clauses.  Example:
+	 * <code>array(array('enabled', '=', 1), array('blacklisted', '=', 0))</code>
+	 * <li>or_where - identical to 'where' except these are OR WHERE statements.</li>
+	 *
+	 * Usage:
+	 *
+	 * <code>$user = User::find(2, array('include' => array('group')));</code>
+	 *
+	 * @param	int|string	$id			the primary key value
+	 * @param	srray		$options	the find options
+	 * @return	object		the result
+	 */
+	public static function find($id, $options = array())
+	{
+		$instance = new static;
+		$results = $instance->run_find($id, $options);
+		unset($instance);
+
+		return $results;
+	}
+
+	/**
+	 * This allows for queries called by a static method on the model class.  It
+	 * supports both 'and' and 'or' queries, or a mixture of both.  You can also
+	 * set the last parameter to an array of option. see {@link find} for
+	 * available options.
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * Model_User::find_by_group_id(2);
+	 * Model_User::find_by_username_and_password('demo', 'password');
+	 * Model_User::find_by_username_or_group_id('demo', 2);
+	 * Model_User::find_by_email_and_password_or_group_id('demo@example.com', 'password', 2);
+	 * </code>
+	 *
+	 * @param	string	$name		the method name called
+	 * @param	array	$arguments	the method arguments
+	 * @return	object|array	an instance or array of instances found
+	 */
+	public static function __callStatic($name, $arguments)
+	{
+		if ($name == '_init')
+		{
+			return;
+		}
+		if (strncmp($name, 'find_by_', 8) !== 0 && $name != '_init')
+		{
+			throw new Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
+		}
+
+		$name = substr($name, 8);
+
+		$and_parts = explode('_and_', $name);
+
+		$temp_model = new static;
+		$table_name = $temp_model->table_name;
+		unset($temp_model);
+
+		$where = array();
+		$or_where = array();
+
+		foreach ($and_parts as $and_part)
+		{
+			$or_parts = explode('_or_', $and_part);
+			if (count($or_parts) == 1)
+			{
+				$where[] = array(
+					$table_name.'.'.$or_parts[0], '=', array_shift($arguments)
+				);
+			}
+			else
+			{
+				foreach($or_parts as $or_part)
+				{
+					$or_where[] = array(
+						$table_name.'.'.$or_part, '=', array_shift($arguments)
+					);
+				}
+			}
+		}
+
+		$options = count($arguments) > 0 ? array_pop($arguments) : array();
+
+		if ( ! array_key_exists('where', $options))
+		{
+			$options['where'] = $where;
+		}
+		else
+		{
+			$options['where'] = $options['where'] + $where;
+		}
+
+		if ( ! array_key_exists('or_where', $options))
+		{
+			$options['or_where'] = $or_where;
+		}
+		else
+		{
+			$options['or_where'] = $options['or_where'] + $or_where;
+		}
+
+		return static::find('all', $options);
+	}
+
+	/**
+	 * This function is used to re-format the given $row into the $col_lookup
+	 * format.
+	 *
+	 * @param	array	$row		the record
+	 * @param	array	$col_lookup	the lookup schema
+	 * @return	array	the new $row
+	 */
+	protected static function transform_row($row, $lookup)
+	{
+		$object = array();
+		foreach ($row as $name => $value)
+		{
+			$object[$lookup[$name]["table"]][$lookup[$name]["column"]] = $value;
+		}
+		return $object;
+	}
+
+	/**
+	 * The table name of the model.  If this is not set in the model, then it
+	 * is guessed based on the class name.
 	 *
 	 * @var	string	the table name
 	 */
@@ -43,7 +188,8 @@ class Model {
 	public $primary_key = 'id';
 
 	/**
-	 * Holds all the columns for this model
+	 * Holds all the columns for this model.  If this is not set in the model,
+	 * it attempts to read them in from the table.
 	 * 
 	 * @var	array	the columns
 	 */
@@ -92,8 +238,21 @@ class Model {
 	 */
 	private $assoc_types = array('belongs_to', 'has_many', 'has_one');
 
-	protected static $foreign_keys = array();
 
+	/**
+	 * The constructor takes $params which can be data to set for the record.
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = new User;
+	 * $user = new User(array('name' => 'Dan'));
+	 * </code>
+	 *
+	 * @param	array	$params			any data to set
+	 * @param	bool	$new_record		if this is a new record
+	 * @param	bool	$is_modified	if this record is modified
+	 */
 	public function __construct($params = null, $new_record = true, $is_modified = false)
 	{
 		$this->class_name = get_class($this);
@@ -142,6 +301,24 @@ class Model {
 		}
 	}
 
+	/**
+	 * Attempts to retrieve the column or association given.
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(1, array('include' => array('group'));
+	 * $user->first_name;
+	 * $user->group->name;
+	 *
+	 * $group = Group::find(1, array('include' => array('users'));
+	 * $group->users[0]->name;
+	 * </code>
+	 *
+	 * @param	string	$name	the key to retrieve
+	 * @return	mixed	the column or association object
+	 * @throws	ActiveRecord\Exception
+	 */
 	public function __get($name)
 	{
 		if (array_key_exists($name, $this->data))
@@ -168,6 +345,23 @@ class Model {
 		throw new Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 	}
 
+	/**
+	 * Attempts to set the column or association to the geven value.
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(1, array('include' => array('group'));
+	 * $user->first_name = 'Joe';
+	 *
+	 * $group = Group::find(1, array('include' => array('users'));
+	 * $group->users[0]->first_name = 'Dave';
+	 * </code>
+	 *
+	 * @param	string	$name	the key to set
+	 * @param	mixed	$value	the value to set
+	 * @throws	ActiveRecord\Exception
+	 */
 	public function __set($name, $value)
 	{
 		if ($this->frozen)
@@ -187,9 +381,7 @@ class Model {
 		}
 		elseif ($value instanceof Association)
 		{
-			/* call from constructor to setup association */
 			$this->associations[$name] = $value;
-			static::$foreign_keys[$this->associations[$name]->foreign_key] = array();
 		}
 		elseif (array_key_exists($name, $this->associations))
 		{
@@ -209,13 +401,21 @@ class Model {
 		}
 	}
 
-	/* on any ActiveRecord object we can make method calls to a specific assoc.
-	  Example:
-	  $p = Post::find(1);
-	  $p->comments_push($comment);
-	  This calls push([$comment], $p) on the comments association
+	/**
+	 * On any ActiveRecord object we can make method calls to a specific assoc.
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $p = Post::find(1, array('include' => array('comments'));
+	 * $p->comments_push($comment);
+	 * </code>
+	 *
+	 * @param	string	$name	the method name called
+	 * @param	array	$args	the method arguments
+	 * @return	mixed	the result of the called method
+	 * @throws	ActiveRecord\Exception
 	 */
-
 	public function __call($name, $args)
 	{
 		// find longest available association that matches beginning of method
@@ -239,7 +439,6 @@ class Model {
 			throw new Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
 		}
 	}
-
 
 	/**
 	 * Gets tbe columns for the current model
@@ -338,6 +537,7 @@ class Model {
 	 * <code>
 	 * $user = User::find(2);
 	 * $user->set_modified(true);
+	 * </code>
 	 */
 	public function set_modified($val)
 	{
@@ -345,62 +545,40 @@ class Model {
 	}
 
 	/**
-	 * Runs the find query.  This is called and used by the find() method, and
-	 * is separated out for simplicity.
+	 * Turns the current record as well as all associations into an accociative
+	 * array.
 	 *
-	 * @param	int|string|array	$id			the primary key(s) to look up
-	 * @param	array				$options	a myriad of options
-	 * @return	array	the array of rows
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(2);
+	 * $user_array = $user->as_array();
+	 * </code>
+	 *
+	 * @return	array	the object in the form of an array
 	 */
-	protected function _run_find($id, $options = array())
+	public function as_array()
 	{
-		$query = $this->_find_query($this->table_name, $id, $options);
-		$rows = $query['result']->as_array();
+		$return = $this->data;
 
-		$base_objects = array();
-		foreach ($rows as $row)
+		foreach ($this->associations as $key => $val)
 		{
-			if (count($query['column_lookup']) > 0)
+			$assoc = $this->associations[$key]->get($this);
+
+			if ( ! is_array($assoc))
 			{
-				$foreign_keys = array();
-				$objects = static::transform_row($row, $query['column_lookup']);
-				$ob_key = md5(serialize($objects[$this->table_name]));
-
-				/* set cur_object to base object for this row; reusing if possible */
-				if (array_key_exists($ob_key, $base_objects))
-				{
-					$cur_object = $base_objects[$ob_key];
-				}
-				else
-				{
-					$cur_object = new $this->class_name($objects[$this->table_name], false);
-					$base_objects[$ob_key] = $cur_object;
-				}
-
-				foreach ($objects as $table => $attributes)
-				{
-					if ($table == $this->table_name)
-					{
-						continue;
-					}
-					foreach ($cur_object->associations as $assoc_name => $assoc)
-					{
-						$assoc->populate_from_find($attributes);
-					}
-				}
+				$return[$key] = $assoc;
 			}
 			else
 			{
-				$item = new $this->class_name($row, false);
-				array_push($base_objects, $item);
+				foreach ($assoc as $row)
+				{
+					$return[$key][] = $row->data;
+				}
 			}
 		}
-		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
-		{
-			throw new Exception("Couldn't find anything.", Exception::RecordNotFound);
-		}
 
-		return (is_array($id) || $id == 'all') ? array_values($base_objects) : array_shift($base_objects);
+		return $return;
 	}
 
 	/**
@@ -426,19 +604,28 @@ class Model {
 	}
 
 	/**
-	 * Saves the current record.
+	 * Saves the current record and any associations.  This method will call 6
+	 * "hook" methods that you can use to modify the data, run extra validation
+	 * or anything else you want.  They are as follows:
+	 *
+	 * <ul>
+	 * <li>before_save() - runs before anything</li>
+	 * <li>before_create() - runs before any new record is entered</li>
+	 * <li>after_create() - runs after new record creation</li>
+	 * <li>before_update() - runs before a modified record is saved</li>
+	 * <li>after_update() - runs after a modified record is saved</li>
+	 * <li>after_save() - runs after everything, new or modified records</li>
+	 * </ul>
 	 *
 	 * Usage:
 	 *
 	 * <code>
-	 * $user = User::find(2);
-	 * $user->is_modified(); // Returns false
-	 *
-	 * $user->name = "Joe";
-	 * $user->is_modified(); // Returns true
+	 * $user = User::find(3);
+	 * $user->first_name = 'Dan';
+	 * $user->save();
 	 * </code>
 	 *
-	 * @return	array	the columns
+	 * @return	bool	the status of the operation
 	 */
 	public function save()
 	{
@@ -483,7 +670,9 @@ class Model {
 					$values[] = $this->$column;
 				}
 			}
-			$res = DB::insert(static::$table_name, $columns)->values($values)->execute();
+			$res = DB::insert(static::$table_name, $columns)
+					->values($values)
+					->execute();
 
 			// Failed to save the new record
 			if ($res[0] === 0)
@@ -555,6 +744,26 @@ class Model {
 		return true;
 	}
 
+	/**
+	 * Destroys (deletes) the current record and any associations, then freezes
+	 * the record so it cannot be modified again.  This method will call 2
+	 * "hook" methods that you can use to doanything else you want.  They are as
+	 * follows:
+	 *
+	 * <ul>
+	 * <li>before_destroy() - runs before the record is destroyed</li>
+	 * <li>after_destroy() - runs after the record is destroyed</li>
+	 * </ul>
+	 *
+	 * Usage:
+	 *
+	 * <code>
+	 * $user = User::find(3);
+	 * $user->destroy();
+	 * </code>
+	 *
+	 * @return	bool	the status of the operation
+	 */
 	public function destroy()
 	{
 		if (method_exists($this, 'before_destroy'))
@@ -566,7 +775,7 @@ class Model {
 			$assoc->destroy($this);
 		}
 
-		DB::delete(static::$table_name)
+		DB::delete($this->table_name)
 				->where($this->primary_key, '=', $this->{$this->primary_key})
 				->limit(1)
 				->execute();
@@ -581,102 +790,75 @@ class Model {
 	}
 
 	/**
-	 * This allows for queries called by a static method on the model class.  It
-	 * supports both 'and' and 'or' queries, or a mixture of both:
+	 * Runs the find query.  This is called and used by the {@link find} method,
+	 * and is separated out for simplicity.
 	 *
-	 * <code>
-	 * Model_User::find_by_group_id(2);
-	 * Model_User::find_by_username_and_password('demo', 'password');
-	 * Model_User::find_by_username_or_group_id('demo', 2);
-	 * Model_User::find_by_email_and_password_or_group_id('demo@example.com', 'password', 2);
-	 * </code>
-	 *
-	 * @param	string	$name		the method name called
-	 * @param	array	$arguments	the method arguments
-	 * @return	object|array	an instance or array of instances found
+	 * @param	int|string|array	$id			the primary key(s) to look up
+	 * @param	array				$options	a myriad of options
+	 * @return	array	the array of rows
 	 */
-	public static function __callStatic($name, $arguments)
+	protected function run_find($id, $options = array())
 	{
-		if ($name == '_init')
+		$query = $this->find_query($id, $options);
+		$rows = $query['result']->as_array();
+
+		$base_objects = array();
+		foreach ($rows as $row)
 		{
-			return;
-		}
-		if (strncmp($name, 'find_by_', 8) !== 0 && $name != '_init')
-		{
-			throw new Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
-		}
-
-		$name = substr($name, 8);
-
-		$and_parts = explode('_and_', $name);
-
-		$temp_model = new static;
-		$table_name = $temp_model->table_name;
-		unset($temp_model);
-
-		$where = array();
-		$or_where = array();
-
-		foreach ($and_parts as $and_part)
-		{
-			$or_parts = explode('_or_', $and_part);
-			if (count($or_parts) == 1)
+			if (count($query['column_lookup']) > 0)
 			{
-				$where[] = array($table_name.'.'.$or_parts[0], '=', array_shift($arguments));
+				$foreign_keys = array();
+				$objects = static::transform_row($row, $query['column_lookup']);
+				$ob_key = md5(serialize($objects[$this->table_name]));
+
+				/* set cur_object to base object for this row; reusing if possible */
+				if (array_key_exists($ob_key, $base_objects))
+				{
+					$cur_object = $base_objects[$ob_key];
+				}
+				else
+				{
+					$cur_object = new $this->class_name($objects[$this->table_name], false);
+					$base_objects[$ob_key] = $cur_object;
+				}
+
+				foreach ($objects as $table => $attributes)
+				{
+					if ($table == $this->table_name)
+					{
+						continue;
+					}
+					foreach ($cur_object->associations as $assoc_name => $assoc)
+					{
+						$assoc->populate_from_find($attributes);
+					}
+				}
 			}
 			else
 			{
-				foreach($or_parts as $or_part)
-				{
-					$or_where[] = array($table_name.'.'.$or_part, '=', array_shift($arguments));
-				}
+				$item = new $this->class_name($row, false);
+				array_push($base_objects, $item);
 			}
 		}
-
-		$options = count($arguments) > 0 ? array_pop($arguments) : array();
-
-		if ( ! array_key_exists('where', $options))
+		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
 		{
-			$options['where'] = $where;
-		}
-		else
-		{
-			$options['where'] = $options['where'] + $where;
+			throw new Exception("Couldn't find anything.", Exception::RecordNotFound);
 		}
 
-		if ( ! array_key_exists('or_where', $options))
-		{
-			$options['or_where'] = $or_where;
-		}
-		else
-		{
-			$options['or_where'] = $options['or_where'] + $or_where;
-		}
-
-		return static::find('all', $options);
+		return (is_array($id) || $id == 'all')
+				? array_values($base_objects)
+				: array_shift($base_objects);
 	}
 
-	static function transform_row($row, $col_lookup)
-	{
-		$object = array();
-		foreach ($row as $col_name => $col_value)
-		{
-			/* set $object["table_name"]["column_name"] = $col_value */
-			$object[$col_lookup[$col_name]["table"]][$col_lookup[$col_name]["column"]] = $col_value;
-		}
-		return $object;
-	}
-
-	public static function find($id, $options = array())
-	{
-		$instance = new static;
-		$results = $instance->_run_find($id, $options);
-		unset($instance);
-
-		return $results;
-	}
-
-	protected function _find_query($table_name, $id, $options = array())
+	/**
+	 * Generates then executes the find query.  This is used by {@link run_find}.
+	 * Please see {@link find} for parameter options and usage.
+	 *
+	 * @param	string|int	$id			the primary key to find
+	 * @param	array		$options	the array of options
+	 * @return	array	an array containing the query and column lookup map
+	 */
+	protected function find_query($id, $options = array())
 	{
 		$item = new $this->class_name;
 
@@ -689,9 +871,19 @@ class Model {
 		if (isset($options['include']))
 		{
 			$tables_to_columns = array();
-			$includes = array_map('trim', explode(',', $options['include']));
 
-			array_push($tables_to_columns, array($table_name => $item->get_columns()));
+			if (is_string($options['include']))
+			{
+				$includes = array_map('trim', explode(',', $options['include']));
+			}
+			else
+			{
+				$includes = $options['include'];
+			}
+
+			array_push($tables_to_columns, array(
+				$this->table_name => $item->get_columns()
+			));
 
 			// get join part of query from association and column names
 			foreach ($includes as $include)
@@ -723,7 +915,7 @@ class Model {
 		// Start building the query
 		$query = call_user_func_array('DB::select', $select);
 
-		$query->from($table_name);
+		$query->from($this->table_name);
 
 		foreach ($joins as $join)
 		{
@@ -731,12 +923,14 @@ class Model {
 			{
 				foreach ($join as $j)
 				{
-					$query->join($j['table'], $j['type'])->on($j['on'][0], $j['on'][1], $j['on'][2]);
+					$query->join($j['table'], $j['type'])
+						  ->on($j['on'][0], $j['on'][1], $j['on'][2]);
 				}
 			}
 			else
 			{
-				$query->join($join['table'], $join['type'])->on($join['on'][0], $join['on'][1], $join['on'][2]);
+				$query->join($join['table'], $join['type'])
+					  ->on($join['on'][0], $join['on'][1], $join['on'][2]);
 			}
 		}
 
@@ -769,7 +963,7 @@ class Model {
 		}
 		elseif ($id != 'all' && $id != 'first')
 		{
-			$query->where($table_name.'.'.$item->primary_key, '=', $id);;
+			$query->where($this->table_name.'.'.$item->primary_key, '=', $id);;
 		}
 
 		if (array_key_exists('where', $options) and is_array($options['where']))
