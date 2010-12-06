@@ -168,7 +168,7 @@ class Validation_Object {
 		{
 			throw new Fuel_Exception('Input for add_callable is not a valid object or class.');
 		}
-		
+
 		array_unshift($this->callables, $class);
 	}
 
@@ -320,7 +320,234 @@ class Validation_Object {
 	 */
 	public function required($val)
 	{
-		return ! empty($val);
+		return ($val !== false && $val !== null && $val !== '');
+	}
+
+	/**
+	 * Match value against comparison input
+	 *
+	 * @param	mixed
+	 * @param	mixed
+	 * @param	bool	whether to do type comparison
+	 * @return	bool
+	 */
+	public function match_value($val, $compare, $strict = false)
+	{
+		// first try direct match
+		if ($val === $compare || ( ! $strict && $val == $compare))
+		{
+			return true;
+		}
+
+		// allow multiple input for comparison
+		if (is_array($compare))
+		{
+			foreach($compare as $c)
+			{
+				if ($val === $c || ( ! $strict && $val == $c))
+				{
+					return true;
+				}
+			}
+		}
+
+		// all is lost, return failure
+		return false;
+	}
+
+	/**
+	 * Match PRCE pattern
+	 *
+	 * @param	string
+	 * @param	string	a PRCE regex pattern
+	 * @return	bool
+	 */
+	public function match_pattern($val, $pattern)
+	{
+		return preg_match($pattern, $val) > 0;
+	}
+
+	/**
+	 * Match specific other submitted field string value
+	 * (must be both strings, check is type sensitive)
+	 *
+	 * @param	string
+	 * @param	string
+	 * @return	bool
+	 */
+	public function match_field($val, $field)
+	{
+		return Input::post($field) === $val;
+	}
+
+	/**
+	 * Minimum string length
+	 *
+	 * @param	string
+	 * @param	int
+	 * @return	bool
+	 */
+	public function min_length($val, $length)
+	{
+		return (MBSTRING ? mb_strlen($val) : strlen($val)) >= $length;
+	}
+
+	/**
+	 * Maximum string length
+	 *
+	 * @param	string
+	 * @param	int
+	 * @return	bool
+	 */
+	public function max_length($val, $length)
+	{
+		return (MBSTRING ? mb_strlen($val) : strlen($val)) <= $length;
+	}
+
+	/**
+	 * Exact string length
+	 *
+	 * @param	string
+	 * @param	int
+	 * @return	bool
+	 */
+	public function exact_length($val, $length)
+	{
+		return (MBSTRING ? mb_strlen($val) : strlen($val)) == $length;
+	}
+
+	/**
+	 * Validate email using PHP's filter_var()
+	 *
+	 * @param	string
+	 * @return	bool
+	 */
+	public function valid_email($val)
+	{
+		return filter_var($val, FILTER_VALIDATE_EMAIL);
+	}
+
+	/**
+	 * Validate email using PHP's filter_var()
+	 *
+	 * @param	string
+	 * @return	bool
+	 */
+	public function valid_emails($val)
+	{
+		$emails = explode(',', $val);
+
+		foreach ($emails as $e)
+		{
+			if ( ! filter_var(trim($e), FILTER_VALIDATE_EMAIL))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Validate URL using PHP's filter_var()
+	 *
+	 * @param	string
+	 * @return	bool
+	 */
+	public function valid_url($val)
+	{
+		return filter_var($val, FILTER_VALIDATE_URL);
+	}
+
+	/**
+	 * Validate IP using PHP's filter_var()
+	 *
+	 * @param	string
+	 * @return	bool
+	 */
+	public function valid_ip($val)
+	{
+		return filter_var($val, FILTER_VALIDATE_IP);
+	}
+
+	/**
+	 * Validate input string with many options
+	 *
+	 * @param	string
+	 * @param	string|array	either a named filter or combination of flags
+	 * @return	bool
+	 */
+	public function valid_string($val, $flags = array('alpha', 'utf8'))
+	{
+		if ( ! is_array($flags))
+		{
+			if ($flags == 'alpha')
+			{
+				$flags = array('alpha', 'utf8');
+			}
+			elseif ($flags == 'alpha_numeric')
+			{
+				$flags = array('alpha', 'utf8', 'numeric');
+			}
+			elseif ($flags == 'url_safe')
+			{
+				$flags = array('alpha', 'numeric', 'dashes');
+			}
+			elseif ($flags == 'integer')
+			{
+				$flags = array('numeric');
+			}
+			elseif ($flags == 'float')
+			{
+				$flags = array('numeric', 'dots');
+			}
+			elseif ($flags == 'all')
+			{
+				$flags = array('alpha', 'utf8', 'numeric', 'spaces', 'newlines', 'tabs', 'punctuation', 'dashes');
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		$pattern  = '/^([';
+		$pattern .= ! in_array('uppercase', $flags) && in_array('alpha', $flags) ? 'a-z' : '';
+		$pattern .= ! in_array('lowercase', $flags) && in_array('alpha', $flags) ? 'A-Z' : '';
+		$pattern .= in_array('numeric', $flags) ? '0-9' : '';
+		$pattern .= in_array('spaces', $flags) ? ' ' : '';
+		$pattern .= in_array('newlines', $flags) ? "\n" : '';
+		$pattern .= in_array('tabs', $flags) ? "\t" : '';
+		$pattern .= in_array('dots', $flags) && ! in_array('punctuation', $flags) ? '\.' : '';
+		$pattern .= in_array('punctuation', $flags) ? "\.,\!\?:;" : '';
+		$pattern .= in_array('dashes', $flags) ? '_\-' : '';
+		$pattern .= '])+$/';
+		$pattern .= in_array('utf8', $flags) ? 'u' : '';
+
+		return preg_match($pattern, $val) > 0;
+	}
+
+	/**
+	 * Checks whether numeric input has a minimum value
+	 *
+	 * @param	string|float|int
+	 * @param	float|int
+	 * @return	bool
+	 */
+	public function numeric_min($val, $min_val)
+	{
+		return floatval($val) >= floatval($min_val);
+	}
+
+	/**
+	 * Checks whether numeric input has a maximum value
+	 *
+	 * @param	string|float|int
+	 * @param	float|int
+	 * @return	bool
+	 */
+	public function numeric_max($val, $max_val)
+	{
+		return floatval($val) <= floatval($max_val);
 	}
 }
 
