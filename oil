@@ -54,26 +54,22 @@ define('APP_NAMESPACE', trim($app_namespace, '\\'));
 // Load in the core functions that are available app wide
 require COREPATH.'base.php';
 
+// Load in the core class
+require COREPATH.'classes'.DS.'fuel.php';
+
 /**
  * Load in the autoloader class then register any app and core autoloaders.
  */
 require COREPATH.'classes'.DS.'autoloader.php';
 
-$autoloaders['core'] = require COREPATH.'autoload.php';
+require COREPATH.'autoload.php';
 
-$loader = new Autoloader;
-
-$loader->add_namespaces(array(
+App\Autoloader::add_namespaces(array(
 	'Fuel\\Application'		=> APPPATH.'/classes/',
 	'Oil'					=> PKGPATH.'/oil/classes/',
 ));
 
-$loader->register();
-
-$autoloaders['app'] = $loader;
-
-// Load in the core class
-require COREPATH.'classes'.DS.'fuel.php';
+App\Autoloader::register();
 
 // Initialize the framework
 App\Fuel::init();
