@@ -45,6 +45,8 @@ class Fuel {
 
 	public static $locale;
 
+	public static $is_cli = false;
+
 	protected static $_paths = array();
 
 	protected static $packages = array();
@@ -64,6 +66,8 @@ class Fuel {
 			throw new Exception("You can't initialize Fuel more than once.");
 		}
 
+		static::$is_cli = (bool) (php_sapi_name() == 'cli');
+
 		static::$_paths = array(APPPATH, COREPATH);
 
 		register_shutdown_function('fuel_shutdown_handler');
@@ -79,22 +83,23 @@ class Fuel {
 		 * WARNING:  The order of the following statements is very important.
 		 * Re-arranging these will cause unexpected results.
 		 */
-
-		if (Config::get('base_url') === null)
+		if ( ! static::$is_cli)
 		{
-			if (isset($_SERVER['SCRIPT_NAME']))
+			if (Config::get('base_url') === null)
 			{
-				$base_url = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+				if (isset($_SERVER['SCRIPT_NAME']))
+				{
+					$base_url = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 
-				// Add a slash if it is missing
-				substr($base_url, -1, 1) == '/' OR $base_url .= '/';
+					// Add a slash if it is missing
+					substr($base_url, -1, 1) == '/' OR $base_url .= '/';
 
-				Config::set('base_url', $base_url);
+					Config::set('base_url', $base_url);
+				}
 			}
+
+			URI::detect();
 		}
-
-		URI::detect();
-
 		// Run Input Filtering
 		Security::clean_input();
 
