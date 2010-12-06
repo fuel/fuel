@@ -84,9 +84,15 @@ return array(
 	// specific configuration settings for database based sessions
 	'db'			=> array(
 		'cookie_name'		=> 'fueldid',				// name of the session cookie for database based sessions
-		'database'			=>	'dev',					// name of the database config
-		'table'				=>	'sessions',				// name of the sessions table
-		'gc_probability'	=>	5						// probability % (between 0 and 100) for garbage collection
+		'database'			=> 'dev',					// name of the database name (as configured in config/db.php)
+		'table'				=> 'sessions',				// name of the sessions table
+		'gc_probability'	=> 5						// probability % (between 0 and 100) for garbage collection
+						),
+
+	// specific configuration settings for redis based sessions
+	'redis'			=> array(
+		'cookie_name'		=> 'fuelrid',				// name of the session cookie for redis based sessions
+		'database'			=> 'default'				// name of the redis database to use (as configured in config/db.php)
 						)
 );
 
