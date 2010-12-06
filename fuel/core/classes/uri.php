@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class URI {
 
 	protected static $detected_uri = null;
@@ -22,6 +24,20 @@ class URI {
 	{
 		if (static::$detected_uri !== null)
 		{
+			return static::$detected_uri;
+		}
+
+		if (App\Fuel::$is_cli)
+		{
+			if ($uri = App\Cli::option('uri') !== null)
+			{
+				static::$detected_uri = $uri;
+			}
+			else
+			{
+				static::$detected_uri = App\Cli::option(1);
+			}
+
 			return static::$detected_uri;
 		}
 
