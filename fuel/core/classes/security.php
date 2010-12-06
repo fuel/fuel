@@ -36,7 +36,29 @@ class Security {
 	/**
 	 * Doesn't do anything yet, just here because it will be and facilitates autoload ;-)
 	 */
-	public static function clean_input() {}
+	public static function clean_input()
+	{
+		// TODO: Make this configurable
+		$_GET = static::strip_tags($_GET);
+		$_POST = static::strip_tags($_POST);
+	}
+
+	public static function strip_tags($value)
+	{
+		if ( ! is_array($value))
+		{
+			$value = filter_var($value, FILTER_SANITIZE_STRING);
+		}
+		else
+		{
+			foreach ($value as $k => $v)
+			{
+				$value[$k] = filter_var($v, FILTER_SANITIZE_STRING);
+			}
+		}
+
+		return $value;
+	}
 
 	/**
 	 * Check CSRF Token

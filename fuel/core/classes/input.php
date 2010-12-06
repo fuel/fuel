@@ -18,16 +18,6 @@ class Input {
 
 	protected static $inspekt = null;
 
-	public static function filter_all()
-	{
-		static::$inspekt = Inspekt::make_super_cage(
-			Config::get('security.input_filters'),
-			Config::get('security.strict_input_filters', false),
-			Config::get('security.keep_originals', false)
-		);
-
-	}
-
 	/**
 	 * Get the real ip address of the user.  Even if they are using a proxy.
 	 *

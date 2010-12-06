@@ -96,7 +96,7 @@ class Fuel {
 		URI::detect();
 
 		// Run Input Filtering
-		Input::filter_all();
+		Security::clean_input();
 
 		static::$bm = Config::get('benchmarking', true);
 		static::$env = Config::get('environment');
