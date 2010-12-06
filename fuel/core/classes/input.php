@@ -106,7 +106,7 @@ class Input {
 	 */
 	public static function get($index = '', $default = null)
 	{
-		return static::_fetch_from_inspekt('get', $index, $default);
+		return static::_fetch_from_array($_GET, $index, $default);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Input {
 	 */
 	public static function post($index = '', $default = null)
 	{
-		return static::_fetch_from_inspekt('post', $index, $default);
+		return static::_fetch_from_array($_POST, $index, $default);
 	}
 
 	/**
@@ -195,7 +195,7 @@ class Input {
 	 */
 	public static function cookie($index = '', $default = null)
 	{
-		return static::_fetch_from_inspekt('cookie', $index, $default);
+		return static::_fetch_from_array($_COOKIE, $index, $default);
 	}
 
 	/**
@@ -208,7 +208,7 @@ class Input {
 	 */
 	public static function server($index = '', $default = null)
 	{
-		return static::_fetch_from_inspekt('server', $index, $default);
+		return static::_fetch_from_array($_SERVER, $index, $default);
 	}
 
 	/**
@@ -228,45 +228,6 @@ class Input {
 		}
 
 		return $array[$index];
-	}
-
-	/**
-	 * Retrieve values from the Inspekt global arrays
-	 *
-	 * @access	private
-	 * @param	string	The array
-	 * @param	string	The index key
-	 * @param	mixed	The default value
-	 * @return	string
-	 */
-	private static function _fetch_from_inspekt($array, $index = '', $default = null)
-	{
-		if (static::$inspekt === null)
-		{
-			switch($array)
-			{
-				case 'get':
-					return static::_fetch_from_array($_GET, $index, $default);
-				break;
-				case 'post':
-					return static::_fetch_from_array($_POST, $index, $default);
-				break;
-				case 'cookie':
-					return static::_fetch_from_array($_COOKIE, $index, $default);
-				break;
-				case 'server':
-					return static::_fetch_from_array($_SERVER, $index, $default);
-				break;
-				default:
-					return $default;
-			}
-		}
-		if (($return = static::$inspekt->{$array}->get_raw($index)) === null)
-		{
-			return $default;
-		}
-
-		return $return;
 	}
 
 }
