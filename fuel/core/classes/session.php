@@ -82,7 +82,6 @@ class Session
 		$driver->set_config('driver', $config['driver']);
 		$driver->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : true);
 		$driver->set_config('match_ua', isset($config['match_ua']) ? (bool) $config['match_ua'] : true);
-		$driver->set_config('cookie_name', isset($config['cookie_name']) ? (string) $config['cookie_name'] : 'fuelsession');
 		$driver->set_config('cookie_domain', isset($config['cookie_domain']) ? (string) $config['cookie_domain'] : '');
 		$driver->set_config('cookie_path', isset($config['cookie_path']) ? (string) $config['cookie_path'] : '/');
 		$driver->set_config('expire_on_close', isset($config['expire_on_close']) ? (bool) $config['expire_on_close'] : false);
@@ -106,7 +105,7 @@ class Session
 		if ($driver->get_config('write_on_set') === false)
 		{
 			// register a shutdown event to update the session
-			Event::register('shutdown', array($driver, 'write_session'));
+			Event::register('shutdown', array($driver, 'write'));
 		}
 
 		// load the session

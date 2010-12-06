@@ -670,7 +670,7 @@ class Model {
 					$values[] = $this->$column;
 				}
 			}
-			$res = DB::insert(static::$table_name, $columns)
+			$res = DB::insert($this->table_name, $columns)
 					->values($values)
 					->execute();
 
