@@ -104,10 +104,6 @@ require COREPATH.'base.php';
  */
 require COREPATH.'classes'.DS.'autoloader.php';
 
-$autoloaders['core'] = require COREPATH.'autoload.php';
-$autoloaders['app'] = require APPPATH.'autoload.php';
-
-
 // Load in the core class
 require COREPATH.'classes'.DS.'fuel.php';
 
@@ -118,17 +114,23 @@ if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 	require APPPATH.'classes'.DS.'fuel.php';
 }
 
+
+require COREPATH.'autoload.php';
+require APPPATH.'autoload.php';
+
+App\Autoloader::register();
+
 // Initialize the framework
 // and start buffering the output.
-App\Fuel::init($autoloaders);
+Fuel::init();
 
-$request = App\Request::factory();
+$request = Request::factory();
 $request->execute();
 echo $request->output;
 
 // Call all the shutdown events
-App\Event::shutdown();
+Event::shutdown();
 
-App\Fuel::finish();
+Fuel::finish();
 
 /* End of file index.php */

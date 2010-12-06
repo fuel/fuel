@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel\Application;
+
 use Fuel\Application as App;
 
 class Autoloader {
@@ -19,27 +21,27 @@ class Autoloader {
 	/**
 	 * @var	array	Holds all the prefixes and paths
 	 */
-	protected $prefixes = array();
+	protected static $prefixes = array();
 
 	/**
 	 * @var	array	Holds all the class aliases
 	 */
-	protected $aliases = array();
+	protected static $aliases = array();
 
 	/**
 	 * @var	array	Holds all the namespace paths
 	 */
-	protected $namespaces = array();
+	protected static $namespaces = array();
 
 	/**
 	 * @var	array	Holds all the namespace aliases
 	 */
-	protected $namespace_aliases = array();
+	protected static $namespace_aliases = array();
 
 	/**
 	 * @var	array	The default path to look in if the class is not in a package
 	 */
-	protected $default_path = NULL;
+	protected static $default_path = NULL;
 
 	/**
 	 * Adds a package to the autoloader.  The prefix is the prefix for the
@@ -50,9 +52,9 @@ class Autoloader {
 	 * @param
 	 * @return	void
 	 */
-	public function add_prefix($prefix, $path)
+	public static function add_prefix($prefix, $path)
 	{
-		$this->prefixes[$prefix] = $path;
+		static::$prefixes[$prefix] = $path;
 	}
 
 	/**
@@ -62,9 +64,9 @@ class Autoloader {
 	 * @param	array	the packages
 	 * @return	void
 	 */
-	public function add_prefixes(array $prefixes)
+	public static function add_prefixes(array $prefixes)
 	{
-		$this->prefixes = array_merge($this->prefixes, $prefixes);
+		static::$prefixes = array_merge(static::$prefixes, $prefixes);
 	}
 
 	/**
@@ -73,14 +75,14 @@ class Autoloader {
 	 * @param  string
 	 * @return array|bool
 	 */
-	public function prefix_path($prefix)
+	public static function prefix_path($prefix)
 	{
-		if ( ! array_key_exists($prefix, $this->prefixes))
+		if ( ! array_key_exists($prefix, static::$prefixes))
 		{
 			return false;
 		}
 
-		return $this->prefixes[$prefix];
+		return static::$prefixes[$prefix];
 	}
 
 	/**
@@ -91,9 +93,9 @@ class Autoloader {
 	 * @param	string	the path
 	 * @return	void
 	 */
-	public function add_namespace($namespace, $path)
+	public static function add_namespace($namespace, $path)
 	{
-		$this->namespaces[$namespace] = $path;
+		static::$namespaces[$namespace] = $path;
 	}
 
 	/**
@@ -103,9 +105,9 @@ class Autoloader {
 	 * @param	array	the namespaces
 	 * @return	void
 	 */
-	public function add_namespaces(array $namespaces)
+	public static function add_namespaces(array $namespaces)
 	{
-		$this->namespaces = array_merge($this->namespaces, $namespaces);
+		static::$namespaces = array_merge(static::$namespaces, $namespaces);
 	}
 
 
@@ -117,9 +119,9 @@ class Autoloader {
 	 * @param	string	class name
 	 * @return	void
 	 */
-	public function add_alias($alias, $class)
+	public static function add_alias($alias, $class)
 	{
-		$this->aliases[strtolower($alias)] = $class;
+		static::$aliases[strtolower($alias)] = $class;
 	}
 
 	/**
@@ -130,9 +132,9 @@ class Autoloader {
 	 * @param	string	class name
 	 * @return	void
 	 */
-	public function add_aliases(array $aliases)
+	public static function add_aliases(array $aliases)
 	{
-		$this->aliases = array_merge($this->aliases, array_change_key_case($aliases, CASE_LOWER));
+		static::$aliases = array_merge(static::$aliases, array_change_key_case($aliases, CASE_LOWER));
 	}
 
 	/**
@@ -143,9 +145,9 @@ class Autoloader {
 	 * @param	string	alias name
 	 * @return	void
 	 */
-	public function add_namespace_alias($alias, $namespace)
+	public static function add_namespace_alias($alias, $namespace)
 	{
-		$this->namespace_aliases[$alias] = $namespace;
+		static::$namespace_aliases[$alias] = $namespace;
 	}
 
 	/**
@@ -155,9 +157,9 @@ class Autoloader {
 	 * @param	array	the aliases
 	 * @return	void
 	 */
-	public function add_namespace_aliases(array $aliases)
+	public static function add_namespace_aliases(array $aliases)
 	{
-		$this->namespace_aliases = array_merge($this->namespace_aliases, $aliases);
+		static::$namespace_aliases = array_merge(static::$namespace_aliases, $aliases);
 	}
 
 	/**
@@ -169,9 +171,9 @@ class Autoloader {
 	 * @param	string	class name
 	 * @return	void
 	 */
-	public function default_path($path)
+	public static function add_path($path)
 	{
-		$this->default_path = $path;
+		\Fuel\Fuel::add_path($path);
 	}
 
 	/**
@@ -179,9 +181,9 @@ class Autoloader {
 	 *
 	 * @return	void
 	 */
-	public function register()
+	public static function register()
 	{
-		spl_autoload_register(array($this, 'load'), true, true);
+		spl_autoload_register('\Fuel\Application\Autoloader::load', true, true);
 	}
 
 	/**
@@ -195,24 +197,24 @@ class Autoloader {
 	 * @param	string	the class name
 	 * @return	bool	if the class has been loaded
 	 */
-	public function load($class)
+	public static function load($class)
 	{
 		// Cleanup backslash prefix, messes up class_alias and other stuff
 		$class = ltrim($class, '\\');
 
 		// First attempt loading from module
-		if (class_exists('Fuel\\Application\\Request', false) && is_object(App\Request::active()) && App\Request::active()->module != '')
+		if (class_exists('Fuel\\Application\\Request', false) && is_object(Request::active()) && Request::active()->module != '')
 		{
-			$prefix = ucfirst(App\Request::active()->module).'_';
+			$prefix = ucfirst(Request::active()->module).'_';
 
-			if (array_key_exists($prefix, $this->prefixes))
+			if (array_key_exists($prefix, static::$prefixes))
 			{
-				$file_path = $this->prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower(substr($class, 17))).'.php';
+				$file_path = static::$prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower(substr($class, 17))).'.php';
 				if (is_file($file_path))
 				{
 					require $file_path;
 					class_alias(substr($class, 0, 17).$prefix.substr($class, 17), $class);
-					$this->_init_class($class);
+					static::_init_class($class);
 					return true;
 				}
 			}
@@ -222,15 +224,15 @@ class Autoloader {
 		// namespace.  It sets $pos to the position of the last \.
 		if (($pos = strripos($class, '\\')) !== false)
 		{
-			if ($this->namespace_alias($class))
+			if (static::namespace_alias($class))
 			{
-				$this->_init_class($class);
+				static::_init_class($class);
 				return true;
 			}
 
 			$namespace = substr($class, 0, $pos);
 
-			foreach ($this->namespaces as $ns => $path)
+			foreach (static::$namespaces as $ns => $path)
 			{
 				if (strncmp($ns, $namespace, $ns_len = strlen($ns)) === 0)
 				{
@@ -240,7 +242,7 @@ class Autoloader {
 					if (file_exists($file_path))
 					{
 						require $file_path;
-						$this->_init_class($class);
+						static::_init_class($class);
 						return true;
 					}
 				}
@@ -248,15 +250,15 @@ class Autoloader {
 		}
 		else
 		{
-			if ($this->is_alias($class))
+			if (static::is_alias($class))
 			{
-				$this->create_alias_class($class);
-				$this->_init_class($class);
+				static::create_alias_class($class);
+				static::_init_class($class);
 				return true;
 			}
 
 
-			foreach ($this->prefixes as $prefix => $path)
+			foreach (static::$prefixes as $prefix => $path)
 			{
 				if (strncmp($class, $prefix, strlen($prefix)) === 0)
 				{
@@ -264,19 +266,19 @@ class Autoloader {
 					if (is_file($file_path))
 					{
 						require $file_path;
-						$this->_init_class($class);
+						static::_init_class($class);
 						return true;
 					}
 				}
 			}
 		}
 
-		// if we get here then lets just try to load it from the default path
-		$file_path = $this->default_path.str_replace('_', DS, strtolower($class)).'.php';
-		if (is_file($file_path))
+		$file_path = App\Fuel::find_file('classes', $class);
+
+		if ($file_path !== false)
 		{
 			require $file_path;
-			$this->_init_class($class);
+			static::$_init_class($class);
 			return true;
 		}
 
@@ -289,9 +291,9 @@ class Autoloader {
 	 * @param	string	the class name
 	 * @return	bool	if the class name is an alias
 	 */
-	public function is_alias($class)
+	public static function is_alias($class)
 	{
-		return array_key_exists(strtolower($class), $this->aliases);
+		return array_key_exists(strtolower($class), static::$aliases);
 	}
 
 	/**
@@ -301,9 +303,9 @@ class Autoloader {
 	 * @param	string	the class name
 	 * @return	bool	whether it was an alias
 	 */
-	public function namespace_alias($class)
+	public static function namespace_alias($class)
 	{
-		foreach ($this->namespace_aliases as $alias => $actual)
+		foreach (static::$namespace_aliases as $alias => $actual)
 		{
 			if ($alias == '')
 			{
@@ -327,9 +329,9 @@ class Autoloader {
 	 *
 	 * @param	string	the class name
 	 */
-	public function create_alias_class($class)
+	public static function create_alias_class($class)
 	{
-		class_alias($this->aliases[strtolower($class)], $class);
+		class_alias(static::$aliases[strtolower($class)], $class);
 	}
 
 	/**
@@ -338,7 +340,7 @@ class Autoloader {
 	 * 
 	 * @param	string	the class name
 	 */
-	private function _init_class($class)
+	private static function _init_class($class)
 	{
 		if (is_callable($class.'::_init'))
 		{

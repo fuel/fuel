@@ -12,21 +12,23 @@
  * @link		http://fuelphp.com
  */
 
-$loader = new Autoloader;
+namespace Fuel\Application;
 
-$loader->default_path(__DIR__.'/classes/');
+Autoloader::add_path(__DIR__.'/classes/');
 
-$loader->add_namespaces(array(
+Autoloader::add_namespaces(array(
 	'Fuel'	=>	__DIR__.'/classes/',
 ));
 
-$loader->add_namespace_alias('Fuel\\Application', 'Fuel');
+Autoloader::add_namespace_alias('Fuel\\Application', 'Fuel');
 
-$loader->add_prefixes(array(
+Autoloader::add_prefixes(array(
 	'Fuel_'		=> COREPATH.'classes/',
 ));
 
-$loader->add_aliases(array(
+Autoloader::add_aliases(array(
+	'Autoloader'		=> 'Fuel\\Application\\Autoloader',
+	'Fuel\\Autoloader'	=> 'Fuel\\Application\\Autoloader',
 	'Arr'			=> 'Fuel\\Application\\Arr',
 	'Asset'			=> 'Fuel\\Application\\Asset',
 	'Benchmark'		=> 'Fuel\\Application\\Benchmark',
@@ -94,8 +96,5 @@ $loader->add_aliases(array(
 	'Fuel'			=> 'Fuel\\Application\\Fuel',
 
 ));
-
-$loader->register();
-return $loader;
 
 /* End of file autoload.php */

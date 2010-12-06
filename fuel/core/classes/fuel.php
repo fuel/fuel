@@ -17,6 +17,16 @@ namespace Fuel;
 use Fuel\Application as App;
 
 /**
+ * Holds Environment constants.
+ */
+class Env {
+	const TEST = 'test';
+	const DEVELOPMENT = 'dev';
+	const QA = 'qa';
+	const PRODUCTION = 'production';
+}
+
+/**
  * The core of the framework.
  *
  * @package		Fuel
@@ -47,7 +57,7 @@ class Fuel {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function init($autoloaders = array())
+	public static function init()
 	{
 		if (static::$initialized)
 		{
@@ -56,9 +66,6 @@ class Fuel {
 
 		static::$_paths = array(APPPATH, COREPATH);
 
-		// Add the core and optional application loader to the packages array
-		static::$packages = $autoloaders;
-
 		register_shutdown_function('fuel_shutdown_handler');
 		set_exception_handler('fuel_exception_handler');
 		set_error_handler('fuel_error_handler');
@@ -66,14 +73,14 @@ class Fuel {
 		// Start up output buffering
 		ob_start();
 
-		App\Config::load('config');
+		Config::load('config');
 
 		/**
 		 * WARNING:  The order of the following statements is very important.
 		 * Re-arranging these will cause unexpected results.
 		 */
 
-		if (App\Config::get('base_url') === null)
+		if (Config::get('base_url') === null)
 		{
 			if (isset($_SERVER['SCRIPT_NAME']))
 			{
@@ -82,21 +89,21 @@ class Fuel {
 				// Add a slash if it is missing
 				substr($base_url, -1, 1) == '/' OR $base_url .= '/';
 
-				App\Config::set('base_url', $base_url);
+				Config::set('base_url', $base_url);
 			}
 		}
 
 		URI::detect();
 
 		// Run Input Filtering
-		App\Input::filter_all();
+		Input::filter_all();
 
-		static::$bm = App\Config::get('benchmarking', true);
-		static::$env = App\Config::get('environment');
-		static::$locale = App\Config::get('locale');
+		static::$bm = Config::get('benchmarking', true);
+		static::$env = Config::get('environment');
+		static::$locale = Config::get('locale');
 
 		//Load in the packages
-		foreach (App\Config::get('packages', array()) as $package)
+		foreach (Config::get('packages', array()) as $package)
 		{
 			static::add_package($package);
 		}
@@ -105,7 +112,7 @@ class Fuel {
 		setlocale(LC_ALL, static::$locale);
 
 		// Set default timezone when given in config
-		if (($timezone = App\Config::get('default_timezone', null)) != null)
+		if (($timezone = Config::get('default_timezone', null)) != null)
 		{
 			date_default_timezone_set($timezone);
 		}
@@ -133,7 +140,7 @@ class Fuel {
 		// Grab the output buffer
 		$output = ob_get_clean();
 
-		$bm = App\Benchmark::app_total();
+		$bm = Benchmark::app_total();
 
 		// TODO: There is probably a better way of doing this, but this works for now.
 		$output = \str_replace(
@@ -239,13 +246,10 @@ class Fuel {
 				continue;
 			}
 			static::add_path($path);
-			App\Route::load_routes(true);
-			static::$packages[$name] = static::load($path.'autoload.php');
+			Route::load_routes(true);
+			static::load($path.'autoload.php');
+			static::$packages[$name] = true;
 		}
-
-		// Put the APP autoloader back on top
-		spl_autoload_unregister(array(static::$packages['app'], 'load'));
-		spl_autoload_register(array(static::$packages['app'], 'load'), true, true);
 	}
 
 	/**
@@ -257,7 +261,6 @@ class Fuel {
 	 */
 	public static function remove_package($name)
 	{
-		spl_autoload_unregister(array(static::$packages[$name], 'load'));
 		unset(static::$packages[$name]);
 	}
 
@@ -273,17 +276,17 @@ class Fuel {
 	public static function add_module($name, $active = false)
 	{
 		// First attempt registered prefixes
-		$mod_path = static::$packages['app']->prefix_path(ucfirst($name).'_');
+		$mod_path = App\Autoloader::prefix_path(ucfirst($name).'_');
 		// Or try registered module paths
 		if ($mod_path === false)
 		{
-			foreach (App\Config::get('module_paths', array()) as $path)
+			foreach (Config::get('module_paths', array()) as $path)
 			{
 				if (is_dir($mod_check_path = $path.strtolower($name).DS))
 				{
 					// Load module and end search
 					$mod_path = $mod_check_path;
-					App\Fuel::$packages['app']->add_prefix(ucfirst($name).'_', $mod_path);
+					App\Autoloader::add_prefix(ucfirst($name).'_', $mod_path);
 					break;
 				}
 			}
@@ -301,7 +304,7 @@ class Fuel {
 			static::add_path($mod_path, true);
 
 			// We want modules to be able to have their own routes, so we reload routes.
-			App\Route::load_routes(true);
+			Route::load_routes(true);
 			return $mod_path;
 		}
 
@@ -314,7 +317,7 @@ class Fuel {
 	 */
 	public static function always_load($array = null)
 	{
-		$array = is_null($array) ? App\Config::get('always_load', array()) : $array;
+		$array = is_null($array) ? Config::get('always_load', array()) : $array;
 
 		foreach ($array['classes'] as $class)
 		{
@@ -331,12 +334,12 @@ class Fuel {
 
 		foreach ($array['config'] as $config => $config_group)
 		{
-			App\Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
+			Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
 		}
 
 		foreach ($array['language'] as $lang => $lang_group)
 		{
-			App\Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
+			Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
 		}
 	}
 

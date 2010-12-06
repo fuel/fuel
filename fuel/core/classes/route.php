@@ -22,10 +22,14 @@ class Route {
 
 	public static function load_routes($reload = false)
 	{
-		if ($routes = App\Config::load('routes', true, $reload))
+		if (App\Config::load('config', false, $reload))
 		{
-			static::$routes = $routes;
-			unset($routes);
+			echo 'Loading Routes';
+			static::$routes = Config::get('routes');
+		}
+		elseif ( ! $reload)
+		{
+			static::$routes = Config::get('routes');
 		}
 	}
 
