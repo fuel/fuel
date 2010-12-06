@@ -53,7 +53,7 @@ class Security {
 		{
 			foreach ($value as $k => $v)
 			{
-				$value[$k] = filter_var($v, FILTER_SANITIZE_STRING);
+				$value[$k] = static::strip_tags($v);
 			}
 		}
 
