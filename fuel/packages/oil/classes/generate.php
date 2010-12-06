@@ -85,11 +85,11 @@ CONTROLLER;
 		$model = <<<MODEL
 <?php
 
-namespace Fuel\Application;
+namespace Fuel\Application\Model;
 
 use ActiveRecord;
 
-class {$class_name} extends ActiveRecord\Model {
+class {$class_name} extends ActiveRecord\Model { }
 
 /* End of file $singular.php */
 MODEL;
