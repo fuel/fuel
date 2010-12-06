@@ -16,8 +16,15 @@ namespace Fuel;
 
 class URI {
 
+	protected static $detected_uri = null;
+
 	public static function detect()
 	{
+		if (static::$detected_uri !== null)
+		{
+			return static::$detected_uri;
+		}
+
 		// We want to use PATH_INFO if we can.
 		if ( ! empty($_SERVER['PATH_INFO']))
 		{
@@ -73,9 +80,9 @@ class URI {
 		}
 
 		// Do some final clean up of the uri
-		$uri = str_replace(array('//', '../'), '/', $uri);
+		static::$detected_uri = str_replace(array('//', '../'), '/', $uri);
 
-		return $uri;
+		return static::$detected_uri;
 	}
 
 	/**

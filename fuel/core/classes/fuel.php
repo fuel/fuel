@@ -59,24 +59,19 @@ class Fuel {
 		// Add the core and optional application loader to the packages array
 		static::$packages = $autoloaders;
 
-		register_shutdown_function('Fuel\\Application\\Error::shutdown_handler');
-		set_exception_handler('Fuel\\Application\\Error::exception_handler');
-		set_error_handler('Fuel\\Application\\Error::error_handler');
+		register_shutdown_function('fuel_shutdown_handler');
+		set_exception_handler('fuel_exception_handler');
+		set_error_handler('fuel_error_handler');
 
 		// Start up output buffering
 		ob_start();
 
 		App\Config::load('config');
 
-		static::$bm = App\Config::get('benchmarking', true);
-		static::$env = App\Config::get('environment');
-		static::$locale = App\Config::get('locale');
-
-		//Load in the packages
-		foreach (App\Config::get('packages', array()) as $package)
-		{
-			static::add_package($package);
-		}
+		/**
+		 * WARNING:  The order of the following statements is very important.
+		 * Re-arranging these will cause unexpected results.
+		 */
 
 		if (App\Config::get('base_url') === null)
 		{
@@ -89,6 +84,21 @@ class Fuel {
 
 				App\Config::set('base_url', $base_url);
 			}
+		}
+
+		URI::detect();
+
+		// Run Input Filtering
+		App\Input::filter_all();
+
+		static::$bm = App\Config::get('benchmarking', true);
+		static::$env = App\Config::get('environment');
+		static::$locale = App\Config::get('locale');
+
+		//Load in the packages
+		foreach (App\Config::get('packages', array()) as $package)
+		{
+			static::add_package($package);
 		}
 
 		// Set some server options
@@ -104,9 +114,6 @@ class Fuel {
 		{
 			date_default_timezone_set('UTC');
 		}
-
-		// Clean input
-		App\Security::clean_input();
 
 		// Always load classes, config & language set in always_load.php config
 		static::always_load();
@@ -307,7 +314,7 @@ class Fuel {
 	 */
 	public static function always_load($array = null)
 	{
-		$array = is_null($array) ? App\Fuel::load(APPPATH.'config'.DS.'always_load.php') : $array;
+		$array = is_null($array) ? App\Config::get('always_load', array()) : $array;
 
 		foreach ($array['classes'] as $class)
 		{

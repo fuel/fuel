@@ -210,19 +210,6 @@ class Request {
 		if ( ! empty($mod_path))
 		{
 			$this->module = array_shift($route['segments']);
-
-			// Optionally load module routes & reparse, must be relative to module
-			//     so it only allows routing within module
-			if (is_file($route_path = $mod_path.'config'.DS.'routes.php'))
-			{
-				$route = App\Route::parse_module($this->module, App\Fuel::load($route_path), $this->uri);
-			}
-
-			// Does the module need always_loading?
-			if (is_file($always_load_path = $mod_path.'config'.DS.'always_load.php'))
-			{
-				App\Fuel::always_load(Fuel::load($always_load_path));
-			}
 		}
 
 		// Check for directory

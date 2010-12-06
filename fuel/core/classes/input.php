@@ -16,6 +16,18 @@ namespace Fuel;
 
 class Input {
 
+	protected static $inspekt = null;
+
+	public static function filter_all()
+	{
+		static::$inspekt = Inspekt::make_super_cage(
+			Config::get('security.input_filters'),
+			Config::get('security.strict_input_filters', false),
+			Config::get('security.keep_originals', false)
+		);
+
+	}
+
 	/**
 	 * Get the real ip address of the user.  Even if they are using a proxy.
 	 *
@@ -25,17 +37,17 @@ class Input {
 	 */
 	public static function real_ip()
 	{
-		if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+		if (static::server('HTTP_X_FORWARDED_FOR') !== null)
 		{
-			return $_SERVER['HTTP_X_FORWARDED_FOR'];
+			return static::server('HTTP_X_FORWARDED_FOR');
 		}
-		elseif (isset($_SERVER['HTTP_CLIENT_IP']))
+		elseif (static::server('HTTP_CLIENT_IP') !== null)
 		{
-			return $_SERVER['HTTP_CLIENT_IP'];
+			return static::server('HTTP_CLIENT_IP');
 		}
-		elseif (isset($_SERVER['REMOTE_ADDR']))
+		elseif (static::server('REMOTE_ADDR') !== null)
 		{
-			return $_SERVER['REMOTE_ADDR'];
+			return static::server('REMOTE_ADDR');
 		}
 	}
 
@@ -47,7 +59,7 @@ class Input {
 	 */
 	public static function protocol()
 	{
-		return ( ! empty($_SERVER['HTTPS'])) ? 'https' : 'http';
+		return (static::server('HTTPS') !== null) ? 'https' : 'http';
 	}
 
 	/**
@@ -58,7 +70,7 @@ class Input {
 	 */
 	public static function is_ajax()
 	{
-		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'));
+		return (static::server('HTTP_X_REQUESTED_WITH') !== null) && strtolower(static::server('HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest';
 	}
 
 	/**
@@ -69,7 +81,7 @@ class Input {
 	 */
 	public static function referrer()
 	{
-		return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+		return static::server('HTTP_REFERER', '');
 	}
 
 	/**
@@ -80,7 +92,7 @@ class Input {
 	 */
 	public static function method()
 	{
-		return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
+		return static::server('REQUEST_METHOD', 'GET');
 	}
 
 	/**
@@ -91,7 +103,7 @@ class Input {
 	 */
 	public static function user_agent()
 	{
-		return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+		return static::server('HTTP_USER_AGENT', '');
 	}
 
 	/**
@@ -104,7 +116,7 @@ class Input {
 	 */
 	public static function get($index = '', $default = null)
 	{
-		return static::_fetch_from_array($_GET, $index, $default);
+		return static::_fetch_from_inspekt('get', $index, $default);
 	}
 
 	/**
@@ -117,7 +129,7 @@ class Input {
 	 */
 	public static function post($index = '', $default = null)
 	{
-		return static::_fetch_from_array($_POST, $index, $default);
+		return static::_fetch_from_inspekt('post', $index, $default);
 	}
 
 	/**
@@ -178,7 +190,9 @@ class Input {
 	 */
 	public static function get_post($index = '', $default = null)
 	{
-		return isset($_POST[$index]) ? static::post($index, $default) : static::get($index, $default);
+		return static::post($index, 's)meR4nD0ms+rIng') === 's)meR4nD0ms+rIng'
+				? static::get($index, $default)
+				: static::post($index, $default);
 	}
 
 	/**
@@ -191,7 +205,7 @@ class Input {
 	 */
 	public static function cookie($index = '', $default = null)
 	{
-		return static::_fetch_from_array($_COOKIE, $index, $default);
+		return static::_fetch_from_inspekt('cookie', $index, $default);
 	}
 
 	/**
@@ -204,7 +218,7 @@ class Input {
 	 */
 	public static function server($index = '', $default = null)
 	{
-		return static::_fetch_from_array($_SERVER, $index, $default);
+		return static::_fetch_from_inspekt('server', $index, $default);
 	}
 
 	/**
@@ -224,6 +238,45 @@ class Input {
 		}
 
 		return $array[$index];
+	}
+
+	/**
+	 * Retrieve values from the Inspekt global arrays
+	 *
+	 * @access	private
+	 * @param	string	The array
+	 * @param	string	The index key
+	 * @param	mixed	The default value
+	 * @return	string
+	 */
+	private static function _fetch_from_inspekt($array, $index = '', $default = null)
+	{
+		if (static::$inspekt === null)
+		{
+			switch($array)
+			{
+				case 'get':
+					return static::_fetch_from_array($_GET, $index, $default);
+				break;
+				case 'post':
+					return static::_fetch_from_array($_POST, $index, $default);
+				break;
+				case 'cookie':
+					return static::_fetch_from_array($_COOKIE, $index, $default);
+				break;
+				case 'server':
+					return static::_fetch_from_array($_SERVER, $index, $default);
+				break;
+				default:
+					return $default;
+			}
+		}
+		if (($return = static::$inspekt->{$array}->get_raw($index)) === null)
+		{
+			return $default;
+		}
+
+		return $return;
 	}
 
 }

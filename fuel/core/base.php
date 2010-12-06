@@ -12,6 +12,7 @@
  * @link		http://fuelphp.com
  */
 
+use Fuel\Application\Error;
 
 /**
  * Takes an array of attributes and turns it into a string for an html tag
@@ -115,6 +116,30 @@ if ( ! function_exists('__'))
 	function __($string, $params = array())
 	{
 		return Lang::line($string, $params);
+	}
+}
+
+if ( ! function_exists('fuel_shutdown_handler'))
+{
+	function fuel_shutdown_handler()
+	{
+		return Error::shutdown_handler();
+	}
+}
+
+if ( ! function_exists('fuel_exception_handler'))
+{
+	function fuel_exception_handler(\Exception $e)
+	{
+		return Error::exception_handler($e);
+	}
+}
+
+if ( ! function_exists('fuel_error_handler'))
+{
+	function fuel_error_handler($severity, $message, $filepath, $line)
+	{
+		return Error::error_handler($severity, $message, $filepath, $line);
 	}
 }
 
