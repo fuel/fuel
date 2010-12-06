@@ -80,7 +80,7 @@ CONTROLLER;
 
 		$filepath = APPPATH . 'classes/model/' . $singular .'.php';
 
-		$class_name = 'Model_' . ucfirst($singular);
+		$class_name = ucfirst($singular);
 
 		$model = <<<MODEL
 <?php
@@ -96,7 +96,13 @@ MODEL;
 
 		if (self::write($filepath, $model))
 		{
-			echo "Created model: " . App\Fuel::clean_path($filepath);
+			echo "Created model: " . App\Fuel::clean_path($filepath).PHP_EOL;
+		}
+
+		if ( ! empty($args))
+		{
+			array_unshift($args, 'create_'.$plural);
+			static::migration($args);
 		}
 	}
 
@@ -186,7 +192,7 @@ VIEW;
 
 		if ($filepath = static::_build_migration($migration_name, $mode, $table, $args))
 		{
-			echo "\tCreated migration: " . App\Fuel::clean_path($filepath).PHP_EOL;
+			echo "Created migration: " . App\Fuel::clean_path($filepath).PHP_EOL;
 		}
 	}
 
@@ -341,8 +347,10 @@ MIGRATION;
 
 		if (self::write($filepath, $migration))
 		{
+			self::_update_current_version(intval($number));
 			return $filepath;
 		}
+
 
 		return false;
 	}
@@ -353,6 +361,24 @@ MIGRATION;
 		list($last) = explode('_', basename(end(glob(APPPATH .'migrations/*_*.php'))));
 		
 		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
+	}
+
+	private function _update_current_version($version)
+	{
+		$contents = '';
+		$path = '';
+		if (file_exists($path = APPPATH.'config'.DS.'migration.php'))
+		{
+			$contents = file_get_contents($path);
+		}
+		elseif (file_exists($path = COREPATH.'config'.DS.'migration.php'))
+		{
+			$contents = file_get_contents($path );
+		}
+
+		$contents = preg_replace("#('version'[ \t]+=>)[ \t]+([0-9]+),#i", "$1 $version,", $contents);
+
+		self::write($path, $contents);
 	}
 		
 }

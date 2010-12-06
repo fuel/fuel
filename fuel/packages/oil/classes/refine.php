@@ -45,7 +45,7 @@ class Refine
 
 				case '-c':
 				case '--current':
-					App\Migrate::down();
+					App\Migrate::current();
 				break;
 
 				case '-v':

@@ -62,6 +62,7 @@ class Cli
 			default:
 				static::help();
 		}
+		echo "Complete";
 	}
 
 	public function help()
