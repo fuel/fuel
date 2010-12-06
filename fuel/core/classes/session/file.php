@@ -28,10 +28,158 @@ class Session_File extends Session_Driver {
 	 */
 	public function init()
 	{
+		// generic driver initialisation
+		parent::init();
+
 		// check for required config values
+		$this->config['cookie_name'] = $this->validate_config('cookie_name', isset($this->config['cookie_name'])
+				? $this->config['cookie_name'] : 'fuelfid');
 		$this->config['path'] = $this->validate_config('path', $this->config['path']);
 		$this->config['gc_probability'] = $this->validate_config('gc_probability', isset($this->config['gc_probability'])
 				? $this->config['gc_probability'] : 5);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * create a new session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function create()
+	{
+		// create a new session
+		$this->keys['session_id']	= $this->_new_session_id();
+		$this->keys['previous_id']	= $this->keys['session_id'];	// prevents errors if previous_id has a unique index
+		$this->keys['ip_address']	= Input::real_ip();
+		$this->keys['user_agent']	= Input::user_agent();
+		$this->keys['created'] 		= $this->time->get_timestamp();
+		$this->keys['updated'] 		= $this->keys['created'];
+
+		// create the session record
+		$this->_write_file($this->keys['session_id'], serialize(array()));
+
+		// and set the session cookie
+		$this->_set_cookie();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * read the session
+	 *
+	 * @access	public
+	 * @param	boolean, set to true if we want to force a new session to be created
+	 * @return	void
+	 */
+	public function read($force = false)
+	{
+		// get the session cookie
+		$cookie = $this->_get_cookie();
+
+		// if no session cookie was present, create it
+		if ($cookie === false or $force)
+		{
+			$this->create();
+		}
+
+		// read the session file
+		$payload = $this->_read_file($this->keys['session_id']);
+
+		if ($payload === false)
+		{
+			// try to find the previous one
+			$payload = $this->_read_file($this->keys['previous_id']);
+
+			if ($payload === false)
+			{
+				// cookie present, but session record missing. force creation of a new session
+				$this->read(true);
+				return;
+			}
+		}
+
+		// unpack the payload
+		$payload = $this->_unserialize($payload);
+
+		// session referral?
+		if (isset($payload['rotated_session_id']))
+		{
+			$payload = $this->_read_file($payload['rotated_session_id']);
+			if ($payload === false)
+			{
+				// cookie present, but session record missing. force creation of a new session
+				$this->read(true);
+				return;
+			}
+			else
+			{
+				// update the session
+				$this->keys['previous_id'] = $this->keys['session_id'];
+				$this->keys['session_id'] = $payload['rotated_session_id'];
+
+				// unpack the payload
+				$payload = $this->_unserialize($payload);
+			}
+		}
+
+		if (isset($payload[0])) $this->data = $payload[0];
+		if (isset($payload[1])) $this->flash = $payload[1];
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * write the session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function write()
+	{
+		// do we have something to write?
+		if ( ! empty($this->keys))
+		{
+			// rotate the session id if needed
+			$this->rotate(false);
+
+			// session payload
+			$payload = $this->_serialize(array($this->data, $this->flash));
+
+			// create the session file
+			$this->_write_file($this->keys['session_id'], $payload);
+
+			// was the session id rotated?
+			if ( isset($this->keys['previous_id']) && $this->keys['previous_id'] != $this->keys['session_id'])
+			{
+				// point the old session file to the new one, we don't want to lose the session
+				$payload = $this->_serialize(array('rotated_session_id' => $this->keys['session_id']));
+				$this->_write_file($this->keys['previous_id'], $payload);
+			}
+
+			$this->_set_cookie();
+
+			// do some garbage collection
+			if (mt_rand(0,100) < $this->config['gc_probability'])
+			{
+				if ($handle = opendir($this->config['path']))
+				{
+					$expire = $this->time->get_timestamp() - $this->config['expiration_time'];
+
+					while (($file = readdir($handle)) !== false)
+					{
+						if (filetype($this->config['path'] . $file) == 'file' &&
+							strpos($file, $this->config['cookie_name'].'_') === 0 &&
+							filemtime($this->config['path'] . $file) < $expire)
+						{
+							@unlink($this->config['path'] . $file);
+						}
+					}
+					closedir($handle);
+				}
+			}
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -44,50 +192,19 @@ class Session_File extends Session_Driver {
 	 */
 	public function destroy()
 	{
-		// delete the session file
-		$file = $this->config['path'].$this->keys['session_id'];
-		if (file_exists($file))
+		// do we have something to destroy?
+		if ( ! empty($this->keys))
 		{
-			unlink($file);
-		}
-
-		// delete the cookie, reset all session variables
-		parent::destroy();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * write the current session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function write()
-	{
-		parent::write();
-
-		// do some garbage collection
-		srand(time());
-		if ((rand() % 100) < $this->config['gc_probability'])
-		{
-			if ($handle = opendir($this->config['path']))
+			// delete the session file
+			$file = $this->config['path'].$this->config['cookie_name'].'_'.$this->keys['session_id'];
+			if (file_exists($file))
 			{
-				$time = Date::time();
-				$expire = $time->get_timestamp() - $this->config['expiration_time'];
-
-				while (($file = readdir($handle)) !== false)
-				{
-					if (filetype($this->config['path'] . $file) == 'file' &&
-						strpos($file, $this->config['cookie_name']) === 0 &&
-						filemtime($this->config['path'] . $file) < $expire)
-					{
-						@unlink($this->config['path'] . $file);
-					}
-				}
-				closedir($handle);
+				unlink($file);
 			}
 		}
+
+		// reset the stored session data
+		$this->keys = $this->flash = $this->data = array();
 	}
 
 	// --------------------------------------------------------------------
@@ -104,6 +221,13 @@ class Session_File extends Session_Driver {
 	{
 		switch ($name)
 		{
+			case 'cookie_name':
+				if ( empty($value) OR ! is_string($value))
+				{
+					$value = 'fuelfid';
+				}
+			break;
+
 			case 'path':
 				// do we have a path?
 				if ( empty($value) OR ! is_dir($value))
@@ -117,7 +241,7 @@ class Session_File extends Session_Driver {
 				}
 				// update the path, and add the trailing slash
 				$value = realpath($value).'/';
-				break;
+			break;
 
 			case 'gc_probability':
 				// do we have a path?
@@ -126,10 +250,10 @@ class Session_File extends Session_Driver {
 					// default value: 5%
 					$value = 5;
 				}
-				break;
+			break;
 
 			default:
-				break;
+			break;
 		}
 
 		// return the validated value
@@ -139,86 +263,16 @@ class Session_File extends Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Sets or creates the session cookie
-	 *
-	 * the file driver stores data and flash in a separate session file
-	 *
-	 * @access	private
-	 * @return  void
-	 */
-	protected function _set_cookie($session_id = NULL)
-	{
-		// create the session cookie
-		parent::_set_cookie($session_id);
-
-		// session payload
-		$payload = $this->_serialize(array($this->data, $this->flash));
-
-		// create the session file
-		$this->_write_file($this->keys['session_id'], $payload);
-
-		// was the session id rotated?
-		if ( ! is_null($session_id) && $session_id != $this->keys['session_id'])
-		{
-			// point the old session file to the new one, we don't want to lose the session
-			$payload = $this->_serialize(array('rotated_session_id' => $this->keys['session_id']));
-			$this->_write_file($session_id, $payload);
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Gets the session cookie
-	 *
-	 * the file driver stores data and flash in a separate session file
-	 *
-	 * @access	private
-	 * @return  boolean, true if found, false if not
-	 */
-	protected function _get_cookie()
-	{
-		// fetch the session cookie
-		parent::_get_cookie();
-
-		// read the session file
-		if ( ! empty($this->keys))
-		{
-			// read the session file
-			$payload = $this->_read_file($this->keys['session_id']);
-
-			if ($payload)
-			{
-				$payload = $this->_unserialize($payload);
-
-				// check for rotated session id's
-				if (isset($payload['rotated_session_id']))
-				{
-					// get the session data using the rotated session id
-					$payload = $this->_read_file($payload['rotated_session_id']);
-					$payload = $this->_unserialize($payload);
-				}
-
-				if (isset($payload[0])) $this->data = $payload[0];
-				if (isset($payload[1])) $this->flash = $payload[1];
-			}
-		}
-
-		return ! empty($this->keys);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Writes the session file
 	 *
 	 * @access	private
-	 * @return  boolean, true if found, false if not
+	 * @return  boolean, true if it was an existing session, false if not
 	 */
 	protected function _write_file($session_id, $payload)
 	{
 		// create the session file
 		$file = $this->config['path'].$this->config['cookie_name'].'_'.$session_id;
+		$exists = file_exists($file);
 		$handle = fopen($file,'c');
 		if ($handle)
 		{
@@ -237,6 +291,8 @@ class Session_File extends Session_Driver {
 			// close the file
 			fclose($handle);
 		}
+
+		return $exists;
 	}
 
 	// --------------------------------------------------------------------
@@ -276,4 +332,4 @@ class Session_File extends Session_Driver {
 
 }
 
-/* End of file driver.php */
+/* End of file file.php */

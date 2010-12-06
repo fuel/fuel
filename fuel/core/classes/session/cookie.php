@@ -21,41 +21,106 @@ class Session_Cookie extends Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Sets or creates the session cookie
+	 * driver initialisation
 	 *
-	 * @access	private
-	 * @return  void
+	 * @access	public
+	 * @return	void
 	 */
-	protected function _set_cookie($session_id = NULL)
+	public function init()
 	{
-		parent::_set_cookie($session_id, array($this->data, $this->flash));
+		// generic driver initialisation
+		parent::init();
+
+		// check for required config values
+		$this->config['cookie_name'] = $this->validate_config('cookie_name', isset($this->config['cookie_name']) ? $this->config['cookie_name'] : 'fuelcid');
 	}
 
 	// --------------------------------------------------------------------
 
 	/**
-	 * Gets the session cookie
+	 * create a new session
 	 *
-	 * @access	private
-	 * @return  boolean, true if found, false if not
+	 * @access	public
+	 * @return	void
 	 */
-	protected function _get_cookie()
+	public function create()
 	{
-		// cookie already loaded?
-		if ( empty($this->keys) )
-		{
-			// fetch the session cookie
-			$payload = parent::_get_cookie();
+		// create a new session
+		$this->keys['session_id']	= $this->_new_session_id();
+		$this->keys['ip_address']	= Input::real_ip();
+		$this->keys['user_agent']	= Input::user_agent();
+		$this->keys['created'] 		= $this->time->get_timestamp();
+		$this->keys['updated'] 		= $this->keys['created'];
+		$this->keys['payload'] 		= '';
 
-			// retrieve our payload from the cookie
-			if ( ! empty($this->keys) )
-			{
-				if (isset($payload[0])) $this->data = $payload[0];
-				if (isset($payload[1])) $this->flash = $payload[1];
-			}
+		// and set the session cookie
+		$this->_set_cookie();
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * read the session
+	 *
+	 * @access	public
+	 * @param	boolean, set to true if we want to force a new session to be created
+	 * @return	void
+	 */
+	public function read($force = false)
+	{
+		// get the session cookie
+		$payload = $this->_get_cookie();
+
+		// if no session cookie was present, create it
+		if ($payload === false or $force)
+		{
+			$this->create();
 		}
 
-		return ! empty($this->keys);
+		if (isset($payload[0])) $this->data = $payload[0];
+		if (isset($payload[1])) $this->flash = $payload[1];
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * write the current session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function write()
+	{
+		// do we have something to write?
+		if ( ! empty($this->keys))
+		{
+			// rotate the session id if needed
+			$this->rotate(false);
+
+			// then update the cookie
+			$this->_set_cookie(array($this->data, $this->flash));
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * destroy the current session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function destroy()
+	{
+		// do we have something to destroy?
+		if ( ! empty($this->keys))
+		{
+			// delete the session cookie
+			Cookie::delete($this->config['cookie_name']);
+		}
+
+		// reset the stored session data
+		$this->keys = $this->flash = $this->data = array();
 	}
 
 	// --------------------------------------------------------------------
@@ -72,9 +137,15 @@ class Session_Cookie extends Session_Driver {
 	{
 		switch ($name)
 		{
-			// cookie driver doesn't have any special config values
+			case 'cookie_name':
+				if ( empty($value) OR ! is_string($value))
+				{
+					$value = 'fuelcid';
+				}
+			break;
+
 			default:
-				break;
+			break;
 		}
 
 		// return the validated value
@@ -82,4 +153,4 @@ class Session_Cookie extends Session_Driver {
 	}
 }
 
-/* End of file driver.php */
+/* End of file cookie.php */
