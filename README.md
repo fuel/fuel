@@ -25,4 +25,4 @@ That's it! Nothing else.
 
 ##Roadmap
 
-Help define it by [submitting your ideas here](http://fuelphp.uservoice.com).
+Help define it by [submitting your ideas here](http://community.fuelphp.com/fuelphp).
