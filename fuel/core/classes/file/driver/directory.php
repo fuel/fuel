@@ -26,17 +26,7 @@ class File_Driver_Directory {
 
 	}
 
-	/**
-	 * Create directory
-	 *
-	 * @param	string	path where to create the directory
-	 * @param	string	name of the new directory
-	 * @return	bool
-	 */
-	public static function _create($path, $filename)
-	{
-
-	}
+	public function __destruct() {}
 
 	/**
 	 * Read directory
@@ -44,14 +34,9 @@ class File_Driver_Directory {
 	 * @param	whether or not to read recursive
 	 * @return	array
 	 */
-	public static function _read($path, $depth = 0)
-	{
-
-	}
-
 	public function read($depth = 0)
 	{
-		return static::_read($this->path, $depth);
+		return App\File::read_dir($this->path, $depth);
 	}
 
 	/**
@@ -60,14 +45,9 @@ class File_Driver_Directory {
 	 * @param	string	new directory name
 	 * @return	bool
 	 */
-	public static function _rename($path, $new_path)
-	{
-
-	}
-
 	public function rename($new_name)
 	{
-		// use static::_rename()
+		// use App\File::rename()
 	}
 
 	/**
@@ -78,7 +58,7 @@ class File_Driver_Directory {
 	 */
 	public function move($new_path)
 	{
-		// use static::_rename()
+		// use App\File::rename()
 	}
 
 	/**
@@ -87,14 +67,9 @@ class File_Driver_Directory {
 	 * @param	string	path to parent directory, must be valid
 	 * @return	bool
 	 */
-	public static function _copy($path, $new_path)
-	{
-
-	}
-
 	public function copy($new_path)
 	{
-		// use static::_copy()
+		// use App\File::copy_dir()
 	}
 
 	/**
@@ -113,14 +88,9 @@ class File_Driver_Directory {
 	 *
 	 * @return	bool
 	 */
-	public static function _delete($path, $recursive = false)
-	{
-
-	}
-
 	public function delete($recursive = false)
 	{
-		// use static::_delete()
+		// use App\File::delete_dir()
 	}
 }
 
