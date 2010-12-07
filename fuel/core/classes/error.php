@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class Error {
 
 	public static $levels = array(
@@ -97,7 +99,13 @@ class Error {
 		$data['error_line']	= $e->getLine();
 		$data['backtrace']	= $e->getTrace();
 
-		//array_shift($data['backtrace']);
+		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
+
+		if (App\Fuel::$is_cli)
+		{
+			App\Cli::write(App\Cli::color($data['severity'].' - '.$data['message'].' in '.App\Fuel::clean_path($data['filepath']).' on line '.$data['error_line'], 'red'));
+			return;
+		}
 
 		$debug_lines = array();
 
