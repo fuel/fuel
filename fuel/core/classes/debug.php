@@ -308,9 +308,9 @@ JS;
 	 * @access public
 	 * @static
 	 */
-	Public Static Function phpini()
+	public static function phpini()
 	{
-		if ( !\is_readable(get_cfg_var('cfg_file_path')))
+		if ( ! is_readable(get_cfg_var('cfg_file_path')))
 		{
 			return false;
 		}
