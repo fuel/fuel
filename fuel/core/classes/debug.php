@@ -190,6 +190,23 @@ class Debug {
 		return static::dump(getAllHeaders());
 	}
 
+	/**
+	 * Prints a list of the configuration settings read from <i>php.ini</i>
+	 *
+	 * @access public
+	 * @static
+	 */
+	Public Static Function phpini()
+	{
+		if ( !\is_readable(get_cfg_var('cfg_file_path')))
+		{
+			return false;
+		}
+
+		// render it
+		return static::dump(parse_ini_file(get_cfg_var('cfg_file_path'), true));
+	}
+
 }
 
 /* End of file input.php */
