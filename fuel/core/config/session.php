@@ -21,7 +21,7 @@ return array(
 
 	// set it to false to prevent the static session from auto-initializing, know that it might make your session
 	// expire sooner because it's not updated when it's not used. note that auto-initializing always loads the default driver
-	'auto_initialize'	=> false,
+	'auto_initialize'	=> true,
 
 	// if no session type is requested, use the default
 	'driver'			=> 'cookie',
@@ -39,7 +39,7 @@ return array(
 	'cookie_path'		=> '/',
 
 	// if true, the session expires when the browser is closed (optional, default = false)
-	'expire_on_close'	=> true,
+	'expire_on_close'	=> false,
 
 	// session expiration time, <= 0 means 2 years! (optional, default = 2 hours)
 	'expiration_time'	=> 7200,
@@ -51,10 +51,13 @@ return array(
 	'flash_id'			=> 'flash',
 
 	// if false, expire flash values only after it's used  (optional, default = true)
-	'flash_auto_expire'	=> false,
+	'flash_auto_expire'	=> true,
 
 	// if true, writes are only done when you set a variable. if false, only at the end of a page request (optional, default = false)
 	'write_on_set'		=> false,
+
+	// for requests that don't support cookies (i.e. flash), use this POST variable to pass the cookie to the session driver
+	'post_cookie_name'	=> '',
 
 	/**
 	 * specific driver configurations. to override a global setting, just add it to the driver config with a different value
