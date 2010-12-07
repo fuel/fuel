@@ -164,7 +164,7 @@ class Inflector {
 	 */
 	public static function humanize($lower_case_and_underscored_word)
 	{
-		return ucfirst(strtolower(ereg_replace('_', " ", strval($lower_case_and_underscored_word))));
+		return ucfirst(strtolower(str_replace('_', " ", strval($lower_case_and_underscored_word))));
 	}
 
 	/**

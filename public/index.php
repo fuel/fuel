@@ -73,6 +73,13 @@ if ( ! is_dir($app_path) and is_dir(DOCROOT.$app_path))
 	$app_path = DOCROOT.$app_path;
 }
 
+// Determine the app path
+if ( ! is_dir($core_path) and is_dir(DOCROOT.$core_path))
+{
+	$core_path = DOCROOT.$core_path;
+}
+
+
 // Determine the package path
 if ( ! is_dir($package_path) and is_dir(DOCROOT.$package_path))
 {

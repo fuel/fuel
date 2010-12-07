@@ -45,31 +45,14 @@ class File_Driver_File {
 	}
 
 	/**
-	 * Create file
-	 *
-	 * @param	string	path where to create the file
-	 * @param	string	filename of the new file
-	 * @return	bool
-	 */
-	public static function _create($path, $filename)
-	{
-
-	}
-
-	/**
 	 * Read file
 	 *
 	 * @param	bool	whether to use file_get_contents() or readfile()
 	 * @return	string|IO
 	 */
-	public static function _read($path, $as_string = false)
-	{
-
-	}
-
 	public function read($as_string = false)
 	{
-		return static::_read($this->path, $as_string);
+		return App\File::read($this->path, $as_string);
 	}
 
 	/**
@@ -79,14 +62,9 @@ class File_Driver_File {
 	 * @param	string|false	new extension, false to keep current
 	 * @return	bool
 	 */
-	public static function _rename($path, $new_path)
-	{
-
-	}
-
 	public function rename($new_name, $new_extension = false)
 	{
-		// use static::_rename()
+		// use App\File::rename()
 	}
 
 	/**
@@ -97,7 +75,7 @@ class File_Driver_File {
 	 */
 	public function move($new_path)
 	{
-		// use static::_rename()
+		// use App\File::rename()
 	}
 
 	/**
@@ -106,14 +84,9 @@ class File_Driver_File {
 	 * @param	string	path to target directory, must be valid
 	 * @return	bool
 	 */
-	public static function _copy($path, $new_path)
-	{
-
-	}
-
 	public function copy($new_path)
 	{
-		// use static::_copy()
+		// use App\File::copy()
 	}
 
 	/**
@@ -132,14 +105,9 @@ class File_Driver_File {
 	 *
 	 * @return	bool
 	 */
-	public static function _delete($path)
-	{
-
-	}
-
 	public function delete()
 	{
-		// use static::_delete()
+		// use App\File::delete()
 	}
 }
 
