@@ -15,11 +15,13 @@
 namespace Fuel;
 
 class Debug {
-	
+
+	protected static $js_displayed = false;
+
 	protected static $files = array();
 
 	/**
-	 * Quick and dirty way to output a mixed variable to the browser
+	 * Quick and nice way to output a mixed variable to the browser
 	 *
 	 * @author	Phil Sturgeon <http://philsturgeon.co.uk/>
 	 * @static
@@ -40,25 +42,126 @@ class Debug {
 
 		$callee['file'] = Fuel::clean_path($callee['file']);
 
-		echo '<div style="background: #EEE !important; border:1px solid #666; padding:10px;">';
-		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 18px sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1><pre>';
+		if ( ! static::$js_displayed)
+		{
+			echo <<<JS
+<script type="text/javascript">function fuel_debug_toggle(a){if(document.getElementById){if(document.getElementById(a).style.display=="none"){document.getElementById(a).style.display="block"}else{document.getElementById(a).style.display="none"}}else{if(document.layers){if(document.id.display=="none"){document.id.display="block"}else{document.id.display="none"}}else{if(document.all.id.style.display=="none"){document.all.id.style.display="block"}else{document.all.id.style.display="none"}}}};</script>
+JS;
+			static::$js_displayed = true;
+		}
+		echo '<div style="font-size: 13px;background: #EEE !important; border:1px solid #666; padding:10px;">';
+		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 120% sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1>';
+		echo '<pre style="overflow:auto;font-size:100%;">';
 		$i = 0;
 		foreach ($arguments as $argument)
 		{
 			echo '<strong>Debug #'.(++$i).' of '.$total_arguments.'</strong>:<br />';
-			if (is_array($argument))
-			{
-				print_r($argument);
-			}
-			else
-			{
-				var_dump($argument);
-			}
+				echo static::format('...', $argument);
 			echo '<br />';
 		}
 
 		echo "</pre>";
 		echo "</div>";
+	}
+
+	/**
+	 * Formats the given $var's output in a nice looking, Foldable interface.
+	 *
+	 * @param	string	$name	the name of the var
+	 * @param	mixed	$var	the variable
+	 * @param	int		$level	the indentation level
+	 * @param	string	$indent_char	the indentation character
+	 * @return	string	the formatted string.
+	 */
+	public static function format($name, $var, $level = 0, $indent_char = '&nbsp;&nbsp;&nbsp;&nbsp;')
+	{
+		$return = str_repeat($indent_char, $level);
+		if (is_array($var))
+		{
+			$id = 'fuel_debug_'.mt_rand();
+			if (count($var) > 0)
+			{
+				$return .= "<a href=\"javascript:fuel_debug_toggle('$id');\"><strong>{$name}</strong></a>";
+			}
+			else
+			{
+				$return .= "<strong>{$name}</strong>";
+			}
+			$return .=  " (Array, ".count($var)." elements)\n";
+
+			$sub_return = '';
+			foreach ($var as $key => $val)
+			{
+				$sub_return .= static::format($key, $val, $level + 1);
+			}
+
+			if (count($var) > 0)
+			{
+				$return .= "<span id=\"$id\" style=\"display: none;\">$sub_return</span>";
+			}
+			else
+			{
+				$return .= $sub_return;
+			}
+		}
+		elseif (is_string($var))
+		{
+			$return .= "<strong>{$name}</strong> (String, ".strlen($var)." characters): \"{$var}\"\n";
+		}
+		elseif (is_float($var))
+		{
+			$return .= "<strong>{$name}</strong> (Float): {$var}\n";
+		}
+		elseif (is_long($var))
+		{
+			$return .= "<strong>{$name}</strong> (Integer): {$var}\n";
+		}
+		elseif (is_null($var))
+		{
+			$return .= "<strong>{$name}</strong> (Null): null\n";
+		}
+		elseif (is_bool($var))
+		{
+			$return .= "<strong>{$name}</strong> (Boolean): ".($var ? 'true' : 'false')."\n";
+		}
+		elseif (is_double($var))
+		{
+			$return .= "<strong>{$name}</strong> (Double): {$var}\n";
+		}
+		elseif (is_object($var))
+		{
+			$id = 'fuel_debug_'.mt_rand();
+			$vars = get_object_vars($var);
+			if (count($vars) > 0)
+			{
+				$return .= "<a href=\"javascript:fuel_debug_toggle('$id');\"><strong>{$name}</strong></a>";
+			}
+			else
+			{
+				$return .= "<strong>{$name}</strong>";
+			}
+			$return .= " (Object): ".get_class($var)."\n";
+
+			$sub_return = '';
+			foreach ($vars as $key => $val)
+			{
+				$sub_return .= static::format($key, $val, $level + 1);
+			}
+
+			if (count($vars) > 0)
+			{
+				$return .= "<span id=\"$id\" style=\"display: none;\">$sub_return</span>";
+			}
+			else
+			{
+				$return .= $sub_return;
+			}
+		}
+		else
+		{
+			$return .= "<strong>{$name}</strong>: {$var}\n";
+		}
+		return $return;
 	}
 
 	/**
