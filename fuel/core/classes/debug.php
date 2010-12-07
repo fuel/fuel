@@ -28,7 +28,13 @@ class Debug {
 	 */
 	public static function dump()
 	{
-		list($callee) = debug_backtrace();
+		$backtrace = debug_backtrace();
+
+		// If being called from within, show the file above in the backtrack
+		$callee = strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE
+			? $backtrace[1]
+			: $backtrace[0];
+
 		$arguments = func_get_args();
 		$total_arguments = count($arguments);
 
@@ -101,6 +107,89 @@ class Debug {
 
 		return $debug_lines;
 	}
+
+	public static function backtrace()
+	{
+		return static::dump(debug_backtrace());
+	}
+
+	/**
+	* Prints a list of all currently declared classes.
+	*
+	* @access public
+	* @static
+	*/
+	public static function classes()
+	{
+		return static::dump(get_declared_classes());
+	}
+
+	/**
+	* Prints a list of all currently declared interfaces (PHP5 only).
+	*
+	* @access public
+	* @static
+	*/
+	public static function interfaces()
+	{
+		return static::dump(get_declared_interfaces());
+	}
+
+	/**
+	* Prints a list of all currently included (or required) files.
+	*
+	* @access public
+	* @static
+	*/
+	public static function includes()
+	{
+	return static::dump(get_included_files());
+	}
+
+	/**
+	 * Prints a list of all currently declared functions.
+	 *
+	 * @access public
+	 * @static
+	 */
+	public static function functions()
+	{
+		return static::dump(get_defined_functions());
+	}
+
+	/**
+	 * Prints a list of all currently declared constants.
+	 *
+	 * @access public
+	 * @static
+	 */
+	public static function constants()
+	{
+		return static::dump(get_defined_constants());
+	}
+
+	/**
+	 * Prints a list of all currently loaded PHP extensions.
+	 *
+	 * @access public
+	 * @static
+	 */
+	public static function extensions()
+	{
+		return static::dump(get_loaded_extensions());
+	}
+
+	/**
+	 * Prints a list of all HTTP request headers.
+	 *
+	 * @access public
+	 * @static
+	 */
+	public static function headers()
+	{
+		return static::dump(getAllHeaders());
+	}
+
 }
 
 /* End of file input.php */
