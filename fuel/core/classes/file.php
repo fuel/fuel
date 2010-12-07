@@ -69,24 +69,113 @@ class File {
 		return (is_string($area) ? static::$areas[$area] : $area) ?: static::$base_area;
 	}
 
-	public static function create($path, $input)
+	/**
+	 * Create directory or empty file
+	 *
+	 * @param	string	directory where to create file or dir
+	 * @param	string	file or directory name
+	 * @return	bool
+	 */
+	public static function create($basepath, $name)
 	{
-		return static::instance()->create($path, $input);
+		$info = pathinfo(rtrim($basepath, '/\\').DS.$name);
+
+		if (empty($info['extension']))
+		{
+			return File_Driver_File::_create($info['dirname'], $info['basename']);
+		}
+		else
+		{
+			return File_Driver_Directory::_create($info['dirname'], $info['basename']);
+		}
 	}
 
-	public static function read($path)
+	/**
+	 * Read directory or file
+	 *
+	 * @param	string		file or directory to read
+	 * @param	int|bool	depth to recurse directory, 1 is only current and 0 or smaller is unlimited
+	 * @return	mixed		file contents or directory contents in an array
+	 */
+	public static function read($path, $depth = 0)
 	{
-		return static::instance()->read($path);
+		if (is_file($path))
+		{
+			return File_Driver_File::_read($path, $depth);
+		}
+		elseif (is_dir($path))
+		{
+			return File_Driver_Directory::_read($path, $depth);
+		}
+
+		Error::notice('Invalid file or directory path.');
+		return false;
 	}
 
-	public static function update($path, $new_content)
+	/**
+	 * Rename directory or file
+	 *
+	 * @param	string	path to file or directory to rename
+	 * @param	string	new path (full path, can also cause move)
+	 * @return	bool
+	 */
+	public static function rename($path, $new_path)
 	{
-		return static::instance()->update($path, $new_content);
+		if (is_file($path))
+		{
+			return File_Driver_File::_rename($path, $new_path);
+		}
+		elseif (is_dir($path))
+		{
+			return File_Driver_Directory::_rename($path, $new_path);
+		}
+
+		Error::notice('Invalid file or directory path.');
+		return false;
 	}
 
-	public static function delete($path)
+	/**
+	 * Copy directory or file
+	 *
+	 * @param	string	path to file or directory to rename
+	 * @param	string	new base directory (full path)
+	 * @return	bool
+	 */
+	public static function copy($path, $new_path)
 	{
-		return static::instance()->delete($path);
+		if (is_file($path))
+		{
+			return File_Driver_File::_copy($path, $new_path);
+		}
+		elseif (is_dir($path))
+		{
+			return File_Driver_Directory::_copy($path, $new_path);
+		}
+
+		Error::notice('Invalid file or directory path.');
+		return false;
+	}
+
+	/**
+	 * Rename directory or file
+	 *
+	 * @param	string	path to file or directory to delete
+	 * @param	bool	whether to also delete contents of subdirectories in case of directory
+	 * @return	bool
+	 */
+	public static function delete($path, $recursive = false)
+	{
+		if (is_file($path))
+		{
+			return File_Driver_File::_delete($path);
+		}
+		elseif (is_dir($path))
+		{
+			return File_Driver_Directory::_delete($path, $recursive);
+		}
+
+		Error::notice('Invalid file or directory path.');
+		return false;
 	}
 }
 

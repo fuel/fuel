@@ -57,9 +57,9 @@ class File_Area {
 		if (is_file($path))
 		{
 			$info = pathinfo($path);
-			if (array_key_exists($info['ext'], static::$file_drivers))
+			if (array_key_exists($info['extension'], static::$file_drivers))
 			{
-				$class = static::$file_drivers[$info['ext']];
+				$class = static::$file_drivers[$info['extension']];
 				return new $class($path, $config, $this);
 			}
 
