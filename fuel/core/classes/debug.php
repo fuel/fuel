@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class Debug {
 
 	protected static $js_displayed = false;
@@ -33,9 +35,16 @@ class Debug {
 		$backtrace = debug_backtrace();
 
 		// If being called from within, show the file above in the backtrack
-		$callee = strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE
-			? $backtrace[1]
-			: $backtrace[0];
+		if (strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE)
+		{
+			$callee = $backtrace[1];
+			$label = App\Inflector::humanize($backtrace[1]['function']);
+		}
+		else
+		{
+			$callee = $backtrace[0];
+			$label = 'Debug';
+		}
 
 		$arguments = func_get_args();
 		$total_arguments = count($arguments);
@@ -55,7 +64,7 @@ JS;
 		$i = 0;
 		foreach ($arguments as $argument)
 		{
-			echo '<strong>Debug #'.(++$i).' of '.$total_arguments.'</strong>:<br />';
+			echo '<strong>'.$label.' #'.(++$i).' of '.$total_arguments.'</strong>:<br />';
 				echo static::format('...', $argument);
 			echo '<br />';
 		}
