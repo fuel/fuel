@@ -82,6 +82,7 @@ Autoloader::add_aliases(array(
 	'Session_Cookie'	=> 'Fuel\\Application\\Session_Cookie',
 	'Session_File'		=> 'Fuel\\Application\\Session_File',
 	'Session_Memcached'	=> 'Fuel\\Application\\Session_Memcached',
+	'Session_Redis'		=> 'Fuel\\Application\\Session_Redis',
 
 	'URI'			=> 'Fuel\\Application\\URI',
 	'URL'			=> 'Fuel\\Application\\URL',
