@@ -39,7 +39,7 @@ class Cli {
 	);
 
 	/**
-	 * Static constructor.  Parses all the CLI params.
+	 * Static constructor.	Parses all the CLI params.
 	 */
 	public static function _init()
 	{
@@ -57,7 +57,7 @@ class Cli {
 	}
 
 	/**
-	 * Returns the option with the given name.  You can also give the option
+	 * Returns the option with the given name.	You can also give the option
 	 * number.
 	 *
 	 * Named options must be in the following formats:
@@ -95,62 +95,62 @@ class Cli {
 	{
 		$args = func_get_args();
 
-        // Ask question with options
-        if (count($args) == 2)
+		// Ask question with options
+		if (count($args) == 2)
 		{
-            list($output, $options)=$args;
+			list($output, $options)=$args;
 		}
 
 		// No question (probably been asked already) so just show options
 		elseif (count($args) == 1 && is_array($args[0]))
 		{
-            $output = '';
-            $options = $args[0];
-        }
+			$output = '';
+			$options = $args[0];
+		}
 
 		// Question without options
 		elseif (count($args) == 1 && is_string($args[0]))
 		{
-            $output = $args[0];
-            $options = array();
-        }
+			$output = $args[0];
+			$options = array();
+		}
 
 		// Run out of ideas, EPIC FAIL!
 		else
 		{
-            $output = '';
-            $options = array();
-        }
+			$output = '';
+			$options = array();
+		}
 
-        // If a question has been asked with the read
-        if( ! empty($output))
+		// If a question has been asked with the read
+		if( ! empty($output))
 		{
-            $options_output = '';
-            if( ! empty($options))
+			$options_output = '';
+			if( ! empty($options))
 			{
-                $options_output = ' [ '.implode(', ', $options).' ]';
-            }
+				$options_output = ' [ '.implode(', ', $options).' ]';
+			}
 
-            fwrite(STDOUT, $output.$options_output.': ');
-        }
+			fwrite(STDOUT, $output.$options_output.': ');
+		}
 
-        // Read the input from keyboard.
-        $input = trim(fgets(STDIN));
+		// Read the input from keyboard.
+		$input = trim(fgets(STDIN));
 
-        // If options are provided and the choice is not in the array, tell them to try again
-        if( ! empty($options) && ! in_array($input, $options))
+		// If options are provided and the choice is not in the array, tell them to try again
+		if( ! empty($options) && ! in_array($input, $options))
 		{
-            static::write("This is not a valid option. Please try again.\n");
+			static::write("This is not a valid option. Please try again.\n");
 
-            $input = static::read($output, $options);
-        }
+			$input = static::read($output, $options);
+		}
 
-        // Read the input
-        return $input;
+		// Read the input
+		return $input;
 	}
 
 	/**
-	 * Outputs a string to the cli.  If you send an array it will implode them
+	 * Outputs a string to the cli.	 If you send an array it will implode them
 	 * with a line break.
 	 *
 	 * @param	string|array	$text	the text to output, or array of lines
@@ -166,8 +166,8 @@ class Cli {
 
 	/**
 	 * Beeps a certain number of times.
-	 * 
-	 * @param	int	$num	the number of times to beep
+	 *
+	 * @param	int $num	the number of times to beep
 	 */
 	public static function beep($num = 1)
 	{
@@ -214,8 +214,8 @@ class Cli {
 	 * optionally a background color.
 	 *
 	 * @param	string	$text		the text to color
-	 * @param	atring	$foreground	the foreground color
-	 * @param	string	$background	the background color
+	 * @param	atring	$foreground the foreground color
+	 * @param	string	$background the background color
 	 * @return	string	the color coded string
 	 */
 	public static function color($text, $foreground, $background = null)
