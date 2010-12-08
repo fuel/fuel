@@ -158,6 +158,7 @@ class Inflector {
 
 	/**
 	 * Translate string to 7-bit ASCII
+	 * Only works with UTF-8.
 	 *
 	 * @param	string
 	 * @return	string
@@ -166,26 +167,38 @@ class Inflector {
 	{
 		// Translate unicode characters to their simpler counterparts
 		$from = array(
-			'?','á','à','â','ã','ª','Á','À',
-			'Â','Ã', 'é','è','ê','É','È','Ê','í','ì','î','Í',
-			'Ì','Î','ò','ó','ô', 'õ','º','Ó','Ò','Ô','Õ','?','?',
-			'?','?','ú','ù','û','Ú','Ù','Û','ç','Ç','Ñ','ñ'
+			'ä','á','à','â','A','Á','À','Â','Ã','ã','ª','å','Ă','ă','Æ','æ',
+			'ç','Ç','č','Č',
+			'Ð','Ď',
+			'ë','é','è','ê','Ë','É','È','Ê',
+			'ï','í','ì','î','Ï','Í','Ì','Î',
+			'ö','ò','ó','ô','Ö','Ó','Ò','Ô','Õ','õ','º','Ø','ø','Œ','œ',
+			'ţ','Ţ',
+			'ü','ú','ù','û','Ü','Ú','Ù','Û',
+			'Ñ','ñ',
+			'ÿ','ý','Ÿ','Ý'
 		);
 		$to = array(
-			'a','a','a','a','a','a','A','A',
-			'A','A','e','e','e','E','E','E','i','i','i','I','I',
-			'I','o','o','o','o','o','O','O','O','O','s','S',
-			't','T','u','u','u','U','U','U','c','C','N','n'
+			'a','a','a','a','A','A','A','A','A','a','a','a','A','a','AE','ae',
+			'c','C','c','C',
+			'D','D',
+			'e','e','e','e','E','E','E','E',
+			'i','i','i','i','I','I','I','I',
+			'o','o','o','o','O','O','O','O','O','o','o','O','o','OE','oe',
+			't','T',
+			'u','u','u','u','U','U','U','U',
+			'N','n',
+			'y','y','Y','Y'
 		);
 		$str = str_replace($from, $to, $str);
-
+exit($str);
 		// remove any left over non 7bit ASCII
 		return preg_replace('/[^\x09\x0A\x0D\x20-\x7E]/', '', $str);
 	}
 
 	/**
 	 * Converts your text to a URL-friendly title so it can be used in the URL.
-	 * Works best with UTF8 input and and only outputs 7 bit ASCII characters.
+	 * Only works with UTF8 input and and only outputs 7 bit ASCII characters.
 	 *
 	 * @param	string	the text
 	 * @param	string	the separator (either - or _)
@@ -199,7 +212,7 @@ class Inflector {
 		// Decode all entities to their simpler forms
 		if (MBSTRING)
 		{
-			$str = html_entity_decode($str, ENT_QUOTES, mb_detect_encoding($str));
+			$str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
 		}
 
 		$trans = array(

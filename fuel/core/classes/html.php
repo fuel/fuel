@@ -57,6 +57,7 @@ class Html
 		{
 			$href = App\Uri::create($href);
 		}
+		$attributes['href'] = $href;
 
 		return html_tag('a', $attributes, $text);
 	}
