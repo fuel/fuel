@@ -26,3 +26,9 @@ That's it! Nothing else.
 ##Roadmap
 
 Help define it by [submitting your ideas here](http://community.fuelphp.com/fuelphp).
+
+##Donate
+
+<a href='http://www.pledgie.com/campaigns/14124'><img alt='Click here to lend your support to: FuelPHP and make a donation at www.pledgie.com !' src='http://www.pledgie.com/campaigns/14124.png?skin_name=chrome' border='0' /></a>
+
+Any donations would help support the framework and pay for software, development and hosting costs.   We understand if you cannot, but greatly appreciate anything you can give.
