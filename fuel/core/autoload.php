@@ -84,8 +84,7 @@ Autoloader::add_aliases(array(
 	'Session_Memcached'	=> 'Fuel\\Application\\Session_Memcached',
 	'Session_Redis'		=> 'Fuel\\Application\\Session_Redis',
 
-	'URI'			=> 'Fuel\\Application\\URI',
-	'URL'			=> 'Fuel\\Application\\URL',
+	'Uri'			=> 'Fuel\\Application\\Uri',
 
 	'Validation'		=> 'Fuel\\Application\\Validation',
 	'Validation_Object'	=> 'Fuel\\Application\\Validation_Object',
