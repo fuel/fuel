@@ -191,7 +191,7 @@ class Inflector {
 			'y','y','Y','Y'
 		);
 		$str = str_replace($from, $to, $str);
-exit($str);
+
 		// remove any left over non 7bit ASCII
 		return preg_replace('/[^\x09\x0A\x0D\x20-\x7E]/', '', $str);
 	}
@@ -210,10 +210,7 @@ exit($str);
 		$sep = $sep != '_' ? '-' : $sep;
 
 		// Decode all entities to their simpler forms
-		if (MBSTRING)
-		{
-			$str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
-		}
+		$str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
 
 		$trans = array(
 			'\s+' => $sep,					// one or more spaces => seperator
