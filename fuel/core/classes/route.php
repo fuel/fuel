@@ -60,14 +60,11 @@ class Route {
 
 		foreach (static::$routes as $search => $route)
 		{
-			$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+'), $search);
-			$search = preg_replace('|:([a-z\_]+)|uD', '(?P<$1>.+)', $search);
-
-			if (preg_match('|'.$search.'|uD', $uri->uri, $params) != false)
+			$result = static::_parse_search($uri, $search, $route);
+			
+			if ($result) 
 			{
-				$route = preg_replace('|'.$search.'|uD', $route, $uri->uri);
-
-				return static::parse_match($route, $params);
+				return $result;
 			}
 		}
 		
@@ -129,6 +126,53 @@ class Route {
 			'segments'		=> $segments,
 			'named_params'	=> $named_params,
 		);
+	}
+	
+	/**
+	 * Parses an actual route - extracted out of parse() to make it recursive.
+	 *
+	 * @access private
+	 * @param string The URI object
+	 * @param string The search string
+	 * @param string The route to check for routing to
+	 * @return array OR boolean
+	 */
+	private static function _parse_search($uri, $search, $route) 
+	{
+		$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+'), $search);
+		$search = preg_replace('|:([a-z\_]+)|uD', '(?P<$1>.+)', $search);
+			
+		if (is_array($route)) 
+		{
+			foreach ($route as $r)
+			{
+				$verb = $r[0];
+				$forward = $r[1];
+				
+				if (Input::method() == strtoupper($verb))
+				{
+					$result = static::_parse_search($uri, $search, $forward);
+
+					if ($result) 
+					{
+						return $result;
+					}
+				}
+			}
+			
+			return FALSE;
+		}
+			
+		if (preg_match('|'.$search.'|uD', $uri->uri, $params) != false)
+		{
+			$route = preg_replace('|'.$search.'|uD', $route, $uri->uri);
+
+			return static::parse_match($route, $params);
+		} 
+		else 
+		{
+			return FALSE;
+		}
 	}
 }
 

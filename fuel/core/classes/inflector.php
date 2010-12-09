@@ -157,6 +157,89 @@ class Inflector {
 	}
 
 	/**
+	 * Translate string to 7-bit ASCII
+	 * Only works with UTF-8.
+	 *
+	 * @param	string
+	 * @return	string
+	 */
+	public static function ascii($str)
+	{
+		// Translate unicode characters to their simpler counterparts
+		$from = array(
+			'ä','á','à','â','A','Á','À','Â','Ã','ã','ª','å','Ă','ă','Æ','æ',
+			'ç','Ç','č','Č',
+			'Ð','Ď',
+			'ë','é','è','ê','Ë','É','È','Ê',
+			'ï','í','ì','î','Ï','Í','Ì','Î',
+			'ö','ò','ó','ô','Ö','Ó','Ò','Ô','Õ','õ','º','Ø','ø','Œ','œ',
+			'ţ','Ţ',
+			'ü','ú','ù','û','Ü','Ú','Ù','Û',
+			'Ñ','ñ',
+			'ÿ','ý','Ÿ','Ý'
+		);
+		$to = array(
+			'a','a','a','a','A','A','A','A','A','a','a','a','A','a','AE','ae',
+			'c','C','c','C',
+			'D','D',
+			'e','e','e','e','E','E','E','E',
+			'i','i','i','i','I','I','I','I',
+			'o','o','o','o','O','O','O','O','O','o','o','O','o','OE','oe',
+			't','T',
+			'u','u','u','u','U','U','U','U',
+			'N','n',
+			'y','y','Y','Y'
+		);
+		$str = str_replace($from, $to, $str);
+
+		// remove any left over non 7bit ASCII
+		return preg_replace('/[^\x09\x0A\x0D\x20-\x7E]/', '', $str);
+	}
+
+	/**
+	 * Converts your text to a URL-friendly title so it can be used in the URL.
+	 * Only works with UTF8 input and and only outputs 7 bit ASCII characters.
+	 *
+	 * @param	string	the text
+	 * @param	string	the separator (either - or _)
+	 * @return	string	the new title
+	 */
+	public static function friendly_title($str, $sep = '-', $lowercase = false)
+	{
+		// Allow underscore, otherwise default to dash
+		$sep = $sep != '_' ? '-' : $sep;
+
+		// Decode all entities to their simpler forms
+		$str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
+
+		$trans = array(
+			'\s+' => $sep,					// one or more spaces => seperator
+			$sep.'+' => $sep,				// multiple seperators => 1 seperator
+			$sep.'$' => '',					// ending seperator => (nothing)
+			'^'.$sep => '',					// starting seperator => (nothing)
+			'\.+$' => ''					// ending dot => (nothing)
+		);
+		foreach ($trans as $key => $val)
+		{
+			$str = preg_replace("#".$key."#i", $val, $str);
+		}
+
+		// Only allow 7bit characters
+		$str = static::ascii($str);
+
+		$str = App\Security::strip_tags($str);
+
+		if ($lowercase === true)
+		{
+			$str = function_exists('mb_convert_case')
+				? mb_convert_case($str, MB_CASE_LOWER, 'UTF-8')
+				: strtolower($str);
+		}
+
+		return $str;
+	}
+
+	/**
 	 * Turns an underscore separated word and turns it into a human looking string.
 	 *
 	 * @param	string	$lower_case_and_underscored_word	the word
@@ -223,7 +306,7 @@ class Inflector {
 
 	/**
 	 * Gets the foreign key for a given class.
-	 * 
+	 *
 	 * @param	string	$class_name		the class name
 	 * @param	bool	$use_underscore	whether to use an underscore or not
 	 * @return	string	the foreign key

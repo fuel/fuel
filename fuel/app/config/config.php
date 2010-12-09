@@ -216,6 +216,21 @@ return array(
 		 * $this->param('month');
 		 * $this->param('id');
 		 */
+		
+		/**
+		 * HTTP verb based routing
+		 *
+		 * You can route your URLs to controllers and actions based on the HTTP verb used to call them.
+		 * This makes it quick and easy to make RESTful controllers.
+		 *
+		 * Example:
+		 *
+		 * 'blog' => array(array('GET', 'blog/all'), array('POST', 'blog/create')), // Routes GET /blog to /blog/all and POST /blog to /blog/create
+		 *
+		 * You can use named parameters and regexes within your URL just like normal:
+		 *
+		 * 'blog/(:any)' => array(array('GET', 'blog/show/$1'))
+		 */
 	),
 );
 
