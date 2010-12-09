@@ -24,7 +24,6 @@ class Route {
 	{
 		if (App\Config::load('config', false, $reload))
 		{
-			echo 'Loading Routes';
 			static::$routes = Config::get('routes');
 		}
 		elseif ( ! $reload)
@@ -50,7 +49,7 @@ class Route {
 			if ( ! isset(static::$routes['#']) || static::$routes['#'] == '')
 			{
 				// TODO: write logic to deal with missing default route.
-				return FALSE;
+				return false;
 			}
 			else
 			{
@@ -160,7 +159,7 @@ class Route {
 				}
 			}
 			
-			return FALSE;
+			return false;
 		}
 			
 		if (preg_match('|'.$search.'|uD', $uri->uri, $params) != false)
@@ -171,7 +170,7 @@ class Route {
 		} 
 		else 
 		{
-			return FALSE;
+			return false;
 		}
 	}
 }
