@@ -29,8 +29,11 @@ class Refine
 		}
 
 		require $file;
-		
-		call_user_func('\\Fuel\\Tasks\\'.$task, $args);
+
+		$task = '\\Fuel\\Tasks\\'.$task;
+
+		$new_task = new $task;
+		call_user_func(array($new_task, 'run'), $args);
 	}
 }
 

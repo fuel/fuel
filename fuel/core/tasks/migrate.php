@@ -6,10 +6,10 @@ use Fuel\Application as App;
 
 class Migrate {
 
-	public function run($args)
+	public function run($direction = null)
 	{
 		// By default, just upgrade to the current version
-		if ( ! isset($args[0]))
+		if ($direction === null)
 		{
 			App\Migrate::current();
 		}
@@ -17,7 +17,7 @@ class Migrate {
 		else
 		{
 			// Find out what they want to do with it
-			switch ($args[0])
+			switch ($direction)
 			{
 				case '-u':
 				case '--up':
