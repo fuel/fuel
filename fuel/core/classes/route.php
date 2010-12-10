@@ -138,7 +138,7 @@ class Route {
 	 */
 	private static function _parse_search($uri, $search, $route) 
 	{
-		$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+'), $search);
+		$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+([^/]*)'), $search);
 		$search = preg_replace('|:([a-z\_]+)|uD', '(?P<$1>.+)', $search);
 			
 		if (is_array($route)) 
@@ -161,10 +161,10 @@ class Route {
 			
 			return false;
 		}
-			
-		if (preg_match('|'.$search.'|uD', $uri->uri, $params) != false)
+
+		if (preg_match('|^'.$search.'$|uD', $uri->uri, $params) != false)
 		{
-			$route = preg_replace('|'.$search.'|uD', $route, $uri->uri);
+			$route = preg_replace('|^'.$search.'$|uD', $route, $uri->uri);
 
 			return static::parse_match($route, $params);
 		} 
