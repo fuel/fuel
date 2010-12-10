@@ -54,7 +54,7 @@ class Cli
 
 			case 'r':
 			case 'refine':
-				call_user_func('Oil\Refine::'.$args[2], array_slice($args, 3));
+				call_user_func('Oil\Refine::run', $args[2], array_slice($args, 3));
 			break;
 
 			case '-v':

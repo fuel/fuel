@@ -41,12 +41,12 @@ class Console {
 	private function main()
 	{
 		echo sprintf(
-				'Fuel %s - PHP %s (%s) (%s) [%s]',
-				\Fuel::VERSION,
-				phpversion(),
-				php_sapi_name(),
-				self::build_date(),
-				PHP_OS
+			'Fuel %s - PHP %s (%s) (%s) [%s]',
+			\Fuel::VERSION,
+			phpversion(),
+			php_sapi_name(),
+			self::build_date(),
+			PHP_OS
 		) . PHP_EOL;
 
 		// Loop until they break it

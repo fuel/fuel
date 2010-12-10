@@ -15,53 +15,23 @@
 namespace Oil;
 
 use Fuel\Application as App;
-use Fuel\Application\DB;
-use Fuel\Application\Database;
 
 class Refine
 {
-	public function migrate($args)
+	public function run($task, $args)
 	{
-		// By default, just upgrade to the current version
-		if ( ! isset($args[0]))
+		$task = ucfirst(strtolower($task));
+
+		if ( ! $file = App\Fuel::find_file('tasks', $task))
 		{
-			App\Migrate::current();
+			throw new Exception('Well that didnt work...');
+			return;
 		}
 
-		else
-		{
-			// Find out what they want to do with it
-			switch ($args[0])
-			{
-				case '-u':
-				case '--up':
-					App\Migrate::up();
-				break;
-
-				case '-d':
-				case '--down':
-					App\Migrate::down();
-				break;
-
-				case '-c':
-				case '--current':
-					App\Migrate::current();
-				break;
-
-				case '-v':
-				case '--version':
-
-					if (empty($args[1]))
-					{
-
-					}
-
-					App\Migrate::version($args[1]);
-				break;
-			}
-		}
-	}
+		require $file;
 		
+		call_user_func('\\Fuel\\Tasks\\'.$task, $args);
+	}
 }
 
 /* End of file model.php */
