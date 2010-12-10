@@ -51,14 +51,12 @@ class Robots {
 		}
 
 		$eye = App\Cli::color("*", 'red');
-		$robot = App\Cli::color("			                    \"{$speech}\"
+
+		return App\Cli::color("			                    \"{$speech}\"
 			          _____     /
-			         /_____\\
-", 'blue');
-		$robot = App\Cli::color($robot, 'blue');
-		$robot .= App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue');
-		$robot .= App\Cli::color("
-			   /\\ #\\ \\_____/ /# /\\
+			         /_____\\", 'blue')."\n"
+.App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue')."\n"
+.App\Cli::color("			   /\\ #\\ \\_____/ /# /\\
 			  /  \\# \\_.---._/ #/  \\
 			 /   /|\\  |   |  /|\\   \\
 			/___/ | | |   | | | \\___\\
@@ -74,8 +72,6 @@ class Robots {
 			      /   \\   /   \\
 			     |_____| |_____|
 			     |HHHHH| |HHHHH|", 'blue');
-
-		return $robot;
 	}
 
 	/**
@@ -90,14 +86,12 @@ class Robots {
 	public function protect()
 	{
 		$eye = App\Cli::color("*", 'red');
-		$robot = App\Cli::color("			                    \"PROTECT ALL HUMANS!\"
+
+		return App\Cli::color("			                    \"PROTECT ALL HUMANS\"
 			          _____     /
-			         /_____\\
-", 'blue');
-		$robot = App\Cli::color($robot, 'blue');
-		$robot .= App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue');
-		$robot .= App\Cli::color("
-			   /\\ #\\ \\_____/ /# /\\
+			         /_____\\", 'blue')."\n"
+.App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue')."\n"
+.App\Cli::color("			   /\\ #\\ \\_____/ /# /\\
 			  /  \\# \\_.---._/ #/  \\
 			 /   /|\\  |   |  /|\\   \\
 			/___/ | | |   | | | \\___\\
@@ -114,7 +108,6 @@ class Robots {
 			     |_____| |_____|
 			     |HHHHH| |HHHHH|", 'blue');
 
-		return $robot;
 	}
 }
 
