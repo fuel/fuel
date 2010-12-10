@@ -13,6 +13,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 // ------------------------------------------------------------------------
 
 /**
@@ -27,7 +29,7 @@ class Html
 {
 	public static $doctypes = array();
 	public static $html5 = false;
-		
+
 	/**
 	 * Generates a html heading tag
 	 *
@@ -40,7 +42,92 @@ class Html
 	{
 		return html_tag('h'.$num, $attr, $content);
 	}
-	
+
+	/**
+	 * Creates an html link
+	 *
+	 * @param	string	the url
+	 * @param	string	the text value
+	 * @param	array	the attributes array
+	 * @return	string	the html link
+	 */
+	public static function anchor($href, $text, $attributes = array())
+	{
+		if ( ! preg_match('#^\w+://# i', $href))
+		{
+			$href = App\Uri::create($href);
+		}
+		$attributes['href'] = $href;
+
+		return html_tag('a', $attributes, $text);
+	}
+
+	/**
+	 * Adds the given schema to the given URL if it is not already there.
+	 *
+	 * @param	string	the url
+	 * @param	string	the schema
+	 * @return	string	url with schema
+	 */
+	public static function prep_url($url, $schema = 'http')
+	{
+		if ( ! preg_match('#^\w+://# i', $url))
+		{
+			$url = $schema.'://'.$url;
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Creates a mailto link.
+	 *
+	 * @param	string	The email address
+	 * @param	string	The text value
+	 * @param	string	The subject
+	 * @return	string	The mailto link
+	 */
+	public static function mail_to($email, $text = NULL, $subject = NULL, $attr = array())
+	{
+		$text or $text = $email;
+
+		$subject and $subject = '?subject='.$subject;
+
+		return html_tag('a', array(
+			'href' => 'mailto:'.$email.$subject,
+		) + $attr, $text);
+	}
+
+	/**
+	 * Creates a mailto link with Javascript to prevent bots from picking up the
+	 * email address.
+	 *
+	 * @param	string	the email address
+	 * @param	string	the text value
+	 * @param	string	the subject
+	 * @param	array	attributes for the tag
+	 * @return	string	the javascript code containg email
+	 */
+	public static function mail_to_safe($email, $text, $subject = null, $attr = array())
+	{
+		$text or $text = str_replace('@', '[at]', $email);
+
+		$email = explode("@", $email);
+
+		$subject and $subject = '?subject='.$subject;
+
+		$attr = array_to_attr($attr);
+		$attr = ($attr == '' ? '' : ' ').$attr;
+
+		$output = '<script type="text/javascript">';
+		$output .= 'var user = "'.$email[0].'";';
+		$output .= 'var at = "@";';
+		$output .= 'var server = "'.$email[1].'";';
+		$output .= "document.write('<a href=\"' + 'mail' + 'to:' + user + at + server + '$subject\"$attr>$text</a>');";
+		$output .= '</script>';
+		return $output;
+	}
+
 	/**
 	 * Generates a html break tag
 	 *
@@ -52,7 +139,7 @@ class Html
 	{
 		return str_repeat(html_tag('br', $attr), $num);
 	}
-	
+
 	/**
 	 * Generates a html horizontal rule tag
 	 *
@@ -61,9 +148,9 @@ class Html
 	 */
 	public static function hr($attr = false)
 	{
-		return html_tag('hr', $attr);	
+		return html_tag('hr', $attr);
 	}
-	
+
 	/**
 	 * Generates a html title tag
 	 *
@@ -74,7 +161,7 @@ class Html
 	{
 		return html_tag('title', array(), $content);
 	}
-	
+
 	/**
 	 * Generates a ascii code for non-breaking whitespaces
 	 *
@@ -85,7 +172,7 @@ class Html
 	{
 		return str_repeat('&nbsp;', $num);
 	}
-	
+
 	/**
 	 * Generates a html meta tag
 	 *
@@ -110,7 +197,7 @@ class Html
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Generates a html doctype tag
 	 *
@@ -153,7 +240,7 @@ class Html
 			return html_tag('div', array_merge(array('id' => 'header'), $attr), $content);
 		}
 	}
-	
+
 	/**
 	 * Generates a html5 audio tag
 	 * It is required that you set html5 as the doctype to use this method
@@ -192,7 +279,7 @@ class Html
 	{
 		return static::build_list('ul', $list, $style);
 	}
-	
+
 	/**
 	 * Generates a html ordered list tag
 	 *
@@ -204,7 +291,7 @@ class Html
 	{
 		return static::build_list('ol', $list, $style);
 	}
-	
+
 	/**
 	 * Generates the html for the list methods
 	 *

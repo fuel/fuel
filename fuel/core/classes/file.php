@@ -70,46 +70,51 @@ class File {
 	}
 
 	/**
-	 * Create directory or empty file
+	 * Create an empty file
 	 *
-	 * @param	string	directory where to create file or dir
-	 * @param	string	file or directory name
+	 * @param	string	directory where to create file
+	 * @param	string	filename
 	 * @return	bool
 	 */
 	public static function create($basepath, $name)
 	{
-		$info = pathinfo(rtrim($basepath, '/\\').DS.$name);
 
-		if (empty($info['extension']))
-		{
-			return File_Driver_File::_create($info['dirname'], $info['basename']);
-		}
-		else
-		{
-			return File_Driver_Directory::_create($info['dirname'], $info['basename']);
-		}
 	}
 
 	/**
-	 * Read directory or file
+	 * Create an empty directory
 	 *
-	 * @param	string		file or directory to read
-	 * @param	int|bool	depth to recurse directory, 1 is only current and 0 or smaller is unlimited
-	 * @return	mixed		file contents or directory contents in an array
+	 * @param	string	directory where to create new dir
+	 * @param	string	dirname
+	 * @return	bool
 	 */
-	public static function read($path, $depth = 0)
+	public static function create_dir($basepath, $name)
 	{
-		if (is_file($path))
-		{
-			return File_Driver_File::_read($path, $depth);
-		}
-		elseif (is_dir($path))
-		{
-			return File_Driver_Directory::_read($path, $depth);
-		}
 
-		Error::notice('Invalid file or directory path.');
-		return false;
+	}
+
+	/**
+	 * Read file
+	 *
+	 * @param	string		file to read
+	 * @param	bool		whether to use readfile() or file_get_contents()
+	 * @return	IO|string	file contents
+	 */
+	public static function read($path, $as_string = false)
+	{
+		// return either readfile() or file_get_contents()
+	}
+
+	/**
+	 * Read directory
+	 *
+	 * @param	string	directory to read
+	 * @param	int		depth to recurse directory, 1 is only current and 0 or smaller is unlimited
+	 * @return	array	directory contents in an array
+	 */
+	public static function read_dir($path, $depth = 0)
+	{
+
 	}
 
 	/**
@@ -135,47 +140,58 @@ class File {
 	}
 
 	/**
-	 * Copy directory or file
+	 * Alias for rename(), not needed but consistent with other methods
+	 */
+	public static function rename_dir($path, $new_path)
+	{
+		return static::rename($path, $new_path);
+	}
+
+	/**
+	 * Copy file
 	 *
-	 * @param	string	path to file or directory to rename
+	 * @param	string	path to file to copy
 	 * @param	string	new base directory (full path)
 	 * @return	bool
 	 */
 	public static function copy($path, $new_path)
 	{
-		if (is_file($path))
-		{
-			return File_Driver_File::_copy($path, $new_path);
-		}
-		elseif (is_dir($path))
-		{
-			return File_Driver_Directory::_copy($path, $new_path);
-		}
 
-		Error::notice('Invalid file or directory path.');
-		return false;
 	}
 
 	/**
-	 * Rename directory or file
+	 * Copy directory
 	 *
-	 * @param	string	path to file or directory to delete
-	 * @param	bool	whether to also delete contents of subdirectories in case of directory
+	 * @param	string	path to directory to copy
+	 * @param	string	new base directory (full path)
 	 * @return	bool
 	 */
-	public static function delete($path, $recursive = false)
+	public static function copy_dir($path, $new_path)
 	{
-		if (is_file($path))
-		{
-			return File_Driver_File::_delete($path);
-		}
-		elseif (is_dir($path))
-		{
-			return File_Driver_Directory::_delete($path, $recursive);
-		}
 
-		Error::notice('Invalid file or directory path.');
-		return false;
+	}
+
+	/**
+	 * Delete file
+	 *
+	 * @param	string	path to file to delete
+	 * @return	bool
+	 */
+	public static function delete($path)
+	{
+
+	}
+
+	/**
+	 * Delete directory
+	 *
+	 * @param	string	path to directory to delete
+	 * @param	bool	whether to also delete contents of subdirectories
+	 * @return	bool
+	 */
+	public static function delete_dir($path, $recursive = false)
+	{
+
 	}
 }
 

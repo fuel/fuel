@@ -477,7 +477,15 @@ echo "<h3>Rotating ID...</h3>";
 	 protected function _get_cookie()
 	 {
 		// fetch the cookie
-		if ($cookie = Cookie::get($this->config['cookie_name'], false))
+		$cookie = Cookie::get($this->config['cookie_name'], false);
+
+		// if not found, check for the post_cookie variable
+		if ($cookie === false)
+		{
+			$cookie = Input::get_post($this->config['post_cookie_name'], false);
+		}
+
+		if ($cookie !== false)
 		{
 			// fetch the payload
 			$cookie = $this->_unserialize(Crypt::decode($cookie));

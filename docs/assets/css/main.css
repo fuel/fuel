@@ -251,6 +251,43 @@ table.method td code {
 	border: 0px;
 }
 
+table.config {
+	border: 3px solid #CCC;
+}
+
+table.config td,
+table.config th {
+	border-collapse: collapse;
+	font-size: 85%;
+	border: 1px solid #CCC;
+}
+
+table.config td,
+table.config th {
+	padding: 8px;
+}
+
+table.config td {
+	background-color: #FFF;
+}
+
+table.config tbody th {
+	text-align: left;
+	background-color: #f8f8f8;
+}
+
+table.config td pre,
+table.config td code {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+
+table tr.header th {
+	background-color: #555;
+	color: #FFF;
+}
+
 table.parameters {
 	margin: 0px;
 }

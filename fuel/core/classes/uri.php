@@ -16,7 +16,7 @@ namespace Fuel;
 
 use Fuel\Application as App;
 
-class URI {
+class Uri {
 
 	protected static $detected_uri = null;
 
@@ -53,7 +53,7 @@ class URI {
 				// Some servers require 'index.php?' as the index page
 				// if we are using mod_rewrite or the server does not require
 				// the question mark, then parse the url.
-				if (Config::get('index_file') != 'index.php?')
+				if (App\Config::get('index_file') != 'index.php?')
 				{
 					$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 				}
@@ -68,14 +68,14 @@ class URI {
 			}
 
 			// Remove the base URL from the URI
-			$base_url = parse_url(Config::get('base_url'), PHP_URL_PATH);
+			$base_url = parse_url(App\Config::get('base_url'), PHP_URL_PATH);
 			if ($uri != '' and strncmp($uri, $base_url, strlen($base_url)) === 0)
 			{
 				$uri = substr($uri, strlen($base_url));
 			}
 
 			// If we are using an index file (not mod_rewrite) then remove it
-			$index_file = Config::get('index_file');
+			$index_file = App\Config::get('index_file');
 			if ($index_file and strncmp($uri, $index_file, strlen($index_file)) === 0)
 			{
 				$uri = substr($uri, strlen($index_file));
@@ -110,9 +110,9 @@ class URI {
 	 */
 	public static function segment($segment)
 	{
-		if (isset(Request::active()->uri->segments[$segment - 1]))
+		if (isset(App\Request::active()->uri->segments[$segment - 1]))
 		{
-			return Request::active()->uri->segments[$segment - 1];
+			return App\Request::active()->uri->segments[$segment - 1];
 		}
 
 		return false;
@@ -120,7 +120,42 @@ class URI {
 
 	public static function string()
 	{
-		return Request::active()->uri->uri;
+		return App\Request::active()->uri->uri;
+	}
+
+	/**
+	 * Creates a url with the given uri, including the base url
+	 *
+	 * @param	string	the url
+	 * @param	array	some variables for the url
+	 */
+	public static function create($uri = null, $variables = array())
+	{
+		$url = App\Config::get('base_url');
+
+		if (App\Config::get('index_file'))
+		{
+			$url .= App\Config::get('index_file').'/';
+		}
+
+		$url = $url.ltrim(is_null($uri) ? static::string() : $uri, '/');
+
+		foreach($variables as $key => $val)
+		{
+			$url = str_replace(':'.$key, $val, $url);
+		}
+
+		return $url;
+	}
+
+	/**
+	 * Gets the current URL, including the BASE_URL
+	 *
+	 * @param	string	the url
+	 */
+	public static function current()
+	{
+		return static::create();
 	}
 
 	/**
@@ -150,7 +185,7 @@ class URI {
 		$this->uri = trim($uri, '/');
 		$this->segments = explode('/', $this->uri);
 	}
-	
+
 	public function __toString()
 	{
 		return $this->uri;
