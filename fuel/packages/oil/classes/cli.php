@@ -48,6 +48,10 @@ class Cli
 				}
 			break;
 
+			case 'c':
+			case 'console':
+				return new Console;
+
 			case 'r':
 			case 'refine':
 				call_user_func('Oil\Refine::'.$args[2], array_slice($args, 3));
