@@ -52,7 +52,8 @@ class Robots {
 
 		$eye = App\Cli::color("*", 'red');
 
-		return App\Cli::color("			                    \"{$speech}\"
+		return App\Cli::color("
+					\"{$speech}\"
 			          _____     /
 			         /_____\\", 'blue')."\n"
 .App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue')."\n"
@@ -85,9 +86,10 @@ class Robots {
 	 */
 	public function protect()
 	{
-		$eye = App\Cli::color("*", 'red');
+		$eye = App\Cli::color("*", 'green');
 
-		return App\Cli::color("			                    \"PROTECT ALL HUMANS\"
+		return App\Cli::color("
+					\"PROTECT ALL HUMANS\"
 			          _____     /
 			         /_____\\", 'blue')."\n"
 .App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue')."\n"

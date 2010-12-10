@@ -20,6 +20,9 @@ class Refine
 {
 	public function run($task, $args)
 	{
+		// Just call and run() or did they have a specific method in mind?
+		list($task, $method)=array_pad(explode(':', $task), 2, 'run');
+		
 		$task = ucfirst(strtolower($task));
 
 		if ( ! $file = App\Fuel::find_file('tasks', $task))
@@ -31,7 +34,6 @@ class Refine
 		require $file;
 
 		$task = '\\Fuel\\Tasks\\'.$task;
-		$method = 'run';
 
 		$new_task = new $task;
 		if (isset($args[0]) && is_callable(array($new_task, $args[0])))
