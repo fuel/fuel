@@ -31,8 +31,11 @@ class Refine
 		require $file;
 
 		$task = '\\Fuel\\Tasks\\'.$task;
-
-		call_user_func_array(array(new $task, 'run'), $args);
+		
+		if ($return = call_user_func_array(array(new $task, 'run'), $args))
+		{
+			echo $return.PHP_EOL;
+		}
 	}
 }
 
