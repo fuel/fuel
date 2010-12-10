@@ -32,8 +32,7 @@ class Refine
 
 		$task = '\\Fuel\\Tasks\\'.$task;
 
-		$new_task = new $task;
-		call_user_func(array($new_task, 'run'), $args);
+		call_user_func_array(array(new $task, 'run'), $args);
 	}
 }
 

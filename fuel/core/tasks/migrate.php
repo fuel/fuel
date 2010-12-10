@@ -6,7 +6,7 @@ use Fuel\Application as App;
 
 class Migrate {
 
-	public function run($direction = null)
+	public function run($direction = null, $version = null)
 	{
 		// By default, just upgrade to the current version
 		if ($direction === null)
@@ -37,12 +37,12 @@ class Migrate {
 				case '-v':
 				case '--version':
 
-					if (empty($args[1]))
+					if (empty($version))
 					{
 						throw new App\Cli\Exception('');
 					}
 
-					App\Migrate::version($args[1]);
+					App\Migrate::version($version);
 				break;
 			}
 		}
