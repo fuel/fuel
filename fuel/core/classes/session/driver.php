@@ -111,7 +111,7 @@ abstract class Session_Driver {
 	 * @access	public
 	 * @return	void
 	 */
-	public function set($name, $value)
+	public function set($name, $value = false)
 	{
 		$this->data[$name] = $value;
 
@@ -129,11 +129,66 @@ abstract class Session_Driver {
 	 *
 	 * @access	public
 	 * @param	string	name of the variable to get
+	 * @param	mixed	default value to return if the variable does not exist
 	 * @return	mixed
 	 */
-	public function get($name)
+	public function get($name, $default = null)
 	{
-		return isset($this->data[$name]) ? $this->data[$name] : false;
+		if (isset($this->data[$name]))
+		{
+			return $this->data[$name];
+		}
+
+		if (strpos($name, '.') !== false)
+		{
+			$parts = explode('.', $name);
+
+			switch (count($parts))
+			{
+				case 2:
+					if (isset($this->data[$parts[0]][$parts[1]]))
+					{
+						return $this->data[$parts[0]][$parts[1]];
+					}
+				break;
+
+				case 3:
+					if (isset($this->data[$parts[0]][$parts[1]][$parts[2]]))
+					{
+						return $this->data[$parts[0]][$parts[1]][$parts[2]];
+					}
+				break;
+
+				case 4:
+					if (isset($this->data[$parts[0]][$parts[1]][$parts[2]][$parts[3]]))
+					{
+						return $this->data[$parts[0]][$parts[1]][$parts[2]][$parts[3]];
+					}
+				break;
+
+				default:
+					$return = false;
+					foreach ($parts as $part)
+					{
+						if ($return === false and isset($this->data[$part]))
+						{
+							$return = $this->data[$part];
+						}
+						elseif (isset($return[$part]))
+						{
+							$return = $return[$part];
+						}
+						else
+						{
+							return $default;
+						}
+					}
+					return $return;
+				break;
+			}
+		}
+
+		return $default;
 	}
 
 	// --------------------------------------------------------------------
@@ -151,6 +206,51 @@ abstract class Session_Driver {
 		if (isset($this->data[$name]))
 		{
 			unset($this->data[$name]);
+		}
+
+		if (strpos($name, '.') !== false)
+		{
+			$parts = explode('.', $name);
+
+			switch (count($parts))
+			{
+				case 2:
+					if (isset($this->data[$parts[0]][$parts[1]]))
+					{
+						unset($this->data[$parts[0]][$parts[1]]);
+					}
+				break;
+
+				case 3:
+					if (isset($this->data[$parts[0]][$parts[1]][$parts[2]]))
+					{
+						unset($this->data[$parts[0]][$parts[1]][$parts[2]]);
+					}
+				break;
+
+				case 4:
+					if (isset($this->data[$parts[0]][$parts[1]][$parts[2]][$parts[3]]))
+					{
+						unset($this->data[$parts[0]][$parts[1]][$parts[2]][$parts[3]]);
+					}
+				break;
+
+				default:
+					$return = false;
+					foreach ($parts as $part)
+					{
+						if ($return === false and isset($this->data[$part]))
+						{
+							$return =& $this->data[$part];
+						}
+						elseif (isset($return[$part]))
+						{
+							$return =& $return[$part];
+						}
+					}
+					if ($return !== false) unset($return);
+				break;
+			}
 		}
 
 		// need to auto-update the session?
@@ -175,7 +275,7 @@ abstract class Session_Driver {
 		if ($this->config['rotation_time'] &&
 			($force or $this->keys['created'] + $this->config['rotation_time'] <= $this->time->get_timestamp()))
 		{
-echo "<h3>Rotating ID...</h3>";
+
 			// generate a new session id, and update the create timestamp
 			$this->keys['previous_id']	= $this->keys['session_id'];
 			$this->keys['session_id']	= $this->_new_session_id();
@@ -213,16 +313,17 @@ echo "<h3>Rotating ID...</h3>";
 	 *
 	 * @access	public
 	 * @param	string	name of the variable to get
+	 * @param	mixed	default value to return if the variable does not exist
 	 * @return	mixed
 	 */
-	public function get_flash($name)
+	public function get_flash($name, $default = null)
 	{
 		if (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
 			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = '';
 			return $this->flash[$this->config['flash_id'].'::'.$name]['value'];
 		}
-		return FALSE;
+		return $default;
 	}
 
 	// --------------------------------------------------------------------
@@ -342,6 +443,7 @@ echo "<h3>Rotating ID...</h3>";
 			case 'cookie_name':
 			case 'cookie_domain':
 			case 'cookie_path':
+			case 'post_cookie_name':
 				$this->config[$name] = (string) $value;
 			break;
 
