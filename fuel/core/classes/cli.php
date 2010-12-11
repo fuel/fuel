@@ -159,9 +159,9 @@ class Cli {
 	{
 		if (is_array($text))
 		{
-			$text = implode("\n", $text);
+			$text = implode(PHP_EOL, $text);
 		}
-		fwrite(STDOUT, $text."\n");
+		fwrite(STDOUT, $text.PHP_EOL);
 	}
 
 	/**

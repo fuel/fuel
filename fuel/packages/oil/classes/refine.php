@@ -15,53 +15,37 @@
 namespace Oil;
 
 use Fuel\Application as App;
-use Fuel\Application\DB;
-use Fuel\Application\Database;
 
 class Refine
 {
-	public function migrate($args)
+	public function run($task, $args)
 	{
-		// By default, just upgrade to the current version
-		if ( ! isset($args[0]))
+		// Just call and run() or did they have a specific method in mind?
+		list($task, $method)=array_pad(explode(':', $task), 2, 'run');
+		
+		$task = ucfirst(strtolower($task));
+
+		if ( ! $file = App\Fuel::find_file('tasks', $task))
 		{
-			App\Migrate::current();
+			throw new Exception('Well that didnt work...');
+			return;
 		}
 
-		else
+		require $file;
+
+		$task = '\\Fuel\\Tasks\\'.$task;
+
+		$new_task = new $task;
+		if (isset($args[0]) && is_callable(array($new_task, $args[0])))
 		{
-			// Find out what they want to do with it
-			switch ($args[0])
-			{
-				case '-u':
-				case '--up':
-					App\Migrate::up();
-				break;
-
-				case '-d':
-				case '--down':
-					App\Migrate::down();
-				break;
-
-				case '-c':
-				case '--current':
-					App\Migrate::current();
-				break;
-
-				case '-v':
-				case '--version':
-
-					if (empty($args[1]))
-					{
-
-					}
-
-					App\Migrate::version($args[1]);
-				break;
-			}
+			$method = array_shift($args);
+		}
+		
+		if ($return = call_user_func_array(array($new_task, $method), $args))
+		{
+			echo $return.PHP_EOL;
 		}
 	}
-		
 }
 
 /* End of file model.php */
