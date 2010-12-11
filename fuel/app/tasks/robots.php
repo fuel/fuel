@@ -30,6 +30,19 @@ use Fuel\Application as App;
 
 class Robots {
 
+	/**
+	 * This method gets ran when a valid method name is not used in the command.
+	 *
+	 * Usage (from command line):
+	 *
+	 * php oil r robots
+	 *
+	 * or
+	 *
+	 * php oil r robots "Kill all Mice"
+	 *
+	 * @return string
+	 */
 	public function run($speech = null)
 	{
 		if ( ! isset($speech))
@@ -37,13 +50,14 @@ class Robots {
 			$speech = 'KILL ALL HUMANS!';
 		}
 
-		return <<<ROBOTS
-		
-			                    "{$speech}"
+		$eye = App\Cli::color("*", 'red');
+
+		return App\Cli::color("
+					\"{$speech}\"
 			          _____     /
-			         /_____\\
-			    ____[\\'---'/]____
-			   /\\ #\\ \\_____/ /# /\\
+			         /_____\\", 'blue')."\n"
+.App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue')."\n"
+.App\Cli::color("			   /\\ #\\ \\_____/ /# /\\
 			  /  \\# \\_.---._/ #/  \\
 			 /   /|\\  |   |  /|\\   \\
 			/___/ | | |   | | | \\___\\
@@ -58,8 +72,44 @@ class Robots {
 			      |___|   |___|
 			      /   \\   /   \\
 			     |_____| |_____|
-			     |HHHHH| |HHHHH|
-ROBOTS;
+			     |HHHHH| |HHHHH|", 'blue');
+	}
+
+	/**
+	 * An example method that is here just to show the various uses of tasks.
+	 *
+	 * Usage (from command line):
+	 *
+	 * php oil r robots protect
+	 *
+	 * @return string
+	 */
+	public function protect()
+	{
+		$eye = App\Cli::color("*", 'green');
+
+		return App\Cli::color("
+					\"PROTECT ALL HUMANS\"
+			          _____     /
+			         /_____\\", 'blue')."\n"
+.App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue')."\n"
+.App\Cli::color("			   /\\ #\\ \\_____/ /# /\\
+			  /  \\# \\_.---._/ #/  \\
+			 /   /|\\  |   |  /|\\   \\
+			/___/ | | |   | | | \\___\\
+			|  |  | | |---| | |  |  |
+			|__|  \\_| |_#_| |_/  |__|
+			//\\\\  <\\ _//^\\\\_ />  //\\\\
+			\\||/  |\\//// \\\\\\\\/|  \\||/
+			      |   |   |   |
+			      |---|   |---|
+			      |---|   |---|
+			      |   |   |   |
+			      |___|   |___|
+			      /   \\   /   \\
+			     |_____| |_____|
+			     |HHHHH| |HHHHH|", 'blue');
+
 	}
 }
 
