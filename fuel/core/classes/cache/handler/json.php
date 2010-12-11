@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class Cache_Handler_Json implements Cache_Handler_Driver {
 
 	public function readable($contents)
