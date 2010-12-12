@@ -46,7 +46,7 @@ abstract class Template extends App\Controller\Base {
 		{
 			if ($this->folder === '')
 			{
-				$this->folder = strtolower($this->request->controller).'/';
+				$this->folder = strtolower(App\Inflector::denamespace(get_called_class())).'/';
 			}
 			// Load the template
 			$this->template = App\View::factory($this->folder.$this->template);
