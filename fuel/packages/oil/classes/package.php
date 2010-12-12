@@ -44,6 +44,12 @@ class Package
 				$package_found = TRUE;
 
 				$content = '';
+
+				// We need somewhere to put the zip, make if missing
+				if ( ! is_dir(APPPATH . 'tmp'))
+				{
+					mkdir(APPPATH . 'tmp');
+				}
 				
 				// keep reading until there's nothing left
 				$tmp_folder = APPPATH . 'tmp/' . $package . '-' . time();
