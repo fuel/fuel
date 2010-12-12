@@ -59,7 +59,7 @@ class Session
 	{
 		$defaults = Config::get('session', array());
 
-		// When a string was entered it's just the driver type
+		// When a string was passed it's just the driver type
 		if ( ! empty($config) && ! is_array($config))
 		{
 			$config = array('driver' => $config);
@@ -76,41 +76,46 @@ class Session
 		// determine the driver to load
 		$class = 'Session_'.ucfirst($config['driver']);
 
-		// do we already have this instance?
-		if ( ! isset(static::$_instances[$class]))
+		$driver = new $class;
+
+		// And configure it, specific driver config first
+		if (isset($config[$config['driver']]))
 		{
-			$driver = new $class;
+			$driver->set_config('config', $config[$config['driver']]);
+		}
 
-			// And configure it, specific driver config first
-			if (isset($config[$config['driver']]))
+		// Then load globals and/or set defaults
+		$driver->set_config('driver', $config['driver']);
+		$driver->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : true);
+		$driver->set_config('match_ua', isset($config['match_ua']) ? (bool) $config['match_ua'] : true);
+		$driver->set_config('cookie_domain', isset($config['cookie_domain']) ? (string) $config['cookie_domain'] : '');
+		$driver->set_config('cookie_path', isset($config['cookie_path']) ? (string) $config['cookie_path'] : '/');
+		$driver->set_config('expire_on_close', isset($config['expire_on_close']) ? (bool) $config['expire_on_close'] : false);
+		$driver->set_config('expiration_time', isset($config['expiration_time'])
+				? ((int) $config['expiration_time'] > 0
+						? (int) $config['expiration_time']
+						: 86400 * 365 * 2)
+				: 7200);
+		$driver->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
+		$driver->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
+		$driver->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
+		$driver->set_config('write_on_set', isset($config['write_on_set']) ? (bool) $config['write_on_set'] : false);
+		$driver->set_config('post_cookie_name', isset($config['post_cookie_name']) ? (string) $config['post_cookie_name'] : '');
+
+		// get the driver's cookie name
+		$cookie = $driver->get_config('cookie_name');
+
+		// do we already have a driver instance for this cookie?
+		if (isset(static::$_instances[$cookie]))
+		{
+			// if so, they must be using the same driver class!
+			if (get_class(static::$_instances[$cookie]) != ("Fuel\\".$class))
 			{
-				$driver->set_config('config', $config[$config['driver']]);
+				throw new Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
 			}
-
-			// Then load globals and/or set defaults
-			$driver->set_config('driver', $config['driver']);
-			$driver->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : true);
-			$driver->set_config('match_ua', isset($config['match_ua']) ? (bool) $config['match_ua'] : true);
-			$driver->set_config('cookie_domain', isset($config['cookie_domain']) ? (string) $config['cookie_domain'] : '');
-			$driver->set_config('cookie_path', isset($config['cookie_path']) ? (string) $config['cookie_path'] : '/');
-			$driver->set_config('expire_on_close', isset($config['expire_on_close']) ? (bool) $config['expire_on_close'] : false);
-			$driver->set_config('expiration_time', isset($config['expiration_time'])
-					? ((int) $config['expiration_time'] > 0
-							? (int) $config['expiration_time']
-							: 86400 * 365 * 2)
-					: 7200);
-			$driver->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
-			$driver->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
-			$driver->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
-			$driver->set_config('write_on_set', isset($config['write_on_set']) ? (bool) $config['write_on_set'] : false);
-			$driver->set_config('post_cookie_name', isset($config['post_cookie_name']) ? (string) $config['post_cookie_name'] : '');
-
-			// if the driver has an init method, call it
-			if (method_exists($driver, 'init'))
-			{
-				$driver->init();
-			}
-
+		}
+		else
+		{
 			// do we need to set a shutdown event for this driver?
 			if ($driver->get_config('write_on_set') === false)
 			{
@@ -118,14 +123,15 @@ class Session
 				Event::register('shutdown', array($driver, 'write'));
 			}
 
-			// load the session
+			// init the session
+			$driver->init();
 			$driver->read();
 
 			// store this instance
-			static::$_instances[$class] =& $driver;
+			static::$_instances[$cookie] =& $driver;
 		}
 
-		return static::$_instances[$class];
+		return static::$_instances[$cookie];
 	}
 
 	/**
