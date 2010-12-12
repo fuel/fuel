@@ -15,6 +15,10 @@ $package_path = 'fuel/packages';
  */
 $core_path = 'fuel/core';
 
+/**
+ * Get the current path
+ */
+define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
 
 use Fuel\Application as App;
 
@@ -73,6 +77,8 @@ App\Autoloader::register();
 
 // Initialize the framework
 App\Fuel::init();
+
+App\Fuel::add_package('oil');
 
 // Fire up the command line interfact
 Oil\Cli::init($_SERVER['argv']);
