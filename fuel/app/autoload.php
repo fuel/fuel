@@ -15,12 +15,12 @@
 namespace Fuel\Application;
 
 
-Autoloader::add_path(__DIR__.'/classes/');
+Autoloader::add_path(__DIR__.DS.'classes'.DS);
 
 Autoloader::add_namespaces(array(
-	'Fuel\\Application'				=> __DIR__.'/classes/',
-	'Fuel\\Application\\Model'		=> __DIR__.'/classes/model/',
-	'Fuel\\Application\\Controller'	=> __DIR__.'/classes/controller/',
+	'Fuel\\Application'				=> __DIR__.DS.'classes'.DS,
+	'Fuel\\Application\\Model'		=> __DIR__.DS.'classes/model'.DS,
+	'Fuel\\Application\\Controller'	=> __DIR__.DS.'classes/controller'.DS,
 ));
 
 /* End of file autoload.php */
