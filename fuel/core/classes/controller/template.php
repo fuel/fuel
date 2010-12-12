@@ -30,7 +30,7 @@ abstract class Template extends App\Controller\Base {
 	/**
 	* @var string page template
 	*/
-	public $template = 'template';
+	public $template = null;
 
 	/**
 	* @var boolean auto render template
@@ -42,6 +42,10 @@ abstract class Template extends App\Controller\Base {
 	{
 		if ($this->auto_render === true)
 		{
+			if ($this->template === null)
+			{
+				$this->template = strtolower($this->request->controller).'/template';
+			}
 			// Load the template
 			$this->template = App\View::factory($this->template);
 		}

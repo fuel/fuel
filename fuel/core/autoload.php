@@ -20,7 +20,10 @@ Autoloader::add_namespaces(array(
 	'Fuel'	=>	__DIR__.'/classes/',
 ));
 
-Autoloader::add_namespace_alias('Fuel\\Application', 'Fuel');
+Autoloader::add_namespace_aliases(array(
+	'Fuel\\Application' => 'Fuel',
+	'Fuel\\Application\\Controller' => 'Fuel\\Application'
+));
 
 Autoloader::add_prefixes(array(
 	'Fuel_'		=> COREPATH.'classes/',

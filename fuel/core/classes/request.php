@@ -115,7 +115,7 @@ class Request {
 
 			$action or $action = 'index';
 
-			$class = 'Fuel\\Application\\Controller_'.ucfirst($controller);
+			$class = 'Fuel\\Application\\Controller\\'.ucfirst($controller);
 			$method = 'action_'.$action;
 
 			if (class_exists($class))
@@ -247,7 +247,7 @@ class Request {
 	{
 		App\Log::info('Called', __METHOD__);
 
-		$controller_prefix = 'Fuel\\Application\\Controller_';
+		$controller_prefix = 'Fuel\\Application\\Controller\\';
 		$method_prefix = 'action_';
 
 		$class = $controller_prefix.(empty($this->directory) ? '' : \ucfirst($this->directory).'_').ucfirst($this->controller);
