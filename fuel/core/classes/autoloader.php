@@ -157,9 +157,16 @@ class Autoloader {
 	 * @param	array	the aliases
 	 * @return	void
 	 */
-	public static function add_namespace_aliases(array $aliases)
+	public static function add_namespace_aliases(array $aliases, $prepend = false)
 	{
-		static::$namespace_aliases = array_merge(static::$namespace_aliases, $aliases);
+		if ( ! $prepend)
+		{
+			static::$namespace_aliases = array_merge(static::$namespace_aliases, $aliases);
+		}
+		else
+		{
+			static::$namespace_aliases = $aliases + static::$namespace_aliases;
+		}
 	}
 
 	/**
@@ -202,52 +209,10 @@ class Autoloader {
 		// Cleanup backslash prefix, messes up class_alias and other stuff
 		$class = ltrim($class, '\\');
 
-		// First attempt loading from module
-		if (class_exists('Fuel\\Application\\Request', false) && is_object(Request::active()) && Request::active()->module != '')
-		{
-			$prefix = ucfirst(Request::active()->module).'_';
-
-			if (array_key_exists($prefix, static::$prefixes))
-			{
-				 // remove "Fuel\Application\"
-				$without_base = substr($class, 17);
-				// find if namespaced and last occurence
-				$pos = false;
-				while(($pos_tmp = strpos($without_base, '\\')) !== false && $pos = $pos_tmp);
-
-				// rewrite path and expected name
-				if ($pos)
-				{
-					$module_class = substr($without_base, 0, $pos + 1).$prefix.substr($without_base, $pos + 1);
-					$class_path = str_replace(array('\\', '_'), array(DS, DS), $module_class);
-				}
-				else
-				{
-					$module_class = $prefix.$without_base;
-					$class_path = str_replace('_', DS, $module_class);
-				}
-
-				$file_path = static::$prefixes[$prefix].'classes'.DS.strtolower($class_path).'.php';
-				if (is_file($file_path))
-				{
-					require $file_path;
-					class_alias('Fuel\\Application\\'.$module_class, $class);
-					static::_init_class($class);
-					return true;
-				}
-			}
-		}
-
 		// Checks if there is a \ in the class name.  This indicates it is a
 		// namespace.  It sets $pos to the position of the last \.
 		if (($pos = strripos($class, '\\')) !== false)
 		{
-			if (static::namespace_alias($class))
-			{
-				static::_init_class($class);
-				return true;
-			}
-
 			$namespace = substr($class, 0, $pos);
 
 			foreach (static::$namespaces as $ns => $path)
@@ -264,6 +229,11 @@ class Autoloader {
 						return true;
 					}
 				}
+			}
+			if (static::namespace_alias($class))
+			{
+				static::_init_class($class);
+				return true;
 			}
 		}
 		else

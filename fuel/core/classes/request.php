@@ -247,7 +247,15 @@ class Request {
 	{
 		App\Log::info('Called', __METHOD__);
 
-		$controller_prefix = 'Fuel\\Application\\Controller\\';
+		if ($this->module == '')
+		{
+			$controller_prefix = 'Fuel\\Application\\Controller\\';
+		}
+		else
+		{
+			$controller_prefix = 'Fuel\\Application\\'.ucfirst($this->module).'\\Controller\\';
+		}
+		
 		$method_prefix = 'action_';
 
 		$class = $controller_prefix.(empty($this->directory) ? '' : \ucfirst($this->directory).'_').ucfirst($this->controller);

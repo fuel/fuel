@@ -291,7 +291,17 @@ class Fuel {
 				{
 					// Load module and end search
 					$mod_path = $mod_check_path;
-					App\Autoloader::add_prefix(ucfirst($name).'_', $mod_path);
+					$ns = 'Fuel\\Application\\'.ucfirst($name);
+					App\Autoloader::add_namespaces(array(
+						$ns					=> $mod_path,
+						$ns.'\\Model'		=> $mod_path.'model/',
+						$ns.'\\Controller'	=> $mod_path.'controller/',
+					));
+					App\Autoloader::add_namespace_aliases(array(
+						$ns.'\\Controller'	=> 'Fuel\\Application',
+						$ns.'\\Model'		=> 'Fuel\\Application',
+						$ns					=> 'Fuel\\Application',
+					), true);
 					break;
 				}
 			}
