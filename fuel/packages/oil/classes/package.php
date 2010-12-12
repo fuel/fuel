@@ -98,7 +98,7 @@ class Package
 	}
 
 
-	public function remove($package)
+	public function uninstall($package)
 	{
 		$package_folder = PKGPATH . $package;
 
