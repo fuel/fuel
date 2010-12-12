@@ -13,6 +13,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 /**
  * Some of this code was written by Flinn Mueller.
  *

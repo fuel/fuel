@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class File_Driver_File {
 
 	/**
@@ -22,25 +24,47 @@ class File_Driver_File {
 	protected $path;
 
 	/**
-	 * @var	bool	whether this object locked the file
+	 * @var	File_Area
 	 */
-	protected $locked = false;
+	protected $area;
+
+	/**
+	 * @var	Resource	file resource
+	 */
+	protected $resource;
 
 	/**
 	 * @var	bool	whether the current object is read only
 	 */
 	protected $readonly = false;
 
-	public function __construct($path, Array $config, File_Area $area)
-	{
+	protected function __construct($path, Array $config, File_Area $area) {}
 
+	public static function factory($path, Array $config = array(), File_Area $area = null)
+	{
+		$obj = new static($path, $config, App\File::instance($area));
+
+		$config['path'] = $path;
+		$config['area'] = $area;
+		foreach ($config as $key => $value)
+		{
+			if (property_exists($obj, $key) && empty($obj->$key))
+			{
+				$obj->$key = $value;
+			}
+		}
+
+		if (is_null($obj->resource))
+		{
+			$obj->resource = App\File::open_file($obj->path, true, $obj->area);
+		}
 	}
 
 	public function __destruct()
 	{
-		if ($this->locked)
+		if (is_resource($this->resource))
 		{
-			flock($this->path, LOCK_UN);
+			App\File::close_file($this->resource, $this->area);
 		}
 	}
 
@@ -52,7 +76,7 @@ class File_Driver_File {
 	 */
 	public function read($as_string = false)
 	{
-		return App\File::read($this->path, $as_string);
+		return $this->area->read($this->path, $as_string);
 	}
 
 	/**
@@ -64,7 +88,17 @@ class File_Driver_File {
 	 */
 	public function rename($new_name, $new_extension = false)
 	{
-		// use App\File::rename()
+		$info = pathinfo($this->path);
+
+		$new_name = str_replace(array('..', '/', '\\'), array('', '', ''), $new_name);
+		$extension = $new_extension === false
+			? $info['extension']
+			: ltrim(str_replace(array('/', '\\'), array('', '', ''), $new_name), '.');
+		$extension = ! empty($extension) ? '.'.$extension : '';
+
+		$new_path = $info['dirname'].DS.$new_name.$extension;
+
+		return $this->area->rename($this->path, $new_path);
 	}
 
 	/**
@@ -75,7 +109,12 @@ class File_Driver_File {
 	 */
 	public function move($new_path)
 	{
-		// use App\File::rename()
+		$info = pathinfo($this->path);
+		$new_path = $this->area->get_path($new_path);
+
+		$new_path = rtrim($new_path, '\\/').DS.$info['basename'];
+
+		return $this->area->rename($this->path, $new_path);
 	}
 
 	/**
@@ -86,7 +125,12 @@ class File_Driver_File {
 	 */
 	public function copy($new_path)
 	{
-		// use App\File::copy()
+		$info = pathinfo($this->path);
+		$new_path = $this->area->get_path($new_path);
+
+		$new_path = rtrim($new_path, '\\/').DS.$info['basename'];
+
+		return $this->area->copy($this->path, $new_path);
 	}
 
 	/**
@@ -107,7 +151,8 @@ class File_Driver_File {
 	 */
 	public function delete()
 	{
-		// use App\File::delete()
+		// should also destroy object but not possible in PHP right?
+		return $this->area->delete($this->path);
 	}
 }
 

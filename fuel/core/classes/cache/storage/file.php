@@ -14,48 +14,82 @@
 
 namespace Fuel;
 
-class Cache_Storage_File extends Cache_Storage_Driver {
+use Fuel\Application as App;
 
-	protected $path = '';
+class Cache_Storage_File extends App\Cache_Storage_Driver {
 
+	/**
+	 * @const	string	Tag used for opening & closing cache properties
+	 */
 	const PROPS_TAG = 'Fuel_Cache_Properties';
-	
-	public function __construct($identifier, $config)
+
+	/**
+	 * @var	string	File caching basepath
+	 */
+	protected static $path = '';
+
+	public static function _init()
 	{
-		parent::__construct($identifier, $config);
-		
-		$this->path = Config::get('cache.path') != FALSE ? Config::get('cache.path') : APPPATH.'cache'.DS;
-		if ( ! is_dir($this->path) || ! is_writable($this->path))
+		static::$path = App\Config::get('cache.path', APPPATH.'cache'.DS);
+		if ( ! is_dir(static::$path) || ! is_writable(static::$path))
 		{
 			throw new Cache_Exception('Cache directory does not exist or is not writable.');
 		}
 	}
-	
+
+	/**
+	 * Purge all caches
+	 *
+	 * @param	limit purge to subsection
+	 * @return	bool
+	 * @throws	Cache_Exception
+	 */
+	public static function _delete_all($section)
+	{
+		$path = rtrim(static::$path, '\\/').DS;
+		$section = static::identifier_to_path($section);
+
+		return App\File::delete_dir($path.$section);
+	}
+
+	// ---------------------------------------------------------------------
+
+	public function __construct($identifier, $config)
+	{
+		parent::__construct($identifier, $config);
+	}
+
+	/**
+	 * Translates a given identifier to a valid path
+	 *
+	 * @param	string
+	 * @return	string
+	 * @throws	Cache_Exception
+	 */
 	protected function identifier_to_path( $identifier )
 	{
-		// cleanup to only allow alphanum chars, dashes, dots & underscores
-		if (preg_match('/^([a-z0-9_\.\-]*)$/i', $identifier) === 0)
-		{
-			throw new Cache_Exception('Cache identifier can only contain alphanumeric characters, underscores, dashes & dots.');
-		}
-		
 		// replace dots with dashes
 		$identifier = str_replace('.', DS, $identifier);
-		
+
 		return $identifier;
 	}
 
+	/**
+	 * Save a cache, this does the generic pre-processing
+	 *
+	 * @return	bool
+	 */
 	protected function _set()
 	{
 		$payload = $this->prep_contents();
-		$id_path = $this->identifier_to_path( $this->identifier );
+		$id_path = $this->identifier_to_path($this->identifier);
 
 		// create directory if necessary
 		$subdirs = explode(DS, $id_path);
 		if (count($subdirs) > 1)
 		{
 			array_pop($subdirs);
-			$test_path = $this->path.implode(DS, $subdirs);
+			$test_path = static::$path.implode(DS, $subdirs);
 
 			// check if specified subdir exists
 			if ( ! @is_dir($test_path))
@@ -64,9 +98,9 @@ class Cache_Storage_File extends Cache_Storage_Driver {
 				if ( ! @mkdir($test_path, 0755, true)) return false;
 			}
 		}
-		
+
 		// write the cache
-		$file = $this->path.$id_path.'.cache';
+		$file = static::$path.$id_path.'.cache';
 		$handle = fopen($file, 'c');
 		if ($handle)
 		{
@@ -84,10 +118,15 @@ class Cache_Storage_File extends Cache_Storage_Driver {
 		}
 	}
 
+	/**
+	 * Load a cache, this does the generic post-processing
+	 *
+	 * @return bool
+	 */
 	protected function _get()
 	{
 		$id_path = $this->identifier_to_path( $this->identifier );
-		$file = $this->path.$id_path.'.cache';
+		$file = static::$path.$id_path.'.cache';
 		if ( ! file_exists($file))
 			return false;
 
@@ -119,6 +158,11 @@ class Cache_Storage_File extends Cache_Storage_Driver {
 		return true;
 	}
 
+	/**
+	 * Prepend the cache properties
+	 *
+	 * @return string
+	 */
 	protected function prep_contents()
 	{
 		$properties = array(
@@ -132,6 +176,12 @@ class Cache_Storage_File extends Cache_Storage_Driver {
 		return $properties . $this->contents;
 	}
 
+	/**
+	 * Remove the prepended cache properties and save them in class properties
+	 *
+	 * @param	string
+	 * @throws	Cache_Exception
+	 */
 	protected function unprep_contents($payload)
 	{
 		$properties_end = strpos($payload, '{{/'.self::PROPS_TAG.'}}');
@@ -154,27 +204,44 @@ class Cache_Storage_File extends Cache_Storage_Driver {
 		$this->content_handler	= $props['content_handler'];
 	}
 
-	public static function check_dependencies($dependencies)
+	/**
+	 * Check if other caches or files have been changed since cache creation
+	 *
+	 * @param	array
+	 * @return	bool
+	 */
+	public function check_dependencies(Array $dependencies)
 	{
 		foreach($dependencies as $dep)
 		{
-			$filemtime = filemtime($this->path.$dep.'.cache');
-			if ($filemtime === FALSE || $filemtime > $this->created)
+			if (file_exists($file = static::$path.$dep.'.cache'))
+			{
+				$filemtime = filemtime($file);
+				if ($filemtime === false || $filemtime > $this->created)
+					return false;
+			}
+			elseif (file_exists($dep))
+			{
+				$filemtime = filemtime($file);
+				if ($filemtime === false || $filemtime > $this->created)
+					return false;
+			}
+			else
+			{
 				return false;
+			}
 		}
 		return true;
 	}
 
+	/**
+	 * Delete Cache
+	 */
 	public function delete()
 	{
-		$path = $this->path.$this->identifier.'.cache';
+		$path = static::$path.$this->identifier.'.cache';
 		@unlink($path);
 		$this->reset();
-	}
-
-	public static function _delete_all($section)
-	{
-		// to be written
 	}
 }
 
