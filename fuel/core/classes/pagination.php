@@ -154,7 +154,7 @@ class Pagination {
 			else
 			{
 				$url = ($i == 1) ? '' : '/'.$i;
-				$pagination .= URL::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
+				$pagination .= Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
 			}
 		}
 
@@ -186,7 +186,7 @@ class Pagination {
 		else
 		{
 			$next_page = static::$current_page + 1;
-			return URL::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
+			return Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
 		}
 	}
 	
@@ -214,7 +214,7 @@ class Pagination {
 		{
 			$previous_page = static::$current_page - 1;
 			$previous_page = ($previous_page == 1) ? '' : '/' . $previous_page;
-			return URL::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
+			return Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
 		}
 	}
 }

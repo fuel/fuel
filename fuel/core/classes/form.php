@@ -533,13 +533,13 @@ class Form
 		// If there is still no action set, Form-post
 		if (empty($options['action']))
 		{
-			$options['action'] = URL::current();
+			$options['action'] = Uri::current();
 		}
 
 		// If not a full URL, create one with CI
 		if ( ! strpos($options['action'], '://'))
 		{
-			$options['action'] = URL::href($options['action']);
+			$options['action'] = Uri::create($options['action']);
 		}
 
 		// If method is empty, use POST
