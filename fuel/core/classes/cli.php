@@ -66,11 +66,11 @@ class Cli {
 	 * @param	string|int	$name	the name of the option (int if unnamed)
 	 * @return	string
 	 */
-	public static function option($name)
+	public static function option($name, $default = null)
 	{
 		if ( ! isset(static::$args[$name]))
 		{
-			return null;
+			return $default;
 		}
 		return static::$args[$name];
 	}

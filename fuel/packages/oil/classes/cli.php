@@ -57,6 +57,10 @@ class Cli
 				call_user_func('Oil\Refine::run', $args[2], array_slice($args, 3));
 			break;
 
+			case 'install':
+				call_user_func('Oil\Package::install', $args[2]);
+			break;
+
 			case '-v':
 			case '--version':
 
