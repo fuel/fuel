@@ -43,6 +43,10 @@ class Cli
 
 					break;
 
+					case 'scaffold':
+						call_user_func('Oil\Scaffold::generate', array_slice($args, 3));
+					break;
+
 					default:
 						Generate::help();
 				}
