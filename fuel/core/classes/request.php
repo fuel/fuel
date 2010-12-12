@@ -255,7 +255,7 @@ class Request {
 
 		// Allow omitting the controller name when in an equally named directory or module
 		if ( ! class_exists($class))
-		{exit($class);
+		{
 			// set the new controller to directory or module when applicable
 			$controller = $this->directory ?: $this->module;
 			// ... or to the default controller if it was in neither
