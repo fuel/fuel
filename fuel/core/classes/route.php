@@ -162,9 +162,9 @@ class Route {
 			return false;
 		}
 
-		if (preg_match('|^'.$search.'$|uD', $uri->uri, $params) != false)
+		if (preg_match('@^'.$search.'$@uD', $uri->uri, $params) != false)
 		{
-			$route = preg_replace('|^'.$search.'$|uD', $route, $uri->uri);
+			$route = preg_replace('@^'.$search.'$@uD', $route, $uri->uri);
 
 			return static::parse_match($route, $params);
 		} 
