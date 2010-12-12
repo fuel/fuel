@@ -26,7 +26,7 @@ Autoloader::add_namespace_aliases(array(
 ));
 
 Autoloader::add_prefixes(array(
-	'Fuel_'		=> COREPATH.'classes/',
+	'Fuel_'		=> COREPATH.'classes'.DS,
 ));
 
 Autoloader::add_aliases(array(

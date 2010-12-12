@@ -19,8 +19,8 @@ Autoloader::add_path(__DIR__.DS.'classes'.DS);
 
 Autoloader::add_namespaces(array(
 	'Fuel\\Application'				=> __DIR__.DS.'classes'.DS,
-	'Fuel\\Application\\Model'		=> __DIR__.DS.'classes/model'.DS,
-	'Fuel\\Application\\Controller'	=> __DIR__.DS.'classes/controller'.DS,
+	'Fuel\\Application\\Model'		=> __DIR__.DS.'classes'.DS.'model'.DS,
+	'Fuel\\Application\\Controller'	=> __DIR__.DS.'classes'.DS.'controller'.DS,
 ));
 
 /* End of file autoload.php */
