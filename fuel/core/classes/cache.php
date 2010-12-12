@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class Cache {
 
 	/**
@@ -23,9 +25,9 @@ class Cache {
 	 */
 	public static function _init()
 	{
-		Config::load('cache', true);
+		App\Config::load('cache', true);
 	}
-	
+
 	/**
 	 * Creates a new cache instance.
 	 *
@@ -41,7 +43,7 @@ class Cache {
 		{
 			$config = array('driver' => (string) $config);
 		}
-		
+
 		// Set the extending storage type class
 		if (array_key_exists('storage', $config))
 		{
@@ -50,17 +52,17 @@ class Cache {
 		}
 		else
 		{
-			$storage = (Config::get('cache.storage') !== false ) ? Config::get('cache.storage') : 'file';
+			$storage = App\Config::get('cache.storage', 'file');
 		}
-		$class = 'Cache_Storage_'.ucfirst($storage);
+		$class = 'App\\Cache_Storage_'.ucfirst($storage);
 
 		// Convert the name to a string when necessary
 		$identifier = call_user_func($class.'::stringify_identifier', $identifier);
-		
+
 		// Return instance of the requested cache object
 		return new $class($identifier, $config);
 	}
-	
+
 	/**
 	 * Front for writing the cache, ensures interchangebility of storage engines. Actual writing
 	 * is being done by the _set() method which needs to be extended.
@@ -68,15 +70,15 @@ class Cache {
 	 * @access	public
 	 * @param	mixed			The content to be cached
 	 * @param	int				The time in minutes until the cache will expire, =< 0 or null means no expiration
-	 * @param	array			Array of names on which this cache depends for 
+	 * @param	array			Array of names on which this cache depends for
 	 * @return	object			The new request
 	 */
 	public static function set($identifier, $contents = null, $expiration = null, $dependencies = array())
 	{
-		$cache = Cache::factory($identifier);
+		$cache = static::factory($identifier);
 		return $cache->set($contents, $expiration, $dependencies);
 	}
-	
+
 	/**
 	 * Does get() & set() in one call that takes a callback and it's arguements to generate the contents
 	 *
@@ -90,10 +92,10 @@ class Cache {
 	{
 		// simplify the identifier to the classname when applicable, otherwise serialization is unnecessarily heavy
 		$identifier = (is_array($callback) && is_object($callback[0])) ? array(get_class($callback[0]), $callback[1]) : $callback;
-		$cache = Cache::factory($identifier);
+		$cache = static::factory($identifier);
 		return $cache->call($callback, $args, $expiration, $dependencies);
 	}
-	
+
 	/**
 	 * Front for reading the cache, ensures interchangebility of storage engines. Actual reading
 	 * is being done by the _get() method which needs to be extended.
@@ -104,7 +106,7 @@ class Cache {
 	 */
 	public static function get($identifier, $use_expiration = true)
 	{
-		$cache = Cache::factory($identifier);
+		$cache = static::factory($identifier);
 		return $cache->get($use_expiration);
 	}
 
@@ -118,7 +120,7 @@ class Cache {
 	 */
 	public static function delete($identifier)
 	{
-		$cache = Cache::factory($identifier);
+		$cache = static::factory($identifier);
 		return $cache->delete();
 	}
 
@@ -134,9 +136,9 @@ class Cache {
 	{
 		if ( empty( $storage ) )
 		{
-			$storage = (Config::get( 'cache.storage' ) !== false ) ? Config::get( 'cache.storage' ) : 'file';
+			$storage = Config::get('cache.storage', 'file');
 		}
-		$class = 'Cache_Storage_'.ucfirst($storage);
+		$class = 'App\\Cache_Storage_'.ucfirst($storage);
 
 		$identifier = call_user_func_array($class.'::_delete_all', array($section));
 	}

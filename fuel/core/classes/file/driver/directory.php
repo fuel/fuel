@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application as App;
+
 class File_Driver_Directory {
 
 	/**
@@ -21,12 +23,11 @@ class File_Driver_Directory {
 	 */
 	protected $content = array();
 
-	public function __construct($path, Array $config, File_Area $area)
+	protected function __construct($path, Array &$config, File_Area $area)
 	{
-
+		$this->path		= rtrim($path, '\\/').DS;
+		$this->resource = false;
 	}
-
-	public function __destruct() {}
 
 	/**
 	 * Read directory
@@ -36,7 +37,7 @@ class File_Driver_Directory {
 	 */
 	public function read($depth = 0)
 	{
-		return App\File::read_dir($this->path, $depth);
+		return $this->area->read_dir($this->path, $depth, null, $this->area);
 	}
 
 	/**
@@ -47,7 +48,13 @@ class File_Driver_Directory {
 	 */
 	public function rename($new_name)
 	{
-		// use App\File::rename()
+		$info = pathinfo($this->path);
+
+		$new_name = str_replace(array('..', '/', '\\'), array('', '', ''), $new_name);
+
+		$new_path = $info['dirname'].DS.$new_name;
+
+		return $this->area->rename_dir($this->path, $new_path);
 	}
 
 	/**
@@ -58,7 +65,12 @@ class File_Driver_Directory {
 	 */
 	public function move($new_path)
 	{
-		// use App\File::rename()
+		$info = pathinfo($this->path);
+		$new_path = $this->area->get_path($new_path);
+
+		$new_path = rtrim($new_path, '\\/').DS.$info['basename'];
+
+		return $this->area->rename_dir($this->path, $new_path);
 	}
 
 	/**
@@ -69,7 +81,12 @@ class File_Driver_Directory {
 	 */
 	public function copy($new_path)
 	{
-		// use App\File::copy_dir()
+		$info = pathinfo($this->path);
+		$new_path = $this->area->get_path($new_path);
+
+		$new_path = rtrim($new_path, '\\/').DS.$info['basename'];
+
+		return $this->area->copy_dir($this->path, $new_path);
 	}
 
 	/**
@@ -80,7 +97,7 @@ class File_Driver_Directory {
 	 */
 	public function update()
 	{
-		// don't know yet if this will do anything
+		throw new File_Exception('Update method is unavailable on directories.');
 	}
 
 	/**
@@ -90,7 +107,8 @@ class File_Driver_Directory {
 	 */
 	public function delete($recursive = false)
 	{
-		// use App\File::delete_dir()
+		// should also destroy object but not possible in PHP right?
+		return $this->area->delete_dir($this->path);
 	}
 }
 
