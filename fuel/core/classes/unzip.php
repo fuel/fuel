@@ -299,7 +299,7 @@ class Unzip {
 
 		if ($this->apply_chmod AND $target_file_name)
 		{
-			chmod($target_file_name, FILE_READ_MODE);
+			chmod($target_file_name, 0644);
 		}
 
 		return $ret;

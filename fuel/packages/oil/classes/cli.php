@@ -58,7 +58,8 @@ class Cli
 			break;
 
 			case 'install':
-				call_user_func('Oil\Package::install', $args[2]);
+			case 'remove':
+				call_user_func('Oil\Package::'.$args[1], $args[2]);
 			break;
 
 			case '-v':

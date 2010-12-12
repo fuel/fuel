@@ -24,13 +24,20 @@ class Package
 
 		$version = App\Cli::option('version', 'master');
 
+		// Check to see if this package is already installed
+		if (is_dir(PKGPATH . $package))
+		{
+			App\Cli::write(App\Cli::color('Package "' . $package . '" is already installed.', 'red'));
+			return;
+		}
+
 		$package_found = FALSE;
 		
 		foreach ($config['sources'] as $source)
 		{
 			$zip_url = rtrim($source, '/').'/fuel-'.$package.'/zipball/'.$version;
 
-			if ($fp = fopen($zip_url, 'r'))
+			if ($fp = @fopen($zip_url, 'r'))
 			{
 				App\Cli::write('Downloading package: '.$zip_url);
 
@@ -39,10 +46,10 @@ class Package
 				$content = '';
 				
 				// keep reading until there's nothing left
-				while ($line = fgets($fp, 1024))
-				{
-					$content .= $line;
-				}
+				$tmp_folder = APPPATH . 'tmp/' . $package . '-' . time();
+
+				$zip_file = $tmp_folder . '.zip';
+				@copy($zip_url, $zip_file);
 
 				break;
 			}
@@ -59,13 +66,44 @@ class Package
 			return;
 		}
 
-		$zip_file = APPPATH . 'tmp/' . $package.'-'.time().'.zip';
-		file_put_contents($zip_file, $contents);
+		// Make the folder so we can extract the ZIP to it
+		mkdir($tmp_folder);
 
 		$unzip = new App\Unzip;
-		$unzip->extract($zip_file);
+		$files = $unzip->extract($zip_file, $tmp_folder);
 
+		// Grab the first folder out of it (we dont know what it's called)
+		list($tmp_package_folder) = glob($tmp_folder.'/*', GLOB_ONLYDIR);
+
+		$package_folder = PKGPATH . $package;
+
+		// Move that folder into the packages folder
+		rename($tmp_package_folder, $package_folder);
+
+		unlink($zip_file);
+		rmdir($tmp_folder);
+
+		foreach ($files as $file)
+		{
+			App\Cli::write("\t" . str_replace($tmp_package_folder, $package_folder, $file));
+		}
+	}
+
+
+	public function remove($package)
+	{
+		$package_folder = PKGPATH . $package;
 		
+		// Check to see if this package is already installed
+		if ( ! is_dir($package_folder))
+		{
+			App\Cli::write(App\Cli::color('Package "' . $package . '" is not installed.', 'red'));
+			return;
+		}
+
+		App\File::delete_dir($package_folder);
+		
+		rmdir($package_folder);
 	}
 }
 
