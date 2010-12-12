@@ -19,27 +19,44 @@ use Fuel\Application as App;
 class Cache_Storage_File extends App\Cache_Storage_Driver {
 
 	/**
-	 * @var	string	File caching basepath
-	 */
-	protected static $path = '';
-
-	/**
 	 * @const	string	Tag used for opening & closing cache properties
 	 */
 	const PROPS_TAG = 'Fuel_Cache_Properties';
 
+	/**
+	 * @var	string	File caching basepath
+	 */
+	protected static $path = '';
+
+	public static function _init()
+	{
+		static::$path = App\Config::get('cache.path', APPPATH.'cache'.DS);
+		if ( ! is_dir(static::$path) || ! is_writable(static::$path))
+		{
+			throw new Cache_Exception('Cache directory does not exist or is not writable.');
+		}
+	}
+
+	/**
+	 * Purge all caches
+	 *
+	 * @param	limit purge to subsection
+	 * @return	bool
+	 * @throws	Cache_Exception
+	 */
+	public static function _delete_all($section)
+	{
+		$path = rtrim(static::$path, '\\/').DS;
+		$section = static::identifier_to_path($section);
+
+		return App\File::delete_dir($path.$section);
+	}
+
+	// ---------------------------------------------------------------------
+
 	public function __construct($identifier, $config)
 	{
 		parent::__construct($identifier, $config);
-
-		if (empty(static::$path))
-		{
-			static::$path = App\Config::get('cache.path', APPPATH.'cache'.DS);
-			if ( ! is_dir(static::$path) || ! is_writable(static::$path))
-			{
-				throw new Cache_Exception('Cache directory does not exist or is not writable.');
-			}
-		}
 	}
 
 	/**
@@ -51,12 +68,6 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 	 */
 	protected function identifier_to_path( $identifier )
 	{
-		// cleanup to only allow alphanum chars, dashes, dots & underscores
-		if (preg_match('/^([a-z0-9_\.\-]*)$/i', $identifier) === 0)
-		{
-			throw new Cache_Exception('Cache identifier can only contain alphanumeric characters, underscores, dashes & dots.');
-		}
-
 		// replace dots with dashes
 		$identifier = str_replace('.', DS, $identifier);
 
@@ -71,7 +82,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 	protected function _set()
 	{
 		$payload = $this->prep_contents();
-		$id_path = $this->identifier_to_path( $this->identifier );
+		$id_path = $this->identifier_to_path($this->identifier);
 
 		// create directory if necessary
 		$subdirs = explode(DS, $id_path);
@@ -231,25 +242,6 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		$path = static::$path.$this->identifier.'.cache';
 		@unlink($path);
 		$this->reset();
-	}
-
-	/**
-	 * Purge all caches
-	 *
-	 * @param	limit purge to subsection
-	 * @return	bool
-	 * @throws	Cache_Exception
-	 */
-	public static function _delete_all($section)
-	{
-		$path = rtrim(static::$path ?: App\Config::get('cache.path', APPPATH.'cache'.DS), '\\/').DS;
-		$section = static::identifier_to_path($section);
-		if ( ! is_dir($path) || ! is_writable($path))
-		{
-			throw new Cache_Exception('Cache directory does not exist or is not writable.');
-		}
-
-		return App\File::delete_dir($path.$section);
 	}
 }
 

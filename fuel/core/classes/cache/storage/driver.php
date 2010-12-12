@@ -19,6 +19,78 @@ use Fuel\Application as App;
 abstract class Cache_Storage_Driver {
 
 	/**
+	 * @var array defines which class properties are gettable with get_... in the __call() method
+	 */
+	protected static $_gettable = array('created', 'expiration', 'dependencies', 'identifier');
+
+	/**
+	 * @var array defines which class properties are settable with set_... in the __call() method
+	 */
+	protected static $_settable = array('expiration', 'dependencies', 'identifier');
+
+	/**
+	 * Flushes the whole cache for a specific storage type or just a part of it when $section is set (might not work
+	 * with all storage drivers), defaults to the default storage type
+	 *
+	 * @access	public
+	 * @param	string
+	 * @param	string
+	 */
+	final public static function delete_all($section = null, $storage = null)
+	{
+		if ( empty( $storage ) )
+		{
+			$storage = Config::get('cache.storage', 'file');
+		}
+		$class = 'Cache_Storage_'.ucfirst($storage);
+
+		return call_user_func_array('App\\'.$class.'::_delete_all', array($section));
+	}
+
+	/**
+	 * Should do the delete_all method's work from the storage engine driver
+	 *
+	 * @access	public
+	 * @param	string
+	 */
+	abstract public static function _delete_all($section);
+
+	/**
+	 * Converts the identifier to a string when necessary:
+	 * A int is just converted to a string, all others are serialized and then md5'd
+	 *
+	 * @access	public
+	 * @param	mixed
+	 */
+	public static function stringify_identifier($identifier)
+	{
+		// Identifier may not be empty, but can be false or 0
+		if ($identifier === '' || $identifier === null)
+		{
+			throw new Cache_Exception('The identifier cannot be empty, must contain a value of any kind other than null or an empty string.');
+		}
+
+		// In case of string or int just return it as a string
+		if (is_string($identifier) || is_int($identifier))
+		{
+			// cleanup to only allow alphanum chars, dashes, dots & underscores
+			if (preg_match('/^([a-z0-9_\.\-]*)$/iuD', $identifier) === 0)
+			{
+				throw new Cache_Exception('Cache identifier can only contain alphanumeric characters, underscores, dashes & dots.');
+			}
+
+			return (string) $identifier;
+		}
+		// In case of array, bool or object return the md5 of the $identifier's serialization
+		else
+		{
+			return '_hashes.'.md5(serialize($identifier));
+		}
+	}
+
+	// ---------------------------------------------------------------------
+
+	/**
 	 * @var string name of the content handler driver
 	 */
 	protected $content_handler = null;
@@ -52,16 +124,6 @@ abstract class Cache_Storage_Driver {
 	 * @var mixed the contents of this
 	 */
 	protected $contents = null;
-
-	/**
-	 * @var array defines which class properties are gettable with get_... in the __call() method
-	 */
-	protected static $_gettable = array('created', 'expiration', 'dependencies', 'identifier');
-
-	/**
-	 * @var array defines which class properties are settable with set_... in the __call() method
-	 */
-	protected static $_settable = array('expiration', 'dependencies', 'identifier');
 
 	/**
 	 * Default constructor, any extension should either load this first or act similar
@@ -239,7 +301,7 @@ abstract class Cache_Storage_Driver {
 	 * @access	protected
 	 * @return	bool either true or false on any failure
 	 */
-	abstract public static function check_dependencies($dependencies);
+	abstract public function check_dependencies($dependencies);
 
 	/**
 	 * Should delete this cache instance, should also run reset() afterwards
@@ -247,60 +309,6 @@ abstract class Cache_Storage_Driver {
 	 * @access	public
 	 */
 	abstract public function delete();
-
-	/**
-	 * Flushes the whole cache for a specific storage type or just a part of it when $section is set (might not work
-	 * with all storage drivers), defaults to the default storage type
-	 *
-	 * @access	public
-	 * @param	string
-	 * @param	string
-	 */
-	final public static function delete_all($section = null, $storage = null)
-	{
-		if ( empty( $storage ) )
-		{
-			$storage = Config::get('cache.storage', 'file');
-		}
-		$class = 'Cache_Storage_'.ucfirst($storage);
-
-		return call_user_func_array('App\\'.$class.'::_delete_all', array($section));
-	}
-
-	/**
-	 * Should do the delete_all method's work from the storage engine driver
-	 *
-	 * @access	public
-	 * @param	string
-	 */
-	abstract public static function _delete_all($section);
-
-	/**
-	 * Converts the identifier to a string when necessary:
-	 * A int is just converted to a string, all others are serialized and then md5'd
-	 *
-	 * @access	public
-	 * @param	mixed
-	 */
-	public static function stringify_identifier($identifier)
-	{
-		// Identifier may not be empty, but can be false or 0
-		if ($identifier === '' || $identifier === null)
-		{
-			throw new Cache_Exception('The identifier cannot be empty, must contain a value of any kind other than null or an empty string.');
-		}
-
-		// In case of string or int just return it as a string
-		if (is_string($identifier) || is_int($identifier))
-		{
-			return (string) $identifier;
-		}
-		// In case of array, bool or object return the md5 of the $identifier's serialization
-		else
-		{
-			return md5(serialize($identifier));
-		}
-	}
 
 	/**
 	 * Allows for default getting and setting
