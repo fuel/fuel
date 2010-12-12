@@ -30,7 +30,9 @@ abstract class Template extends App\Controller\Base {
 	/**
 	* @var string page template
 	*/
-	public $template = null;
+	public $template = 'template';
+
+	public $folder = '';
 
 	/**
 	* @var boolean auto render template
@@ -42,12 +44,12 @@ abstract class Template extends App\Controller\Base {
 	{
 		if ($this->auto_render === true)
 		{
-			if ($this->template === null)
+			if ($this->folder === '')
 			{
-				$this->template = strtolower($this->request->controller).'/template';
+				$this->folder = strtolower($this->request->controller).'/';
 			}
 			// Load the template
-			$this->template = App\View::factory($this->template);
+			$this->template = App\View::factory($this->folder.$this->template);
 		}
 
 		return parent::before();
@@ -63,6 +65,17 @@ abstract class Template extends App\Controller\Base {
 
 		return parent::after();
 	}
+	
+	public function add_partial($partial, $data = array())
+	{
+		$partial_name = str_replace(array('\\', '/'), '', $partial);
+		
+		$this->template->{'partial_'.$partial_name} = App\View::factory($this->folder.'_'.$partial, $data);
+	}
 
+	public function render($view, $data)
+	{
+		$this->template->yield = App\View::factory($this->folder.$view, $data);
+	}
 }
 /* End of file template.php */

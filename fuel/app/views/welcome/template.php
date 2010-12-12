@@ -17,7 +17,7 @@
 		<h1><?php echo $title; ?></h1>
 		
 		<div id="content">
-<?php echo $body; ?>
+<?php echo $yield; ?>
 
 		</div>
 		<div id="footer">

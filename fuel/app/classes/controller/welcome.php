@@ -9,7 +9,7 @@ class Welcome extends Controller\Template {
 	public function action_index()
 	{
 		$this->template->title = 'FUEL';
-		$this->template->body = View::factory('welcome/index', array(
+		$this->render('index', array(
 			'controller_file' => Fuel::clean_path(__FILE__)
 		));
 	}
@@ -17,7 +17,7 @@ class Welcome extends Controller\Template {
 	public function action_404()
 	{
 		$this->template->title = 'Page Not Found';
-		$this->template->body = View::factory('welcome/404', array(
+		$this->render('404', array(
 			'controller_file' => Fuel::clean_path(__FILE__)
 		));
 	}
