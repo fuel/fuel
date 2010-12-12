@@ -35,7 +35,7 @@ class Config {
 			$paths = array_reverse($paths);
 			foreach ($paths as $path)
 			{
-				$config = $config + Fuel::load($path);
+				$config = Fuel::load($path) + $config;
 			}
 		}
 		if ($group === null)
