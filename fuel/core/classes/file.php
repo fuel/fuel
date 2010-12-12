@@ -31,7 +31,7 @@ class File {
 	/**
 	 * @var	File_Area	points to the base area
 	 */
-	protected $base_area = null;
+	protected static $base_area = null;
 
 	/**
 	 * @var	array	loaded area's
