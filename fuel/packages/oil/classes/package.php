@@ -109,6 +109,8 @@ class Package
 			return;
 		}
 
+		App\Cli::write('Uninstalling package "' . $package . '"');
+
 		App\File::delete_dir($package_folder);
 	}
 }
