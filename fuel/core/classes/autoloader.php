@@ -46,7 +46,7 @@ class Autoloader {
 	/**
 	 * Adds a package to the autoloader.  The prefix is the prefix for the
 	 * package classes.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the class name prefix
 	 * @param
@@ -59,7 +59,7 @@ class Autoloader {
 
 	/**
 	 * Adds an array of packages to the autoloader
-	 * 
+	 *
 	 * @access	public
 	 * @param	array	the packages
 	 * @return	void
@@ -87,7 +87,7 @@ class Autoloader {
 
 	/**
 	 * Adds a namespace and path
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the namespace
 	 * @param	string	the path
@@ -100,7 +100,7 @@ class Autoloader {
 
 	/**
 	 * Adds an array of namespaces
-	 * 
+	 *
 	 * @access	public
 	 * @param	array	the namespaces
 	 * @return	void
@@ -113,7 +113,7 @@ class Autoloader {
 
 	/**
 	 * Adds an alias for a class.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the alias
 	 * @param	string	class name
@@ -126,7 +126,7 @@ class Autoloader {
 
 	/**
 	 * Adds an array of class aliases.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the alias
 	 * @param	string	class name
@@ -139,7 +139,7 @@ class Autoloader {
 
 	/**
 	 * Adds an alias for a namespace.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the alias
 	 * @param	string	alias name
@@ -152,7 +152,7 @@ class Autoloader {
 
 	/**
 	 * Adds an array of namespaces aliases.
-	 * 
+	 *
 	 * @access	public
 	 * @param	array	the aliases
 	 * @return	void
@@ -165,7 +165,7 @@ class Autoloader {
 	/**
 	 * Sets the default path to look in, should the loader not find the file in
 	 * any packages.
-	 * 
+	 *
 	 * @access	public
 	 * @param	string	the alias
 	 * @param	string	class name
@@ -209,11 +209,29 @@ class Autoloader {
 
 			if (array_key_exists($prefix, static::$prefixes))
 			{
-				$file_path = static::$prefixes[$prefix].'classes'.DS.str_replace('_', DS, strtolower(substr($class, 17))).'.php';
+				 // remove "Fuel\Application\"
+				$without_base = substr($class, 17);
+				// find if namespaced and last occurence
+				$pos = false;
+				while(($pos_tmp = strpos($without_base, '\\')) !== false && $pos = $pos_tmp);
+
+				// rewrite path and expected name
+				if ($pos)
+				{
+					$module_class = substr($without_base, 0, $pos + 1).$prefix.substr($without_base, $pos + 1);
+					$class_path = str_replace(array('\\', '_'), array(DS, DS), $module_class);
+				}
+				else
+				{
+					$module_class = $prefix.$without_base;
+					$class_path = str_replace('_', DS, $module_class);
+				}
+
+				$file_path = static::$prefixes[$prefix].'classes'.DS.strtolower($class_path).'.php';
 				if (is_file($file_path))
 				{
 					require $file_path;
-					class_alias(substr($class, 0, 17).$prefix.substr($class, 17), $class);
+					class_alias('Fuel\\Application\\'.$module_class, $class);
 					static::_init_class($class);
 					return true;
 				}
@@ -278,7 +296,7 @@ class Autoloader {
 		if ($file_path !== false)
 		{
 			require $file_path;
-			static::$_init_class($class);
+			static::_init_class($class);
 			return true;
 		}
 
@@ -337,7 +355,7 @@ class Autoloader {
 	/**
 	 * Checks to see if the given class has a static _init() method.  If so then
 	 * it calls it.
-	 * 
+	 *
 	 * @param	string	the class name
 	 */
 	private static function _init_class($class)
