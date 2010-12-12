@@ -91,7 +91,9 @@ class Package
 
 		foreach ($files as $file)
 		{
-			App\Cli::write("\t" . str_replace($tmp_package_folder, $package_folder, $file));
+			$path = str_replace($tmp_package_folder, $package_folder, $file);
+			chmod($path, octdec(755));
+			App\Cli::write("\t" . $path);
 		}
 	}
 
@@ -99,7 +101,7 @@ class Package
 	public function remove($package)
 	{
 		$package_folder = PKGPATH . $package;
-		
+
 		// Check to see if this package is already installed
 		if ( ! is_dir($package_folder))
 		{
@@ -108,8 +110,6 @@ class Package
 		}
 
 		App\File::delete_dir($package_folder);
-		
-		rmdir($package_folder);
 	}
 }
 

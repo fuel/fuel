@@ -36,7 +36,7 @@ class File {
 	/**
 	 * @var	array	loaded area's
 	 */
-	protected $areas = array();
+	protected static $areas = array();
 
 	public static function _init()
 	{
@@ -61,7 +61,7 @@ class File {
 	 */
 	public static function instance($area = null)
 	{
-		return (is_string($area) ? static::$areas[$area] : $area) ?: static::$base_area;
+		return $area === null ? static::$base_area : (array_key_exists($area, static::$areas) ? static::$areas[$area] : $area);
 	}
 
 	/**
@@ -367,11 +367,12 @@ class File {
 	 */
 	public static function delete($path, $area = null)
 	{
-		$path = rtrim(static::instance($area)->get_path($path, $area), '\\/').DS;
+		$path = rtrim(static::instance($area)->get_path($path, $area), '\\/');
 
 		if ( ! is_file($path))
 		{
-			throw new Exception('Cannot copy directory: given path is not a directory.');
+			echo $path.PHP_EOL;
+			throw new Exception('Cannot delete file: given path "'.$path.'" is not a file.');
 		}
 
 		return unlink($path);
@@ -388,21 +389,21 @@ class File {
 	public static function delete_dir($path, $recursive = true, $area = null)
 	{
 		$path = rtrim(static::instance($area)->get_path($path, $area), '\\/').DS;
-
 		if ( ! is_dir($path))
 		{
 			throw new Exception('Cannot delete directory: given path is not a directory.');
 		}
 
 		$files = static::read_dir($path, -1, array(), $area);
+
 		$not_empty = false;
-		foreach ($files as $file)
+		foreach ($files as $dir => $file)
 		{
 			if (is_array($file))
 			{
 				if ($recursive)
 				{
-					$check = static::delete_dir($path.$file.DS, true, $area);
+					$check = static::delete_dir($path.$dir, $area);
 				}
 				else
 				{
@@ -415,9 +416,9 @@ class File {
 			}
 
 			// abort if something went wrong
-			if ($check)
+			if ( ! $check)
 			{
-				throw new File_Exception('Directory deletion aborted prematurely, part of the operation failed.');
+				throw new Exception('Directory deletion aborted prematurely, part of the operation failed.');
 			}
 		}
 
