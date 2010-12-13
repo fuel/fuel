@@ -56,12 +56,6 @@ class Redis {
 
 	protected $connection = false;
 
-	private $bulk_cmds = array(
-		'SET',   'GETSET', 'SETNX', 'ECHO',
-		'RPUSH', 'LPUSH',  'LSET',  'LREM',
-		'SADD',  'SREM',   'SMOVE', 'SISMEMBER'
-	);
-
 	public function  __construct(array $config = array())
 	{
 		$this->connection = @fsockopen($config['hostname'], $config['port'], $errno, $errstr);
@@ -81,14 +75,14 @@ class Redis {
 
 		$name = strtoupper($name);
 
-		if (in_array($name, $this->bulk_cmds))
+		$command = '*'.(count($args) + 1).CRLF;
+		$command .= '$'.strlen($name).CRLF;
+		$command .= $name.CRLF;
+		
+		foreach ($args as $arg)
 		{
-			$value = array_pop($args);
-			$command = sprintf("%s %s %d%s%s%s", $name, trim(implode(' ', $args)), strlen($value), CRLF, $value, CRLF);
-		}
-		else
-		{
-			$command = sprintf("%s %s%s", $name, trim(implode(' ', $args)), CRLF);
+			$command .= '$'.strlen($arg).CRLF;
+			$command .= $arg.CRLF;
 		}
 
 		fwrite($this->connection, $command);
