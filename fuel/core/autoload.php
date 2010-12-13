@@ -22,11 +22,8 @@ Autoloader::add_namespaces(array(
 
 Autoloader::add_namespace_aliases(array(
 	'Fuel\\Application' => 'Fuel',
-	'Fuel\\Application\\Controller' => 'Fuel\\Application'
-));
-
-Autoloader::add_prefixes(array(
-	'Fuel_'		=> COREPATH.'classes/',
+	'Fuel\\Application\\Model' => 'Fuel\\Application',
+	'Fuel\\Application\\Controller' => 'Fuel\\Application',
 ));
 
 Autoloader::add_aliases(array(

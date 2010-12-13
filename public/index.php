@@ -129,15 +129,15 @@ App\Autoloader::register();
 
 // Initialize the framework
 // and start buffering the output.
-Fuel::init();
+App\Fuel::init();
 
-$request = Request::factory();
+$request = App\Request::factory();
 $request->execute();
 echo $request->output;
 
 // Call all the shutdown events
-Event::shutdown();
+App\Event::shutdown();
 
-Fuel::finish();
+App\Fuel::finish();
 
 /* End of file index.php */

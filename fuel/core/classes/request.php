@@ -105,7 +105,7 @@ class Request {
 	{
 		App\Log::info('Called', __METHOD__);
 
-		if (Config::get('routes.404') === false)
+		if (Config::get('routes.404') === null)
 		{
 			static::active()->output = App\View::factory('404');
 		}
@@ -136,7 +136,6 @@ class Request {
 					{
 						$controller->after();
 					}
-
 					// Get the controller's output
 					static::active()->output =& $controller->output;
 				}

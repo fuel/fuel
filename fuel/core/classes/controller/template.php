@@ -14,7 +14,8 @@
 
 namespace Fuel\Controller;
 
-use Fuel\Application as App;
+use Fuel\View;
+use Fuel\Inflector;
 
 /**
  * Template Controller class
@@ -25,7 +26,7 @@ use Fuel\Application as App;
  * @category	Core
  * @author		Fuel Development Team
  */
-abstract class Template extends App\Controller\Base {
+abstract class Template extends Base {
 
 	/**
 	* @var string page template
@@ -46,10 +47,10 @@ abstract class Template extends App\Controller\Base {
 		{
 			if ($this->folder === '')
 			{
-				$this->folder = strtolower(App\Inflector::denamespace(get_called_class())).'/';
+				$this->folder = strtolower(Inflector::denamespace(get_called_class())).'/';
 			}
 			// Load the template
-			$this->template = App\View::factory($this->folder.$this->template);
+			$this->template = View::factory($this->folder.$this->template);
 		}
 
 		return parent::before();
@@ -70,12 +71,18 @@ abstract class Template extends App\Controller\Base {
 	{
 		$partial_name = str_replace(array('\\', '/'), '', $partial);
 		
-		$this->template->{'partial_'.$partial_name} = App\View::factory($this->folder.'_'.$partial, $data);
+		$this->template->{'partial_'.$partial_name} = View::factory($this->folder.'_'.$partial, $data);
 	}
 
 	public function render($view, $data)
 	{
-		$this->template->yield = App\View::factory($this->folder.$view, $data);
+		if ($this->auto_render === true)
+		{
+			$this->template->yield = View::factory($this->folder.$view, $data);
+			return;
+		}
+
+		return View::factory($this->folder.$view, $data);
 	}
 }
 /* End of file template.php */

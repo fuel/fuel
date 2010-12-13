@@ -14,6 +14,9 @@
 
 namespace Fuel\Controller;
 
+use Fuel\Request;
+use Fuel\View;
+
 class Base {
 
 	/**
@@ -24,7 +27,7 @@ class Base {
 	/**
 	 * @var	string	Holds the output of the controller
 	 */
-	public $output;
+	public $output = '';
 
 	/**
 	 * Sets the controller request object.
@@ -33,7 +36,7 @@ class Base {
 	 * @param	object	The current request object
 	 * @return	void
 	 */
-	public function __construct(\Fuel\Request $request)
+	public function __construct(Request $request)
 	{
 		$this->request = $request;
 	}
@@ -83,6 +86,15 @@ class Base {
 		return $this->request->named_params;
 	}
 
+	public function render($view, $data = array(), $return = false)
+	{
+		if ( ! $return)
+		{
+			$this->output .= View::factory($view, $data);
+			return;
+		}
+		return View::factory($view, $data);
+	}
 }
 
 /* End of file fuel_controller.php */
