@@ -71,7 +71,8 @@ class Redis {
 		fclose($this->connection);
 	}
 
-	public function __call($name, $args) {
+	public function __call($name, $args)
+	{
 		$response = null;
 
 		$name = strtoupper($name);
