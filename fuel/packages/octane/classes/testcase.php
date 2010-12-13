@@ -16,6 +16,7 @@ namespace Fuel\Octane;
 
 use Fuel\Application\Cli;
 use Fuel\Application\Fuel;
+use Fuel\Application\Request;
 
 class TestCase {
 	
@@ -37,7 +38,7 @@ class TestCase {
 		
 		if ( ! $result)
 		{
-			$this->fail('assert_equal: Value "'.$value.'" does not equal "'.$expectation.'".');
+			$this->fail('assert_equal - Value "'.$value.'" does not equal "'.$expectation.'".');
 		}
 		else
 		{
@@ -56,14 +57,40 @@ class TestCase {
 		{
 			$result = ($value != $expectation);
 		}
-		
+
 		if ( ! $result)
 		{
-			$this->fail('assert_not_equal: Value "'.$value.'" equals "'.$expectation.'"');
+			$this->fail('assert_not_equal - Value "'.$value.'" equals "'.$expectation.'"');
 		}
 		else
 		{
 			$this->pass();
+		}
+	}
+
+	public function assert_type($value, $expectation)
+	{
+		Tests::$results['assertions']++;
+		if ($value instanceof $expectation)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail('assert_type - Value "'.$value.'" is not of type "'.$expectation.'"');
+		}
+	}
+
+	public function assert_action(Request $value, $expectation)
+	{
+		Tests::$results['assertions']++;
+		if ($value->action == $expectation)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail('assert_action - Given action "'.$value.'" does not match "'.$expectation.'"');
 		}
 	}
 
