@@ -72,6 +72,7 @@ class Redis {
 	}
 
 	public function __call($name, $args) {
+		$response = null;
 
 		$name = strtoupper($name);
 
@@ -113,7 +114,7 @@ class Redis {
 				do
 				{
 					$block_size = ($size - $read) > 1024 ? 1024 : ($size - $read);
-					$response = fread($this->connection, $block_size);
+					$response .= fread($this->connection, $block_size);
 					$read += $block_size;
 				} while ($read < $size);
 				fread($this->connection, 2);
