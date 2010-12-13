@@ -53,8 +53,6 @@ define('COREPATH', realpath($core_path).DS);
 // save a bit of memory by unsetting the path array
 unset($app_path, $package_path);
 
-define('APP_NAMESPACE', trim($app_namespace, '\\'));
-
 // Load in the core functions that are available app wide
 require COREPATH.'base.php';
 
@@ -67,11 +65,7 @@ require COREPATH.'classes'.DS.'fuel.php';
 require COREPATH.'classes'.DS.'autoloader.php';
 
 require COREPATH.'autoload.php';
-
-App\Autoloader::add_namespaces(array(
-	'Fuel\\Application'		=> APPPATH.'/classes/',
-	'Oil'					=> PKGPATH.'/oil/classes/',
-));
+require APPPATH.'autoload.php';
 
 App\Autoloader::register();
 
@@ -85,4 +79,4 @@ Oil\Cli::init($_SERVER['argv']);
 
 echo PHP_EOL;
 
-/* End of file fuel.php */
+/* End of file oil.php */
