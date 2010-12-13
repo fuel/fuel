@@ -72,6 +72,10 @@ class Cli
 				echo 'Fuel: ' . App\Fuel::VERSION;
 				return;
 
+			case 'test':
+				App\Fuel::add_package('octane');
+				call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
+				break;
 			default:
 				static::help();
 		}
