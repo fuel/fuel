@@ -43,6 +43,23 @@ class Tests {
 		static::output_results();
 	}
 
+	public static function run_package($args)
+	{
+		$package = $args[0];
+		Fuel::add_package($package);
+
+		$group = isset($args[1]) ? $args[1].'/' : '';
+
+		if (is_dir(PKGPATH.$package.'/tests/classes/'.$group))
+		{
+			static::load_tests(PKGPATH.$package.'/tests/classes/'.$group);
+		}
+
+		static::output_header('Package '.ucfirst($package).' Tests');
+		static::_run_tests();
+		static::output_results();
+	}
+
 	public static function __callStatic($name, $args)
 	{
 		if ($name == '_init')
