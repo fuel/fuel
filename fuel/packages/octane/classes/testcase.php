@@ -97,6 +97,14 @@ class TestCase {
 	public function pass()
 	{
 		$trace = debug_backtrace();
+		
+		// If the test has already failed then we don't want to set it to true.
+		if (array_key_exists($this->results[$trace[2]['function']], $this->results)
+		    && $this->results[$trace[2]['function']] === false)
+		{
+			return;
+		}
+
 		$this->results[$trace[2]['function']] = true;
 	}
 
