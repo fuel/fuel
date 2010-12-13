@@ -57,11 +57,31 @@ class Tests {
 		}
 
 		$name = substr($name, 4);
-		foreach (Fuel::get_paths() as $path)
+
+		if ($name == 'app')
 		{
-			if (is_dir($path.'tests/classes/'.$name.'/'))
+			$name = isset($args[0][0]) ? $args[0][0].'/' : '';
+			if (is_dir(APPPATH.'tests/classes/'.$name))
 			{
-				static::load_tests($path.'tests/classes/'.$name.'/');
+				static::load_tests(APPPATH.'tests/classes/'.$name);
+			}
+		}
+		elseif ($name == 'core')
+		{
+			$name = isset($args[0][0]) ? $args[0][0].'/' : '';
+			if (is_dir(COREPATH.'tests/classes/'.$name))
+			{
+				static::load_tests(COREPATH.'tests/classes/'.$name);
+			}
+		}
+		else
+		{
+			foreach (Fuel::get_paths() as $path)
+			{
+				if (is_dir($path.'tests/classes/'.$name.'/'))
+				{
+					static::load_tests($path.'tests/classes/'.$name.'/');
+				}
 			}
 		}
 
