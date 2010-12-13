@@ -214,6 +214,11 @@ class Fuel {
 		}
 	}
 
+	public static function get_paths()
+	{
+		return static::$_paths;
+	}
+
 	/**
 	 * Loading in the given file
 	 *
