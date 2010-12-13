@@ -246,32 +246,24 @@ class Request {
 	{
 		App\Log::info('Called', __METHOD__);
 
-		if ($this->module == '')
-		{
-			$controller_prefix = 'Fuel\\Application\\Controller\\';
-		}
-		else
-		{
-			$controller_prefix = 'Fuel\\Application\\'.ucfirst($this->module).'\\Controller\\';
-		}
-		
+		$controller_prefix = 'Fuel\\Application\\'.($this->module ? ucfirst($this->module).'\\' : '').'Controller\\';
 		$method_prefix = 'action_';
 
-		$class = $controller_prefix.(empty($this->directory) ? '' : \ucfirst($this->directory).'_').ucfirst($this->controller);
-		$method = $this->action ?: '';
+		$class = $controller_prefix.($this->directory ? ucfirst($this->directory).'_' : '').ucfirst($this->controller);
+		$method = $this->action;
 
 		// Allow omitting the controller name when in an equally named directory or module
 		if ( ! class_exists($class))
 		{
 			// set the new controller to directory or module when applicable
-			$controller = empty($this->directory) ? $this->module : $this->directory;
+			$controller = $this->directory ?: $this->module;
 			// ... or to the default controller if it was in neither
-			$controller = empty($controller) ? preg_replace('#/([a-z0-9/_]*)$#uiD', '', App\Route::$routes['#']) : $controller;
+			$controller = $controller ?: preg_replace('#/([a-z0-9/_]*)$#uiD', '', App\Route::$routes['#']);
 
 			// try again with new controller if it differs from the previous attempt
 			if ($controller != $this->controller)
 			{
-				$class = $controller_prefix.(empty($this->directory) ? '' : $this->directory.'_').ucfirst($controller);
+				$class = $controller_prefix.($this->directory ? $this->directory.'_' : '').ucfirst($controller);
 				array_unshift($this->method_params, $this->action);
 				$this->action = $this->controller;
 				$method = $this->action ?: '';
@@ -292,7 +284,7 @@ class Request {
 		App\Log::info('Loading controller '.$class, __METHOD__);
 		$controller = new $class($this);
 
-		$method = $method_prefix.($method ?: (isset($controller->default_action) ? $controller->default_action : 'index'));
+		$method = $method_prefix.($method ?: (@$controller->default_action ?: 'index'));
 
 		// Allow to do in controller routing if method router(action, params) exists
 		if (method_exists($controller, 'router'))

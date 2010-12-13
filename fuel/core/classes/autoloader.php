@@ -105,9 +105,16 @@ class Autoloader {
 	 * @param	array	the namespaces
 	 * @return	void
 	 */
-	public static function add_namespaces(array $namespaces)
+	public static function add_namespaces(array $namespaces, $prepend = false)
 	{
-		static::$namespaces = array_merge(static::$namespaces, $namespaces);
+		if ( ! $prepend)
+		{
+			static::$namespaces = array_merge(static::$namespaces, $namespaces);
+		}
+		else
+		{
+			static::$namespaces = $namespaces + static::$namespaces;
+		}
 	}
 
 
