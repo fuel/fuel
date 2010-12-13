@@ -33,8 +33,6 @@ abstract class Template extends Base {
 	*/
 	public $template = 'template';
 
-	public $folder = '';
-
 	/**
 	* @var boolean auto render template
 	**/
@@ -45,12 +43,8 @@ abstract class Template extends Base {
 	{
 		if ($this->auto_render === true)
 		{
-			if ($this->folder === '')
-			{
-				$this->folder = strtolower(Inflector::denamespace(get_called_class())).'/';
-			}
 			// Load the template
-			$this->template = View::factory($this->folder.$this->template);
+			$this->template = View::factory($this->template);
 		}
 
 		return parent::before();
@@ -66,23 +60,6 @@ abstract class Template extends Base {
 
 		return parent::after();
 	}
-	
-	public function add_partial($partial, $data = array())
-	{
-		$partial_name = str_replace(array('\\', '/'), '', $partial);
-		
-		$this->template->{'partial_'.$partial_name} = View::factory($this->folder.'_'.$partial, $data);
-	}
 
-	public function render($view, $data)
-	{
-		if ($this->auto_render === true)
-		{
-			$this->template->yield = View::factory($this->folder.$view, $data);
-			return;
-		}
-
-		return View::factory($this->folder.$view, $data);
-	}
 }
 /* End of file template.php */
