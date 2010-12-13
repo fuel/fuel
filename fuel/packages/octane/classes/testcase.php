@@ -77,7 +77,7 @@ class TestCase {
 		}
 		else
 		{
-			$this->fail('assert_type - Value "'.$value.'" is not of type "'.$expectation.'"');
+			$this->fail('assert_instance_of - Value "'.$value.'" is not and instance of "'.$expectation.'"');
 		}
 	}
 
