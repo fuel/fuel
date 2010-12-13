@@ -234,7 +234,7 @@ class Cli {
 
 		if ($background !== null)
 		{
-			$string = "\033[".static::$background_colors[$background]."m";
+			$string .= "\033[".static::$background_colors[$background]."m";
 		}
 
 		$string .= $text."\033[0m";

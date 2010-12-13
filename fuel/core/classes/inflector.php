@@ -271,6 +271,7 @@ class Inflector {
 	 */
 	public static function denamespace($class_name)
 	{
+		$class_name = trim($class_name, '\\');
 		if ($last_separator = strrpos($class_name, '\\'))
 		{
 			$class_name = substr($class_name, $last_separator + 1);
