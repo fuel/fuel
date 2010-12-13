@@ -68,7 +68,7 @@ class TestCase {
 		}
 	}
 
-	public function assert_type($value, $expectation)
+	public function assert_instance_of($value, $expectation)
 	{
 		Tests::$results['assertions']++;
 		if ($value instanceof $expectation)
