@@ -201,7 +201,7 @@ class Session_Memcached extends Session_Driver {
 		if ( ! empty($this->keys))
 		{
 			// delete the key from the memcached server
-			if ($this->memcached->deleteByKey($this->config['cookie_name'], $this->keys['session_id']) === false)
+			if ($this->memcached->delete($this->config['cookie_name'].'_'.$this->keys['session_id']) === false)
 			{
 				throw new Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
 			}
@@ -280,7 +280,7 @@ class Session_Memcached extends Session_Driver {
 		$payload = $this->_serialize(array($this->data, $this->flash));
 
 		// write it to the memcached server
-		if ($this->memcached->setByKey($this->config['cookie_name'], $this->keys['session_id'], $payload, $this->config['expiration_time']) === false)
+		if ($this->memcached->set($this->config['cookie_name'].'_'.$this->keys['session_id'], $payload, $this->config['expiration_time']) === false)
 		{
 			throw new Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
 		}
@@ -297,7 +297,7 @@ class Session_Memcached extends Session_Driver {
 	protected function _read_memcached($session_id)
 	{
 		// fetch the session data from the Memcached server
-		return $this->memcached->getByKey($this->config['cookie_name'], $this->keys['session_id']);
+		return $this->memcached->get($this->config['cookie_name'].'_'.$this->keys['session_id']);
 	}
 
 }
