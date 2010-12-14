@@ -40,6 +40,8 @@ Autoloader::add_aliases(array(
 	'Cache_Handler_String'		=> 'Fuel\\Application\\Cache_Handler_String',
 	'Cache_Storage_Driver'		=> 'Fuel\\Application\\Cache_Storage_Driver',
 	'Cache_Storage_File'		=> 'Fuel\\Application\\Cache_Storage_File',
+	'Cache_Storage_Memcached'	=> 'Fuel\\Application\\Cache_Storage_Memcached',
+	'Cache_Storage_Redis'		=> 'Fuel\\Application\\Cache_Storage_Redis',
 
 	'Config'		=> 'Fuel\\Application\\Config',
 

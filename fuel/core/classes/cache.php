@@ -14,8 +14,6 @@
 
 namespace Fuel;
 
-use Fuel\Application as App;
-
 class Cache {
 
 	/**
@@ -25,36 +23,39 @@ class Cache {
 	 */
 	public static function _init()
 	{
-		App\Config::load('cache', true);
+		Config::load('cache', true);
 	}
+
+	// ---------------------------------------------------------------------
 
 	/**
 	 * Creates a new cache instance.
 	 *
 	 * @access	public
 	 * @param	mixed			The identifier of the cache, can be anything but empty
-	 * @param	array|string	Either an array of settings or the storage engine to be used
+	 * @param	array|string	Either an array of settings or the storage driver to be used
 	 * @return	object			The new request
 	 */
 	public static function factory($identifier, $config = array())
 	{
-		// $config can be either an array of config settings or the name of the storage engine
-		if ( ! is_array($config))
+		// load the default config
+		$defaults = Config::get('cache', array());
+
+		// $config can be either an array of config settings or the name of the storage driver
+		if ( ! empty($config) && ! is_array($config) && ! is_null($config))
 		{
-			$config = array('driver' => (string) $config);
+			$config = array('driver' => $config);
 		}
 
-		// Set the extending storage type class
-		if (array_key_exists('storage', $config))
+		// Overwrite default values with given config
+		$config = array_merge($defaults, (array) $config);
+
+		if (empty($config['driver']))
 		{
-			$storage = $config['storage'];
-			unset($config['storage']);
+			throw new Exception('No cache driver given or no default cache driver set.');
 		}
-		else
-		{
-			$storage = App\Config::get('cache.storage', 'file');
-		}
-		$class = 'App\\Cache_Storage_'.ucfirst($storage);
+
+		$class = 'Cache_Storage_'.ucfirst($config['driver']);
 
 		// Convert the name to a string when necessary
 		$identifier = call_user_func($class.'::stringify_identifier', $identifier);
@@ -63,14 +64,17 @@ class Cache {
 		return new $class($identifier, $config);
 	}
 
+	// ---------------------------------------------------------------------
+
 	/**
-	 * Front for writing the cache, ensures interchangebility of storage engines. Actual writing
+	 * Front for writing the cache, ensures interchangebility of storage drivers. Actual writing
 	 * is being done by the _set() method which needs to be extended.
 	 *
 	 * @access	public
+	 * @param	mixed			The identifier of the cache, can be anything but empty
 	 * @param	mixed			The content to be cached
 	 * @param	int				The time in minutes until the cache will expire, =< 0 or null means no expiration
-	 * @param	array			Array of names on which this cache depends for
+	 * @param	array			Contains the identifiers of caches this one will depend on (not supported by all drivers!)
 	 * @return	object			The new request
 	 */
 	public static function set($identifier, $contents = null, $expiration = null, $dependencies = array())
@@ -79,28 +83,32 @@ class Cache {
 		return $cache->set($contents, $expiration, $dependencies);
 	}
 
+	// ---------------------------------------------------------------------
+
 	/**
 	 * Does get() & set() in one call that takes a callback and it's arguements to generate the contents
 	 *
 	 * @access	public
+	 * @param	mixed			The identifier of the cache, can be anything but empty
 	 * @param	string|array	Valid PHP callback
 	 * @param	array 			Arguements for the above function/method
 	 * @param	int				Cache expiration in minutes
-	 * @param	array			Contains the identifiers of caches this one will depend on
+	 * @param	array			Contains the identifiers of caches this one will depend on (not supported by all drivers!)
 	 */
-	public static function call($callback, $args = array(), $expiration = null, $dependencies = array())
+	public static function call($identifier, $callback, $args = array(), $expiration = null, $dependencies = array())
 	{
-		// simplify the identifier to the classname when applicable, otherwise serialization is unnecessarily heavy
-		$identifier = (is_array($callback) && is_object($callback[0])) ? array(get_class($callback[0]), $callback[1]) : $callback;
 		$cache = static::factory($identifier);
 		return $cache->call($callback, $args, $expiration, $dependencies);
 	}
 
+	// ---------------------------------------------------------------------
+
 	/**
-	 * Front for reading the cache, ensures interchangebility of storage engines. Actual reading
+	 * Front for reading the cache, ensures interchangebility of storage drivers. Actual reading
 	 * is being done by the _get() method which needs to be extended.
 	 *
 	 * @access	public
+	 * @param	mixed			The identifier of the cache, can be anything but empty
 	 * @param	bool
 	 * @return	mixed
 	 */
@@ -110,12 +118,14 @@ class Cache {
 		return $cache->get($use_expiration);
 	}
 
+	// ---------------------------------------------------------------------
+
 	/**
 	 * Frontend for deleting item from the cache, interchangable storage methods. Actual operation
 	 * handled by delete() call on storage driver class
 	 *
 	 * @access	public
-	 * @param	string
+	 * @param	mixed			The identifier of the cache, can be anything but empty
 	 * @return	mixed
 	 */
 	public static function delete($identifier)
@@ -124,23 +134,20 @@ class Cache {
 		return $cache->delete();
 	}
 
+	// ---------------------------------------------------------------------
+
 	/**
-	 * Flushes the whole cache for a specific storage type or just a part of it when $section is set (might not work
-	 * with all storage drivers), defaults to the default storage type
+	 * Flushes the whole cache for a specific storage driver or just a part of it when $section is set
+	 * (might not work with all storage drivers), defaults to the default storage driver
 	 *
 	 * @access	public
 	 * @param	string
 	 * @param	string
 	 */
-	final public static function delete_all($section = null, $storage = null)
+	public static function delete_all($section = null, $driver = null)
 	{
-		if ( empty( $storage ) )
-		{
-			$storage = Config::get('cache.storage', 'file');
-		}
-		$class = 'App\\Cache_Storage_'.ucfirst($storage);
-
-		$identifier = call_user_func_array($class.'::_delete_all', array($section));
+		$cache = static::factory('__NOT_USED__', $driver);
+		return $cache->delete_all($section);
 	}
 }
 
