@@ -133,6 +133,7 @@ App\Fuel::init();
 
 $request = App\Request::factory();
 $request->execute();
+App\Output::send_headers();
 echo $request->output;
 
 // Call all the shutdown events
