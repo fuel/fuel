@@ -105,6 +105,8 @@ class Request {
 	{
 		App\Log::info('Called', __METHOD__);
 
+		App\Output::$status = 404;
+
 		if (Config::get('routes.404') === null)
 		{
 			static::active()->output = App\View::factory('404');
