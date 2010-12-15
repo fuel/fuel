@@ -68,8 +68,6 @@ class Fuel {
 			throw new Exception("You can't initialize Fuel more than once.");
 		}
 
-		static::$is_cli = (bool) (php_sapi_name() == 'cli');
-
 		static::$_paths = array(APPPATH, COREPATH);
 
 		register_shutdown_function('fuel_shutdown_handler');
@@ -86,6 +84,12 @@ class Fuel {
 		{
 			App\Profiler::init();
 		}
+
+		if (App\Fuel::$profile)
+		{
+			App\Profiler::mark(__METHOD__.' Start');
+		}
+		static::$is_cli = (bool) (php_sapi_name() == 'cli');
 
 
 		/**
@@ -144,6 +148,11 @@ class Fuel {
 		static::always_load();
 
 		static::$initialized = true;
+
+		if (App\Fuel::$profile)
+		{
+			App\Profiler::mark(__METHOD__.' End');
+		}
 	}
 
 	/**

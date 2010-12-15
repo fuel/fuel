@@ -16,7 +16,7 @@ class Profiler {
 		static::$profiler = new PhpQuickProfiler(FUEL_START_TIME);
 	}
 	
-	public static function mark_time($label)
+	public static function mark($label)
 	{
 		Console::logSpeed($label);
 	}
