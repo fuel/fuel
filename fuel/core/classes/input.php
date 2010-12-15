@@ -49,7 +49,7 @@ class Input {
 	 */
 	public static function protocol()
 	{
-		return (static::server('HTTPS') !== null) ? 'https' : 'http';
+		return (static::server('HTTPS') !== null && static::server('HTTPS') != 'off') ? 'https' : 'http';
 	}
 
 	/**
@@ -208,7 +208,7 @@ class Input {
 	 */
 	public static function server($index = '', $default = null)
 	{
-		return static::_fetch_from_array($_SERVER, $index, $default);
+		return static::_fetch_from_array($_SERVER, strtoupper($index), $default);
 	}
 
 	/**
