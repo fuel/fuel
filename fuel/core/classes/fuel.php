@@ -43,6 +43,8 @@ class Fuel {
 
 	public static $bm = true;
 
+	public static $profile = false;
+
 	public static $locale;
 
 	public static $is_cli = false;
@@ -77,7 +79,14 @@ class Fuel {
 		// Start up output buffering
 		ob_start();
 
-		Config::load('config');
+		App\Config::load('config');
+		App\Fuel::$profile = App\Config::get('profile', false);
+
+		if (App\Fuel::$profile)
+		{
+			App\Profiler::init();
+		}
+
 
 		/**
 		 * WARNING:  The order of the following statements is very important.
@@ -148,6 +157,19 @@ class Fuel {
 	{
 		// Grab the output buffer
 		$output = ob_get_clean();
+		if (static::$profile)
+		{
+			if (preg_match("|</body>.*?</html>|is", $output))
+			{
+				$output  = preg_replace("|</body>.*?</html>|is", '', $output);
+				$output .= App\Profiler::output();
+				$output .= '</body></html>';
+			}
+			else
+			{
+				$output .= App\Profiler::output();
+			}
+		}
 
 		$bm = Benchmark::app_total();
 

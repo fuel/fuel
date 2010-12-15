@@ -33,6 +33,8 @@ return array(
 	 */
 	'environment'	=> Env::DEVELOPMENT,
 
+	'profile'		=> false,
+
 	/**
 	 * Show notices
 	 *
