@@ -87,13 +87,17 @@ class Fuel {
 		{
 			if (Config::get('base_url') === null)
 			{
-				if (isset($_SERVER['SCRIPT_NAME']))
+				$base_url = '';
+				if(Input::server('http_host'))
 				{
-					$base_url = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+					$base_url .= Input::protocol().'://'.Input::server('http_host');
+				}
+				if (Input::server('script_name'))
+				{
+					$base_url .= str_replace('\\', '/', dirname(Input::server('script_name')));
 
 					// Add a slash if it is missing
-					substr($base_url, -1, 1) == '/' OR $base_url .= '/';
-
+					$base_url = rtrim($base_url, '/').'/';
 					Config::set('base_url', $base_url);
 				}
 			}
