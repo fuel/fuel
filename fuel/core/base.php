@@ -15,6 +15,27 @@
 use Fuel\Application\Error;
 
 /**
+ * Loads in a core class and optionally an app class override if it exists.
+ *
+ * @param	string	$path
+ * @param	string	$folder
+ * @return	void
+ */
+if ( ! function_exists('import'))
+{
+	function import($path, $folder = 'classes')
+	{
+		$path = str_replace('/', DS, $path);
+		require_once COREPATH.$folder.DS.$path.'.php';
+
+		if (is_file(APPPATH.$folder.DS.$path.'.php'))
+		{
+			require_once APPPATH.$folder.DS.$path.'.php';
+		}
+	}
+}
+
+/**
  * Takes an array of attributes and turns it into a string for an html tag
  *
  * @param	array	$attr

@@ -105,26 +105,15 @@ if (is_file(APPPATH.'base.php'))
 // Load in the core functions that are available app wide
 require COREPATH.'base.php';
 
+import('fuel');
 
 /**
  * Load in the autoloader class then register any app and core autoloaders.
  */
 require COREPATH.'classes'.DS.'autoloader.php';
 
-// Load in the core class
-require COREPATH.'classes'.DS.'fuel.php';
-
-// If the Fuel class is overrided in the application folder
-// load that, else load the core class.
-if (is_file(APPPATH.'classes'.DS.'fuel.php'))
-{
-	require APPPATH.'classes'.DS.'fuel.php';
-}
-
-
 require COREPATH.'autoload.php';
 require APPPATH.'autoload.php';
-
 App\Autoloader::register();
 
 // Initialize the framework
