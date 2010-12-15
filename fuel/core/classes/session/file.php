@@ -18,25 +18,23 @@ namespace Fuel;
 
 class Session_File extends Session_Driver {
 
+	/**
+	 * array of driver config defaults
+	 */
+	protected static $_defaults = array(
+		'cookie_name'		=> 'fuelfid',				// name of the session cookie for file based sessions
+		'path'				=>	'/tmp',					// path where the session files should be stored
+		'gc_probability'	=>	5						// probability % (between 0 and 100) for garbage collection
+	);
+
 	// --------------------------------------------------------------------
 
-	/**
-	 * driver initialisation
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function init()
+	public function __construct($config = array())
 	{
-		// generic driver initialisation
-		parent::init();
+		// merge the driver config with the global config
+		$this->config = array_merge($config, is_array($config['file']) ? $config['file'] : static::$_defaults);
 
-		// check for required config values
-		$this->config['cookie_name'] = $this->validate_config('cookie_name', isset($this->config['cookie_name'])
-				? $this->config['cookie_name'] : 'fuelfid');
-		$this->config['path'] = $this->validate_config('path', $this->config['path']);
-		$this->config['gc_probability'] = $this->validate_config('gc_probability', isset($this->config['gc_probability'])
-				? $this->config['gc_probability'] : 5);
+		$this->config = $this->_validate_config($this->config);
 	}
 
 	// --------------------------------------------------------------------
@@ -210,59 +208,6 @@ class Session_File extends Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * validate a driver config value
-	 *
-	 * @param	string	name of the config variable to validate
-	 * @param	mixed	value
-	 * @access	public
-	 * @return  mixed
-	 */
-	public function validate_config($name, $value)
-	{
-		switch ($name)
-		{
-			case 'cookie_name':
-				if ( empty($value) OR ! is_string($value))
-				{
-					$value = 'fuelfid';
-				}
-			break;
-
-			case 'path':
-				// do we have a path?
-				if ( empty($value) OR ! is_dir($value))
-				{
-					throw new Exception('You have specify a valid path to store the session data files.');
-				}
-				// and can we write to it?
-				if ( ! is_writable($value))
-				{
-					throw new Exception('The webserver doesn\'t have write access to the path to store the session data files.');
-				}
-				// update the path, and add the trailing slash
-				$value = realpath($value).'/';
-			break;
-
-			case 'gc_probability':
-				// do we have a path?
-				if ( ! is_numeric($value) OR $value < 0 OR $value > 100)
-				{
-					// default value: 5%
-					$value = 5;
-				}
-			break;
-
-			default:
-			break;
-		}
-
-		// return the validated value
-		return $value;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Writes the session file
 	 *
 	 * @access	private
@@ -328,6 +273,71 @@ class Session_File extends Session_Driver {
 			}
 		}
 		return $payload;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * validate a driver config value
+	 *
+	 * @param	array	array with configuration values
+	 * @access	public
+	 * @return  array	validated and consolidated config
+	 */
+	public function _validate_config($config)
+	{
+		$validated = array();
+
+		foreach ($config as $name => $item)
+		{
+			// filter out any driver config
+			if (!is_array($item))
+			{
+				switch ($name)
+				{
+					case 'cookie_name':
+						if ( empty($item) OR ! is_string($item))
+						{
+							$item = 'fuelfid';
+						}
+					break;
+
+					case 'path':
+						// do we have a path?
+						if ( empty($item) OR ! is_dir($item))
+						{
+							throw new Exception('You have specify a valid path to store the session data files.');
+						}
+						// and can we write to it?
+						if ( ! is_writable($item))
+						{
+							throw new Exception('The webserver doesn\'t have write access to the path to store the session data files.');
+						}
+						// update the path, and add the trailing slash
+						$item = realpath($item).'/';
+					break;
+
+					case 'gc_probability':
+						// do we have a path?
+						if ( ! is_numeric($item) OR $item < 0 OR $item > 100)
+						{
+							// default value: 5%
+							$item = 5;
+						}
+					break;
+
+					default:
+						// no config item for this driver
+					break;
+				}
+
+				// global config, was validated in the driver
+				$validated[$name] = $item;
+			}
+		}
+
+		// validate all global settings as well
+		return parent::_validate_config($validated);
 	}
 
 }

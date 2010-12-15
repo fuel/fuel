@@ -18,21 +18,21 @@ namespace Fuel;
 
 class Session_Cookie extends Session_Driver {
 
+	/**
+	 * array of driver config defaults
+	 */
+	protected static $_defaults = array(
+		'cookie_name'		=> 'fuelcid',
+	);
+
 	// --------------------------------------------------------------------
 
-	/**
-	 * driver initialisation
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function init()
+	public function __construct($config = array())
 	{
-		// generic driver initialisation
-		parent::init();
+		// merge the driver config with the global config
+		$this->config = array_merge($config, is_array($config['cookie']) ? $config['cookie'] : static::$_defaults);
 
-		// check for required config values
-		$this->config['cookie_name'] = $this->validate_config('cookie_name', isset($this->config['cookie_name']) ? $this->config['cookie_name'] : 'fuelcid');
+		$this->config = $this->_validate_config($this->config);
 	}
 
 	// --------------------------------------------------------------------
@@ -128,28 +128,40 @@ class Session_Cookie extends Session_Driver {
 	/**
 	 * validate a driver config value
 	 *
-	 * @param	string	name of the config variable to validate
-	 * @param	mixed	value
+	 * @param	array	array with configuration values
 	 * @access	public
-	 * @return  mixed
+	 * @return  array	validated and consolidated config
 	 */
-	public function validate_config($name, $value)
+	public function _validate_config($config)
 	{
-		switch ($name)
-		{
-			case 'cookie_name':
-				if ( empty($value) OR ! is_string($value))
-				{
-					$value = 'fuelcid';
-				}
-			break;
+		$validated = array();
 
-			default:
-			break;
+		foreach ($config as $name => $item)
+		{
+			// filter out any driver config
+			if (!is_array($item))
+			{
+				switch ($name)
+				{
+					case 'cookie_name':
+						if ( empty($item) OR ! is_string($item))
+						{
+							$item = 'fuelcid';
+						}
+					break;
+
+					default:
+						// no config item for this driver
+					break;
+				}
+
+				// global config, was validated in the driver
+				$validated[$name] = $item;
+			}
 		}
 
-		// return the validated value
-		return $value;
+		// validate all global settings as well
+		return parent::_validate_config($validated);
 	}
 }
 

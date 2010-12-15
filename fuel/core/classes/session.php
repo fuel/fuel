@@ -6,6 +6,7 @@
  *
  * @package		Fuel
  * @version		1.0
+ * @author		Harro "WanWizard" Verton
  * @license		MIT License
  * @copyright	2010 Dan Horrigan
  * @link		http://fuelphp.com
@@ -13,18 +14,7 @@
 
 namespace Fuel;
 
-// --------------------------------------------------------------------
-
-/**
- * Session Class
- *
- * @package		Fuel
- * @subpackage	Core
- * @category	Core
- * @author		Harro "WanWizard" Verton
- */
-class Session
-{
+class Session {
 	/**
 	 * loaded session driver instance
 	 */
@@ -36,6 +26,26 @@ class Session
 	protected static $_instances = array();
 
 	/**
+	 * array of global config defaults
+	 */
+	protected static $_defaults = array(
+		'driver'			=> 'cookie',
+		'match_ip'			=> false,
+		'match_ua'			=> true,
+		'cookie_domain' 	=> '',
+		'cookie_path'		=> '/',
+		'expire_on_close'	=> false,
+		'expiration_time'	=> 7200,
+		'rotation_time'		=> 300,
+		'flash_id'			=> 'flash',
+		'flash_auto_expire'	=> true,
+		'write_on_set'		=> false,
+		'post_cookie_name'	=> ''
+	);
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Initialize by loading config & starting default session
 	 */
 	public static function _init()
@@ -44,9 +54,19 @@ class Session
 
 		if (Config::get('session.auto_initialize', true))
 		{
-			static::instance();
+			// need to catch errors here, the error handler isn't running yet
+			try
+			{
+				static::instance();
+			}
+			catch (Exception $e)
+			{
+				Error::show_php_error($e);die();
+			}
 		}
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * Factory
@@ -55,52 +75,27 @@ class Session
 	 *
 	 * @param	array|string	full driver config or just driver type
 	 */
-	public static function factory($config = array())
+	public static function factory($custom = array())
 	{
-		$defaults = Config::get('session', array());
+		$config = Config::get('session', array());
 
 		// When a string was passed it's just the driver type
-		if ( ! empty($config) && ! is_array($config))
+		if ( ! empty($custom) && ! is_array($custom))
 		{
-			$config = array('driver' => $config);
+			$custom = array('driver' => $custom);
 		}
 
-		// Overwrite default values with given config
-		$config = array_merge($defaults, $config);
+		$config = array_merge(static::$_defaults, $config, $custom);
 
 		if (empty($config['driver']))
 		{
-			throw new Exception('No session driver given or no default session driver set.');
+			throw new Session_Exception('No session driver given or no default session driver set.');
 		}
 
 		// determine the driver to load
 		$class = 'Session_'.ucfirst($config['driver']);
 
-		$driver = new $class;
-
-		// And configure it, specific driver config first
-		if (isset($config[$config['driver']]))
-		{
-			$driver->set_config('config', $config[$config['driver']]);
-		}
-
-		// Then load globals and/or set defaults
-		$driver->set_config('driver', $config['driver']);
-		$driver->set_config('match_ip', isset($config['match_ip']) ? (bool) $config['match_ip'] : true);
-		$driver->set_config('match_ua', isset($config['match_ua']) ? (bool) $config['match_ua'] : true);
-		$driver->set_config('cookie_domain', isset($config['cookie_domain']) ? (string) $config['cookie_domain'] : '');
-		$driver->set_config('cookie_path', isset($config['cookie_path']) ? (string) $config['cookie_path'] : '/');
-		$driver->set_config('expire_on_close', isset($config['expire_on_close']) ? (bool) $config['expire_on_close'] : false);
-		$driver->set_config('expiration_time', isset($config['expiration_time'])
-				? ((int) $config['expiration_time'] > 0
-						? (int) $config['expiration_time']
-						: 86400 * 365 * 2)
-				: 7200);
-		$driver->set_config('rotation_time', isset($config['rotation_time']) ? (int) $config['rotation_time'] : 300);
-		$driver->set_config('flash_id', isset($config['flash_id']) ? (string) $config['flash_id'] : 'flash');
-		$driver->set_config('flash_auto_expire', isset($config['flash_auto_expire']) ? (bool) $config['flash_auto_expire'] : true);
-		$driver->set_config('write_on_set', isset($config['write_on_set']) ? (bool) $config['write_on_set'] : false);
-		$driver->set_config('post_cookie_name', isset($config['post_cookie_name']) ? (string) $config['post_cookie_name'] : '');
+		$driver = new $class($config);
 
 		// get the driver's cookie name
 		$cookie = $driver->get_config('cookie_name');
@@ -134,6 +129,8 @@ class Session
 		return static::$_instances[$cookie];
 	}
 
+	// --------------------------------------------------------------------
+
 	/**
 	 * class constructor
 	 *
@@ -142,6 +139,8 @@ class Session
 	 * @return	void
 	 */
 	final private function __construct() {}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * create or return the driver instance
@@ -159,6 +158,8 @@ class Session
 
 		return static::$_instance;
 	}
+
+	// --------------------------------------------------------------------
 
 	/**
 	 * set session variables

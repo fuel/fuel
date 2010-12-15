@@ -23,33 +23,23 @@ class Session_Db extends Session_Driver {
 	 */
 	protected $record = null;
 
+	/**
+	 * array of driver config defaults
+	 */
+	protected static $_defaults = array(
+		'cookie_name'		=> 'fueldid',				// name of the session cookie for database based sessions
+		'table'				=> 'sessions',				// name of the sessions table
+		'gc_probability'	=> 5						// probability % (between 0 and 100) for garbage collection
+	);
+
 	// --------------------------------------------------------------------
 
-	/**
-	 * database driver initialisation
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	public function init()
+	public function __construct($config = array())
 	{
-		// generic driver initialisation
-		parent::init();
+		// merge the driver config with the global config
+		$this->config = array_merge($config, is_array($config['db']) ? $config['db'] : static::$_defaults);
 
-		// get the active database if needed
-		if ( ! isset($this->config['database']))
-		{
-			Config::load('db', true);
-			$this->config['database'] = Config::get('db.active');
-		}
-
-		// check for required config values
-		$this->config['cookie_name'] = $this->validate_config('cookie_name', isset($this->config['cookie_name'])
-				? $this->config['cookie_name'] : 'fueldid');
-		$this->config['database'] = $this->validate_config('database', $this->config['database']);
-		$this->config['table'] = $this->validate_config('table', isset($this->config['table']) ? $this->config['table'] : null);
-		$this->config['gc_probability'] = $this->validate_config('gc_probability', isset($this->config['gc_probability'])
-				? $this->config['gc_probability'] : 5);
+		$this->config = $this->_validate_config($this->config);
 	}
 
 	// --------------------------------------------------------------------
@@ -198,54 +188,71 @@ class Session_Db extends Session_Driver {
 	/**
 	 * validate a driver config value
 	 *
-	 * @param	string	name of the config variable to validate
-	 * @param	mixed	value
+	 * @param	array	array with configuration values
 	 * @access	public
-	 * @return  mixed
+	 * @return  array	validated and consolidated config
 	 */
-	public function validate_config($name, $value)
+	public function _validate_config($config)
 	{
-		switch ($name)
+		$validated = array();
+
+		foreach ($config as $name => $item)
 		{
-			case 'cookie_name':
-				if ( empty($value) OR ! is_string($value))
+			// filter out any driver config
+			if (!is_array($item))
+			{
+				switch ($name)
 				{
-					$value = 'fueldid';
-				}
-			break;
+					case 'cookie_name':
+						if ( empty($item) OR ! is_string($item))
+						{
+							$item = 'fueldid';
+						}
+					break;
 
-			case 'database':
-				// do we have a database?
-				if ( empty($value) OR ! is_string($value))
-				{
-					throw new Exception('You have specify a database to use database backed sessions.');
-				}
-			break;
+					case 'database':
+						// do we have a database?
+						if ( empty($item) OR ! is_string($item))
+						{
+							Config::load('db', true);
+							$item = Config::get('db.active', false);
+						}
+						if ($item === false)
+						{
+							throw new Exception('You have specify a database to use database backed sessions.');
+						}
+					break;
 
-			case 'table':
-				// and a table name?
-				if ( empty($value) OR ! is_string($value))
-				{
-					throw new Exception('You have specify a database table name to use database backed sessions.');
-				}
-			break;
+					case 'table':
+						// and a table name?
+						if ( empty($item) OR ! is_string($item))
+						{
+							throw new Exception('You have specify a database table name to use database backed sessions.');
+						}
+					break;
 
-			case 'gc_probability':
-				// do we have a path?
-				if ( ! is_numeric($value) OR $value < 0 OR $value > 100)
-				{
-					// default value: 5%
-					$value = 5;
-				}
-			break;
+					case 'gc_probability':
+						// do we have a path?
+						if ( ! is_numeric($item) OR $item < 0 OR $item > 100)
+						{
+							// default value: 5%
+							$item = 5;
+						}
+					break;
 
-			default:
-			break;
+					default:
+					break;
+				}
+
+				// global config, was validated in the driver
+				$validated[$name] = $item;
+			}
 		}
 
-		// return the validated value
-		return $value;
+		// validate all global settings as well
+		return parent::_validate_config($validated);
 	}
+
 }
 
 /* End of file db.php */

@@ -14,8 +14,6 @@
 
 namespace Fuel;
 
-// --------------------------------------------------------------------
-
 abstract class Session_Driver {
 
 	/*
@@ -417,64 +415,6 @@ abstract class Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * set a runtime config value
-	 *
-	 * @param	string	name of the config variable to set
-	 * @param	mixed	value
-	 * @access	public
-	 * @return  mixed
-	 */
-	public function set_config($name, $value)
-	{
-		switch ($name)
-		{
-			// booleans
-			case 'match_ip':
-			case 'match_ua':
-			case 'flash_auto_expire':
-			case 'write_on_set':
-			case 'expire_on_close':
-				$this->config[$name] = (bool) $value;
-			break;
-
-			// strings
-			case 'driver':
-			case 'flash_id':
-			case 'cookie_name':
-			case 'cookie_domain':
-			case 'cookie_path':
-			case 'post_cookie_name':
-				$this->config[$name] = (string) $value;
-			break;
-
-			// integers
-			case 'expiration_time':
-			case 'rotation_time':
-				$this->config[$name] = (int) $value;
-			break;
-
-			// arrays
-			case '_none_defined_yet_':
-				// handle array's here
-			break;
-
-			// driver config
-			case 'config':
-				foreach($value as $ck => $cv)
-				{
-					$this->config[$ck] = $this->validate_config($ck, $cv);
-				}
-			break;
-
-			default:
-				// ignore unknown config keys
-			break;
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * removes flash variables marked as old
 	 *
 	 * @access	private
@@ -689,6 +629,115 @@ abstract class Session_Driver {
 		}
 
 		return (is_string($data)) ? str_replace('{{slash}}', '\\', $data) : $data;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * validate__config
+	 *
+	 * This function validates all global (driver independent) configuration values
+	 *
+	 * @access	private
+	 * @param	array
+	 * @return	array
+	 */
+	protected function _validate_config($config)
+	{
+		$validated = array();
+
+		foreach ($config as $name => $item)
+		{
+			switch($name)
+			{
+				case 'driver':
+					// if we get here, this one was ok... ;-)
+				break;
+
+				case 'match_ip':
+					// make sure it's a boolean
+					$item = (bool) $item;
+				break;
+
+				case 'match_ua':
+					// make sure it's a boolean
+					$item = (bool) $item;
+				break;
+
+				case 'cookie_domain':
+					// make sure it's a string
+					$item = (string) $item;
+				break;
+
+				case 'cookie_path':
+					// make sure it's a string
+					$item = (string) $item;
+					if (empty($item))
+					{
+						$item = '/';
+					}
+				break;
+
+				case 'expire_on_close':
+					// make sure it's a boolean
+					$item = (bool) $item;
+				break;
+
+				case 'expiration_time':
+					// make sure it's an integer
+					$item = (int) $item;
+					if ($item <= 0)
+					{
+						// invalid? set it to two years from now
+						$item = 86400 * 365 * 2;
+					}
+				break;
+
+				case 'rotation_time':
+					// make sure it's an integer
+					$item = (int) $item;
+					if ($item <= 0)
+					{
+						// invalid? set it to 5 minutes
+						$item = 300;
+					}
+				break;
+
+				case 'flash_id':
+					// make sure it's a string
+					$item = (string) $item;
+					if (empty($item))
+					{
+						$item = 'flash';
+					}
+				break;
+
+				case 'flash_auto_expire':
+					// make sure it's a boolean
+					$item = (bool) $item;
+				break;
+
+				case 'write_on_set':
+					// make sure it's a boolean
+					$item = (bool) $item;
+				break;
+
+				case 'post_cookie_name':
+					// make sure it's a string
+					$item = (string) $item;
+				break;
+
+				default:
+					// ignore this setting
+				break;
+
+			}
+
+			// store the validated result
+			$validated[$name] = $item;
+		}
+
+		return $validated;
 	}
 
 }

@@ -18,10 +18,28 @@ namespace Fuel;
 
 class Session_Redis extends Session_Driver {
 
+	/**
+	 * array of driver config defaults
+	 */
+	protected static $_defaults = array(
+		'cookie_name'		=> 'fuelrid',				// name of the session cookie for redis based sessions
+		'database'			=> 'default'				// name of the redis database to use (as configured in config/db.php)
+	);
+
 	/*
 	 * @var	storage for the redis object
 	 */
 	protected $redis = false;
+
+	// --------------------------------------------------------------------
+
+	public function __construct($config = array())
+	{
+		// merge the driver config with the global config
+		$this->config = array_merge($config, is_array($config['redis']) ? $config['redis'] : static::$_defaults);
+
+		$this->config = $this->_validate_config($this->config);
+	}
 
 	// --------------------------------------------------------------------
 
@@ -35,12 +53,6 @@ class Session_Redis extends Session_Driver {
 	{
 		// generic driver initialisation
 		parent::init();
-
-		// make sure we have a redis database configured
-		$this->config['database'] = $this->validate_config('database', isset($this->config['database']) ? $this->config['database'] : 'default');
-
-		$this->config['cookie_name'] = $this->validate_config('cookie_name', isset($this->config['cookie_name'])
-				? $this->config['cookie_name'] : 'fuelrid');
 
 		if ($this->redis === false)
 		{
@@ -196,40 +208,6 @@ class Session_Redis extends Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * validate a driver config value
-	 *
-	 * @param	string	name of the config variable to validate
-	 * @param	mixed	value
-	 * @access	public
-	 * @return  mixed
-	 */
-	public function validate_config($name, $value)
-	{
-		switch ($name)
-		{
-			case 'cookie_name':
-				if ( empty($value) OR ! is_string($value))
-				{
-					$value = 'fuelrid';
-				}
-			break;
-
-			case 'database':
-				// do we have a servers config
-				if ( empty($value) OR ! is_array($value))
-				{
-					$value = 'default';
-				}
-			break;
-
-			default:
-			break;
-		}
-
-		return $value;
-	}
-
-	/**
 	 * Writes the redis entry
 	 *
 	 * @access	private
@@ -257,6 +235,54 @@ class Session_Redis extends Session_Driver {
 	{
 		// fetch the session data from the Memcached server
 		return $this->redis->get($this->keys['session_id']);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * validate a driver config value
+	 *
+	 * @param	array	array with configuration values
+	 * @access	public
+	 * @return  array	validated and consolidated config
+	 */
+	public function _validate_config($config)
+	{
+		$validated = array();
+
+		foreach ($config as $name => $item)
+		{
+			// filter out any driver config
+			if (!is_array($item))
+			{
+				switch ($item)
+				{
+					case 'cookie_name':
+						if ( empty($item) OR ! is_string($item))
+						{
+							$item = 'fuelrid';
+						}
+					break;
+
+					case 'database':
+						// do we have a servers config
+						if ( empty($item) OR ! is_array($item))
+						{
+							$item = 'default';
+						}
+					break;
+
+					default:
+					break;
+				}
+
+				// global config, was validated in the driver
+				$validated[$name] = $item;
+			}
+		}
+
+		// validate all global settings as well
+		return parent::_validate_config($validated);
 	}
 
 }
