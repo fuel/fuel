@@ -172,7 +172,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 	 * @return	bool
 	 * @throws	Cache_Exception
 	 */
-	public function _delete_all($section)
+	public function delete_all($section)
 	{
 		$path = rtrim(static::$path, '\\/').DS;
 		$section = static::identifier_to_path($section);
