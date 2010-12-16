@@ -22,7 +22,7 @@
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 use Fuel\Application as App;
 

@@ -11,10 +11,9 @@
  * @copyright	2010 Dan Horrigan
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
-use Fuel\Application\Config;
-use Fuel\Application\Exception;
+use Fuel\Application;
 
 class Asset {
 
@@ -65,21 +64,21 @@ class Asset {
 			return;
 		}
 
-		Config::load('asset', true);
+		Application\Config::load('asset', true);
 
-		$paths = Config::get('asset.paths');
+		$paths = Application\Config::get('asset.paths');
 
 		foreach($paths as $path)
 		{
 			static::add_path($path);
 		}
 
-		static::$_asset_url = Config::get('asset.url');
+		static::$_asset_url = Application\Config::get('asset.url');
 
 		static::$_folders = array(
-			'css'	=>	Config::get('asset.css_dir'),
-			'js'	=>	Config::get('asset.js_dir'),
-			'img'	=>	Config::get('asset.img_dir')
+			'css'	=>	Application\Config::get('asset.css_dir'),
+			'js'	=>	Application\Config::get('asset.js_dir'),
+			'img'	=>	Application\Config::get('asset.img_dir')
 		);
 
 		static::$initialized = true;
@@ -150,7 +149,7 @@ class Asset {
 			{
 				if ( ! ($file = static::find_file($filename, static::$_folders[$type])))
 				{
-					throw new Exception('Could not find asset: '.$filename);
+					throw new Application\Exception('Could not find asset: '.$filename);
 				}
 				
 				$file = static::$_asset_url.$file;

@@ -1,7 +1,5 @@
 <?php
 
-use Fuel\Application as App;
-
 /**
  * This is the path to the app directory.
  */
@@ -114,8 +112,6 @@ if (is_file(APPPATH.'base.php'))
 // Load in the core functions that are available app wide
 require COREPATH.'base.php';
 
-import('fuel');
-
 /**
  * Load in the autoloader class then register any app and core autoloaders.
  */
@@ -123,20 +119,20 @@ require COREPATH.'classes'.DS.'autoloader.php';
 
 require COREPATH.'autoload.php';
 require APPPATH.'autoload.php';
-App\Autoloader::register();
+Fuel\Application\Autoloader::register();
 
 // Initialize the framework
 // and start buffering the output.
-App\Fuel::init();
+Fuel\Application\Fuel::init();
 
-$request = App\Request::factory();
+$request = Fuel\Application\Request::factory();
 $request->execute();
-App\Output::send_headers();
+Fuel\Application\Output::send_headers();
 echo $request->output;
 
 // Call all the shutdown events
-App\Event::shutdown();
+Fuel\Application\Event::shutdown();
 
-App\Fuel::finish();
+Fuel\Application\Fuel::finish();
 
 /* End of file index.php */

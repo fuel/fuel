@@ -12,6 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 class Session_Exception extends Exception {}

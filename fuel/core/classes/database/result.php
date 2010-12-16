@@ -9,7 +9,7 @@
  * @license    http://kohanaphp.com/license
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 abstract class Database_Result implements \Countable, \Iterator, \SeekableIterator, \ArrayAccess {
 

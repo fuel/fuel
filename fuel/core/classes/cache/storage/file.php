@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 use Fuel\Application as App;
 

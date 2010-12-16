@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 // ------------------------------------------------------------------------
 
@@ -179,21 +179,14 @@ class Validation_Object {
 	 * wasn't given.
 	 *
 	 * @param	array	input that overwrites POST values
-	 * @param	array	whether to check all fields or just those that are given
 	 * @return	bool	whether validation succeeded
 	 */
-	public function run($input = null, $require_all = true)
+	public function run($input = null)
 	{
 		$this->output = array();
 		$this->errors = array();
 		foreach($this->fields as $field => $settings)
 		{
-			// Allow to skip field when not given if $require_all is set to false
-			if ( ! $require_all && Input::post($field, null) === null && ! array_key_exists($field, $input))
-			{
-				continue;
-			}
-
 			$value = is_null($input) ? Input::post($field, null) : @$input[$field];
 			try
 			{

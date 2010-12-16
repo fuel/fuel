@@ -2,7 +2,7 @@
 
 namespace Fuel\Application\Controller;
 
-use Fuel\Controller;
+use Fuel\Core\Controller;
 
 class Welcome extends Controller\Base {
 

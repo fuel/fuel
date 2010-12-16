@@ -14,14 +14,12 @@
 
 namespace Fuel\Application;
 
-Autoloader::add_path(__DIR__.DS.'classes'.DS);
-
 Autoloader::add_namespaces(array(
-	'Fuel'	=>	__DIR__.DS.'classes'.DS,
+	'Fuel\\Core'	=>	__DIR__.DS.'classes'.DS,
 ));
 
 Autoloader::add_namespace_aliases(array(
-	'Fuel\\Application' => 'Fuel',
+	'Fuel\\Application' => 'Fuel\\Core',
 	'Fuel\\Application\\Model' => 'Fuel\\Application',
 	'Fuel\\Application\\Controller' => 'Fuel\\Application',
 ));

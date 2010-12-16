@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 /**
  * This class is based off the Singleton class in php-activerecord (MIT License)

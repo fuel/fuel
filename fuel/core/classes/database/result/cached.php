@@ -9,7 +9,7 @@
  * @license    http://kohanaphp.com/license
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 class Database_Result_Cached extends Database_Result {
 

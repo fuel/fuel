@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 // ------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ class Validation {
 		{
 			static::$_instance = static::factory();
 		}
-
+		
 		return static::$_instance;
 	}
 
@@ -62,9 +62,9 @@ class Validation {
 		return static::instance()->add_callable($class);
 	}
 
-	public static function run($input = null, $require_all = true)
+	public static function run($input = null)
 	{
-		return static::instance()->run($input, $require_all);
+		return static::instance()->run($input);
 	}
 
 	public static function validated($field = false, $default = false)

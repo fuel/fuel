@@ -12,10 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Controller;
+namespace Fuel\Core\Controller;
 
-use Fuel\Request;
-use Fuel\View;
+use Fuel\Application;
 
 class Base {
 
@@ -36,7 +35,7 @@ class Base {
 	 * @param	object	The current request object
 	 * @return	void
 	 */
-	public function __construct(Request $request)
+	public function __construct(Application\Request $request)
 	{
 		$this->request = $request;
 	}
@@ -90,10 +89,10 @@ class Base {
 	{
 		if ( ! $return)
 		{
-			$this->output .= View::factory($view, $data);
+			$this->output .= Application\View::factory($view, $data);
 			return;
 		}
-		return View::factory($view, $data);
+		return Application\View::factory($view, $data);
 	}
 }
 

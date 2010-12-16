@@ -9,7 +9,7 @@
  * @license    http://kohanaphp.com/license
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 abstract class Database_Query_Builder_Where extends Database_Query_Builder {
 

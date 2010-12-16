@@ -14,8 +14,6 @@
 
 namespace Fuel\Application;
 
-use Fuel\Application\Fuel;
-
 class Autoloader {
 
 	/**
@@ -187,7 +185,7 @@ class Autoloader {
 	 */
 	public static function add_path($path)
 	{
-		\Fuel\Fuel::add_path($path);
+		Fuel::add_path($path);
 	}
 
 	/**

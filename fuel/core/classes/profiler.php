@@ -1,6 +1,6 @@
 <?php
 
-namespace Fuel;
+namespace Fuel\Core;
 
 import('phpquickprofiler/phpquickprofiler', 'vendor');
 

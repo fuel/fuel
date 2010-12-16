@@ -17,7 +17,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 abstract class Email_Driver {
 

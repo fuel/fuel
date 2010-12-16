@@ -14,9 +14,6 @@
 
 namespace Fuel\Application;
 
-
-Autoloader::add_path(__DIR__.DS.'classes'.DS);
-
 Autoloader::add_namespaces(array(
 	'Fuel\\Application'				=> __DIR__.DS.'classes'.DS,
 	'Fuel\\Application\\Model'		=> __DIR__.DS.'classes'.DS.'model'.DS,

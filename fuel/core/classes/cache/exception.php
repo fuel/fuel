@@ -12,6 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 class Cache_Exception extends Exception {}

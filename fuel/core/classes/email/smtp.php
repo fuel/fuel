@@ -17,7 +17,7 @@
  * @link		http://codeigniter.com/
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
 class Email_Smtp extends Email_Driver {
 

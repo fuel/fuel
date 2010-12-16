@@ -12,10 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Controller;
+namespace Fuel\Core\Controller;
 
-use Fuel\View;
-use Fuel\Inflector;
+use Fuel\Application;
 
 /**
  * Template Controller class
@@ -26,7 +25,7 @@ use Fuel\Inflector;
  * @category	Core
  * @author		Fuel Development Team
  */
-abstract class Template extends Base {
+abstract class Template extends Application\Controller\Base {
 
 	/**
 	* @var string page template
@@ -44,7 +43,7 @@ abstract class Template extends Base {
 		if ($this->auto_render === true)
 		{
 			// Load the template
-			$this->template = View::factory($this->template);
+			$this->template = Application\View::factory($this->template);
 		}
 
 		return parent::before();

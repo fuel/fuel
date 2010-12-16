@@ -12,15 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
-use Fuel\Application\Config;
-use Fuel\Application\Profiler;
-use Fuel\Application\Input;
-use Fuel\Application\Security;
-use Fuel\Application\Benchmark;
-use Fuel\Application\Autoloader;
-use Fuel\Application\Exception;
+use Fuel\Application;
 
 /**
  * Holds Environment constants.
@@ -83,13 +77,13 @@ class Fuel {
 		// Start up output buffering
 		ob_start();
 
-		Config::load('config');
-		static::$profile = Config::get('profile', false);
+		Application\Config::load('config');
+		static::$profile = Application\Config::get('profile', false);
 
 		if (static::$profile)
 		{
-			Profiler::init();
-			Profiler::mark(__METHOD__.' Start');
+			Application\Profiler::init();
+			Application\Profiler::mark(__METHOD__.' Start');
 		}
 
 		static::$is_cli = (bool) (php_sapi_name() == 'cli');
@@ -100,34 +94,34 @@ class Fuel {
 		 */
 		if ( ! static::$is_cli)
 		{
-			if (Config::get('base_url') === null)
+			if (Application\Config::get('base_url') === null)
 			{
 				$base_url = '';
-				if(Input::server('http_host'))
+				if(Application\Input::server('http_host'))
 				{
-					$base_url .= Input::protocol().'://'.Input::server('http_host');
+					$base_url .= Application\Input::protocol().'://'.Application\Input::server('http_host');
 				}
-				if (Input::server('script_name'))
+				if (Application\Input::server('script_name'))
 				{
-					$base_url .= str_replace('\\', '/', dirname(Input::server('script_name')));
+					$base_url .= str_replace('\\', '/', dirname(Application\Input::server('script_name')));
 
 					// Add a slash if it is missing
 					$base_url = rtrim($base_url, '/').'/';
-					Config::set('base_url', $base_url);
+					Application\Config::set('base_url', $base_url);
 				}
 			}
 
 			URI::detect();
 		}
 		// Run Input Filtering
-		Security::clean_input();
+		Application\Security::clean_input();
 
-		static::$bm = Config::get('benchmarking', true);
-		static::$env = Config::get('environment');
-		static::$locale = Config::get('locale');
+		static::$bm = Application\Config::get('benchmarking', true);
+		static::$env = Application\Config::get('environment');
+		static::$locale = Application\Config::get('locale');
 
 		//Load in the packages
-		foreach (Config::get('packages', array()) as $package)
+		foreach (Application\Config::get('packages', array()) as $package)
 		{
 			static::add_package($package);
 		}
@@ -142,7 +136,7 @@ class Fuel {
 
 		if (static::$profile)
 		{
-			Profiler::mark(__METHOD__.' End');
+			Application\Profiler::mark(__METHOD__.' End');
 		}
 	}
 
@@ -162,16 +156,16 @@ class Fuel {
 			if (preg_match("|</body>.*?</html>|is", $output))
 			{
 				$output  = preg_replace("|</body>.*?</html>|is", '', $output);
-				$output .= Profiler::output();
+				$output .= Application\Profiler::output();
 				$output .= '</body></html>';
 			}
 			else
 			{
-				$output .= Profiler::output();
+				$output .= Application\Profiler::output();
 			}
 		}
 
-		$bm = Benchmark::app_total();
+		$bm = Application\Benchmark::app_total();
 
 		// TODO: There is probably a better way of doing this, but this works for now.
 		$output = \str_replace(
@@ -312,23 +306,23 @@ class Fuel {
 	public static function add_module($name, $active = false)
 	{
 		// First attempt registered prefixes
-		$mod_path = Autoloader::prefix_path(ucfirst($name).'_');
+		$mod_path = Application\Autoloader::prefix_path(ucfirst($name).'_');
 		// Or try registered module paths
 		if ($mod_path === false)
 		{
-			foreach (Config::get('module_paths', array()) as $path)
+			foreach (Application\Config::get('module_paths', array()) as $path)
 			{
 				if (is_dir($mod_check_path = $path.strtolower($name).DS))
 				{
 					// Load module and end search
 					$mod_path = $mod_check_path;
 					$ns = 'Fuel\\Application\\'.ucfirst($name);
-					Autoloader::add_namespaces(array(
+					Application\Autoloader::add_namespaces(array(
 						$ns					=> $mod_path.'classes'.DS,
 						$ns.'\\Model'		=> $mod_path.'classes'.DS.'model'.DS,
 						$ns.'\\Controller'	=> $mod_path.'classes'.DS.'controller'.DS,
 					), true);
-					Autoloader::add_namespace_aliases(array(
+					Application\Autoloader::add_namespace_aliases(array(
 						$ns.'\\Controller'	=> 'Fuel\\Application',
 						$ns.'\\Model'		=> 'Fuel\\Application',
 						$ns					=> 'Fuel\\Application',
@@ -363,7 +357,7 @@ class Fuel {
 	 */
 	public static function always_load($array = null)
 	{
-		$array = is_null($array) ? Config::get('always_load', array()) : $array;
+		$array = is_null($array) ? Application\Config::get('always_load', array()) : $array;
 
 		foreach ($array['classes'] as $class)
 		{
@@ -380,7 +374,7 @@ class Fuel {
 
 		foreach ($array['config'] as $config => $config_group)
 		{
-			Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
+			Application\Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
 		}
 
 		foreach ($array['language'] as $lang => $lang_group)

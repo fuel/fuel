@@ -12,9 +12,9 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel;
+namespace Fuel\Core;
 
-use Fuel\Application\Exception;
+use Fuel\Application;
 
 class Arr {
 	
@@ -90,7 +90,7 @@ class Arr {
 		
 		if ( ! is_array($keys))
 		{
-			throw new Exception('Arr::elements() - $keys must be an array.');
+			throw new Application\Exception('Arr::elements() - $keys must be an array.');
 		}
 		
 		foreach ($keys as $key)

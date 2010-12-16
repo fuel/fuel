@@ -1,10 +1,10 @@
 <?php
 
-namespace Fuel\Controller;
+namespace Fuel\Core\Controller;
 
-use Fuel\Application as App;
+use Fuel\Application;
 
-abstract class Rest extends App\Controller\Base
+abstract class Rest extends Application\Controller\Base
 {
 	protected $rest_format = NULL; // Set this in a controller to use a default format
 
@@ -26,9 +26,9 @@ abstract class Rest extends App\Controller\Base
 	{
 		parent::before();
 
-		App\Config::load('rest', true);
+		Application\Config::load('rest', true);
 
-		if (App\Config::get('rest.auth') == 'basic')
+		if (Application\Config::get('rest.auth') == 'basic')
 		{
 			$this->_prepare_basic_auth();
 		}
@@ -70,7 +70,7 @@ abstract class Rest extends App\Controller\Base
 	{
    		if (empty($data))
 		{
-			App\Output::$status = 404;
+			Application\Output::$status = 404;
 			return;
 		}
 
@@ -80,7 +80,7 @@ abstract class Rest extends App\Controller\Base
 		if (method_exists('Controller_Rest', '_format_'.$this->request->format))
 		{
 			// Set the correct format header
-			App\Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
+			Application\Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
 
 			$this->output = $this->{'_format_'.$this->request->format}($data);
 		}
@@ -108,25 +108,25 @@ abstract class Rest extends App\Controller\Base
 			$last_key = end(array_keys($_GET));
 
 			// Remove the extension from arguments too
-			$_GET[$last_key] = preg_replace($pattern, '', App\Input::get($last_key));
+			$_GET[$last_key] = preg_replace($pattern, '', Application\Input::get($last_key));
 
 			return $matches[1];
 		}
 
 		// A format has been passed as an argument in the URL and it is supported
-		if (App\Input::get_post('format') and $this->_supported_formats[App\Input::get_post('format')])
+		if (Application\Input::get_post('format') and $this->_supported_formats[Application\Input::get_post('format')])
 		{
-			return App\Input::get_post('format');
+			return Application\Input::get_post('format');
 		}
 
 		// Otherwise, check the HTTP_ACCEPT (if it exists and we are allowed)
-		if (App\Config::get('rest.ignore_http_accept') === false and App\Input::server('HTTP_ACCEPT'))
+		if (Application\Config::get('rest.ignore_http_accept') === false and Application\Input::server('HTTP_ACCEPT'))
 		{
 			// Check all formats against the HTTP_ACCEPT header
 			foreach(array_keys($this->_supported_formats) as $format)
 			{
 				// Has this format been requested?
-				if (strpos(App\Input::server('HTTP_ACCEPT'), $format) !== false)
+				if (strpos(Application\Input::server('HTTP_ACCEPT'), $format) !== false)
 				{
 					// If not HTML or XML assume its right and send it on its way
 					if ($format != 'html' and $format != 'xml')
@@ -138,13 +138,13 @@ abstract class Rest extends App\Controller\Base
 					else
 					{
 						// If it is truely HTML, it wont want any XML
-						if ($format == 'html' and strpos(App\Input::server('HTTP_ACCEPT'), 'xml') === false)
+						if ($format == 'html' and strpos(Application\Input::server('HTTP_ACCEPT'), 'xml') === false)
 						{
 							return $format;
 						}
 
 						// If it is truely XML, it wont want any HTML
-						elseif ($format == 'xml' and strpos(App\Input::server('HTTP_ACCEPT'), 'html') === false)
+						elseif ($format == 'xml' and strpos(Application\Input::server('HTTP_ACCEPT'), 'html') === false)
 						{
 							return $format;
 						}
@@ -161,7 +161,7 @@ abstract class Rest extends App\Controller\Base
 		}
 
 		// Just use the default format
-		return App\Config::get('rest.default_format');
+		return Application\Config::get('rest.default_format');
 	}
 
 
@@ -172,7 +172,7 @@ abstract class Rest extends App\Controller\Base
 	 */
 	private function _detect_lang()
 	{
-		if ( ! $lang = App\Input::server('HTTP_ACCEPT_LANGUAGE'))
+		if ( ! $lang = Application\Input::server('HTTP_ACCEPT_LANGUAGE'))
 		{
 			return NULL;
 		}
@@ -207,7 +207,7 @@ abstract class Rest extends App\Controller\Base
 			return false;
 		}
 
-		$valid_logins =& App\Config::get('rest.valid_logins');
+		$valid_logins =& Application\Config::get('rest.valid_logins');
 
 		if ( ! array_key_exists($username, $valid_logins))
 		{
@@ -229,18 +229,18 @@ abstract class Rest extends App\Controller\Base
 		$password = NULL;
 
 		// mod_php
-		if (App\Input::server('PHP_AUTH_USER'))
+		if (Application\Input::server('PHP_AUTH_USER'))
 		{
 			$username = Input::server('PHP_AUTH_USER');
 			$password = Input::server('PHP_AUTH_PW');
 		}
 
 		// most other servers
-		elseif (App\Input::server('HTTP_AUTHENTICATION'))
+		elseif (Application\Input::server('HTTP_AUTHENTICATION'))
 		{
-			if (strpos(strtolower(App\Input::server('HTTP_AUTHENTICATION')), 'basic') === 0)
+			if (strpos(strtolower(Application\Input::server('HTTP_AUTHENTICATION')), 'basic') === 0)
 			{
-				list($username,$password) = explode(':',base64_decode(substr(App\Input::server('HTTP_AUTHORIZATION'), 6)));
+				list($username,$password) = explode(':',base64_decode(substr(Application\Input::server('HTTP_AUTHORIZATION'), 6)));
 			}
 		}
 
@@ -257,14 +257,14 @@ abstract class Rest extends App\Controller\Base
 
 		// We need to test which server authentication variable to use
 		// because the PHP ISAPI module in IIS acts different from CGI
-		if (App\Input::server('PHP_AUTH_DIGEST'))
+		if (Application\Input::server('PHP_AUTH_DIGEST'))
 		{
-			$digest_string = App\Input::server('PHP_AUTH_DIGEST');
+			$digest_string = Application\Input::server('PHP_AUTH_DIGEST');
 		}
 
-		elseif (App\Input::server('HTTP_AUTHORIZATION'))
+		elseif (Application\Input::server('HTTP_AUTHORIZATION'))
 		{
-			$digest_string = App\Input::server('HTTP_AUTHORIZATION');
+			$digest_string = Application\Input::server('HTTP_AUTHORIZATION');
 		}
 
 		else
@@ -289,12 +289,12 @@ abstract class Rest extends App\Controller\Base
 			self::_force_login($uniqid);
 		}
 
-		$valid_logins =& App\Config::get('rest.valid_logins');
+		$valid_logins =& Application\Config::get('rest.valid_logins');
 		$valid_pass = $valid_logins[$digest['username']];
 
 		// This is the valid response expected
-		$A1 = md5($digest['username'] . ':' . App\Config::get('rest.realm') . ':' . $valid_pass);
-		$A2 = md5(strtoupper(App\Input::method()).':'.$digest['uri']);
+		$A1 = md5($digest['username'] . ':' . Application\Config::get('rest.realm') . ':' . $valid_pass);
+		$A2 = md5(strtoupper(Application\Input::method()).':'.$digest['uri']);
 		$valid_response = md5($A1.':'.$digest['nonce'].':'.$digest['nc'].':'.$digest['cnonce'].':'.$digest['qop'].':'.$A2);
 
 		if ($digest['response'] != $valid_response)
@@ -314,12 +314,12 @@ abstract class Rest extends App\Controller\Base
 
 		if (Config::get('rest.auth') == 'basic')
 		{
-			header('WWW-Authenticate: Basic realm="'.App\Config::get('rest.realm').'"');
+			header('WWW-Authenticate: Basic realm="'.Application\Config::get('rest.realm').'"');
 		}
 
 		elseif (Config::get('rest.auth') == 'digest')
 		{
-			header('WWW-Authenticate: Digest realm="'.App\Config::get('rest.realm'). '" qop="auth" nonce="'.$nonce.'" opaque="'.md5(App\Config::get('rest.realm')).'"');
+			header('WWW-Authenticate: Digest realm="'.Application\Config::get('rest.realm'). '" qop="auth" nonce="'.$nonce.'" opaque="'.md5(Application\Config::get('rest.realm')).'"');
 		}
 
 		exit('Not authorized.');
