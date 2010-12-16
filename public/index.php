@@ -19,10 +19,12 @@ $core_path = '../fuel/core';
 
 
 /**
- * If you want to use a default namespace for your application you must specify
- * it here.
+ * If you want to use the server timezone, leave this null.  If the server does not have a default timezone set an
+ * exception will be thrown.
  */
-$app_namespace = '';
+$default_timezone = null;
+
+
 
 /**
  * We disable short open tags by default so as to not confuse people.  They
@@ -49,6 +51,15 @@ define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
  * Do not edit below this line unless you know what you are doing.
  */
 
+
+if ($default_timezone != null)
+{
+	date_default_timezone_set($default_timezone);
+}
+elseif ( ! ini_get('date.timezone'))
+{
+	die('Your server does not have a default timezone set.  Please open up index.php and set a default timezone on line 25.');
+}
 
 
 // Get the start time and memory for use later
@@ -93,8 +104,6 @@ define('COREPATH', realpath($core_path).DS);
 
 // save a bit of memory by unsetting the path array
 unset($app_path, $package_path);
-
-define('APP_NAMESPACE', trim($app_namespace, '\\'));
 
 // If the user has added a base.php to their app load it
 if (is_file(APPPATH.'base.php'))

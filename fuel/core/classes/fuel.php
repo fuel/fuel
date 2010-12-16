@@ -83,14 +83,10 @@ class Fuel {
 		if (App\Fuel::$profile)
 		{
 			App\Profiler::init();
-		}
-
-		if (App\Fuel::$profile)
-		{
 			App\Profiler::mark(__METHOD__.' Start');
 		}
-		static::$is_cli = (bool) (php_sapi_name() == 'cli');
 
+		static::$is_cli = (bool) (php_sapi_name() == 'cli');
 
 		/**
 		 * WARNING:  The order of the following statements is very important.
@@ -132,17 +128,6 @@ class Fuel {
 
 		// Set some server options
 		setlocale(LC_ALL, static::$locale);
-
-		// Set default timezone when given in config
-		if (($timezone = Config::get('default_timezone', null)) != null)
-		{
-			date_default_timezone_set($timezone);
-		}
-		// ... or set it to UTC when none was set
-		elseif ( ! ini_get('date.timezone'))
-		{
-			date_default_timezone_set('UTC');
-		}
 
 		// Always load classes, config & language set in always_load.php config
 		static::always_load();
