@@ -13,6 +13,9 @@
 
 namespace Fuel;
 
+use Fuel\Application\Config;
+use Fuel\Application\Exception;
+
 class Asset {
 
 	/**

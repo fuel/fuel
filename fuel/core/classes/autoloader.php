@@ -14,7 +14,7 @@
 
 namespace Fuel\Application;
 
-use Fuel\Application as App;
+use Fuel\Application\Fuel;
 
 class Autoloader {
 
@@ -268,7 +268,7 @@ class Autoloader {
 			}
 		}
 
-		$file_path = App\Fuel::find_file('classes', $class);
+		$file_path = Fuel::find_file('classes', $class);
 
 		if ($file_path !== false)
 		{

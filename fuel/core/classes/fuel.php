@@ -14,7 +14,13 @@
 
 namespace Fuel;
 
-use Fuel\Application as App;
+use Fuel\Application\Config;
+use Fuel\Application\Profiler;
+use Fuel\Application\Input;
+use Fuel\Application\Security;
+use Fuel\Application\Benchmark;
+use Fuel\Application\Autoloader;
+use Fuel\Application\Exception;
 
 /**
  * Holds Environment constants.
@@ -77,13 +83,13 @@ class Fuel {
 		// Start up output buffering
 		ob_start();
 
-		App\Config::load('config');
-		App\Fuel::$profile = App\Config::get('profile', false);
+		Config::load('config');
+		static::$profile = Config::get('profile', false);
 
-		if (App\Fuel::$profile)
+		if (static::$profile)
 		{
-			App\Profiler::init();
-			App\Profiler::mark(__METHOD__.' Start');
+			Profiler::init();
+			Profiler::mark(__METHOD__.' Start');
 		}
 
 		static::$is_cli = (bool) (php_sapi_name() == 'cli');
@@ -134,9 +140,9 @@ class Fuel {
 
 		static::$initialized = true;
 
-		if (App\Fuel::$profile)
+		if (static::$profile)
 		{
-			App\Profiler::mark(__METHOD__.' End');
+			Profiler::mark(__METHOD__.' End');
 		}
 	}
 
@@ -156,12 +162,12 @@ class Fuel {
 			if (preg_match("|</body>.*?</html>|is", $output))
 			{
 				$output  = preg_replace("|</body>.*?</html>|is", '', $output);
-				$output .= App\Profiler::output();
+				$output .= Profiler::output();
 				$output .= '</body></html>';
 			}
 			else
 			{
-				$output .= App\Profiler::output();
+				$output .= Profiler::output();
 			}
 		}
 
@@ -306,7 +312,7 @@ class Fuel {
 	public static function add_module($name, $active = false)
 	{
 		// First attempt registered prefixes
-		$mod_path = App\Autoloader::prefix_path(ucfirst($name).'_');
+		$mod_path = Autoloader::prefix_path(ucfirst($name).'_');
 		// Or try registered module paths
 		if ($mod_path === false)
 		{
@@ -317,12 +323,12 @@ class Fuel {
 					// Load module and end search
 					$mod_path = $mod_check_path;
 					$ns = 'Fuel\\Application\\'.ucfirst($name);
-					App\Autoloader::add_namespaces(array(
+					Autoloader::add_namespaces(array(
 						$ns					=> $mod_path.'classes'.DS,
 						$ns.'\\Model'		=> $mod_path.'classes'.DS.'model'.DS,
 						$ns.'\\Controller'	=> $mod_path.'classes'.DS.'controller'.DS,
 					), true);
-					App\Autoloader::add_namespace_aliases(array(
+					Autoloader::add_namespace_aliases(array(
 						$ns.'\\Controller'	=> 'Fuel\\Application',
 						$ns.'\\Model'		=> 'Fuel\\Application',
 						$ns					=> 'Fuel\\Application',

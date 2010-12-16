@@ -14,6 +14,8 @@
 
 namespace Fuel;
 
+use Fuel\Application\Exception;
+
 class Arr {
 	
 	/**

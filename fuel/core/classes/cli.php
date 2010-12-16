@@ -2,6 +2,8 @@
 
 namespace Fuel;
 
+use Fuel\Application\Exception;
+
 class Cli {
 
 	public static $wait_msg = 'Press any key to continue...';
