@@ -119,6 +119,18 @@ require COREPATH.'classes'.DS.'autoloader.php';
 
 require COREPATH.'autoload.php';
 require APPPATH.'autoload.php';
+
+require COREPATH.'classes'.DS.'fuel.php';
+
+if (is_file(APPPATH.'classes'.DS.'fuel.php'))
+{
+	require APPPATH.'classes'.DS.'fuel.php';
+}
+else
+{
+	class_alias('Fuel\\Core\\Fuel', 'Fuel\\Application\\Fuel');
+}
+
 Fuel\Application\Autoloader::register();
 
 // Initialize the framework

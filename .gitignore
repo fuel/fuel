@@ -7,4 +7,5 @@ desktop.ini
 .project
 .settings
 fuel/app/logs/*/*/*
+fuel/app/cache/*/*
 nbproject/

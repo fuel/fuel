@@ -24,12 +24,16 @@ class Config {
 	
 	public static function load($file, $group = null, $reload = false)
 	{
-		if (array_key_exists($file, static::$loaded_files) and ! $reload)
+		if ( ! is_array($file) && array_key_exists($file, static::$loaded_files) and ! $reload)
 		{
 			return false;
 		}
 
 		$config = array();
+		if (is_array($file))
+		{
+			$config = $path;
+		}
 		if ($paths = Application\Fuel::find_file('config', $file, '.php', true))
 		{
 			// Reverse the file list so that we load the core configs first and
