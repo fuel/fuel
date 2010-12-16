@@ -41,7 +41,7 @@ class Validation {
 		{
 			static::$_instance = static::factory();
 		}
-		
+
 		return static::$_instance;
 	}
 
@@ -62,9 +62,9 @@ class Validation {
 		return static::instance()->add_callable($class);
 	}
 
-	public static function run($input = null)
+	public static function run($input = null, $require_all = true)
 	{
-		return static::instance()->run($input);
+		return static::instance()->run($input, $require_all);
 	}
 
 	public static function validated($field = false, $default = false)
