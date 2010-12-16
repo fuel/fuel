@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-class Cache_Storage_Memcached extends Cache_Storage_Driver {
+class Cache_Storage_Redis extends Cache_Storage_Driver {
 
 	/**
 	 * @const	string	Tag used for opening & closing cache properties
@@ -27,47 +27,60 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 	protected $config = array();
 
 	/*
-	 * @var	storage for the memcached object
+	 * @var	storage for the redis object
 	 */
-	protected $memcached = false;
+	protected $redis = false;
 
 	// ---------------------------------------------------------------------
 
 	public function __construct($identifier, $config)
 	{
-		$this->config = isset($config['memcached']) ? $config['memcached'] : array();
+		$this->config = isset($config['redis']) ? $config['redis'] : array();
 
-		// make sure we have a memcache id
+		// make sure we have a redis id
 		$this->config['cache_id'] = $this->_validate_config('cache_id', isset($this->config['cache_id']) ? $this->config['cache_id'] : 'fuel');
 
 		// check for an expiration override
 		$this->expiration = $this->_validate_config('expiration', isset($this->config['expiration']) ? $this->config['expiration'] : $this->expiration);
 
-		if ($this->memcached === false)
-		{
-			// make sure we have memcached servers configured
-			$this->config['servers'] = $this->_validate_config('servers', $this->config['servers']);
+		// make sure we have a redis database configured
+		$this->config['database'] = $this->_validate_config('database', isset($this->config['database']) ? $this->config['database'] : 'default');
 
-			// do we have the PHP memcached extension available
-			if ( ! class_exists('Memcached') )
+		if ($this->redis === false)
+		{
+			// get the redis database instance
+			try
 			{
-				throw new Cache_Exception('Memcached sessions are configured, but your PHP installation doesn\'t have the Memcached extension loaded.');
+				$this->redis = Redis::instance($this->config['database']);
+			}
+			catch (Exception $e)
+			{
+				throw new Cache_Exception('Can not connect to the Redis engine. The error message says "'.$e->getMessage().'".');
 			}
 
-			// instantiate the memcached object
-			$this->memcached = new \Memcached();
-
-			// add the configured servers
-			$this->memcached->addServers($this->config['servers']);
-
-			// check if we can connect to the server(s)
-			if ($this->memcached->getVersion() === false)
+			// get the redis version
+			preg_match('/redis_version:(.*?)\n/', $this->redis->info(), $info);
+			if (version_compare(trim($info[1]), '1.2') < 0)
 			{
-				throw new Cache_Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
+				throw new Cache_Exception('Version 1.2 or higher of the Redis NoSQL engine is required to use the redis cache driver.');
 			}
 		}
 
 		parent::__construct($identifier, $config);
+	}
+
+	// ---------------------------------------------------------------------
+
+	/**
+	 * Translates a given identifier to a valid redis key
+	 *
+	 * @param	string
+	 * @return	string
+	 * @throws	Cache_Exception
+	 */
+	protected function identifier_to_key( $identifier )
+	{
+		return $this->config['cache_id'].':'.$identifier;
 	}
 
 	// ---------------------------------------------------------------------
@@ -147,7 +160,8 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 			}
 
 			// get the cache index
-			$index = $this->memcached->get($this->config['cache_id'].'__IDX__'.$sections);
+			$index = $this->redis->get($this->config['cache_id'].':index:'.$sections);
+			is_null($index) or $index = $this->_unserialize($index);
 
 			// get the key from the index
 			$key = isset($index[$identifier][0]) ? $index[$identifier] : false;
@@ -168,16 +182,13 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 	 */
 	public function delete()
 	{
-		// get the memcached key for the cache identifier
+		// get the key for the cache identifier
 		$key = $this->_get_key(true);
 
-		// delete the key from the memcached server
-		if ($key and $this->memcached->delete($key) === false)
+		// delete the key from the redis server
+		if ($key and $this->redis->del($key) === false)
 		{
-			if ($this->memcached->getResultCode() !== \Memcached::RES_NOTFOUND)
-			{
-				throw new Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
-			}
+			// do something here?
 		}
 
 		$this->reset();
@@ -195,10 +206,11 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 	public function delete_all($section)
 	{
 		// determine the section index name
-		$section = $this->config['cache_id'].'__IDX__'.(empty($section)?'':'.'.$section);
+		$section = empty($section) ? '' : '.'.$section;
 
 		// get the directory index
-		$index = $this->memcached->get($this->config['cache_id'].'__DIR__');
+		$index = $this->redis->get($this->config['cache_id'].':dir:');
+		is_null($index) or $index = $this->_unserialize($index);
 
 		if (is_array($index))
 		{
@@ -224,20 +236,28 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 			foreach ($dirs as $dir)
 			{
 				// get the stored cache entries for this index
-				$list = $this->memcached->get($dir);
+				$list = $this->redis->get($this->config['cache_id'].':index:'.$dir);
+				if (is_null($list))
+				{
+					$list = array();
+				}
+				else
+				{
+					$list = $this->_unserialize($list);
+				}
 
 				// delete all stored keys
 				foreach($list as $item)
 				{
-					$this->memcached->delete($item[0]);
+					$this->redis->del($item[0]);
 				}
 
 				// and delete the index itself
-				$this->memcached->delete($dir);
+				$this->redis->del($this->config['cache_id'].':index:'.$dir);
 			}
 
 			// update the directory index
-			$this->memcached->set($this->config['cache_id'].'__DIR__', array_diff($index, $dirs));
+			$this->redis->set($this->config['cache_id'].':dir:', $this->_serialize(array_diff($index, $dirs)));
 		}
 	}
 
@@ -250,15 +270,14 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 	 */
 	protected function _set()
 	{
-		// get the memcached key for the cache identifier
+		// get the key for the cache identifier
 		$key = $this->_get_key();
 
-		$payload = $this->prep_contents();
-
-		// write it to the memcached server
-		if ($this->memcached->set($key, $payload, is_numeric($this->expiration) ? $this->expiration : 0) === false)
+		// write the cache
+		$this->redis->set($key, $this->prep_contents());
+		if (!empty($this->expiration))
 		{
-			throw new Cache_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
+			$this->redis->expireat($key, $this->expiration);
 		}
 	}
 
@@ -271,12 +290,11 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 	 */
 	protected function _get()
 	{
-		// get the memcached key for the cache identifier
+		// get the key for the cache identifier
 		$key = $this->_get_key();
 
-		// fetch the session data from the Memcached server
-		$payload = $this->memcached->get($key);
-
+		// fetch the session data from the redis server
+		$payload = $this->redis->get($key);
 		try
 		{
 			$this->unprep_contents($payload);
@@ -288,70 +306,6 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 		}
 
 		return true;
-	}
-
-	// ---------------------------------------------------------------------
-
-	/**
-	 * validate a driver config value
-	 *
-	 * @param	string	name of the config variable to validate
-	 * @param	mixed	value
-	 * @access	private
-	 * @return  mixed
-	 */
-	private function _validate_config($name, $value)
-	{
-		switch ($name)
-		{
-			case 'cache_id':
-				if ( empty($value) OR ! is_string($value))
-				{
-					$value = 'fuel';
-				}
-			break;
-
-			case 'expiration':
-				if ( empty($value) OR ! is_numeric($value))
-				{
-					$value = null;
-				}
-			break;
-
-			case 'servers':
-				// do we have a servers config
-				if ( empty($value) OR ! is_array($value))
-				{
-					$value = array('default' => array('host' => '127.0.0.1', 'port' => '11211'));
-				}
-
-				// validate the servers
-				foreach ($value as $key => $server)
-				{
-					// do we have a host?
-					if ( ! isset($server['host']) OR ! is_string($server['host']))
-					{
-						throw new Exception('Invalid Memcached server definition in the session configuration.');
-					}
-					// do we have a port number?
-					if ( ! isset($server['port']) OR ! is_numeric($server['port']) OR $server['port'] < 1025 OR $server['port'] > 65535)
-					{
-						throw new Exception('Invalid Memcached server definition in the session configuration.');
-					}
-					// do we have a relative server weight?
-					if ( ! isset($server['weight']) OR ! is_numeric($server['weight']) OR $server['weight'] < 0)
-					{
-						// set a default
-						$value[$key]['weight'] = 0;
-					}
-				}
-			break;
-
-			default:
-			break;
-		}
-
-		return $value;
 	}
 
 	// ---------------------------------------------------------------------
@@ -379,7 +333,8 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 		}
 
 		// get the cache index
-		$index = $this->memcached->get($this->config['cache_id'].'__IDX__'.$sections);
+		$index = $this->redis->get($this->config['cache_id'].':index:'.$sections);
+		is_null($index) or $index = $this->_unserialize($index);
 
 		// get the key from the index
 		$key = isset($index[$identifier][0]) ? $index[$identifier][0] : false;
@@ -389,7 +344,7 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 			if ( $key !== false )
 			{
 				unset($index[$identifier]);
-				$this->memcached->set($this->config['cache_id'].'__IDX__'.$sections, $index);
+				$this->redis->set($this->config['cache_id'].':index:'.$sections, $this->_serialize($index));
 			}
 		}
 		else
@@ -399,37 +354,39 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 				// create a new key
 				$key = $this->_new_key();
 
-				if ($index === false)
+				if ( ! is_array($index))
 				{
 					// create a new index and store the key
-					$this->memcached->set($this->config['cache_id'].'__IDX__'.$sections, array($identifier => array($key,$this->created)), 0);
+					$this->redis->set($this->config['cache_id'].':index:'.$sections, $this->_serialize(array($identifier => array($key,$this->created))));
 				}
 				else
 				{
-					// add the new key to the index
+					// add the key to the index
 					$index[$identifier] = array($key,$this->created);
-					$this->memcached->set($this->config['cache_id'].'__IDX__'.$sections, $index, 0);
+					$this->redis->set($this->config['cache_id'].':index:'.$sections, $this->_serialize($index));
 				}
 
 				// get the directory index
-				$index = $this->memcached->get($this->config['cache_id'].'__DIR__');
+				$index = $this->redis->get($this->config['cache_id'].':dir:');
+				is_null($index) or $index = $this->_unserialize($index);
 
 				if (is_array($index))
 				{
-					if (!in_array($this->config['cache_id'].'__IDX__'.$sections, $index))
+					if ( ! in_array($sections, $index))
 					{
-						$index[] = $this->config['cache_id'].'__IDX__'.$sections;
+						$index[] = $sections;
 					}
 				}
 				else
 				{
-					$index = array($this->config['cache_id'].'__IDX__'.$sections);
+					$index = array($sections);
 				}
 
 				// update the directory index
-				$this->memcached->set($this->config['cache_id'].'__DIR__', $index, 0);
+				$this->redis->set($this->config['cache_id'].':dir:', $this->_serialize($index));
 			}
 		}
+
 		return $key;
 	}
 
@@ -448,7 +405,117 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 		{
 			$key .= mt_rand(0, mt_getrandmax());
 		}
-		return md5($this->config['cache_id'].'_'.uniqid($key, TRUE));
+		return $this->config['cache_id'].'_'.uniqid($key);
+	}
+
+	// ---------------------------------------------------------------------
+
+	/**
+	 * validate a driver config value
+	 *
+	 * @param	string	name of the config variable to validate
+	 * @param	mixed	value
+	 * @access	private
+	 * @return  mixed
+	 */
+	private function _validate_config($name, $value)
+	{
+		switch ($name)
+		{
+			case 'database':
+				// do we have a database config
+				if ( empty($value) OR ! is_array($value))
+				{
+					$value = 'default';
+				}
+			break;
+
+			case 'cache_id':
+				if ( empty($value) OR ! is_string($value))
+				{
+					$value = 'fuel';
+				}
+			break;
+
+			case 'expiration':
+				if ( empty($value) OR ! is_numeric($value))
+				{
+					$value = null;
+				}
+			break;
+
+			default:
+			break;
+		}
+
+		return $value;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Serialize an array
+	 *
+	 * This function first converts any slashes found in the array to a temporary
+	 * marker, so when it gets unserialized the slashes will be preserved
+	 *
+	 * @access	private
+	 * @param	array
+	 * @return	string
+	 */
+	protected function _serialize($data)
+	{
+		if (is_array($data))
+		{
+			foreach ($data as $key => $val)
+			{
+				if (is_string($val))
+				{
+					$data[$key] = str_replace('\\', '{{slash}}', $val);
+				}
+			}
+		}
+		else
+		{
+			if (is_string($data))
+			{
+				$data = str_replace('\\', '{{slash}}', $data);
+			}
+		}
+
+		return serialize($data);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Unserialize
+	 *
+	 * This function unserializes a data string, then converts any
+	 * temporary slash markers back to actual slashes
+	 *
+	 * @access	private
+	 * @param	array
+	 * @return	string
+	 */
+	protected function _unserialize($data)
+	{
+		$data = @unserialize(stripslashes($data));
+
+		if (is_array($data))
+		{
+			foreach ($data as $key => $val)
+			{
+				if (is_string($val))
+				{
+					$data[$key] = str_replace('{{slash}}', '\\', $val);
+				}
+			}
+
+			return $data;
+		}
+
+		return (is_string($data)) ? str_replace('{{slash}}', '\\', $data) : $data;
 	}
 
 }

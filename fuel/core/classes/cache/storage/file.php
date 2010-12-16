@@ -14,9 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\Application as App;
-
-class Cache_Storage_File extends App\Cache_Storage_Driver {
+class Cache_Storage_File extends Cache_Storage_Driver {
 
 	/**
 	 * @const	string	Tag used for opening & closing cache properties
@@ -26,7 +24,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 	/**
 	 * @var	string	File caching basepath
 	 */
-	protected static $path = '';
+	protected $path = '';
 
 	/**
 	 * @var driver specific configuration
@@ -43,8 +41,8 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		$this->expiration = $this->_validate_config('expiration', isset($this->config['expiration']) ? $this->config['expiration'] : $this->expiration);
 
 		// determine the file cache path
-		static::$path = !empty($this->config['path']) ? $this->config['path'] : APPPATH.'cache'.DS;
-		if ( ! is_dir(static::$path) || ! is_writable(static::$path))
+		$this->path = !empty($this->config['path']) ? $this->config['path'] : APPPATH.'cache'.DS;
+		if ( ! is_dir($this->path) || ! is_writable($this->path))
 		{
 			throw new Cache_Exception('Cache directory does not exist or is not writable.');
 		}
@@ -131,7 +129,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 	{
 		foreach($dependencies as $dep)
 		{
-			if (file_exists($file = static::$path.$dep.'.cache'))
+			if (file_exists($file = $this->path.$dep.'.cache'))
 			{
 				$filemtime = filemtime($file);
 				if ($filemtime === false || $filemtime > $this->created)
@@ -158,7 +156,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 	 */
 	public function delete()
 	{
-		$file = static::$path.$this->identifier_to_path($this->identifier).'.cache';
+		$file = $this->path.$this->identifier_to_path($this->identifier).'.cache';
 		@unlink($file);
 		$this->reset();
 	}
@@ -174,10 +172,10 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 	 */
 	public function delete_all($section)
 	{
-		$path = rtrim(static::$path, '\\/').DS;
-		$section = static::identifier_to_path($section);
+		$path = rtrim($this->path, '\\/').DS;
+		$section = $this->identifier_to_path($section);
 
-		return App\File::delete_dir($path.$section);
+		return File::delete_dir($path.$section);
 	}
 
 	// ---------------------------------------------------------------------
@@ -197,7 +195,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		if (count($subdirs) > 1)
 		{
 			array_pop($subdirs);
-			$test_path = static::$path.implode(DS, $subdirs);
+			$test_path = $this->path.implode(DS, $subdirs);
 
 			// check if specified subdir exists
 			if ( ! @is_dir($test_path))
@@ -208,7 +206,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		}
 
 		// write the cache
-		$file = static::$path.$id_path.'.cache';
+		$file = $this->path.$id_path.'.cache';
 		$handle = fopen($file, 'c');
 
 		if ($handle)
@@ -237,7 +235,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 	protected function _get()
 	{
 		$id_path = $this->identifier_to_path( $this->identifier );
-		$file = static::$path.$id_path.'.cache';
+		$file = $this->path.$id_path.'.cache';
 		if ( ! file_exists($file))
 			return false;
 
@@ -267,6 +265,34 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		}
 
 		return true;
+	}
+
+	// ---------------------------------------------------------------------
+
+	/**
+	 * validate a driver config value
+	 *
+	 * @param	string	name of the config variable to validate
+	 * @param	mixed	value
+	 * @access	private
+	 * @return  mixed
+	 */
+	private function _validate_config($name, $value)
+	{
+		switch ($name)
+		{
+			case 'expiration':
+				if ( empty($value) OR ! is_numeric($value))
+				{
+					$value = null;
+				}
+			break;
+
+			default:
+			break;
+		}
+
+		return $value;
 	}
 
 }
