@@ -32,9 +32,9 @@ class Config {
 		$config = array();
 		if (is_array($file))
 		{
-			$config = $path;
+			$config = $file;
 		}
-		if ($paths = Application\Fuel::find_file('config', $file, '.php', true))
+		elseif ($paths = Application\Fuel::find_file('config', $file, '.php', true))
 		{
 			// Reverse the file list so that we load the core configs first and
 			// the app can override anything.
@@ -58,7 +58,10 @@ class Config {
 			static::$items[$group] = static::$items[$group] + $config;
 		}
 
-		static::$loaded_files[$file] = true;
+		if ( ! is_array($file))
+		{
+			static::$loaded_files[$file] = true;
+		}
 		return $config;
 	}
 	

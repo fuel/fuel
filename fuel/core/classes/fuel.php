@@ -106,36 +106,20 @@ class Fuel {
 			static::$path_cache = static::cache('Fuel::path_cache');
 		}
 
-		Application\Config::load('config');
-
+		Application\Config::load($config);
 
 		static::$is_cli = (bool) (php_sapi_name() == 'cli');
 
-		/**
-		 * WARNING:  The order of the following statements is very important.
-		 * Re-arranging these will cause unexpected results.
-		 */
 		if ( ! static::$is_cli)
 		{
 			if (Application\Config::get('base_url') === null)
 			{
-				$base_url = '';
-				if(Application\Input::server('http_host'))
-				{
-					$base_url .= Application\Input::protocol().'://'.Application\Input::server('http_host');
-				}
-				if (Application\Input::server('script_name'))
-				{
-					$base_url .= str_replace('\\', '/', dirname(Application\Input::server('script_name')));
-
-					// Add a slash if it is missing
-					$base_url = rtrim($base_url, '/').'/';
-					Application\Config::set('base_url', $base_url);
-				}
+				Application\Config::set('base_url', static::generate_base_url());
 			}
 
-			URI::detect();
+			Application\Uri::detect();
 		}
+
 		// Run Input Filtering
 		Application\Security::clean_input();
 
@@ -248,6 +232,23 @@ class Fuel {
 		static::$paths_changed = true;
 
 		return $found;
+	}
+
+	protected static function generate_base_url()
+	{
+		$base_url = '';
+		if(Application\Input::server('http_host'))
+		{
+			$base_url .= Application\Input::protocol().'://'.Application\Input::server('http_host');
+		}
+		if (Application\Input::server('script_name'))
+		{
+			$base_url .= str_replace('\\', '/', dirname(Application\Input::server('script_name')));
+
+			// Add a slash if it is missing
+			$base_url = rtrim($base_url, '/').'/';
+		}
+		return $base_url;
 	}
 
 	/**
