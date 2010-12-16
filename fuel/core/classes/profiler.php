@@ -35,4 +35,12 @@ class Profiler {
 	{
 		return static::$profiler->display();
 	}
+	
+	public static function app_total()
+	{
+		return array(
+			microtime(true) - FUEL_START_TIME,
+			memory_get_usage() - FUEL_START_MEM
+		);
+	}
 }

@@ -17,16 +17,6 @@ namespace Fuel\Core;
 use Fuel\Application;
 
 /**
- * Holds Environment constants.
- */
-class Env {
-	const TEST = 'test';
-	const DEVELOPMENT = 'dev';
-	const QA = 'qa';
-	const PRODUCTION = 'production';
-}
-
-/**
  * The core of the framework.
  *
  * @package		Fuel
@@ -35,17 +25,37 @@ class Env {
  */
 class Fuel {
 
+	/**
+	 * Environment Constants.
+	 */
+	const TEST = 'test';
+	const DEVELOPMENT = 'dev';
+	const QA = 'qa';
+	const PRODUCTION = 'production';
+
 	const VERSION = '1.0.0-dev';
 
 	public static $initialized = false;
 
-	public static $env;
+	public static $env = Application\Fuel::DEVELOPMENT;
 
-	public static $bm = true;
-
-	public static $profile = false;
+	public static $profiling = false;
 
 	public static $locale;
+
+	public static $path_cache = array();
+
+	public static $caching = false;
+
+	/**
+	 * The amount of time to cache in seconds.
+	 * @var	int	$cache_lifetime
+	 */
+	public static $cache_lifetime = 3600;
+
+	protected static $cache_dir = '';
+
+	public static $paths_changed = false;
 
 	public static $is_cli = false;
 
@@ -77,14 +87,27 @@ class Fuel {
 		// Start up output buffering
 		ob_start();
 
-		Application\Config::load('config');
-		static::$profile = Application\Config::get('profile', false);
+		$config = static::load(APPPATH.'config/config.php');
 
-		if (static::$profile)
+		static::$profiling = isset($config['profiling']) ? $config['profiling'] : false;
+
+		if (static::$profiling)
 		{
 			Application\Profiler::init();
 			Application\Profiler::mark(__METHOD__.' Start');
 		}
+
+		static::$cache_dir = isset($config['cache_dir']) ? $config['cache_dir'] : APPPATH.'cache/';
+		static::$caching = isset($config['caching']) ? $config['caching'] : false;
+		static::$cache_lifetime = isset($config['cache_lifetime']) ? $config['cache_lifetime'] : 3600;
+
+		if (static::$caching)
+		{
+			static::$path_cache = static::cache('Fuel::path_cache');
+		}
+
+		Application\Config::load('config');
+
 
 		static::$is_cli = (bool) (php_sapi_name() == 'cli');
 
@@ -116,7 +139,6 @@ class Fuel {
 		// Run Input Filtering
 		Application\Security::clean_input();
 
-		static::$bm = Application\Config::get('benchmarking', true);
 		static::$env = Application\Config::get('environment');
 		static::$locale = Application\Config::get('locale');
 
@@ -134,7 +156,7 @@ class Fuel {
 
 		static::$initialized = true;
 
-		if (static::$profile)
+		if (static::$profiling)
 		{
 			Application\Profiler::mark(__METHOD__.' End');
 		}
@@ -149,10 +171,17 @@ class Fuel {
 	 */
 	public static function finish()
 	{
+		if (static::$caching && static::$paths_changed === true)
+		{
+			static::cache('Fuel::path_cache', static::$path_cache);
+		}
+
 		// Grab the output buffer
 		$output = ob_get_clean();
-		if (static::$profile)
+
+		if (static::$profiling)
 		{
+			Application\Profiler::mark('End of Fuel Execution');
 			if (preg_match("|</body>.*?</html>|is", $output))
 			{
 				$output  = preg_replace("|</body>.*?</html>|is", '', $output);
@@ -165,12 +194,12 @@ class Fuel {
 			}
 		}
 
-		$bm = Application\Benchmark::app_total();
+		$bm = Application\Profiler::app_total();
 
 		// TODO: There is probably a better way of doing this, but this works for now.
 		$output = \str_replace(
-				array('{exec_time}', '{mem_usage}', '{query_count}'),
-				array(round($bm[0], 4), round($bm[1] / pow(1024, 2), 3), DB::$query_count),
+				array('{exec_time}', '{mem_usage}'),
+				array(round($bm[0], 4), round($bm[1] / pow(1024, 2), 3)),
 				$output
 		);
 
@@ -192,6 +221,11 @@ class Fuel {
 	{
 		$path = $directory.DS.strtolower($file).$ext;
 
+		if (static::$path_cache != null && array_key_exists($path, static::$path_cache))
+		{
+			return static::$path_cache[$path];
+		}
+
 		$found = $multiple ? array() : false;
 		foreach (static::$_paths as $dir)
 		{
@@ -209,6 +243,10 @@ class Fuel {
 				}
 			}
 		}
+
+		static::$path_cache[$path] = $found;
+		static::$paths_changed = true;
+
 		return $found;
 	}
 
@@ -223,12 +261,12 @@ class Fuel {
 		if ($prefix)
 		{
 			// prefix the path to the paths array
-			\array_unshift(static::$_paths, $path);
+			array_unshift(static::$_paths, $path);
 		}
 		else
 		{
 			// find APPPATH index
-			$insert_at = \array_search(APPPATH, static::$_paths) + 1;
+			$insert_at = array_search(APPPATH, static::$_paths) + 1;
 			// insert new path just behind the APPPATH
 			array_splice(static::$_paths, $insert_at, 0, $path);
 		}
@@ -350,6 +388,77 @@ class Fuel {
 
 		static::add_path($mod_path);
 		return $mod_path;
+	}
+
+	/**
+	 * This method does basic filesystem caching.  It is used for things like path caching.
+	 * 
+	 * This method is from KohanaPHP's Kohana class.
+	 */
+	public static function cache($name, $data = null, $lifetime = null)
+	{
+		// Cache file is a hash of the name
+		$file = sha1($name).'.txt';
+
+		// Cache directories are split by keys to prevent filesystem overload
+		$dir = static::$cache_dir.DS.$file[0].$file[1].DS;
+
+		if ($lifetime === NULL)
+		{
+			// Use the default lifetime
+			$lifetime = static::$cache_lifetime;
+		}
+
+		if ($data === NULL)
+		{
+			if (is_file($dir.$file))
+			{
+				if ((time() - filemtime($dir.$file)) < $lifetime)
+				{
+					// Return the cache
+					return json_decode(file_get_contents($dir.$file), true);
+				}
+				else
+				{
+					try
+					{
+						// Cache has expired
+						unlink($dir.$file);
+					}
+					catch (Exception $e)
+					{
+						// Cache has mostly likely already been deleted,
+						// let return happen normally.
+					}
+				}
+			}
+
+			// Cache not found
+			return NULL;
+		}
+
+		if ( ! is_dir($dir))
+		{
+			// Create the cache directory
+			mkdir($dir, 0777, TRUE);
+
+			// Set permissions (must be manually set to fix umask issues)
+			chmod($dir, 0777);
+		}
+
+		// Force the data to be a string
+		$data = json_encode($data);
+
+		try
+		{
+			// Write the cache
+			return (bool) file_put_contents($dir.$file, $data, LOCK_EX);
+		}
+		catch (Exception $e)
+		{
+			// Failed to write cache
+			return false;
+		}
 	}
 
 	/**

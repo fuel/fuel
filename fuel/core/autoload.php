@@ -29,7 +29,6 @@ Autoloader::add_aliases(array(
 	'Fuel\\Autoloader'	=> 'Fuel\\Application\\Autoloader',
 	'Arr'			=> 'Fuel\\Application\\Arr',
 	'Asset'			=> 'Fuel\\Application\\Asset',
-	'Benchmark'		=> 'Fuel\\Application\\Benchmark',
 
 	'Cache'						=> 'Fuel\\Application\\Cache',
 	'Cache_Handler_Driver'		=> 'Fuel\\Application\\Cache_Handler_Driver',
@@ -73,6 +72,7 @@ Autoloader::add_aliases(array(
 	'Model'			=> 'Fuel\\Application\\Model',
 	'Output'		=> 'Fuel\\Application\\Output',
 	'Pagination'	=> 'Fuel\\Application\\Pagination',
+	'Profiler'		=> 'Fuel\\Application\\Profiler',
 	'Request'		=> 'Fuel\\Application\\Request',
 	'Route'			=> 'Fuel\\Application\\Route',
 

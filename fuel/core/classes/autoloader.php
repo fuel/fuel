@@ -214,6 +214,13 @@ class Autoloader {
 		// Cleanup backslash prefix, messes up class_alias and other stuff
 		$class = ltrim($class, '\\');
 
+		if (Fuel::$path_cache != null && array_key_exists($class, Fuel::$path_cache))
+		{
+			require Fuel::$path_cache[$class];
+			static::_init_class($class);
+			return true;
+		}
+
 		// Checks if there is a \ in the class name.  This indicates it is a
 		// namespace.  It sets $pos to the position of the last \.
 		if (($pos = strripos($class, '\\')) !== false)
@@ -229,6 +236,8 @@ class Autoloader {
 					$file_path = strtolower($path.substr($namespace, strlen($ns) + 1).DS.str_replace('_', DS, $class_no_ns).'.php');
 					if (file_exists($file_path))
 					{
+						Fuel::$path_cache[$class] = $file_path;
+						Fuel::$paths_changed = true;
 						require $file_path;
 						static::_init_class($class);
 						return true;
@@ -258,6 +267,8 @@ class Autoloader {
 					$file_path = $path.str_replace('_', DS, strtolower($class)).'.php';
 					if (is_file($file_path))
 					{
+						Fuel::$path_cache[$class] = $file_path;
+						Fuel::$paths_changed = true;
 						require $file_path;
 						static::_init_class($class);
 						return true;
@@ -270,6 +281,8 @@ class Autoloader {
 
 		if ($file_path !== false)
 		{
+			Fuel::$path_cache[$class] = $file_path;
+			Fuel::$paths_changed = true;
 			require $file_path;
 			static::_init_class($class);
 			return true;

@@ -31,9 +31,13 @@ return array(
 	 * Env::QA
 	 * Env::PRODUCTION
 	 */
-	'environment'	=> Env::DEVELOPMENT,
+	'environment'	=> Fuel::DEVELOPMENT,
 
 	'profile'		=> false,
+	
+	'caching'			=> false,
+	'cache_dir'			=> APPPATH.'cache/',
+	'cache_lifetime'	=> 3600, // In Seconds
 
 	/**
 	 * Show notices
@@ -63,7 +67,6 @@ return array(
 	 * default_timezone		optional, if you want to change the server's default timezone
 	 */
 	'server_gmt_offset'	=> 0,
-	//'default_timezone'	=> 'UTC',
 
 	/**
 	 * Logging Threshold.  Can be set to any of the following:
@@ -85,20 +88,6 @@ return array(
 		'csrf_autoload'			=> false,
 		'csrf_token_key'		=> 'fuel_csrf_token',
 		'csrf_expiration'		=> 0,
-
-		'strict_input_filters'	=> true,
-		'input_filters'			=> array(
-			'get'		=> array(
-				'*'	=> 'no_tags',
-			),
-			'post'		=> array(
-				'*'	=> 'no_tags',
-			),
-			'cookie'	=> array(),
-			'env'		=> array(),
-			'server'	=> array(),
-			'files'		=> array(),
-		),
 	),
 
 	/**
