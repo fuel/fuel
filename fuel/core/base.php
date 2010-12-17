@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-use Fuel\Application;
+use Fuel\App;
 
 /**
  * Loads in a core class and optionally an app class override if it exists.
@@ -121,7 +121,7 @@ if ( ! function_exists('render'))
 {
 	function render($view, $data = array())
 	{
-		return Application\View::factory($view, $data)->render();
+		return App\View::factory($view, $data)->render();
 	}
 }
 
@@ -144,7 +144,7 @@ if ( ! function_exists('fuel_shutdown_handler'))
 {
 	function fuel_shutdown_handler()
 	{
-		return Application\Error::shutdown_handler();
+		return App\Error::shutdown_handler();
 	}
 }
 
@@ -152,7 +152,7 @@ if ( ! function_exists('fuel_exception_handler'))
 {
 	function fuel_exception_handler(\Exception $e)
 	{
-		return Application\Error::exception_handler($e);
+		return App\Error::exception_handler($e);
 	}
 }
 
@@ -160,7 +160,7 @@ if ( ! function_exists('fuel_error_handler'))
 {
 	function fuel_error_handler($severity, $message, $filepath, $line)
 	{
-		return Application\Error::error_handler($severity, $message, $filepath, $line);
+		return App\Error::error_handler($severity, $message, $filepath, $line);
 	}
 }
 

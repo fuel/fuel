@@ -14,7 +14,7 @@
 
 namespace Oil;
 
-class Exception extends \Fuel\Application\Exception {
+class Exception extends \Fuel\App\Exception {
 
 	public function  __toString()
 	{

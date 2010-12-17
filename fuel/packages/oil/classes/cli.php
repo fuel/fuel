@@ -14,7 +14,7 @@
 
 namespace Oil;
 
-use Fuel\Application as App;
+use Fuel\App as App;
 
 class Cli
 {

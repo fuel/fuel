@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\Application as App;
+use Fuel\App as App;
 
 class Cache_Handler_Serialized implements Cache_Handler_Driver {
 

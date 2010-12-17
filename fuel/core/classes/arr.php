@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\Application;
+use Fuel\App;
 
 class Arr {
 	
@@ -90,7 +90,7 @@ class Arr {
 		
 		if ( ! is_array($keys))
 		{
-			throw new Application\Exception('Arr::elements() - $keys must be an array.');
+			throw new App\Exception('Arr::elements() - $keys must be an array.');
 		}
 		
 		foreach ($keys as $key)

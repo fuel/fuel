@@ -14,7 +14,7 @@
 
 namespace Oil;
 
-use Fuel\Application;
+use Fuel\App;
 
 class Console {
 

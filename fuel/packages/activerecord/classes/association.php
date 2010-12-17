@@ -14,8 +14,8 @@
 
 namespace ActiveRecord;
 
-use Fuel\Application as App;
-use Fuel\Application\DB;
+use Fuel\App as App;
+use Fuel\App\DB;
 
 class Association {
 
@@ -48,12 +48,12 @@ class Association {
 
 		if ( ! class_exists($this->dest_class))
 		{
-			$this->dest_class = 'Fuel\\Application\\Model\\'.$this->dest_class;
+			$this->dest_class = 'Fuel\\App\\Model\\'.$this->dest_class;
 		}
 
 		if ( ! class_exists($this->source_class))
 		{
-			$this->source_class = 'Fuel\\Application\\Model\\'.$this->source_class;
+			$this->source_class = 'Fuel\\App\\Model\\'.$this->source_class;
 		}
 
 		$this->options = $options;

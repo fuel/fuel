@@ -14,10 +14,10 @@
 
 namespace ActiveRecord;
 
-use Fuel\Application as App;
-use Fuel\Application\DB;
-use Fuel\Application\Database;
-use Fuel\Application\Inflector;
+use Fuel\App as App;
+use Fuel\App\DB;
+use Fuel\App\Database;
+use Fuel\App\Inflector;
 
 class Model {
 

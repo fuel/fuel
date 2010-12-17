@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\Application as App;
+use Fuel\App as App;
 
 class Request {
 
@@ -117,7 +117,7 @@ class Request {
 
 			$action or $action = 'index';
 
-			$class = 'Fuel\\Application\\Controller\\'.ucfirst($controller);
+			$class = 'Fuel\\App\\Controller\\'.ucfirst($controller);
 			$method = 'action_'.$action;
 
 			if (class_exists($class))
@@ -248,7 +248,7 @@ class Request {
 	{
 		App\Log::info('Called', __METHOD__);
 
-		$controller_prefix = 'Fuel\\Application\\'.($this->module ? ucfirst($this->module).'\\' : '').'Controller\\';
+		$controller_prefix = 'Fuel\\App\\'.($this->module ? ucfirst($this->module).'\\' : '').'Controller\\';
 		$method_prefix = 'action_';
 
 		$class = $controller_prefix.($this->directory ? ucfirst($this->directory).'_' : '').ucfirst($this->controller);

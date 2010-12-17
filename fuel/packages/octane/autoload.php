@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Application;
+namespace Fuel\App;
 
 Autoloader::add_path(__DIR__.'/classes/');
 
@@ -21,7 +21,7 @@ Autoloader::add_namespaces(array(
 ));
 
 Autoloader::add_namespace_aliases(array(
-	'Fuel\\Octane\\Test'	=> 'Fuel\\Application',
+	'Fuel\\Octane\\Test'	=> 'Fuel\\App',
 ));
 
 /* End of file autoload.php */

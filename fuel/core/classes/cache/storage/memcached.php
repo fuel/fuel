@@ -14,7 +14,9 @@
 
 namespace Fuel\Core;
 
-class Cache_Storage_Memcached extends Cache_Storage_Driver {
+use Fuel\App as App;
+
+class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
 
 	/**
 	 * @const	string	Tag used for opening & closing cache properties
@@ -147,7 +149,7 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 			}
 
 			// get the cache index
-			$index = $this->memcached->get($this->config['cache_id'].'__IDX__'.$sections);
+			$index = $this->memcached->get($this->config['cache_id'].$sections);
 
 			// get the key from the index
 			$key = isset($index[$identifier][0]) ? $index[$identifier] : false;
@@ -195,49 +197,37 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 	public function delete_all($section)
 	{
 		// determine the section index name
-		$section = $this->config['cache_id'].'__IDX__'.(empty($section)?'':'.'.$section);
+		$section = $this->config['cache_id'].(empty($section)?'':'.'.$section);
 
 		// get the directory index
 		$index = $this->memcached->get($this->config['cache_id'].'__DIR__');
 
 		if (is_array($index))
 		{
+			// limit the delete if we have a valid section
 			if (!empty($section))
 			{
-				// limit the delete if we have a valid section
-				$dirs = array();
-				foreach ($index as $entry)
-				{
-					if ($entry == $section or strpos($entry, $section.'.') === 0)
-					{
-						$dirs[] = $entry;
-					}
-				}
+				$dirs = in_array($section, $index) ? array($section) : array();
 			}
 			else
 			{
-				// else delete the entire contents of the cache
 				$dirs = $index;
 			}
 
-			// loop through the selected indexes
+			// loop through the indexes, delete all stored keys, then delete the indexes
 			foreach ($dirs as $dir)
 			{
-				// get the stored cache entries for this index
 				$list = $this->memcached->get($dir);
-
-				// delete all stored keys
 				foreach($list as $item)
 				{
 					$this->memcached->delete($item[0]);
 				}
-
-				// and delete the index itself
 				$this->memcached->delete($dir);
 			}
 
 			// update the directory index
-			$this->memcached->set($this->config['cache_id'].'__DIR__', array_diff($index, $dirs));
+			$index = array_diff($index, $dirs);
+			$this->memcached->set($this->config['cache_id'].'__DIR__', $index);
 		}
 	}
 
@@ -371,6 +361,7 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 		{
 			$identifier = array_pop($sections);
 			$sections = '.'.implode('.', $sections);
+
 		}
 		else
 		{
@@ -379,7 +370,7 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 		}
 
 		// get the cache index
-		$index = $this->memcached->get($this->config['cache_id'].'__IDX__'.$sections);
+		$index = $this->memcached->get($this->config['cache_id'].$sections);
 
 		// get the key from the index
 		$key = isset($index[$identifier][0]) ? $index[$identifier][0] : false;
@@ -389,7 +380,7 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 			if ( $key !== false )
 			{
 				unset($index[$identifier]);
-				$this->memcached->set($this->config['cache_id'].'__IDX__'.$sections, $index);
+				$this->memcached->set($this->config['cache_id'].$sections, $index);
 			}
 		}
 		else
@@ -399,31 +390,22 @@ class Cache_Storage_Memcached extends Cache_Storage_Driver {
 				// create a new key
 				$key = $this->_new_key();
 
-				if ($index === false)
-				{
-					// create a new index and store the key
-					$this->memcached->set($this->config['cache_id'].'__IDX__'.$sections, array($identifier => array($key,$this->created)), 0);
-				}
-				else
-				{
-					// add the new key to the index
-					$index[$identifier] = array($key,$this->created);
-					$this->memcached->set($this->config['cache_id'].'__IDX__'.$sections, $index, 0);
-				}
+				// create a new index and store the key
+				$this->memcached->set($this->config['cache_id'].$sections, array($identifier => array($key,$this->created)), 0);
 
 				// get the directory index
 				$index = $this->memcached->get($this->config['cache_id'].'__DIR__');
 
 				if (is_array($index))
 				{
-					if (!in_array($this->config['cache_id'].'__IDX__'.$sections, $index))
+					if (!in_array($this->config['cache_id'].$sections, $index))
 					{
-						$index[] = $this->config['cache_id'].'__IDX__'.$sections;
+						$index[] = $this->config['cache_id'].$sections;
 					}
 				}
 				else
 				{
-					$index = array($this->config['cache_id'].'__IDX__'.$sections);
+					$index = array($this->config['cache_id'].$sections);
 				}
 
 				// update the directory index

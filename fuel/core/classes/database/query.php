@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\Application as App;
+use Fuel\App as App;
 
 class Database_Query {
 

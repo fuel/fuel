@@ -128,23 +128,23 @@ if (is_file(APPPATH.'classes'.DS.'fuel.php'))
 }
 else
 {
-	class_alias('Fuel\\Core\\Fuel', 'Fuel\\Application\\Fuel');
+	class_alias('Fuel\\Core\\Fuel', 'Fuel\\App\\Fuel');
 }
 
-Fuel\Application\Autoloader::register();
+Fuel\App\Autoloader::register();
 
 // Initialize the framework
 // and start buffering the output.
-Fuel\Application\Fuel::init();
+Fuel\App\Fuel::init();
 
-$request = Fuel\Application\Request::factory();
+$request = Fuel\App\Request::factory();
 $request->execute();
-Fuel\Application\Output::send_headers();
+Fuel\App\Output::send_headers();
 echo $request->output;
 
 // Call all the shutdown events
-Fuel\Application\Event::shutdown();
+Fuel\App\Event::shutdown();
 
-Fuel\Application\Fuel::finish();
+Fuel\App\Fuel::finish();
 
 /* End of file index.php */

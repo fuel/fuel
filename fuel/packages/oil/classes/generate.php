@@ -14,7 +14,7 @@
 
 namespace Oil;
 
-use Fuel\Application as App;
+use Fuel\App as App;
 
 class Generate
 {
@@ -55,7 +55,7 @@ class Generate
 		$controller = <<<CONTROLLER
 <?php
 
-namespace Fuel\Application;
+namespace Fuel\App;
 
 class {$class_name} extends Controller\Template {
 {$action_str}
@@ -85,7 +85,7 @@ CONTROLLER;
 		$model = <<<MODEL
 <?php
 
-namespace Fuel\Application\Model;
+namespace Fuel\App\Model;
 
 use ActiveRecord;
 
@@ -321,7 +321,7 @@ UP;
 		$migration = <<<MIGRATION
 <?php
 
-namespace Fuel\Application;
+namespace Fuel\App;
 
 class Migration_{$migration_name} extends Migration {
 

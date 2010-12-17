@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Application;
+namespace Fuel\App;
 
 class Autoloader {
 
@@ -195,7 +195,7 @@ class Autoloader {
 	 */
 	public static function register()
 	{
-		spl_autoload_register('\Fuel\Application\Autoloader::load', true, true);
+		spl_autoload_register('\Fuel\App\Autoloader::load', true, true);
 	}
 
 	/**

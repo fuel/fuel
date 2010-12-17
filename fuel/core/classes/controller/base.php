@@ -14,7 +14,7 @@
 
 namespace Fuel\Core\Controller;
 
-use Fuel\Application;
+use Fuel\App;
 
 class Base {
 
@@ -35,7 +35,7 @@ class Base {
 	 * @param	object	The current request object
 	 * @return	void
 	 */
-	public function __construct(Application\Request $request)
+	public function __construct(App\Request $request)
 	{
 		$this->request = $request;
 	}
@@ -89,10 +89,10 @@ class Base {
 	{
 		if ( ! $return)
 		{
-			$this->output .= Application\View::factory($view, $data);
+			$this->output .= App\View::factory($view, $data);
 			return;
 		}
-		return Application\View::factory($view, $data);
+		return App\View::factory($view, $data);
 	}
 }
 

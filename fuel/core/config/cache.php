@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Application;
+namespace Fuel\App;
 
 return array(
 
@@ -23,7 +23,7 @@ return array(
 	 */
 
 	// default storage driver
-	'driver'				=> 'file',
+	'driver'				=> 'memcached',
 
 	// default expiration (null = no expiration)
 	'expiration'	=> null,

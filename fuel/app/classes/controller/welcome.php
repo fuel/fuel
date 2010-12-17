@@ -1,6 +1,6 @@
 <?php
 
-namespace Fuel\Application\Controller;
+namespace Fuel\App\Controller;
 
 use Fuel\Core\Controller;
 

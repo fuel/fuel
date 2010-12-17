@@ -24,7 +24,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\Application as App;
+use Fuel\App as App;
 
 /**
  * Redisent, a Redis interface for the modest among us

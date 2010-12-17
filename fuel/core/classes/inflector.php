@@ -13,7 +13,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\Application as App;
+use Fuel\App as App;
 
 /**
  * Some of this code was written by Flinn Mueller.

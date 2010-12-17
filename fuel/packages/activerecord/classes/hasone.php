@@ -14,8 +14,8 @@
 
 namespace ActiveRecord;
 
-use Fuel\Application as App;
-use Fuel\Application\DB;
+use Fuel\App as App;
+use Fuel\App\DB;
 
 class HasOne extends Association {
 

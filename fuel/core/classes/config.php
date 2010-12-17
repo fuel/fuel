@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\Application;
+use Fuel\App;
 
 class Config {
 	
@@ -34,14 +34,14 @@ class Config {
 		{
 			$config = $file;
 		}
-		elseif ($paths = Application\Fuel::find_file('config', $file, '.php', true))
+		elseif ($paths = App\Fuel::find_file('config', $file, '.php', true))
 		{
 			// Reverse the file list so that we load the core configs first and
 			// the app can override anything.
 			$paths = array_reverse($paths);
 			foreach ($paths as $path)
 			{
-				$config = Application\Fuel::load($path) + $config;
+				$config = App\Fuel::load($path) + $config;
 			}
 		}
 		if ($group === null)

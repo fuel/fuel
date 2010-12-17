@@ -1,6 +1,6 @@
 <?php
 
-namespace Fuel\Application;
+namespace Fuel\App;
 
 	if ( ! defined('FUEL_EXCEPTION_CSS')):
 		define('FUEL_EXCEPTION_CSS', true);

@@ -32,7 +32,7 @@ $default_timezone = null;
 define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
 
 
-use Fuel\Application as App;
+use Fuel\App as App;
 
 
 // This is purely for ease of use, creating an alias of DS

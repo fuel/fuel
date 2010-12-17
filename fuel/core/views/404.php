@@ -1,4 +1,4 @@
-<?php namespace Fuel\Application; ?>
+<?php namespace Fuel\App; ?>
 <!DOCTYPE html>
 <html>
 <head>

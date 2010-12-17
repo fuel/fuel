@@ -14,9 +14,9 @@
 
 namespace Fuel\Octane;
 
-use Fuel\Application\Fuel;
-use Fuel\Application\Cli;
-use Fuel\Application\Exception;
+use Fuel\App\Fuel;
+use Fuel\App\Cli;
+use Fuel\App\Exception;
 
 class Tests {
 	

@@ -14,9 +14,9 @@
 
 namespace Fuel\Octane;
 
-use Fuel\Application\Cli;
-use Fuel\Application\Fuel;
-use Fuel\Application\Request;
+use Fuel\App\Cli;
+use Fuel\App\Fuel;
+use Fuel\App\Request;
 
 class TestCase {
 	

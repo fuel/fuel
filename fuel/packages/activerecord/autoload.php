@@ -12,7 +12,7 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Application;
+namespace Fuel\App;
 
 Autoloader::add_path(__DIR__.'/classes/');
 

@@ -12,12 +12,12 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\Application;
+namespace Fuel\App;
 
 Autoloader::add_namespaces(array(
-	'Fuel\\Application'				=> __DIR__.DS.'classes'.DS,
-	'Fuel\\Application\\Model'		=> __DIR__.DS.'classes'.DS.'model'.DS,
-	'Fuel\\Application\\Controller'	=> __DIR__.DS.'classes'.DS.'controller'.DS,
+	'Fuel\\App'				=> __DIR__.DS.'classes'.DS,
+	'Fuel\\App\\Model'		=> __DIR__.DS.'classes'.DS.'model'.DS,
+	'Fuel\\App\\Controller'	=> __DIR__.DS.'classes'.DS.'controller'.DS,
 ));
 
 /* End of file autoload.php */
