@@ -61,6 +61,12 @@ if ( ! is_dir($app_path) and is_dir(DOCROOT.$app_path))
 	$app_path = DOCROOT.$app_path;
 }
 
+// Determine the core path
+if ( ! is_dir($core_path) and is_dir(DOCROOT.$core_path))
+{
+	$core_path = DOCROOT.$core_path;
+}
+
 // Determine the package path
 if ( ! is_dir($package_path) and is_dir(DOCROOT.$package_path))
 {
@@ -76,10 +82,13 @@ define('COREPATH', realpath($core_path).DS);
 unset($app_path, $package_path);
 
 // Load in the core functions that are available app wide
-require COREPATH.'base.php';
+if (is_file(APPPATH.'base.php'))
+{
+	require APPPATH.'base.php';
+}
 
-// Load in the core class
-require COREPATH.'classes'.DS.'fuel.php';
+// Load in the core functions that are available app wide
+require COREPATH.'base.php';
 
 /**
  * Load in the autoloader class then register any app and core autoloaders.
@@ -88,6 +97,17 @@ require COREPATH.'classes'.DS.'autoloader.php';
 
 require COREPATH.'autoload.php';
 require APPPATH.'autoload.php';
+
+require COREPATH.'classes'.DS.'fuel.php';
+
+if (is_file(APPPATH.'classes'.DS.'fuel.php'))
+{
+	require APPPATH.'classes'.DS.'fuel.php';
+}
+else
+{
+	class_alias('Fuel\\Core\\Fuel', 'Fuel\\App\\Fuel');
+}
 
 App\Autoloader::register();
 
