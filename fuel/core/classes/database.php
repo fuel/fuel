@@ -69,7 +69,7 @@ abstract class Database {
 			}
 
 			// Set the driver class name
-			$driver = 'Fuel\\Database_'.ucfirst($config['type']);
+			$driver = 'Fuel\\Core\\Database_'.ucfirst($config['type']);
 
 			// Create the database connection instance
 			new $driver($name, $config);
