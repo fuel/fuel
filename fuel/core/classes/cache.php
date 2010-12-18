@@ -57,7 +57,7 @@ class Cache {
 			throw new Exception('No cache driver given or no default cache driver set.');
 		}
 
-		$class = 'App\\Cache_Storage_'.ucfirst($config['driver']);
+		$class = 'Fuel\\App\\Cache_Storage_'.ucfirst($config['driver']);
 
 		// Convert the name to a string when necessary
 		$identifier = call_user_func($class.'::stringify_identifier', $identifier);

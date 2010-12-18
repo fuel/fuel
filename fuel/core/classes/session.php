@@ -95,7 +95,7 @@ class Session {
 		}
 
 		// determine the driver to load
-		$class = 'App\\Session_'.ucfirst($config['driver']);
+		$class = 'Fuel\\App\\Session_'.ucfirst($config['driver']);
 
 		$driver = new $class($config);
 
