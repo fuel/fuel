@@ -18,18 +18,50 @@ use Fuel\App;
 abstract class Auth_Driver {
 
 	/**
-	 * @var	Auth_Login_Driver
+	 * @var	Auth_Driver
+	 * THIS MUST BE DEFINED IN THE BASE EXTENSION
 	 */
-	protected static $_instance = null;
+	// protected static $_instance = null;
 
 	/**
 	 * @var	array	contains references if multiple were loaded
+	 * THIS MUST BE DEFINED IN THE BASE EXTENSION
 	 */
-	protected static $_instances = array();
+	// protected static $_instances = array();
 
 	public static function factory(Array $config = array())
 	{
 		throw new Auth_Exception('Driver must have a factory method extension.');
+	}
+
+	/**
+	 * Return a specific driver, or the default instance
+	 *
+	 * @param	string	driver id
+	 * @return	Auth_Driver
+	 */
+	public static function instance($instance = null)
+	{
+		if ($instance === true)
+		{
+			return static::$_instances;
+		}
+		elseif ($instance !== null)
+		{
+			if ( ! array_key_exists($instance, static::$_instances))
+			{
+				return false;
+			}
+
+			return static::$_instances[$instance];
+		}
+
+		if (static::$_instance === null)
+		{
+			static::$_instance = static::factory();
+		}
+
+		return static::$_instance;
 	}
 
 	// ------------------------------------------------------------------------
@@ -75,11 +107,12 @@ abstract class Auth_Driver {
 	 * Retrieve config value
 	 *
 	 * @param	string
+	 * @param	mixed	return when key doesn't exist
 	 * @return	mixed
 	 */
-	public function get_config($key)
+	public function get_config($key, $default = null)
 	{
-		return $this->config[$key];
+		return array_key_exists($key, $this->config) ? $this->config[$key] : $default;
 	}
 }
 

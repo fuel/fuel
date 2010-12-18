@@ -17,34 +17,42 @@ use Fuel\App;
 
 abstract class Auth_Login_Driver extends Auth_Driver {
 
+	/**
+	 * @var	Auth_Driver
+	 */
+	protected static $_instance = null;
+
+	/**
+	 * @var	array	contains references if multiple were loaded
+	 */
+	protected static $_instances = array();
+
 	public static function factory(Array $config = array())
 	{
 		// default driver id to driver name when not given
 		! array_key_exists('id', $config) && $config['id'] = $config['driver'];
 
-		if (array_key_exists('group_drivers', $config))
-		{
-			foreach ($config['group_drivers'] as $driver => $config)
-			{
-				$config = is_int($driver)
-					? array('driver' => $config)
-					: array_merge($config, array('driver' => $driver));
-				Auth_Group_Driver::factory($config);
-			}
-		}
-		if (array_key_exists('acl_drivers', $config))
-		{
-			foreach ($config['acl_drivers'] as $driver => $config)
-			{
-				$config = is_int($driver)
-					? array('driver' => $config)
-					: array_merge($config, array('driver' => $driver));
-				Auth_Acl_Driver::factory($config);
-			}
-		}
-
 		$class = 'Fuel\\Auth\\Auth_Login_'.ucfirst($config['driver']);
 		$driver = new $class($config);
+		static::$_instances[$driver->get_id()] = $driver;
+
+		$group_drivers = $driver->get_config('group_drivers', array());
+		foreach ($group_drivers as $d => $custom)
+		{
+			$custom = is_int($d)
+				? array('driver' => $custom)
+				: array_merge($custom, array('driver' => $d));
+			Auth_Group_Driver::factory($custom);
+		}
+
+		$acl_drivers = $driver->get_config('acl_drivers', array());
+		foreach ($acl_drivers as $d => $custom)
+		{
+			$custom = is_int($d)
+				? array('driver' => $custom)
+				: array_merge($custom, array('driver' => $d));
+			Auth_Acl_Driver::factory($custom);
+		}
 
 		return $driver;
 	}
@@ -140,15 +148,15 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 	 * @param	array	user identifier to check in form array(driver_id, user_id)
 	 * @return	bool
 	 */
-	public function has_access($condition, $driver = null, $user = null)
+	public function has_access($condition, $driver = null, $entity = null)
 	{
-		$user = $user ?: $this->get_user_id();
+		$entity = $entity ?: $this->get_user_id();
 
 		if ($driver === null)
 		{
 			foreach (Auth::acl(true) as $acl)
 			{
-				if ($acl->has_access($condition, $user))
+				if ($acl->has_access($condition, $entity))
 				{
 					return true;
 				}
@@ -157,7 +165,7 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 			return false;
 		}
 
-		return Auth::acl($driver)->has_access($condition, $user);
+		return Auth::acl($driver)->has_access($condition, $entity);
 	}
 
 	/**

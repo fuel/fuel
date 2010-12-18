@@ -148,8 +148,7 @@ class Auth {
 	}
 
 	/**
-	 * Return a specific driver, will return (and create if necessary) the default instance
-	 * without input.
+	 * Return a specific driver, or the default instance (is created if necessary)
 	 *
 	 * @param	string	driver id
 	 * @return	Auth_Login_Driver
@@ -160,10 +159,10 @@ class Auth {
 		{
 			if ( ! array_key_exists($instance, static::$_instances))
 			{
-				throw new Auth_Exception('Unkown instance.');
+				return false;
 			}
 
-			return static::$_instance[$instance];
+			return static::$_instances[$instance];
 		}
 
 		if (static::$_instance === null)

@@ -121,7 +121,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			return false;
 		}
 
-		return array('simplegroup', $this->user->group);
+		return array(array('simplegroup', $this->user->group));
 	}
 
 	public function get_user_email()
@@ -152,5 +152,17 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 		}
 
 		return @unserialize($this->user->profile_fields) ?: array();
+	}
+
+	/**
+	 * Extension of base driver method to default to user group instead of user id
+	 */
+	public function has_access($condition, $driver = null, $user = null)
+	{
+		if (is_null($user))
+		{
+			$user = reset($this->get_user_groups());
+		}
+		return parent::has_access($condition, $driver, $user);
 	}
 }

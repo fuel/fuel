@@ -24,6 +24,10 @@ class Auth_Group_SimpleGroup extends Auth_Group_Driver {
 		static::$_valid_groups = array_keys(App\Config::get('simpleauth.groups'));
 	}
 
+	protected $config = array(
+		'acl_drivers' => array('simpleacl')
+	);
+
 	public function member($group, $user = null)
 	{
 		if ($user === null)
@@ -51,7 +55,13 @@ class Auth_Group_SimpleGroup extends Auth_Group_Driver {
 
 	public function get_roles($group)
 	{
-		return @static::$_valid_groups[(int) $group]['roles'] ?: false;
+		if ( ! in_array((int) $group, static::$_valid_groups))
+		{
+			return false;
+		}
+
+		$groups = Config::get('simpleauth.groups');
+		return $groups[(int) $group]['roles'];
 	}
 }
 

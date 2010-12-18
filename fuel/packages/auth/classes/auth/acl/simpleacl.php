@@ -24,37 +24,41 @@ class Auth_Acl_SimpleAcl extends Auth_Acl_Driver {
 		static::$_valid_roles = array_keys(App\Config::get('simpleauth.roles'));
 	}
 
-	protected function has_access($condition, Array $entity)
+	public function has_access($condition, Array $entity)
 	{
 		$group = Auth::group($entity[0]);
-		if ( ! is_array($condition) || empty($group) || ! is_callable($group, 'get_roles'))
+		if ( ! is_array($condition) || empty($group) || ! is_callable(array($group, 'get_roles')))
 		{
 			return false;
 		}
 
-		$roles = $group->get_roles($entity[1]);
-		$role = $condition[0];
+		$area = $condition[0];
 		$rights = $condition[1];
-
+		$current_roles = $group->get_roles($entity[1]);
 		$current_rights = '';
-		foreach($roles as $r_role => $r_rights)
+		if (is_array($current_roles))
 		{
-			if ($r_rights === false)
+			$roles = Config::get('simpleauth.roles', array());
+			array_key_exists('#', $roles) && array_unshift($current_roles, '#');
+			foreach ($current_roles as $r_role)
 			{
-				return false;
-			}
-			elseif ($r_rights === true)
-			{
-				$current_rights = 'crud';
-			}
-			elseif ($role == $r_role)
-			{
-				$current_rights .= $r_rights;
+				if ( ! array_key_exists($r_role, $roles) || ($r_rights = $roles[$r_role]) === false)
+				{
+					return false;
+				}
+
+				if (array_key_exists($area, $r_rights))
+				{
+					$current_rights = ($r_rights === true || $current_rights === true)
+						? true
+						: $current_rights . $r_rights[$area];
+				}
 			}
 		}
 
 		// start checking rights, terminate false when character not found
-		foreach($rights as $right)
+		$rights = array_unique(preg_split('//', $rights, -1, PREG_SPLIT_NO_EMPTY));
+		foreach ($rights as $right)
 		{
 			if (strpos($current_rights, $right) === false)
 			{

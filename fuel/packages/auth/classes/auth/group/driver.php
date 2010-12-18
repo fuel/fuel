@@ -17,6 +17,16 @@ use Fuel\App;
 
 abstract class Auth_Group_Driver extends Auth_Driver {
 
+	/**
+	 * @var	Auth_Driver
+	 */
+	protected static $_instance = null;
+
+	/**
+	 * @var	array	contains references if multiple were loaded
+	 */
+	protected static $_instances = array();
+
 	public static function factory(Array $config = array())
 	{
 		// default driver id to driver name when not given
@@ -24,16 +34,15 @@ abstract class Auth_Group_Driver extends Auth_Driver {
 
 		$class = 'Fuel\\Auth\\Auth_Group_'.ucfirst($config['driver']);
 		$driver = new $class($config);
+		static::$_instances[$driver->get_id()] = $driver;
 
-		if (array_key_exists('acl_drivers', $config))
+		$acl_drivers = $driver->get_config('acl_drivers', array());
+		foreach ($acl_drivers as $d => $custom)
 		{
-			foreach ($config['acl_drivers'] as $driver => $config)
-			{
-				$config = is_int($driver)
-					? array('driver' => $config)
-					: array_merge($config, array('driver' => $driver));
-				Auth_Acl_Driver::factory($config);
-			}
+			$custom = is_int($d)
+				? array('driver' => $custom)
+				: array_merge($custom, array('driver' => $d));
+			Auth_Acl_Driver::factory($custom);
 		}
 
 		return $driver;
