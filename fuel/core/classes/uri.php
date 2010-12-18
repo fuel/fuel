@@ -64,7 +64,7 @@ class Uri {
 			}
 			else
 			{
-				throw new Exception('Unable to detect the URI.');
+				throw new App\Exception('Unable to detect the URI.');
 			}
 
 			// Remove the base URL from the URI

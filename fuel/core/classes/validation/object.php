@@ -140,7 +140,7 @@ class Validation_Object {
 	{
 		if ( ! is_callable(array($model, '_fuel_validation')))
 		{
-			throw new Fuel_Exception('Invalid model or no _fuel_validation() method to return fields.');
+			throw new App\Fuel_Exception('Invalid model or no _fuel_validation() method to return fields.');
 		}
 
 		/**
@@ -166,7 +166,7 @@ class Validation_Object {
 	{
 		if ( ! (is_object($class) || class_exists($class)))
 		{
-			throw new Fuel_Exception('Input for add_callable is not a valid object or class.');
+			throw new App\Fuel_Exception('Input for add_callable is not a valid object or class.');
 		}
 
 		array_unshift($this->callables, $class);
@@ -224,7 +224,7 @@ class Validation_Object {
 
 		if ($output === false && $value !== false)
 		{
-			throw new Validation_Error($field, $value, $rule, $params);
+			throw new App\Validation_Error($field, $value, $rule, $params);
 		}
 		elseif ($output !== true)
 		{

@@ -67,7 +67,7 @@ abstract class Database {
 
 			if ( ! isset($config['type']))
 			{
-				throw new Exception("Database type not defined in {$name} configuration");
+				throw new App\Exception("Database type not defined in {$name} configuration");
 			}
 
 			// Set the driver class name

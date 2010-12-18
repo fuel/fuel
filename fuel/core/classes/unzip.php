@@ -81,7 +81,7 @@ class Unzip {
 
 		if ( ! $files = $this->_list_files())
 		{
-			throw new Exception('ZIP folder was empty.');
+			throw new App\Exception('ZIP folder was empty.');
 			return false;
 		}
 
@@ -118,7 +118,7 @@ class Unzip {
 
 						if ( ! @mkdir($this->_target_dir . '/' . $str))
 						{
-							throw new Exception('Desitnation path is not writable.');
+							throw new App\Exception('Desitnation path is not writable.');
 							return false;
 						}
 
@@ -231,7 +231,7 @@ class Unzip {
 
 		if ( ! $fh)
 		{
-			throw new Exception('Failed to load file: ' . $this->_zip_file);
+			throw new App\Exception('Failed to load file: ' . $this->_zip_file);
 			return false;
 		}
 
@@ -244,7 +244,7 @@ class Unzip {
 			if ( ! $this->_load_files_by_signatures($fh, $stop_on_file))
 			{
 				$this->set_debug('Failed! Could not find any valid header.');
-				throw new Exception('ZIP File is corrupted or empty');
+				throw new App\Exception('ZIP File is corrupted or empty');
 
 				return false;
 			}
@@ -274,13 +274,13 @@ class Unzip {
 
 		if ( ! isset($this->compressed_list[$compressed_file_name]))
 		{
-			throw new Exception('File "<strong>$compressed_file_name</strong>" is not compressed in the zip.');
+			throw new App\Exception('File "<strong>$compressed_file_name</strong>" is not compressed in the zip.');
 			return false;
 		}
 
 		if (substr($compressed_file_name, -1) == '/')
 		{
-			throw new Exception('Trying to unzip a folder name "<strong>$compressed_file_name</strong>".');
+			throw new App\Exception('Trying to unzip a folder name "<strong>$compressed_file_name</strong>".');
 			return false;
 		}
 
@@ -355,19 +355,19 @@ class Unzip {
 			case 0:
 				return $target_file_name ? file_put_contents($target_file_name, $content) : $content;
 			case 1:
-				throw new Exception('Shrunk mode is not supported... yet?');
+				throw new App\Exception('Shrunk mode is not supported... yet?');
 				return false;
 			case 2:
 			case 3:
 			case 4:
 			case 5:
-				throw new Exception('Compression factor ' . ($mode - 1) . ' is not supported... yet?');
+				throw new App\Exception('Compression factor ' . ($mode - 1) . ' is not supported... yet?');
 				return false;
 			case 6:
-				throw new Exception('Implode is not supported... yet?');
+				throw new App\Exception('Implode is not supported... yet?');
 				return false;
 			case 7:
-				throw new Exception('Tokenizing compression algorithm is not supported... yet?');
+				throw new App\Exception('Tokenizing compression algorithm is not supported... yet?');
 				return false;
 			case 8:
 				// Deflate
@@ -375,10 +375,10 @@ class Unzip {
 						file_put_contents($target_file_name, gzinflate($content, $uncompressed_size)) :
 						gzinflate($content, $uncompressed_size);
 			case 9:
-				throw new Exception('Enhanced Deflating is not supported... yet?');
+				throw new App\Exception('Enhanced Deflating is not supported... yet?');
 				return false;
 			case 10:
-				throw new Exception('PKWARE Date Compression Library Impoloding is not supported... yet?');
+				throw new App\Exception('PKWARE Date Compression Library Impoloding is not supported... yet?');
 				return false;
 			case 12:
 				// Bzip2
@@ -386,10 +386,10 @@ class Unzip {
 						file_put_contents($target_file_name, bzdecompress($content)) :
 						bzdecompress($content);
 			case 18:
-				throw new Exception('IBM TERSE is not supported... yet?');
+				throw new App\Exception('IBM TERSE is not supported... yet?');
 				return false;
 			default:
-				throw new Exception('Unknown uncompress method: $mode');
+				throw new App\Exception('Unknown uncompress method: $mode');
 				return false;
 		}
 	}

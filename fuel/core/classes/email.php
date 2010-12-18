@@ -43,7 +43,7 @@ class Email {
 		$class = 'Email_' . $protocol;
 		if ($protocol == 'Driver' || ! class_exists($class))
 		{
-			throw new Exception('Protocol ' . $protocol . ' is not a valid protocol for emailing.');
+			throw new App\Exception('Protocol ' . $protocol . ' is not a valid protocol for emailing.');
 		}
 		return new $class($config);
 	}

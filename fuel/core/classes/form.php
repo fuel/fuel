@@ -156,7 +156,7 @@ class Form
 	{
 		if ($this->field_exists($field_name))
 		{
-			throw new Exception(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
+			throw new App\Exception(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
 		}
 
 		$this->_fields[$field_name] = $attributes;
@@ -206,7 +206,7 @@ class Form
 	{
 		if ( ! $this->field_exists($field_name))
 		{
-			throw new Exception(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
+			throw new App\Exception(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
 		}
 		$this->_fields[$field_name] = array_merge_recursive($this->_fields[$field_name], $attributes);
 
@@ -264,7 +264,7 @@ class Form
 	{
 		if ( ! isset(static::$_forms[$form_name]))
 		{
-			throw new Exception(sprintf('Form "%s" does not exist.', $form_name));
+			throw new App\Exception(sprintf('Form "%s" does not exist.', $form_name));
 		}
 
 		return static::$_forms[$form_name];
@@ -462,7 +462,7 @@ class Form
 	{
 		if ( ! isset($parameters['options']) OR !is_array($parameters['options']))
 		{
-			throw new Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
+			throw new App\Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
 		}
 		// Get the options then unset them from the array
 		$options = $parameters['options'];
@@ -642,11 +642,11 @@ class Form
 	{
 		if ( ! isset($options['type']))
 		{
-			throw new Exception('You must specify a type for the input.');
+			throw new App\Exception('You must specify a type for the input.');
 		}
 		elseif ( ! in_array($options['type'], static::$_valid_inputs))
 		{
-			throw new Exception(sprintf('"%s" is not a valid input type.', $options['type']));
+			throw new App\Exception(sprintf('"%s" is not a valid input type.', $options['type']));
 		}
 
 		return html_tag('input', static::attr_to_string($options));

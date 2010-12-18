@@ -143,12 +143,12 @@ class Request {
 				}
 				else
 				{
-					throw new Exception('404 Action not found.');
+					throw new App\Exception('404 Action not found.');
 				}
 			}
 			else
 			{
-				throw new Exception('404 Controller not found.');
+				throw new App\Exception('404 Controller not found.');
 			}
 		}
 	}

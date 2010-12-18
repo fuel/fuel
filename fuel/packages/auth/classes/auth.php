@@ -87,7 +87,7 @@ class Auth {
 		// Driver must be set
 		if (empty($config['driver']) || ! is_string($config['driver']))
 		{
-			throw new Session_Exception('No auth driver given.');
+			throw new App\Session_Exception('No auth driver given.');
 		}
 
 		// determine the driver to load
@@ -103,7 +103,7 @@ class Auth {
 			$class = get_class($driver);
 			if ( ! static::$_instances[$id] instanceof $class)
 			{
-				throw new Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
+				throw new App\Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
 			}
 		}
 		else

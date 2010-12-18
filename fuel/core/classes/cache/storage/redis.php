@@ -57,14 +57,14 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 			}
 			catch (Exception $e)
 			{
-				throw new Cache_Exception('Can not connect to the Redis engine. The error message says "'.$e->getMessage().'".');
+				throw new App\Cache_Exception('Can not connect to the Redis engine. The error message says "'.$e->getMessage().'".');
 			}
 
 			// get the redis version
 			preg_match('/redis_version:(.*?)\n/', $this->redis->info(), $info);
 			if (version_compare(trim($info[1]), '1.2') < 0)
 			{
-				throw new Cache_Exception('Version 1.2 or higher of the Redis NoSQL engine is required to use the redis cache driver.');
+				throw new App\Cache_Exception('Version 1.2 or higher of the Redis NoSQL engine is required to use the redis cache driver.');
 			}
 		}
 
@@ -118,7 +118,7 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 		$properties_end = strpos($payload, '{{/'.self::PROPS_TAG.'}}');
 		if ($properties_end === FALSE)
 		{
-			throw new Cache_Exception('Incorrect formatting');
+			throw new App\Cache_Exception('Incorrect formatting');
 		}
 
 		$this->contents = substr($payload, $properties_end + strlen('{{/'.self::PROPS_TAG.'}}'));
@@ -126,7 +126,7 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 		$props = json_decode($props, true);
 		if ($props === NULL)
 		{
-			throw new Cache_Exception('Properties retrieval failed');
+			throw new App\Cache_Exception('Properties retrieval failed');
 		}
 
 		$this->created			= $props['created'];

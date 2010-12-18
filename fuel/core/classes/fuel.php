@@ -75,7 +75,7 @@ class Fuel {
 	{
 		if (static::$initialized)
 		{
-			throw new Exception("You can't initialize Fuel more than once.");
+			throw new App\Exception("You can't initialize Fuel more than once.");
 		}
 
 		static::$_paths = array(APPPATH, COREPATH);
@@ -473,7 +473,7 @@ class Fuel {
 		{
 			if ( ! class_exists($class))
 			{
-				throw new Exception('Always load class does not exist.');
+				throw new App\Exception('Always load class does not exist.');
 			}
 		}
 

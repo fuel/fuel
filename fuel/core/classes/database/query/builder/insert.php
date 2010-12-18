@@ -84,7 +84,7 @@ class Database_Query_Builder_Insert extends Database_Query_Builder {
 	{
 		if ( ! is_array($this->_values))
 		{
-			throw new Exception('INSERT INTO ... SELECT statements cannot be combined with INSERT INTO ... VALUES');
+			throw new App\Exception('INSERT INTO ... SELECT statements cannot be combined with INSERT INTO ... VALUES');
 		}
 
 		// Get all of the passed values
@@ -97,9 +97,9 @@ class Database_Query_Builder_Insert extends Database_Query_Builder {
 
 	/**
 	 * This is a wrapper function for calling columns() and values().
-	 * 
+	 *
 	 * @param	array	column value pairs
-	 * @return	$this 
+	 * @return	$this
 	 */
 	public function set(array $pairs)
 	{
@@ -119,7 +119,7 @@ class Database_Query_Builder_Insert extends Database_Query_Builder {
 	{
 		if ($query->type() !== Database::SELECT)
 		{
-			throw new Exception('Only SELECT queries can be combined with INSERT queries');
+			throw new App\Exception('Only SELECT queries can be combined with INSERT queries');
 		}
 
 		$this->_values = $query;

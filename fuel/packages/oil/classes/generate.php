@@ -27,7 +27,7 @@ class Generate
 	{
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
-		
+
 		$plural = App\Inflector::pluralize($singular);
 
 		$filepath = APPPATH . 'classes/controller/' . $plural .'.php';
@@ -71,7 +71,7 @@ CONTROLLER;
 		}
 	}
 
-	
+
 	public function model($args)
 	{
 		$singular = strtolower(array_shift($args));
@@ -165,7 +165,7 @@ VIEW;
 			$mode = 'add_fields';
 
 			preg_match('/add_[a-z0-9_]+_to_([a-z0-9_]+)/i', $migration_name, $matches);
-			
+
 			$table = $matches[1];
 		}
 
@@ -224,13 +224,13 @@ HELP;
 
 
 	// Helper functions
-	
+
 
 	private function write($filepath, $data)
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
-			throw new Exception('Cannot open file: '. $filepath);
+			throw new App\Exception('Cannot open file: '. $filepath);
 		}
 
 		$result = @fwrite($handle, $data);
@@ -238,7 +238,7 @@ HELP;
 		// Write $somecontent to our opened file.
 		if ($result === FALSE)
 		{
-			throw new Exception('Cannot write to file: '. $filepath);
+			throw new App\Exception('Cannot write to file: '. $filepath);
 		}
 
 		@fclose($handle);
@@ -252,7 +252,7 @@ HELP;
 	private function _build_migration($migration_name, $mode, $table, $args)
 	{
 		$migration_name = ucfirst(strtolower($migration_name));
-		
+
 		if ($mode == 'create_table' or $mode == 'add_fields')
 		{
 			$field_str = '';
@@ -342,7 +342,7 @@ MIGRATION;
 
 		if (glob(APPPATH .'migrations/*_' . strtolower($migration_name) . '.php'))
 		{
-			throw new Exception('A migration with this name already exists.');
+			throw new App\Exception('A migration with this name already exists.');
 		}
 
 		if (self::write($filepath, $migration))
@@ -359,7 +359,7 @@ MIGRATION;
 	private function _find_migration_number()
 	{
 		list($last) = explode('_', basename(end(glob(APPPATH .'migrations/*_*.php'))));
-		
+
 		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
 	}
 
@@ -380,7 +380,7 @@ MIGRATION;
 
 		self::write($path, $contents);
 	}
-		
+
 }
 
 /* End of file model.php */

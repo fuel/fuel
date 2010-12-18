@@ -109,7 +109,7 @@ class Session {
 			$class_instance = 'Fuel\\Core\\'.$class;
 			if (static::$_instances[$cookie] instanceof $class_instance)
 			{
-				throw new Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
+				throw new App\Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
 			}
 		}
 		else

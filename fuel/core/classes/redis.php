@@ -62,7 +62,7 @@ class Redis {
 
 		if ( ! $this->connection)
 		{
-			throw new Redis_Exception($errstr, $errno);
+			throw new App\Redis_Exception($errstr, $errno);
 		}
 	}
 
@@ -95,7 +95,7 @@ class Redis {
 		{
 			// Error
 			case '-':
-				throw new Redis_Exception(substr(trim($reply), 4));
+				throw new App\Redis_Exception(substr(trim($reply), 4));
 			break;
 
 			// In-line reply
@@ -160,7 +160,7 @@ class Redis {
 
 			// Don't know what to do?  Throw it outta here
 			default:
-				throw new Redis_Exception("invalid server response: {$reply}");
+				throw new App\Redis_Exception("invalid server response: {$reply}");
 			break;
 		}
 

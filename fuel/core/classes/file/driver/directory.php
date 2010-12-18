@@ -97,7 +97,7 @@ class File_Driver_Directory {
 	 */
 	public function update()
 	{
-		throw new File_Exception('Update method is unavailable on directories.');
+		throw new App\File_Exception('Update method is unavailable on directories.');
 	}
 
 	/**

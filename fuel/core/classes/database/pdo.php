@@ -59,7 +59,7 @@ class Database_PDO extends Database {
 		}
 		catch (PDOException $e)
 		{
-			throw new Database_Exception(':error', array(
+			throw new App\Database_Exception(':error', array(
 					':error' => $e->getMessage(),
 				),
 				$e->getCode(),
@@ -114,7 +114,7 @@ class Database_PDO extends Database {
 			}
 
 			// Convert the exception in a database exception
-			throw new Database_Exception(':error [ :query ]', array(
+			throw new App\Database_Exception(':error [ :query ]', array(
 					':error' => $e->getMessage(),
 					':query' => $sql
 				),
@@ -168,13 +168,13 @@ class Database_PDO extends Database {
 
 	public function list_tables($like = NULL)
 	{
-		throw new Exception('Database method :method is not supported by :class',
+		throw new App\Exception('Database method :method is not supported by :class',
 			array(':method' => __FUNCTION__, ':class' => __CLASS__));
 	}
 
 	public function list_columns($table, $like = NULL)
 	{
-		throw new Exception('Database method :method is not supported by :class',
+		throw new App\Exception('Database method :method is not supported by :class',
 			array(':method' => __FUNCTION__, ':class' => __CLASS__));
 	}
 
