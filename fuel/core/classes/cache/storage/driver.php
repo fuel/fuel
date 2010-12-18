@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 abstract class Cache_Storage_Driver {
 
 	/**
@@ -428,12 +430,12 @@ abstract class Cache_Storage_Driver {
 			}
 			if (is_string($this->contents))
 			{
-				$this->content_handler = Config::get('cache.string_handler', 'string');
+				$this->content_handler = App\Config::get('cache.string_handler', 'string');
 			}
 			else
 			{
 				$type = is_object($this->contents) ? get_class($this->contents) : gettype($this->contents);
-				$this->content_handler = Config::get('cache.'.$type.'_handler', 'serialized');
+				$this->content_handler = App\Config::get('cache.'.$type.'_handler', 'serialized');
 			}
 		}
 

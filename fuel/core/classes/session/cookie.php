@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // --------------------------------------------------------------------
 
 class Session_Cookie extends Session_Driver {
@@ -47,8 +49,8 @@ class Session_Cookie extends Session_Driver {
 	{
 		// create a new session
 		$this->keys['session_id']	= $this->_new_session_id();
-		$this->keys['ip_address']	= Input::real_ip();
-		$this->keys['user_agent']	= Input::user_agent();
+		$this->keys['ip_address']	= App\Input::real_ip();
+		$this->keys['user_agent']	= App\Input::user_agent();
 		$this->keys['created'] 		= $this->time->get_timestamp();
 		$this->keys['updated'] 		= $this->keys['created'];
 		$this->keys['payload'] 		= '';
@@ -116,7 +118,7 @@ class Session_Cookie extends Session_Driver {
 		if ( ! empty($this->keys))
 		{
 			// delete the session cookie
-			Cookie::delete($this->config['cookie_name']);
+			App\Cookie::delete($this->config['cookie_name']);
 		}
 
 		// reset the stored session data

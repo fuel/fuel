@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Cache {
 
 	/**
@@ -23,7 +25,7 @@ class Cache {
 	 */
 	public static function _init()
 	{
-		Config::load('cache', true);
+		App\Config::load('cache', true);
 	}
 
 	// ---------------------------------------------------------------------
@@ -39,7 +41,7 @@ class Cache {
 	public static function factory($identifier, $config = array())
 	{
 		// load the default config
-		$defaults = Config::get('cache', array());
+		$defaults = App\Config::get('cache', array());
 
 		// $config can be either an array of config settings or the name of the storage driver
 		if ( ! empty($config) && ! is_array($config) && ! is_null($config))
