@@ -47,12 +47,20 @@ class Auth {
 	 */
 	protected static $_verify_multiple = false;
 
+	/**
+	 * @var	array	subdriver registry, takes driver name and method for checking it
+	 */
+	protected static $_drivers = array(
+		'group'	=> 'member',
+		'acl'	=> 'has_access',
+	);
+
 	public static function _init()
 	{
-		App\Config::load('auth', 'auth');
+		App\Config::load('auth', true);
 
 		// Whether to allow multiple drivers of any type, defaults to not allowed
-		static::$_verify_multiple = App\Config::get('auth.verify_multiple_logins', false) ? true : false;
+		static::$_verify_multiple = App\Config::get('auth.verify_multiple_logins', false);
 
 		foreach((array) App\Config::get('auth.driver', array()) as $driver => $config)
 		{
@@ -252,101 +260,110 @@ class Auth {
 	}
 
 	/**
-	 * Retrieve a loaded group driver instance
-	 * (loading must be done by Auth class)
+	 * Register a new driver type
 	 *
-	 * @param	string|true		driver id or true for an array of all loaded drivers
-	 * @return	Auth_Group_Driver|array
-	 */
-	public static function group($instance)
-	{
-		return Auth_Group_Driver::instance($instance);
-	}
-
-	/**
-	 * Verify Group membership
-	 *
-	 * @param	mixed	group identifier to check for membership
-	 * @param	string	group driver id or null to check all
-	 * @param	array	user identifier to check in form array(driver_id, user_id)
-	 * @return bool
-	 */
-	public static function member($group, $driver = null, $user = null)
-	{
-		if ($driver === null)
-		{
-			if ($user === null)
-			{
-				foreach (static::$_verified as $v)
-				{
-					if ($v->member($group))
-					{
-						return true;
-					}
-				}
-			}
-			else
-			{
-				foreach (static::$_instances as $i)
-				{
-					if ($i->member($group, null, $user))
-					{
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-		else
-		{
-			if ($user === null)
-			{
-				foreach (static::$_verified as $v)
-				{
-					if (static::group($driver)->member($group))
-					{
-						return true;
-					}
-				}
-			}
-			elseif (static::group($driver)->member($group, $user))
-			{
-				return true;
-			}
-
-			return false;
-		}
-	}
-
-	/**
-	 * Retrieve a loaded acl driver instance
-	 * (loading must be done by Auth class)
-	 *
-	 * @param	string|true		driver id or true for an array of all loaded drivers
-	 * @return	Auth_Acl_Driver|array
-	 */
-	public static function acl($instance)
-	{
-		return Auth_Acl_Driver::instance($instance);
-	}
-
-	/**
-	 * Verify Acl access
-	 *
-	 * @param	mixed	condition to validate
-	 * @param	string	acl driver id or null to check all
-	 * @param	array	user or group identifier to check in form array(driver_id, id)
+	 * @param	string	name of the driver type, may not conflict with class method name
+	 * @param	string	name of the method to use for checking this type of driver, also cannot conflict with method
 	 * @return	bool
 	 */
-	public static function has_access($condition, $driver = null, $entity = null)
+	public static function register_driver_type($type, $check_method)
 	{
+		$driver_exists = ! is_string($type)
+						|| array_key_exists($type, static::$_drivers)
+						|| method_exists(get_called_class(), $check_method)
+						|| in_array($type, array('login', 'group', 'acl'));
+		$method_exists = ! is_string($type)
+						|| array_search($check_method, static::$_drivers)
+						|| method_exists(get_called_class(), $type);
+
+		if ($driver_exists && static::$_drivers[$type] == $check_method)
+		{
+			return true;
+		}
+
+		if ($driver_exists || $method_exists)
+		{
+			App\Error::notice('Cannot add driver type, its name conflicts with another driver or method.');
+			return false;
+		}
+
+		static::$_drivers[$type] = $check_method;
+		return true;
+	}
+
+	/**
+	 * Unregister a driver type
+	 *
+	 * @param	string	name of the driver type
+	 * @return	bool
+	 */
+	public static function unregister_driver_type($type)
+	{
+		if (in_array('login', 'group', 'acl'))
+		{
+			App\Error::notice('Cannot remove driver type, included drivers login, group and acl cannot be removed.');
+			return false;
+		}
+
+		unset(static::$_drivers[$type]);
+		return true;
+	}
+
+	/**
+	 * Magic method used to retrieve driver instances and check them for validity
+	 *
+	 * @param	string
+	 * @param	array
+	 * @return	mixed
+	 * @throws	Auth_Exception
+	 */
+	public static function __callStatic($method, $args)
+	{
+		if (array_key_exists($method, static::$_drivers))
+		{
+			return static::_driver_instance($method, $args[0]);
+		}
+		if ($type = array_search($method, static::$_drivers))
+		{
+			return static::_driver_check($type, $args[0], @$args[1], @$args[2]);
+		}
+
+		throw new Auth_Exception('Invalid method.');
+	}
+
+	/**
+	 * Retrieve a loaded driver instance
+	 * (loading must be done by other driver class)
+	 *
+	 * @param	string			driver type
+	 * @param	string|true		driver id or true for an array of all loaded drivers
+	 * @return	Auth_Driver|array
+	 */
+	protected static function _driver_instance($type, $instance)
+	{
+		$class = 'Fuel\\Auth\\Auth_'.ucfirst($type).'_Driver';
+		return $class::instance($instance);
+	}
+
+	/**
+	 * Check driver
+	 *
+	 * @param	string	driver type
+	 * @param	mixed	condition for which the driver is checked
+	 * @param	string	driver id or null to check all
+	 * @param	array	identifier to check in form array(driver_id, user_id)
+	 * @return bool
+	 */
+	public static function _driver_check($type, $condition, $driver = null, $user = null)
+	{
+		$method = static::$_drivers[$type];
 		if ($driver === null)
 		{
-			if ($entity === null)
+			if ($user === null)
 			{
 				foreach (static::$_verified as $v)
 				{
-					if ($v->has_access($condition))
+					if ($v->$method($condition))
 					{
 						return true;
 					}
@@ -356,7 +373,7 @@ class Auth {
 			{
 				foreach (static::$_instances as $i)
 				{
-					if ($i->has_access($condition, null, $entity))
+					if ($i->$method($condition, null, $user))
 					{
 						return true;
 					}
@@ -366,17 +383,17 @@ class Auth {
 		}
 		else
 		{
-			if ($entity === null)
+			if ($user === null)
 			{
 				foreach (static::$_verified as $v)
 				{
-					if (static::acl($driver)->has_access($condition))
+					if (static::$type($driver)->$method($condition))
 					{
 						return true;
 					}
 				}
 			}
-			elseif (static::acl($driver)->has_access($condition, $entity))
+			elseif (static::$type($driver)->$method($condition, $user))
 			{
 				return true;
 			}
