@@ -54,7 +54,7 @@ class Error {
 			$severity = static::$levels[$last_error['type']];
 			Log::error($severity.' - '.$last_error['message'].' in '.$last_error['file'].' on line '.$last_error['line']);
 
-			if (Fuel::$env != Fuel::PRODUCTION)
+			if (App\Fuel::$env != Fuel::PRODUCTION)
 			{
 				static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
 			}
@@ -72,7 +72,7 @@ class Error {
 		$severity = ( ! isset(static::$levels[$e->getCode()])) ? $e->getCode() : static::$levels[$e->getCode()];
 		Log::error($severity.' - '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
 
-		if (Fuel::$env != Fuel::PRODUCTION)
+		if (App\Fuel::$env != Fuel::PRODUCTION)
 		{
 			static::show_php_error($e);
 		}
@@ -86,16 +86,16 @@ class Error {
 	{
 		if (static::$count <= Config::get('error_throttling', 10))
 		{
-			Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
+			App\Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
 
-			if (Fuel::$env != Fuel::PRODUCTION && ($severity & error_reporting()) == $severity)
+			if (App\Fuel::$env != App\Fuel::PRODUCTION && ($severity & error_reporting()) == $severity)
 			{
 				static::$count++;
 				static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
 			}
 		}
-		elseif (Fuel::$env != Fuel::PRODUCTION
-				&& static::$count == (Config::get('error_throttling', 10) + 1)
+		elseif (App\Fuel::$env != App\Fuel::PRODUCTION
+				&& static::$count == (App\Config::get('error_throttling', 10) + 1)
 				&& ($severity & error_reporting()) == $severity)
 		{
 			static::$count++;
