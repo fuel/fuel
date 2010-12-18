@@ -54,7 +54,7 @@ class Auth {
 		// Whether to allow multiple drivers of any type, defaults to not allowed
 		static::$_verify_multiple = App\Config::get('auth.verify_multiple_logins', false) ? true : false;
 
-		foreach((array) App\Config::get('auth.login_driver', array()) as $driver => $config)
+		foreach((array) App\Config::get('auth.driver', array()) as $driver => $config)
 		{
 			$config = is_int($driver)
 				? array('driver' => $config)
@@ -100,7 +100,8 @@ class Auth {
 		if (isset(static::$_instances[$id]))
 		{
 			// if so, they must be using the same driver class!
-			if ( ! static::$_instances[$id] instanceof get_class($driver))
+			$class = get_class($driver);
+			if ( ! static::$_instances[$id] instanceof $class)
 			{
 				throw new Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
 			}
