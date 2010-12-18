@@ -72,6 +72,33 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 	}
 
 	/**
+	 * Return user info in an array, always includes email & screen_name
+	 * Additional fields can be requested in the first param or set in config,
+	 * all additional fields must have their own get method "get_" + fieldname
+	 *
+	 * @param	array	additional fields
+	 * @return	array
+	 */
+	final public function get_user_array(Array $additional_fields = array())
+	{
+		$user = array(
+			'email'			=> $this->get_user_email(),
+			'screen_name'	=> $this->get_user_screen_name()
+		);
+
+		$additional_fields = array_merge($this->config['additional_fields'], $additional_fields);
+		foreach($additional_fields as $af)
+		{
+			// only works if it actually can be fetched through a get_ method
+			if (is_callable(array($this, $method = 'get_'.$af)))
+			{
+				$user[$af] = $this->{'get_'.$af}();
+			}
+		}
+		return $user;
+	}
+
+	/**
 	 * Verify Group membership
 	 *
 	 * @param	mixed	group identifier to check for membership
@@ -151,6 +178,20 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 	 * @return	array
 	 */
 	abstract public function get_user_groups();
+
+	/**
+	 * Get emailaddress of the current logged in user
+	 *
+	 * @return	string
+	 */
+	abstract public function get_user_email();
+
+	/**
+	 * Get screen name of the current logged in user
+	 *
+	 * @return	string
+	 */
+	abstract public function get_user_screen_name();
 }
 
 /* end of file auth.php */
