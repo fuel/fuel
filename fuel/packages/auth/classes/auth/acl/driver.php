@@ -15,14 +15,14 @@
 namespace Fuel\Auth;
 use Fuel\App;
 
-abstract class Auth_Acl_Driver extends App\Auth_Driver {
+abstract class Auth_Acl_Driver extends Auth_Driver {
 
 	public static function factory(Array $config = array())
 	{
 		// default driver id to driver name when not given
 		! array_key_exists('id', $config) && $config['id'] = $config['driver'];
 
-		$class = 'App\\Auth_Acl_'.ucfirst($config['driver']);
+		$class = 'Fuel\\Auth\\Auth_Acl_'.ucfirst($config['driver']);
 		$driver = new $class($config);
 
 		return $driver;

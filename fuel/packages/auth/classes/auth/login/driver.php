@@ -15,7 +15,7 @@
 namespace Fuel\Auth;
 use Fuel\App;
 
-abstract class Auth_Login_Driver extends App\Auth_Driver {
+abstract class Auth_Login_Driver extends Auth_Driver {
 
 	public static function factory(Array $config = array())
 	{
@@ -29,8 +29,7 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 				$config = is_int($driver)
 					? array('driver' => $config)
 					: array_merge($config, array('driver' => $driver));
-				$class = 'App\\Auth_Group_'.$config['driver'];
-				$class::factory($config);
+				Auth_Group_Driver::factory($config);
 			}
 		}
 		if (array_key_exists('acl_drivers', $config))
@@ -40,12 +39,11 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 				$config = is_int($driver)
 					? array('driver' => $config)
 					: array_merge($config, array('driver' => $driver));
-				$class = 'App\\Auth_Acl_'.$config['driver'];
-				$class::factory($config);
+				Auth_Acl_Driver::factory($config);
 			}
 		}
 
-		$class = 'App\\Auth_Login_'.ucfirst($config['driver']);
+		$class = 'Fuel\\Auth\\Auth_Login_'.ucfirst($config['driver']);
 		$driver = new $class($config);
 
 		return $driver;
@@ -71,11 +69,11 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 	{
 		if ( ! $this->perform_check())
 		{
-			App\Auth::_unregister_verified($this);
+			Auth::_unregister_verified($this);
 			return false;
 		}
 
-		App\Auth::_register_verified($this);
+		Auth::_register_verified($this);
 		return true;
 	}
 
@@ -120,7 +118,7 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 
 		if ($driver === null)
 		{
-			foreach (App\Auth::group(true) as $group)
+			foreach (Auth::group(true) as $group)
 			{
 				if ($group->group($group, $user))
 				{
@@ -131,7 +129,7 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 			return false;
 		}
 
-		return App\Auth::group($driver)->member($group, $user);
+		return Auth::group($driver)->member($group, $user);
 	}
 
 	/**
@@ -148,7 +146,7 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 
 		if ($driver === null)
 		{
-			foreach (App\Auth::acl(true) as $acl)
+			foreach (Auth::acl(true) as $acl)
 			{
 				if ($acl->has_access($condition, $user))
 				{
@@ -159,7 +157,7 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 			return false;
 		}
 
-		return App\Auth::acl($driver)->has_access($condition, $user);
+		return Auth::acl($driver)->has_access($condition, $user);
 	}
 
 	/**

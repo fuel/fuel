@@ -91,7 +91,7 @@ class Auth {
 		}
 
 		// determine the driver to load
-		$driver = App\Auth_Login_Driver::factory($config);
+		$driver = Auth_Login_Driver::factory($config);
 
 		// get the driver's cookie name
 		$id = $driver->get_id();
@@ -261,7 +261,7 @@ class Auth {
 	 */
 	public static function group($instance)
 	{
-		return App\Auth_Group_Driver::instance($instance);
+		return Auth_Group_Driver::instance($instance);
 	}
 
 	/**
@@ -328,7 +328,7 @@ class Auth {
 	 */
 	public static function acl($instance)
 	{
-		return App\Auth_Acl_Driver::instance($instance);
+		return Auth_Acl_Driver::instance($instance);
 	}
 
 	/**

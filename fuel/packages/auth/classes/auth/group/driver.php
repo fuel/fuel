@@ -15,14 +15,14 @@
 namespace Fuel\Auth;
 use Fuel\App;
 
-abstract class Auth_Group_Driver extends App\Auth_Driver {
+abstract class Auth_Group_Driver extends Auth_Driver {
 
 	public static function factory(Array $config = array())
 	{
 		// default driver id to driver name when not given
 		! array_key_exists('id', $config) && $config['id'] = $config['driver'];
 
-		$class = 'App\\Auth_Group_'.ucfirst($config['driver']);
+		$class = 'Fuel\\Auth\\Auth_Group_'.ucfirst($config['driver']);
 		$driver = new $class($config);
 
 		if (array_key_exists('acl_drivers', $config))
@@ -32,8 +32,7 @@ abstract class Auth_Group_Driver extends App\Auth_Driver {
 				$config = is_int($driver)
 					? array('driver' => $config)
 					: array_merge($config, array('driver' => $driver));
-				$class = 'App\\Auth_Acl_'.$config['driver'];
-				$class::factory($config);
+				Auth_Acl_Driver::factory($config);
 			}
 		}
 
@@ -57,7 +56,7 @@ abstract class Auth_Group_Driver extends App\Auth_Driver {
 		{
 			if ($driver === null)
 			{
-				foreach (App\Auth::acl(true) as $acl)
+				foreach (Auth::acl(true) as $acl)
 				{
 					if ($acl->has_access($condition, $group))
 					{
@@ -68,11 +67,11 @@ abstract class Auth_Group_Driver extends App\Auth_Driver {
 				return false;
 			}
 
-			return App\Auth::acl($driver)->has_access($condition, $group);
+			return Auth::acl($driver)->has_access($condition, $group);
 		}
 
 		// When no group was given check all logged in users
-		foreach (App\Auth::verified() as $v)
+		foreach (Auth::verified() as $v)
 		{
 			// ... and check all those their groups
 			$gs = $v->get_user_groups();

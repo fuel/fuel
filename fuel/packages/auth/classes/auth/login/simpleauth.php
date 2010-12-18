@@ -45,7 +45,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 
 		if (empty($this->user) || $this->user->username != $username)
 		{
-			$this->user = App\Model\SimpleUser::find_by_username($username, array('limit' => 1));
+			$this->user = Model\SimpleUser::find_by_username($username, array('limit' => 1));
 			// this prevents a second check to query again, but will still fail the login_hash check
 			if (empty($this->user))
 			{
@@ -73,7 +73,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 		}
 
 		$this->hash_password($password);
-		$this->user = App\Model\SimpleUser::find(array(
+		$this->user = Model\SimpleUser::find(array(
 			'where' => array(array('username', '=', strtolower($username)), array('password', '=', $password)),
 			'limit' => 1));
 		if (empty($this->user))
@@ -101,7 +101,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			throw new Auth_Exception('User not logged in, can\'t create login hash.');
 		}
 
-		$this->user->last_login = Date::factory()->get_timestamp();
+		$this->user->last_login = App\Date::factory()->get_timestamp();
 		$this->user->login_hash = sha1($this->config['login_hash_salt'].$this->user->username.$this->user->last_login);
 		$this->user->save();
 		return $this->user->login_hash;

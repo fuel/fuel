@@ -26,7 +26,7 @@ class Auth_Acl_SimpleAcl extends Auth_Acl_Driver {
 
 	protected function has_access($condition, Array $entity)
 	{
-		$group = App\Auth::group($entity[0]);
+		$group = Auth::group($entity[0]);
 		if ( ! is_array($condition) || empty($group) || ! is_callable($group, 'get_roles'))
 		{
 			return false;
