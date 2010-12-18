@@ -36,6 +36,18 @@ abstract class Auth_Acl_Driver extends Auth_Driver {
 		$driver = new $class($config);
 		static::$_instances[$driver->get_id()] = $driver;
 
+		foreach ($driver->get_config('drivers', array()) as $type => $drivers)
+		{
+			foreach ($drivers as $d => $custom)
+			{
+				$custom = is_int($d)
+					? array('driver' => $custom)
+					: array_merge($custom, array('driver' => $d));
+				$class = 'Fuel\\Auth\\Auth_'.$type.'_Driver';
+				$class::factory($custom);
+			}
+		}
+
 		return $driver;
 	}
 

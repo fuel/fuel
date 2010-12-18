@@ -33,7 +33,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 	protected $config = array(
 		'salt_prefix' => '',
 		'salt_postfix' => '',
-		'group_drivers' => array('simplegroup'),
+		'drivers' => array('group' => array('simplegroup')),
 		'login_hash_salt' => 'put_some_salt_in_here',
 		'additional_fields' => array('profile_fields')
 	);

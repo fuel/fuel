@@ -36,13 +36,16 @@ abstract class Auth_Group_Driver extends Auth_Driver {
 		$driver = new $class($config);
 		static::$_instances[$driver->get_id()] = $driver;
 
-		$acl_drivers = $driver->get_config('acl_drivers', array());
-		foreach ($acl_drivers as $d => $custom)
+		foreach ($driver->get_config('drivers', array()) as $type => $drivers)
 		{
-			$custom = is_int($d)
-				? array('driver' => $custom)
-				: array_merge($custom, array('driver' => $d));
-			Auth_Acl_Driver::factory($custom);
+			foreach ($drivers as $d => $custom)
+			{
+				$custom = is_int($d)
+					? array('driver' => $custom)
+					: array_merge($custom, array('driver' => $d));
+				$class = 'Fuel\\Auth\\Auth_'.$type.'_Driver';
+				$class::factory($custom);
+			}
 		}
 
 		return $driver;

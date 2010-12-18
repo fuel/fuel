@@ -95,7 +95,7 @@ class Auth {
 		// Driver must be set
 		if (empty($config['driver']) || ! is_string($config['driver']))
 		{
-			throw new App\Session_Exception('No auth driver given.');
+			throw new Auth_Exception('No auth driver given.');
 		}
 
 		// determine the driver to load
@@ -111,7 +111,7 @@ class Auth {
 			$class = get_class($driver);
 			if ( ! static::$_instances[$id] instanceof $class)
 			{
-				throw new App\Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
+				throw new Auth_Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
 			}
 		}
 		else
@@ -351,15 +351,16 @@ class Auth {
 	 * @param	string	driver type
 	 * @param	mixed	condition for which the driver is checked
 	 * @param	string	driver id or null to check all
-	 * @param	array	identifier to check in form array(driver_id, user_id)
+	 * @param	array	identifier to check, should default to current user or relation therof and be
+	 * 					in the form of array(driver_id, user_id)
 	 * @return bool
 	 */
-	public static function _driver_check($type, $condition, $driver = null, $user = null)
+	public static function _driver_check($type, $condition, $driver = null, $entity = null)
 	{
 		$method = static::$_drivers[$type];
 		if ($driver === null)
 		{
-			if ($user === null)
+			if ($entity === null)
 			{
 				foreach (static::$_verified as $v)
 				{
@@ -373,7 +374,7 @@ class Auth {
 			{
 				foreach (static::$_instances as $i)
 				{
-					if ($i->$method($condition, null, $user))
+					if ($i->$method($condition, null, $entity))
 					{
 						return true;
 					}
@@ -383,7 +384,7 @@ class Auth {
 		}
 		else
 		{
-			if ($user === null)
+			if ($entity === null)
 			{
 				foreach (static::$_verified as $v)
 				{
@@ -393,7 +394,7 @@ class Auth {
 					}
 				}
 			}
-			elseif (static::$type($driver)->$method($condition, $user))
+			elseif (static::$type($driver)->$method($condition, $entity))
 			{
 				return true;
 			}
