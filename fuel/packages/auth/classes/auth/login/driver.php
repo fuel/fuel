@@ -166,9 +166,9 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 	 *
 	 * @param	string
 	 */
-	public function hash_password(&$password)
+	public function hash_password($password)
 	{
-		$password = sha1(@$this->config['salt_prefix'].$password.@$this->config['salt_postfix']);
+		return sha1(@$this->config['salt_prefix'].$password.@$this->config['salt_postfix']);
 	}
 
 	// ------------------------------------------------------------------------

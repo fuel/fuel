@@ -156,7 +156,7 @@ class Auth {
 	 */
 	public static function instance($instance = null)
 	{
-		if ($instance === null)
+		if ($instance !== null)
 		{
 			if ( ! array_key_exists($instance, static::$_instances))
 			{
@@ -166,7 +166,7 @@ class Auth {
 			return static::$_instance[$instance];
 		}
 
-		if (is_null(static::$_instance))
+		if (static::$_instance === null)
 		{
 			static::$_instance = static::factory();
 		}

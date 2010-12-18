@@ -35,7 +35,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 		'salt_postfix' => '',
 		'group_drivers' => array('simplegroup'),
 		'login_hash_salt' => 'put_some_salt_in_here',
-		'additional_fields' => 'profile_fields'
+		'additional_fields' => array('profile_fields')
 	);
 
 	public function perform_check()
@@ -45,11 +45,11 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 
 		if (empty($this->user) || $this->user->username != $username)
 		{
-			$this->user = Model\SimpleUser::find_by_username($username, array('limit' => 1));
+			$this->user = reset(Model\SimpleUser::find_by_username($username, array('limit' => 1)));
 			// this prevents a second check to query again, but will still fail the login_hash check
 			if (empty($this->user))
 			{
-				$this->user = new stdClass();
+				$this->user = new \stdClass();
 				$this->user->username = $username;
 				$this->user->login_hash = 'none';
 			}
@@ -72,10 +72,9 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			return false;
 		}
 
-		$this->hash_password($password);
-		$this->user = Model\SimpleUser::find(array(
-			'where' => array(array('username', '=', strtolower($username)), array('password', '=', $password)),
-			'limit' => 1));
+		$password = $this->hash_password($password);
+		$this->user = Model\SimpleUser::find('first', array(
+			'where' => array(array('username', '=', strtolower($username)), array('password', '=', $password))));
 		if (empty($this->user))
 		{
 			return false;
@@ -144,7 +143,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			return false;
 		}
 
-		return $this->user->email;
+		return $this->user->username;
 	}
 
 	public function get_profile_fields()
