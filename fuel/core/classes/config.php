@@ -14,14 +14,14 @@
 
 namespace Fuel\Core;
 
-use Fuel\App;
+use Fuel\App as App;
 
 class Config {
-	
+
 	public static $loaded_files = array();
-	
+
 	public static $items = array();
-	
+
 	public static function load($file, $group = null, $reload = false)
 	{
 		if ( ! is_array($file) && array_key_exists($file, static::$loaded_files) and ! $reload)
@@ -64,7 +64,7 @@ class Config {
 		}
 		return $config;
 	}
-	
+
 	public static function get($item, $default = null)
 	{
 		if (isset(static::$items[$item]))

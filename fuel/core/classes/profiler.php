@@ -8,14 +8,14 @@ use \Console;
 use \PhpQuickProfiler;
 
 class Profiler {
-	
+
 	protected static $profiler = null;
-	
+
 	public static function init()
 	{
 		static::$profiler = new PhpQuickProfiler(FUEL_START_TIME);
 	}
-	
+
 	public static function mark($label)
 	{
 		Console::logSpeed($label);
@@ -30,12 +30,12 @@ class Profiler {
 	{
 		Console::log($test);
 	}
-	
+
 	public static function output()
 	{
 		return static::$profiler->display();
 	}
-	
+
 	public static function app_total()
 	{
 		return array(

@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 /**
  * This class is based off the Singleton class in php-activerecord (MIT License)
  */
@@ -21,7 +23,7 @@ abstract class Singleton
 {
 	/**
 	 * The instances cache.
-	 * 
+	 *
 	 * @var array
 	 */
 	private static $instances = array();

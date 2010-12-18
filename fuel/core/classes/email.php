@@ -17,6 +17,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Email {
 
 	protected static $_instance = null;
@@ -32,7 +34,7 @@ class Email {
 
 	/**
 	 * Creates a new instance of the email driver
-	 * 
+	 *
 	 * @param	array	$config
 	 */
 	public static function factory($config = array())
@@ -41,14 +43,14 @@ class Email {
 		$class = 'Email_' . $protocol;
 		if ($protocol == 'Driver' || ! class_exists($class))
 		{
-			throw new Exception('Protocol ' . $protocol . ' is not a valid protocol for emailing.');
+			throw new App\Exception('Protocol ' . $protocol . ' is not a valid protocol for emailing.');
 		}
 		return new $class($config);
 	}
 
 	/**
 	 * Used to set class information.
-	 * 
+	 *
 	 * @param	array	$config		An array of configuration settings.
 	 */
 	public function init($config = array())
@@ -80,7 +82,7 @@ class Email {
 
 	/**
 	 * Adds a blind carbon copy recipient
-	 * 
+	 *
 	 * @param	string	$address	A single email, a comma seperated list of emails, or an array of emails
 	 * @return	Email_Driver
 	 */
@@ -135,7 +137,7 @@ class Email {
 
 	/**
 	 * Sets the alternative message for the email. HTML if 'mailtype' is Plain Text, and viceversa.
-	 * 
+	 *
 	 * @param	string	$content
 	 * @return	Email_Driver
 	 */
@@ -146,7 +148,7 @@ class Email {
 
 	/**
 	 * Sets the HTML content to place into the email.
-	 * 
+	 *
 	 * @param	string	$html	The emails HTML
 	 * @return	Email_Driver
 	 */
@@ -157,7 +159,7 @@ class Email {
 
 	/**
 	 * Sets the Plain Text content to place into the email.
-	 * 
+	 *
 	 * @param	string	$html	The emails Plain Text
 	 * @return	Email_Driver
 	 */
@@ -168,7 +170,7 @@ class Email {
 
 	/**
 	 * Sends the email.
-	 * 
+	 *
 	 * @return	boolean		True if success, false if failure.
 	 */
 	public static function send()

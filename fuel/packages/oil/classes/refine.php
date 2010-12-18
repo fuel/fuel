@@ -22,12 +22,12 @@ class Refine
 	{
 		// Just call and run() or did they have a specific method in mind?
 		list($task, $method)=array_pad(explode(':', $task), 2, 'run');
-		
+
 		$task = ucfirst(strtolower($task));
 
 		if ( ! $file = App\Fuel::find_file('tasks', $task))
 		{
-			throw new Exception('Well that didnt work...');
+			throw new App\Exception('Well that didnt work...');
 			return;
 		}
 
@@ -40,7 +40,7 @@ class Refine
 		{
 			$method = array_shift($args);
 		}
-		
+
 		if ($return = call_user_func_array(array($new_task, $method), $args))
 		{
 			echo $return.PHP_EOL;

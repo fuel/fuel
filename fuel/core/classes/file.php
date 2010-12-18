@@ -92,11 +92,11 @@ class File {
 
 		if ( ! is_dir($basepath) || ! is_writable($basepath))
 		{
-			throw new File_Exception('Invalid basepath, cannot create file at this location.');
+			throw new App\File_Exception('Invalid basepath, cannot create file at this location.');
 		}
 		elseif (file_exists($new_file))
 		{
-			throw new File_Exception('File exists already, cannot be created.');
+			throw new App\File_Exception('File exists already, cannot be created.');
 		}
 
 		$file = static::open_file(@fopen($new_file, 'c'), true, $area);
@@ -122,11 +122,11 @@ class File {
 
 		if ( ! is_dir($basepath) || ! is_writable($basepath))
 		{
-			throw new File_Exception('Invalid basepath, cannot create directory at this location.');
+			throw new App\File_Exception('Invalid basepath, cannot create directory at this location.');
 		}
 		elseif (file_exists($new_dir))
 		{
-			throw new File_Exception('Directory exists already, cannot be created.');
+			throw new App\File_Exception('Directory exists already, cannot be created.');
 		}
 
 		$recursive = (strpos($name, '/') !== false || strpos($name, '\\') !== false);
@@ -169,12 +169,12 @@ class File {
 
 		if ( ! is_dir($path))
 		{
-			throw new File_Exception('Invalid path, directory cannot be read.');
+			throw new App\File_Exception('Invalid path, directory cannot be read.');
 		}
 
 		if ( ! $fp = @opendir($path))
 		{
-			throw new File_Exception('Could not open directory for reading.');
+			throw new App\File_Exception('Could not open directory for reading.');
 		}
 
 		// Use default when not set
@@ -301,11 +301,11 @@ class File {
 
 		if ( ! is_file($path))
 		{
-			throw new Exception('Cannot copy file: given path is not a file.');
+			throw new App\Exception('Cannot copy file: given path is not a file.');
 		}
 		elseif (file_exists($new_path))
 		{
-			throw new Exception('Cannot copy file: new path already exists.');
+			throw new App\Exception('Cannot copy file: new path already exists.');
 		}
 		$return = copy($path, $new_path);
 
@@ -330,11 +330,11 @@ class File {
 
 		if ( ! is_dir($path))
 		{
-			throw new Exception('Cannot copy directory: given path is not a directory.');
+			throw new App\Exception('Cannot copy directory: given path is not a directory.');
 		}
 		elseif (file_exists($new_path))
 		{
-			throw new Exception('Cannot copy directory: new path already exists.');
+			throw new App\Exception('Cannot copy directory: new path already exists.');
 		}
 
 		$files = static::read_dir($path, -1, array(), $area);
@@ -353,7 +353,7 @@ class File {
 			// abort if something went wrong
 			if ($check)
 			{
-				throw new File_Exception('Directory copy aborted prematurely, part of the operation failed.');
+				throw new App\File_Exception('Directory copy aborted prematurely, part of the operation failed.');
 			}
 		}
 	}
@@ -372,7 +372,7 @@ class File {
 		if ( ! is_file($path))
 		{
 			echo $path.PHP_EOL;
-			throw new Exception('Cannot delete file: given path "'.$path.'" is not a file.');
+			throw new App\Exception('Cannot delete file: given path "'.$path.'" is not a file.');
 		}
 
 		return unlink($path);
@@ -391,7 +391,7 @@ class File {
 		$path = rtrim(static::instance($area)->get_path($path, $area), '\\/').DS;
 		if ( ! is_dir($path))
 		{
-			throw new Exception('Cannot delete directory: given path is not a directory.');
+			throw new App\Exception('Cannot delete directory: given path is not a directory.');
 		}
 
 		$files = static::read_dir($path, -1, array(), $area);
@@ -418,7 +418,7 @@ class File {
 			// abort if something went wrong
 			if ( ! $check)
 			{
-				throw new Exception('Directory deletion aborted prematurely, part of the operation failed.');
+				throw new App\Exception('Directory deletion aborted prematurely, part of the operation failed.');
 			}
 		}
 
@@ -458,7 +458,7 @@ class File {
 		{
 			if (microtime(true) - $lock_mtime > 5)
 			{
-				throw new File_Exception('Could not secure file lock, timed out after 5 seconds.');
+				throw new App\File_Exception('Could not secure file lock, timed out after 5 seconds.');
 			}
 		}
 

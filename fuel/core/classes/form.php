@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // ------------------------------------------------------------------------
 
 /**
@@ -64,11 +66,11 @@ class Form
 		// Load for the first time
 		if (empty(static::$initialized))
 		{
-			Config::load('form', true);
+			App\Config::load('form', true);
 
 			static::$initialized = true;
 
-			static::$_forms = Config::get('form.forms');
+			static::$_forms = App\Config::get('form.forms');
 		}
 	}
 
@@ -136,7 +138,7 @@ class Form
 
 		static::parse_validation();
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -154,7 +156,7 @@ class Form
 	{
 		if ($this->field_exists($field_name))
 		{
-			throw new Exception(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
+			throw new App\Exception(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
 		}
 
 		$this->_fields[$field_name] = $attributes;
@@ -204,7 +206,7 @@ class Form
 	{
 		if ( ! $this->field_exists($field_name))
 		{
-			throw new Exception(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
+			throw new App\Exception(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
 		}
 		$this->_fields[$field_name] = array_merge_recursive($this->_fields[$field_name], $attributes);
 
@@ -262,7 +264,7 @@ class Form
 	{
 		if ( ! isset(static::$_forms[$form_name]))
 		{
-			throw new Exception(sprintf('Form "%s" does not exist.', $form_name));
+			throw new App\Exception(sprintf('Form "%s" does not exist.', $form_name));
 		}
 
 		return static::$_forms[$form_name];
@@ -331,7 +333,7 @@ class Form
 				$return .= "\t\t" . static::input($properties) . PHP_EOL;
 				break;
 			case 'radio': case 'checkbox':
-				$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
+				$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
 				if (isset($properties['items']))
 				{
 					$return .= "\t\t\t<span>\n";
@@ -354,27 +356,27 @@ class Form
 
 						$element['type'] = $properties['type'];
 						$element['name'] = $properties['name'];
-						$return .= "\t\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $element['id']) . $element['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
+						$return .= "\t\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $element['id']) . $element['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
 						$return .= "\t\t\t\t" . static::input($element) . PHP_EOL;
 					}
 					$return .= "\t\t\t</span>\n";
 				}
 				else
 				{
-					$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
+					$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
 					$return .= "\t\t\t" . static::input($properties) . PHP_EOL;
 				}
 				break;
 			case 'select':
-				$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
+				$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
 				$return .= "\t\t\t" . static::select($properties, 3) . PHP_EOL;
 				break;
 			case 'textarea':
-				$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
+				$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
 				$return .= "\t\t\t" . static::textarea($properties) . PHP_EOL;
 				break;
 			default:
-				$return .= "\t\t\t" . sprintf(Config::get('form.label_wrapper_open'), $name) . $properties['label'] . Config::get('form.label_wrapper_close') . PHP_EOL;
+				$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
 				$return .= "\t\t\t" . static::input($properties) . PHP_EOL;
 				break;
 		}
@@ -403,11 +405,11 @@ class Form
 			return '';
 		}
 
-		$return = "\t\t" . Config::get('form.input_wrapper_open') . PHP_EOL;
+		$return = "\t\t" . App\Config::get('form.input_wrapper_open') . PHP_EOL;
 
-		if ($required and Config::get('form.required_location') == 'before')
+		if ($required and App\Config::get('form.required_location') == 'before')
 		{
-			$return .= "\t\t\t" . Config::get('form.required_tag') . PHP_EOL;
+			$return .= "\t\t\t" . App\Config::get('form.required_tag') . PHP_EOL;
 		}
 
 		return $return;
@@ -434,12 +436,12 @@ class Form
 
 		$return = "";
 
-		if ($required and Config::get('form.required_location') == 'after')
+		if ($required and App\Config::get('form.required_location') == 'after')
 		{
-			$return .= "\t\t\t" . Config::get('form.required_tag') . PHP_EOL;
+			$return .= "\t\t\t" . App\Config::get('form.required_tag') . PHP_EOL;
 		}
 
-		$return .= "\t\t" . Config::get('form.input_wrapper_close') . PHP_EOL;
+		$return .= "\t\t" . App\Config::get('form.input_wrapper_close') . PHP_EOL;
 
 		return $return;
 	}
@@ -460,7 +462,7 @@ class Form
 	{
 		if ( ! isset($parameters['options']) OR !is_array($parameters['options']))
 		{
-			throw new Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
+			throw new App\Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
 		}
 		// Get the options then unset them from the array
 		$options = $parameters['options'];
@@ -533,13 +535,13 @@ class Form
 		// If there is still no action set, Form-post
 		if (empty($options['action']))
 		{
-			$options['action'] = Uri::current();
+			$options['action'] = App\Uri::current();
 		}
 
 		// If not a full URL, create one with CI
 		if ( ! strpos($options['action'], '://'))
 		{
-			$options['action'] = Uri::create($options['action']);
+			$options['action'] = App\Uri::create($options['action']);
 		}
 
 		// If method is empty, use POST
@@ -567,7 +569,7 @@ class Form
 		$hidden = array();
 		$form = static::get_form_array($form_name);
 
-		$return = "\t" . Config::get('form.form_wrapper_open') . PHP_EOL;
+		$return = "\t" . App\Config::get('form.form_wrapper_open') . PHP_EOL;
 
 		foreach ($form['fields'] as $name => $properties)
 		{
@@ -579,7 +581,7 @@ class Form
 			$return .= static::field($name, $properties, $form_name);
 		}
 
-		$return .= "\t" . Config::get('form.form_wrapper_close') . PHP_EOL;
+		$return .= "\t" . App\Config::get('form.form_wrapper_close') . PHP_EOL;
 
 		foreach ($hidden as $name => $properties)
 		{
@@ -640,11 +642,11 @@ class Form
 	{
 		if ( ! isset($options['type']))
 		{
-			throw new Exception('You must specify a type for the input.');
+			throw new App\Exception('You must specify a type for the input.');
 		}
 		elseif ( ! in_array($options['type'], static::$_valid_inputs))
 		{
-			throw new Exception(sprintf('"%s" is not a valid input type.', $options['type']));
+			throw new App\Exception(sprintf('"%s" is not a valid input type.', $options['type']));
 		}
 
 		return html_tag('input', static::attr_to_string($options));
@@ -763,15 +765,15 @@ class Form
 	{
 		// #TODO: Add validation support
 		return true;
-		
+
 		if ( ! isset(static::$_validation[$form_name]))
 		{
 			return TRUE;
 		}
 
-		Validation::set_rules(static::$_validation[$form_name]);
+		App\Validation::set_rules(static::$_validation[$form_name]);
 
-		return Validation::run();
+		return App\Validation::run();
 	}
 
 	// --------------------------------------------------------------------
@@ -789,7 +791,7 @@ class Form
 	 */
 	public static function error($field_name, $prefix = '', $suffix = '')
 	{
-		return Validation::error($field_name, $prefix, $suffix);
+		return App\Validation::error($field_name, $prefix, $suffix);
 	}
 
 	// --------------------------------------------------------------------
@@ -806,7 +808,7 @@ class Form
 	 */
 	public static function all_errors($prefix = '', $suffix = '')
 	{
-		return Validation::error_string($prefix, $suffix);
+		return App\Validation::error_string($prefix, $suffix);
 	}
 
 	// --------------------------------------------------------------------

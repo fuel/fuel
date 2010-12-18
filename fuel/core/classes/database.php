@@ -13,6 +13,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 abstract class Database {
 
 	// Query types
@@ -48,11 +50,11 @@ abstract class Database {
 	 */
 	public static function instance($name = NULL, array $config = NULL)
 	{
-		Config::load('db', true);
+		App\Config::load('db', true);
 		if ($name === NULL)
 		{
 			// Use the default instance name
-			$name = Config::get('db.active');
+			$name = App\Config::get('db.active');
 		}
 
 		if ( ! isset(static::$instances[$name]))
@@ -60,12 +62,12 @@ abstract class Database {
 			if ($config === NULL)
 			{
 				// Load the configuration for this database
-				$config = Config::get("db.{$name}");
+				$config = App\Config::get("db.{$name}");
 			}
 
 			if ( ! isset($config['type']))
 			{
-				throw new Exception("Database type not defined in {$name} configuration");
+				throw new App\Exception("Database type not defined in {$name} configuration");
 			}
 
 			// Set the driver class name

@@ -46,7 +46,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		static::$path = !empty($this->config['path']) ? $this->config['path'] : APPPATH.'cache'.DS;
 		if ( ! is_dir(static::$path) || ! is_writable(static::$path))
 		{
-			throw new Cache_Exception('Cache directory does not exist or is not writable.');
+			throw new App\Cache_Exception('Cache directory does not exist or is not writable.');
 		}
 
 		parent::__construct($identifier, $config);
@@ -102,7 +102,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		$properties_end = strpos($payload, '{{/'.self::PROPS_TAG.'}}');
 		if ($properties_end === FALSE)
 		{
-			throw new Cache_Exception('Incorrect formatting');
+			throw new App\Cache_Exception('Incorrect formatting');
 		}
 
 		$this->contents = substr($payload, $properties_end + strlen('{{/'.self::PROPS_TAG.'}}'));
@@ -110,7 +110,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		$props = json_decode($props, true);
 		if ($props === NULL)
 		{
-			throw new Cache_Exception('Properties retrieval failed');
+			throw new App\Cache_Exception('Properties retrieval failed');
 		}
 
 		$this->created			= $props['created'];

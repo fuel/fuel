@@ -95,7 +95,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 	{
 		if (empty($this->user))
 		{
-			throw new Auth_Exception('User not logged in, can\'t create login hash.');
+			throw new App\Auth_Exception('User not logged in, can\'t create login hash.');
 		}
 
 		$this->user->last_login = App\Date::factory()->get_timestamp();

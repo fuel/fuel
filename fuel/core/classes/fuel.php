@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App;
+use Fuel\App as App;
 
 /**
  * The core of the framework.
@@ -75,7 +75,7 @@ class Fuel {
 	{
 		if (static::$initialized)
 		{
-			throw new Exception("You can't initialize Fuel more than once.");
+			throw new App\Exception("You can't initialize Fuel more than once.");
 		}
 
 		static::$_paths = array(APPPATH, COREPATH);
@@ -315,7 +315,7 @@ class Fuel {
 				continue;
 			}
 			static::add_path($path);
-			Route::load_routes(true);
+			App\Route::load_routes(true);
 			static::load($path.'autoload.php');
 			static::$packages[$name] = true;
 		}
@@ -383,7 +383,7 @@ class Fuel {
 			static::add_path($mod_path, true);
 
 			// We want modules to be able to have their own routes, so we reload routes.
-			Route::load_routes(true);
+			App\Route::load_routes(true);
 			return $mod_path;
 		}
 
@@ -393,7 +393,7 @@ class Fuel {
 
 	/**
 	 * This method does basic filesystem caching.  It is used for things like path caching.
-	 * 
+	 *
 	 * This method is from KohanaPHP's Kohana class.
 	 */
 	public static function cache($name, $data = null, $lifetime = null)
@@ -473,7 +473,7 @@ class Fuel {
 		{
 			if ( ! class_exists($class))
 			{
-				throw new Exception('Always load class does not exist.');
+				throw new App\Exception('Always load class does not exist.');
 			}
 		}
 
@@ -489,7 +489,7 @@ class Fuel {
 
 		foreach ($array['language'] as $lang => $lang_group)
 		{
-			Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
+			App\Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
 		}
 	}
 

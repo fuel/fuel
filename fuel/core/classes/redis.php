@@ -46,7 +46,7 @@ class Redis {
 		}
 		if ( ! ($config = App\Config::get('db.redis.'.$name)))
 		{
-			throw new Redis_Exception('Invalid instance name given.');
+			throw new App\Redis_Exception('Invalid instance name given.');
 		}
 
 		static::$instances[$name] = new static($config);
@@ -62,7 +62,7 @@ class Redis {
 
 		if ( ! $this->connection)
 		{
-			throw new Redis_Exception($errstr, $errno);
+			throw new App\Redis_Exception($errstr, $errno);
 		}
 	}
 
@@ -80,7 +80,7 @@ class Redis {
 		$command = '*'.(count($args) + 1).CRLF;
 		$command .= '$'.strlen($name).CRLF;
 		$command .= $name.CRLF;
-		
+
 		foreach ($args as $arg)
 		{
 			$command .= '$'.strlen($arg).CRLF;
@@ -95,7 +95,7 @@ class Redis {
 		{
 			// Error
 			case '-':
-				throw new Redis_Exception(substr(trim($reply), 4));
+				throw new App\Redis_Exception(substr(trim($reply), 4));
 			break;
 
 			// In-line reply
@@ -160,7 +160,7 @@ class Redis {
 
 			// Don't know what to do?  Throw it outta here
 			default:
-				throw new Redis_Exception("invalid server response: {$reply}");
+				throw new App\Redis_Exception("invalid server response: {$reply}");
 			break;
 		}
 

@@ -63,7 +63,7 @@ class Session {
 			}
 			catch (Exception $e)
 			{
-				Error::show_php_error($e);die();
+				App\Error::show_php_error($e);die();
 			}
 		}
 	}
@@ -91,7 +91,7 @@ class Session {
 
 		if (empty($config['driver']))
 		{
-			throw new Session_Exception('No session driver given or no default session driver set.');
+			throw new App\Session_Exception('No session driver given or no default session driver set.');
 		}
 
 		// determine the driver to load
@@ -109,7 +109,7 @@ class Session {
 			$class_instance = 'Fuel\\Core\\'.$class;
 			if (static::$_instances[$cookie] instanceof $class_instance)
 			{
-				throw new Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
+				throw new App\Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
 			}
 		}
 		else

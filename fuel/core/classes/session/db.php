@@ -221,7 +221,7 @@ class Session_Db extends Session_Driver {
 						}
 						if ($item === false)
 						{
-							throw new Exception('You have specify a database to use database backed sessions.');
+							throw new App\Exception('You have specify a database to use database backed sessions.');
 						}
 					break;
 
@@ -229,7 +229,7 @@ class Session_Db extends Session_Driver {
 						// and a table name?
 						if ( empty($item) OR ! is_string($item))
 						{
-							throw new Exception('You have specify a database table name to use database backed sessions.');
+							throw new App\Exception('You have specify a database table name to use database backed sessions.');
 						}
 					break;
 

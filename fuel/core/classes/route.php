@@ -17,18 +17,18 @@ namespace Fuel\Core;
 use Fuel\App as App;
 
 class Route {
-	
+
 	public static $routes = array();
 
 	public static function load_routes($reload = false)
 	{
 		if (App\Config::load('config', false, $reload))
 		{
-			static::$routes = Config::get('routes');
+			static::$routes = App\Config::get('routes');
 		}
 		elseif ( ! $reload)
 		{
-			static::$routes = Config::get('routes');
+			static::$routes = App\Config::get('routes');
 		}
 	}
 
@@ -60,13 +60,13 @@ class Route {
 		foreach (static::$routes as $search => $route)
 		{
 			$result = static::_parse_search($uri, $search, $route);
-			
-			if ($result) 
+
+			if ($result)
 			{
 				return $result;
 			}
 		}
-		
+
 		return static::parse_match($uri->uri);
 	}
 
@@ -97,7 +97,7 @@ class Route {
 
 		return $route;
 	}
-	
+
 	/**
 	 * Parses a route match and returns the controller, action and params.
 	 *
@@ -126,7 +126,7 @@ class Route {
 			'named_params'	=> $named_params,
 		);
 	}
-	
+
 	/**
 	 * Parses an actual route - extracted out of parse() to make it recursive.
 	 *
@@ -136,29 +136,29 @@ class Route {
 	 * @param string The route to check for routing to
 	 * @return array OR boolean
 	 */
-	private static function _parse_search($uri, $search, $route) 
+	private static function _parse_search($uri, $search, $route)
 	{
 		$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+([^/]*)'), $search);
 		$search = preg_replace('|:([a-z\_]+)|uD', '(?P<$1>.+)', $search);
-			
-		if (is_array($route)) 
+
+		if (is_array($route))
 		{
 			foreach ($route as $r)
 			{
 				$verb = $r[0];
 				$forward = $r[1];
-				
-				if (Input::method() == strtoupper($verb))
+
+				if (App\Input::method() == strtoupper($verb))
 				{
 					$result = static::_parse_search($uri, $search, $forward);
 
-					if ($result) 
+					if ($result)
 					{
 						return $result;
 					}
 				}
 			}
-			
+
 			return false;
 		}
 
@@ -167,8 +167,8 @@ class Route {
 			$route = preg_replace('@^'.$search.'$@uD', $route, $uri->uri);
 
 			return static::parse_match($route, $params);
-		} 
-		else 
+		}
+		else
 		{
 			return false;
 		}

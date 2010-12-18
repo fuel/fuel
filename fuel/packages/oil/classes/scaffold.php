@@ -21,7 +21,7 @@ class Scaffold
 	public function generate($args)
 	{
 		$g = new Generate;
-		
+
 		$g->model($args);
 
 		$singular = strtolower(array_shift($args));
@@ -30,11 +30,11 @@ class Scaffold
 
 		$filepath = APPPATH.'classes/controller/'.$plural.'.php';
 		$controller = new App\View('scaffold/controller');
-		
+
 		$controller->name = $plural;
-		
+
 		$controller->model = $model_name;
-		
+
 		$controller->actions = array(
 			array(
 				'name'		=> 'index',
@@ -49,7 +49,7 @@ class Scaffold
 		$this->template->'.strtolower($singular).' = '.$model_name.'::find($id);',
 			),
 		);
-		
+
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
@@ -61,7 +61,7 @@ class Scaffold
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
-			throw new Exception('Cannot open file: '. $filepath);
+			throw new App\Exception('Cannot open file: '. $filepath);
 		}
 
 		$result = @fwrite($handle, $data);
@@ -69,7 +69,7 @@ class Scaffold
 		// Write $somecontent to our opened file.
 		if ($result === FALSE)
 		{
-			throw new Exception('Cannot write to file: '. $filepath);
+			throw new App\Exception('Cannot write to file: '. $filepath);
 		}
 
 		@fclose($handle);

@@ -24,15 +24,15 @@ class Model {
 	/**
 	 * Queries the table for the given primary key value ($id).  $id can also
 	 * contain 2 special values:
-	 * 
+	 *
 	 * <ul>
 	 * <li>'all' - Will return all of the records in the table</li>
 	 * <li>'first' - Will return the first record.  This will set automatically
 	 * set the 'limit' option to 1.</li>
 	 * </ul>
-	 * 
+	 *
 	 * The following options are available to use in the $options parameter:
-	 * 
+	 *
 	 * <ul>
 	 * <li>include - an array of associations to include in the query.  Example:
 	 * <code>array('group', 'posts')</code></li>
@@ -90,7 +90,7 @@ class Model {
 		}
 		if (strncmp($name, 'find_by_', 8) !== 0 && $name != '_init')
 		{
-			throw new Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
+			throw new App\Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
 		}
 
 		$name = substr($name, 8);
@@ -190,7 +190,7 @@ class Model {
 	/**
 	 * Holds all the columns for this model.  If this is not set in the model,
 	 * it attempts to read them in from the table.
-	 * 
+	 *
 	 * @var	array	the columns
 	 */
 	protected $columns = array();
@@ -204,14 +204,14 @@ class Model {
 
 	/**
 	 * Holds all the associations for the model
-	 * 
+	 *
 	 * @var	array	the associations
 	 */
 	protected $associations = array();
 
 	/**
 	 * Holds the modified state of the current model.
-	 * 
+	 *
 	 * @var	bool	the state
 	 */
 	protected $is_modified = false;
@@ -219,21 +219,21 @@ class Model {
 	/**
 	 * Holds the frozen state of the model object.  An object is frozen once
 	 * it has been destroyed.
-	 * 
+	 *
 	 * @var	bool	the state
 	 */
 	protected $frozen = false;
 
 	/**
 	 * Holds if this is a new record or not.
-	 * 
+	 *
 	 * @var	bool	the status
 	 */
 	public $new_record = true;
 
 	/**
 	 * The association types that ActiveRecord supports.
-	 * 
+	 *
 	 * @var	array	the types
 	 */
 	private $assoc_types = array('belongs_to', 'has_many', 'has_one');
@@ -341,8 +341,8 @@ class Model {
 				return $this->associations[$assoc_name]->get_ids($this);
 			}
 		}
-		
-		throw new Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+
+		throw new App\Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 	}
 
 	/**
@@ -366,7 +366,7 @@ class Model {
 	{
 		if ($this->frozen)
 		{
-			throw new Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
+			throw new App\Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
 		}
 
 		if (preg_match('#(.+?)_ids$#', $name, $matches))
@@ -397,7 +397,7 @@ class Model {
 		}
 		else
 		{
-			throw new Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+			throw new App\Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 		}
 	}
 
@@ -436,7 +436,7 @@ class Model {
 		}
 		else
 		{
-			throw new Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
+			throw new App\Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
 		}
 	}
 
@@ -459,14 +459,14 @@ class Model {
 
 	/**
 	 * Gets tbe primary key for the current model
-	 * 
+	 *
 	 * Usage:
-	 * 
+	 *
 	 * <code>
 	 * $user = new User;
 	 * $user->get_primary_key();
 	 * </code>
-	 * 
+	 *
 	 * @return	string	the primary key
 	 */
 	public function get_primary_key()
@@ -714,13 +714,13 @@ class Model {
 
 			$this->new_record = false;
 			$this->is_modified = false;
-			
+
 			if (method_exists($this, 'after_update'))
 			{
 				$this->after_update();
 			}
 		}
-		
+
 		foreach ($this->associations as $name => $assoc)
 		{
 			if ($assoc instanceOf HasOne && $assoc->needs_saving())
@@ -735,7 +735,7 @@ class Model {
 				$assoc->save_as_needed($this);
 			}
 		}
-		
+
 		if (method_exists($this, 'after_save'))
 		{
 			$this->after_save();
@@ -781,7 +781,7 @@ class Model {
 				->execute();
 
 		$this->frozen = true;
-		
+
 		if (method_exists($this, 'after_destroy'))
 		{
 			$this->after_destroy();
@@ -842,7 +842,7 @@ class Model {
 		}
 		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
 		{
-			throw new Exception("Couldn't find anything.", Exception::RecordNotFound);
+			throw new App\Exception("Couldn't find anything.", Exception::RecordNotFound);
 		}
 
 		return (is_array($id) || $id == 'all')
