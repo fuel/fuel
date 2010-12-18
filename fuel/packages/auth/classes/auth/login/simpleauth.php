@@ -43,15 +43,13 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 		$username = App\Session::get('username');
 		$login_hash = App\Session::get('login_hash');
 
-		if (empty($this->user) || $this->user->username != $username)
+		if ($this->user === null || (is_object($this->user) && $this->user->username != $username))
 		{
 			$this->user = reset(Model\SimpleUser::find_by_username($username, array('limit' => 1)));
 			// this prevents a second check to query again, but will still fail the login_hash check
 			if (empty($this->user))
 			{
-				$this->user = new \stdClass();
-				$this->user->username = $username;
-				$this->user->login_hash = 'none';
+				$this->user = false;
 			}
 		}
 		if (empty($this->user) || $this->user->login_hash != $login_hash)
