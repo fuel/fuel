@@ -81,7 +81,7 @@ class Auth {
 	{
 		// Driver is given as array key or just string in custom
 		$custom = ! is_array($custom) ? array('driver' => $custom) : $custom;
-		$config = Config::get('auth.'.$custom['driver'].'_config', array());
+		$config = App\Config::get('auth.'.$custom['driver'].'_config', array());
 		$config = array_merge($config, $custom);
 
 		// Driver must be set
@@ -303,13 +303,13 @@ class Auth {
 			{
 				foreach (static::$_verified as $v)
 				{
-					if (static::acl($driver)->member($group, $v->get_user_id()))
+					if (static::group($driver)->member($group))
 					{
 						return true;
 					}
 				}
 			}
-			elseif (static::acl($driver)->member($group, $user))
+			elseif (static::group($driver)->member($group, $user))
 			{
 				return true;
 			}
@@ -370,7 +370,7 @@ class Auth {
 			{
 				foreach (static::$_verified as $v)
 				{
-					if (static::acl($driver)->has_access($condition, $v->get_user_id()))
+					if (static::acl($driver)->has_access($condition))
 					{
 						return true;
 					}

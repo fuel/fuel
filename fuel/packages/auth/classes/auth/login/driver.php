@@ -54,6 +54,14 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 	// ------------------------------------------------------------------------
 
 	/**
+	 * @var	array	config values
+	 */
+	protected $config = array(
+		'salt_prefix' => '',
+		'salt_postfix' => ''
+	);
+
+	/**
 	 * Check for login
 	 * (final method to (un)register verification, work is done by _check())
 	 *
@@ -74,7 +82,7 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 	/**
 	 * Return user info in an array, always includes email & screen_name
 	 * Additional fields can be requested in the first param or set in config,
-	 * all additional fields must have their own get method "get_" + fieldname
+	 * all additional fields must have their own method "get_user_" + fieldname
 	 *
 	 * @param	array	additional fields
 	 * @return	array
@@ -90,9 +98,9 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 		foreach($additional_fields as $af)
 		{
 			// only works if it actually can be fetched through a get_ method
-			if (is_callable(array($this, $method = 'get_'.$af)))
+			if (is_callable(array($this, $method = 'get_user_'.$af)))
 			{
-				$user[$af] = $this->{'get_'.$af}();
+				$user[$af] = $this->$method();
 			}
 		}
 		return $user;
@@ -108,7 +116,7 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 	 */
 	public function member($group, $driver = null, $user = null)
 	{
-		$user = $user ?: $this->get_user-id();
+		$user = $user ?: $this->get_user_id();
 
 		if ($driver === null)
 		{
@@ -154,6 +162,17 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 		return App\Auth::acl($driver)->has_access($condition, $user);
 	}
 
+	/**
+	 * Default password hash method
+	 * NOTICE: works by reference
+	 *
+	 * @param	string
+	 */
+	public function hash_password(&$password)
+	{
+		$password = sha1(@$this->config['salt_prefix'].$password.@$this->config['salt_postfix']);
+	}
+
 	// ------------------------------------------------------------------------
 
 	/**
@@ -162,6 +181,18 @@ abstract class Auth_Login_Driver extends App\Auth_Driver {
 	 * @return bool
 	 */
 	abstract protected function perform_check();
+
+	/**
+	 * Login method
+	 *
+	 * @return	bool	whether login succeeded
+	 */
+	abstract protected function login();
+
+	/**
+	 * Logout method
+	 */
+	abstract protected function logout();
 
 	/**
 	 * Get User Identifier of the current logged in user

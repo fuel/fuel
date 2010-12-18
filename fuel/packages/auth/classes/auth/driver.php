@@ -47,7 +47,7 @@ abstract class Auth_Driver {
 	protected function __construct(Array $config)
 	{
 		$this->id = $config['id'];
-		$this->config = $config;
+		$this->config = array_merge($this->config, $config);
 	}
 
 	/**
