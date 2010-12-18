@@ -95,7 +95,7 @@ class Session {
 		}
 
 		// determine the driver to load
-		$class = 'Session_'.ucfirst($config['driver']);
+		$class = 'App\\Session_'.ucfirst($config['driver']);
 
 		$driver = new $class($config);
 
@@ -106,7 +106,8 @@ class Session {
 		if (isset(static::$_instances[$cookie]))
 		{
 			// if so, they must be using the same driver class!
-			if (get_class(static::$_instances[$cookie]) != ('Fuel\\Core\\'.$class))
+			$class_instance = 'Fuel\\Core\\'.$class;
+			if (static::$_instances[$cookie] instanceof $class_instance)
 			{
 				throw new Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
 			}
