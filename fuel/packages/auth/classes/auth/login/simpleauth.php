@@ -15,6 +15,23 @@
 namespace Fuel\Auth;
 use Fuel\App;
 
+/*
+	CREATE TABLE `simpleusers` (
+		`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		`username` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+		`password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+		`group` INT NOT NULL DEFAULT 1 ,
+		`email` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+		`last_login` VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+		`login_hash` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+		`profile_fields` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+		UNIQUE (
+			`username` ,
+			`email`
+		)
+	)
+*/
+
 class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 
 	public static function _init()
@@ -45,14 +62,14 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 
 		if ($this->user === null || (is_object($this->user) && $this->user->username != $username))
 		{
-			$this->user = reset(Model\SimpleUser::find_by_username($username, array('limit' => 1)));
+			$this->user = App\DB::select()->where('username', '=', $username)->from('simpleusers')->execute();
 			// this prevents a second check to query again, but will still fail the login_hash check
 			if (empty($this->user))
 			{
 				$this->user = false;
 			}
 		}
-		if (empty($this->user) || $this->user->login_hash != $login_hash)
+		if (empty($this->user) || $this->user->get('login_hash') != $login_hash)
 		{
 			return false;
 		}
@@ -71,8 +88,10 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 		}
 
 		$password = $this->hash_password($password);
-		$this->user = Model\SimpleUser::find('first', array(
-			'where' => array(array('username', '=', strtolower($username)), array('password', '=', $password))));
+		$this->user = App\DB::select()
+				->where('username', '=', $username)
+				->where('password', '=', $password)
+				->from('simpleusers')->execute();
 		if (empty($this->user))
 		{
 			return false;
@@ -98,10 +117,14 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			throw new App\Auth_Exception('User not logged in, can\'t create login hash.');
 		}
 
-		$this->user->last_login = App\Date::factory()->get_timestamp();
-		$this->user->login_hash = sha1($this->config['login_hash_salt'].$this->user->username.$this->user->last_login);
-		$this->user->save();
-		return $this->user->login_hash;
+		$last_login = App\Date::factory()->get_timestamp();
+		$login_hash = sha1($this->config['login_hash_salt'].$this->user->get('username').$last_login);
+
+		App\DB::update('simpleusers')
+			->set(array('last_login' => $last_login, 'login_hash' => $login_hash))
+			->where('username', '=', $this->user->get('username'))->execute();
+
+		return $login_hash;
 	}
 
 	public function get_user_id()
@@ -121,7 +144,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			return false;
 		}
 
-		return array(array('simplegroup', $this->user->group));
+		return array(array('simplegroup', $this->user->get('group')));
 	}
 
 	public function get_user_email()
@@ -131,7 +154,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			return false;
 		}
 
-		return $this->user->email;
+		return $this->user->get('email');
 	}
 
 	public function get_user_screen_name()
@@ -141,7 +164,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			return false;
 		}
 
-		return $this->user->username;
+		return $this->user->get('username');
 	}
 
 	public function get_profile_fields()
@@ -151,7 +174,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			return false;
 		}
 
-		return @unserialize($this->user->profile_fields) ?: array();
+		return @unserialize($this->user->get('profile_fields')) ?: array();
 	}
 
 	/**
