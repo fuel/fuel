@@ -25,6 +25,7 @@ class Generate
 
 	public function controller($args)
 	{
+		$args = self::_clear_args($args);
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
 		
@@ -32,7 +33,7 @@ class Generate
 
 		$filepath = APPPATH . 'classes/controller/' . $plural .'.php';
 
-		$class_name = 'Controller_' . ucfirst($plural);
+		$class_name = ucfirst($plural);
 
 		// Stick "blogs" to the start of the array
 		array_unshift($args, $plural);
@@ -55,7 +56,8 @@ class Generate
 		$controller = <<<CONTROLLER
 <?php
 
-namespace Fuel\App;
+namespace Fuel\App\Controller;
+use Fuel\Core\Controller;
 
 class {$class_name} extends Controller\Template {
 {$action_str}
@@ -109,6 +111,7 @@ MODEL;
 
 	public function views($args)
 	{
+		$args = self::_clear_args($args);
 		$folder = array_shift($args);
 		$controller_title = App\Inflector::humanize($folder);
 
@@ -380,7 +383,16 @@ MIGRATION;
 
 		self::write($path, $contents);
 	}
-		
+
+	private function _clear_args($actions = array())
+	{
+ 		foreach ($actions as $key => $action) {
+		if (substr($action, 0, 1) === '-')
+			unset($actions[$key]);
+        }
+        
+		return $actions;
+	}		
 }
 
 /* End of file model.php */
