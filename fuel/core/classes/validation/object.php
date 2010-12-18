@@ -63,6 +63,7 @@ class Validation_Object {
 	 * @param	string	field variable name
 	 * @param	string	field title
 	 * @param	array	consisting of rules, which are valid callbacks or array(callback, params array)
+	 * @return	Validation_Object
 	 */
 	public function add_field($field, $title = null, Array $rules = array())
 	{
@@ -73,7 +74,7 @@ class Validation_Object {
 			{
 				$this->add_rule($rule[0], $rule[1], $rule[2]);
 			}
-			return;
+			return $this;
 		}
 
 		$this->fields[$field] = array(
@@ -127,6 +128,8 @@ class Validation_Object {
 				}
 			}
 		}
+
+		return $this;
 	}
 
 	/**
@@ -135,6 +138,7 @@ class Validation_Object {
 	 * Add a Fuel Model to callables and expect it to add fields.
 	 *
 	 * @param	Model
+	 * @return	Validation_Object
 	 */
 	public function add_model($model)
 	{
@@ -151,6 +155,8 @@ class Validation_Object {
 		 */
 		$this->add_callable($model);
 		$model->_fuel_validation($this);
+
+		return $this;
 	}
 
 	/**
@@ -161,6 +167,7 @@ class Validation_Object {
 	 * from this object because the new class is prepended.
 	 *
 	 * @param	object|string	Class or object
+	 * @return	Validation_Object
 	 */
 	public function add_callable($class)
 	{
@@ -170,6 +177,8 @@ class Validation_Object {
 		}
 
 		array_unshift($this->callables, $class);
+
+		return $this;
 	}
 
 	/**
