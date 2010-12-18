@@ -54,7 +54,14 @@ class Error {
 			$severity = static::$levels[$last_error['type']];
 			Log::error($severity.' - '.$last_error['message'].' in '.$last_error['file'].' on line '.$last_error['line']);
 
-			static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
+			if (Fuel::$env != Fuel::PRODUCTION)
+			{
+				static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
+			}
+			else
+			{
+				echo 'An unrecoverable error occurred.';
+			}
 
 			exit(1);
 		}
@@ -65,22 +72,30 @@ class Error {
 		$severity = ( ! isset(static::$levels[$e->getCode()])) ? $e->getCode() : static::$levels[$e->getCode()];
 		Log::error($severity.' - '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
 
-		static::show_php_error($e);
+		if (Fuel::$env != Fuel::PRODUCTION)
+		{
+			static::show_php_error($e);
+		}
+		else
+		{
+			echo 'An unrecoverable exception was thrown.';
+		}
 	}
 
 	public static function error_handler($severity, $message, $filepath, $line)
 	{
-		if (static::$count <= App\Config::get('error_throttling', 10))
+		if (static::$count <= Config::get('error_throttling', 10))
 		{
-			App\Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
+			Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
 
-			if (($severity & error_reporting()) == $severity)
+			if (Fuel::$env != Fuel::PRODUCTION && ($severity & error_reporting()) == $severity)
 			{
 				static::$count++;
 				static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
 			}
 		}
-		elseif (static::$count == (App\Config::get('error_throttling', 10) + 1)
+		elseif (Fuel::$env != Fuel::PRODUCTION
+				&& static::$count == (Config::get('error_throttling', 10) + 1)
 				&& ($severity & error_reporting()) == $severity)
 		{
 			static::$count++;
