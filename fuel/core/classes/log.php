@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // --------------------------------------------------------------------
 
 /**
@@ -65,12 +67,12 @@ class Log
 	 */
 	private static function _write($level, $msg, $method = null)
 	{
-		if ( ! defined('self::'.strtoupper($level)) or (constant('self::'.strtoupper($level)) > Config::get('log_threshold')))
+		if ( ! defined('self::'.strtoupper($level)) or (constant('self::'.strtoupper($level)) > App\Config::get('log_threshold')))
 		{
 			return false;
 		}
 
-		$filepath = Config::get('log_path').date('Y/m').'/';
+		$filepath = App\Config::get('log_path').date('Y/m').'/';
 
 		if ( ! is_dir($filepath))
 		{
@@ -79,7 +81,7 @@ class Log
 		}
 
 		$filename = $filepath.date('d').'.php';
-		
+
 		$message  = '';
 
 		if ( ! file_exists($filename))
@@ -99,7 +101,7 @@ class Log
 		}
 
 		$message .= $level.' '.(($level == 'info') ? ' -' : '-').' ';
-		$message .= date(Config::get('log_date_format'));
+		$message .= date(App\Config::get('log_date_format'));
 		$message .= ' --> '.(empty($call) ? '' : $call.' - ').$msg.PHP_EOL;
 
 		flock($fp, LOCK_EX);

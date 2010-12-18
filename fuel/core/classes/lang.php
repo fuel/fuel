@@ -14,27 +14,29 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Lang {
-	
+
 	public static $lines = array();
-	
+
 	public static $flat_lines = array();
 
 	public static $fallback = 'en';
-	
+
 	public static function load($file, $group = NULL)
 	{
 		$lang = array();
 
 		// Use the current language, failing that use the fallback language
-		foreach (array(Config::get('language'), static::$fallback) as $language)
+		foreach (array(App\Config::get('language'), static::$fallback) as $language)
 		{
-			if ($path = Fuel::find_file('lang/'.$language, $file, '.php', true))
+			if ($path = App\Fuel::find_file('lang/'.$language, $file, '.php', true))
 			{
 				$lang = array();
 				foreach ($path as $p)
 				{
-					$lang = $lang + Fuel::load($p);
+					$lang = $lang + App\Fuel::load($p);
 				}
 				break;
 			}
@@ -80,7 +82,7 @@ class Lang {
 		}
 
 		isset(static::$lines[$line]) and $line = static::$lines[$line];
-		
+
 		return static::parse_params($line, $params);
 	}
 

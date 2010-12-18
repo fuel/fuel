@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // ------------------------------------------------------------------------
 
 /**
@@ -26,7 +28,7 @@ namespace Fuel\Core;
 class Ftp
 {
 	public static $initialized = false;
-	
+
 	protected $_hostname		= '';
 	protected $_username		= '';
 	protected $_password		= '';
@@ -58,12 +60,12 @@ class Ftp
 	 */
 	public function __construct($config = 'default')
 	{
-		Config::load('ftp', true);
+		App\Config::load('ftp', true);
 
 		// If it is a string we're looking at a predefined config group
 		if (is_string($config))
 		{
-			$config_arr = Config::get('ftp.'.$config);
+			$config_arr = App\Config::get('ftp.'.$config);
 
 			// Check that it exists
 			if ( ! is_array($config_arr) or $config_arr === array())
@@ -106,7 +108,7 @@ class Ftp
 
 			$this->_conn_id = @ftp_ssl_connect($this->_hostname, $this->_port);
 		}
-		
+
 		else
 		{
 			$this->_conn_id = @ftp_connect($this->_hostname, $this->_port);

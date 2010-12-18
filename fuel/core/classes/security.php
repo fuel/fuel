@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Security {
 
 	protected static $csrf_token_key = false;
@@ -25,9 +27,9 @@ class Security {
 	 */
 	public static function _init()
 	{
-		static::$csrf_token_key = Config::get('security.csrf_token_key', 'fuel_csrf_token');
+		static::$csrf_token_key = App\Config::get('security.csrf_token_key', 'fuel_csrf_token');
 
-		if (Config::get('security.csrf_autoload', false))
+		if (App\Config::get('security.csrf_autoload', false))
 		{
 			static::fetch_token();
 		}
@@ -68,7 +70,7 @@ class Security {
 	 */
 	public static function check_token($value = null)
 	{
-		$value = $value ?: Input::post(static::$csrf_token_key, 'fail');
+		$value = $value ?: App\Input::post(static::$csrf_token_key, 'fail');
 
 		// always reset token once it's been checked
 		static::regenerate_token();
@@ -78,7 +80,7 @@ class Security {
 
 	/**
 	 * Fetch CSRF Token from cookie
-	 * 
+	 *
 	 * @return	string
 	 */
 	public static function fetch_token()
@@ -88,20 +90,20 @@ class Security {
 			return static::$csrf_token;
 		}
 
-		static::$csrf_token = Input::cookie(static::$csrf_token_key, null);
-		if (static::$csrf_token === null || Config::get('security.csrf_expiration', 0) <= 0)
+		static::$csrf_token = App\Input::cookie(static::$csrf_token_key, null);
+		if (static::$csrf_token === null || App\Config::get('security.csrf_expiration', 0) <= 0)
 		{
 			// set new token for next session when necessary
 			static::regenerate_token();
 		}
 
-		return static::$csrf_token; 
+		return static::$csrf_token;
 	}
 
 	/**
 	 * Regenerate token
 	 *
-	 * Generates a new token if the old one expired or was checked. 
+	 * Generates a new token if the old one expired or was checked.
 	 */
 	public static function regenerate_token()
 	{
@@ -112,8 +114,8 @@ class Security {
 
 		static::$csrf_new_token = md5(uniqid().time());
 
-		$expiration = Config::get('security.csrf_expiration', 0);
-		Cookie::set(static::$csrf_token_key, static::$csrf_new_token, $expiration);
+		$expiration = App\Config::get('security.csrf_expiration', 0);
+		App\Cookie::set(static::$csrf_token_key, static::$csrf_new_token, $expiration);
 	}
 
 	/**

@@ -46,7 +46,7 @@ class Redis {
 		}
 		if ( ! ($config = App\Config::get('db.redis.'.$name)))
 		{
-			throw new Redis_Exception('Invalid instance name given.');
+			throw new App\Redis_Exception('Invalid instance name given.');
 		}
 
 		static::$instances[$name] = new static($config);
@@ -80,7 +80,7 @@ class Redis {
 		$command = '*'.(count($args) + 1).CRLF;
 		$command .= '$'.strlen($name).CRLF;
 		$command .= $name.CRLF;
-		
+
 		foreach ($args as $arg)
 		{
 			$command .= '$'.strlen($arg).CRLF;

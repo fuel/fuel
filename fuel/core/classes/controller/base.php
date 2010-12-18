@@ -14,7 +14,7 @@
 
 namespace Fuel\Core\Controller;
 
-use Fuel\App;
+use Fuel\App as App;
 
 class Base {
 

@@ -70,17 +70,17 @@ class Error {
 
 	public static function error_handler($severity, $message, $filepath, $line)
 	{
-		if (static::$count <= Config::get('error_throttling', 10))
+		if (static::$count <= App\Config::get('error_throttling', 10))
 		{
-			Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
-	
+			App\Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
+
 			if (($severity & error_reporting()) == $severity)
 			{
 				static::$count++;
 				static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
 			}
 		}
-		elseif (static::$count == (Config::get('error_throttling', 10) + 1)
+		elseif (static::$count == (App\Config::get('error_throttling', 10) + 1)
 				&& ($severity & error_reporting()) == $severity)
 		{
 			static::$count++;
@@ -128,34 +128,34 @@ class Error {
 
 		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
 
-		$data['debug_lines'] = Debug::file_lines($debug_lines['file'], $debug_lines['line']);
+		$data['debug_lines'] = App\Debug::file_lines($debug_lines['file'], $debug_lines['line']);
 
-		$data['filepath'] = Fuel::clean_path($debug_lines['file']);
+		$data['filepath'] = App\Fuel::clean_path($debug_lines['file']);
 
 		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
 		$data['error_line'] = $debug_lines['line'];
 
-		echo View::factory('errors'.DS.'php_error', $data);
+		echo App\View::factory('errors'.DS.'php_error', $data);
 	}
 
 	public static function notice($msg, $always_show = false)
 	{
-		if ( ! $always_show && (Fuel::$env == Env::PRODUCTION || Config::get('show_notices', true) === false))
+		if ( ! $always_show && (App\Fuel::$env == App\Env::PRODUCTION || App\Config::get('show_notices', true) === false))
 		{
 			return;
 		}
 
-		$trace = array_merge(array('file' => '(unknown)', 'line' => '(unknown)'), Arr::element(debug_backtrace(), 1));
+		$trace = array_merge(array('file' => '(unknown)', 'line' => '(unknown)'), App\Arr::element(debug_backtrace(), 1));
 
-		Log::debug('Notice - '.$msg.' in '.$trace['file'].' on line '.$trace['line']);
+		App\Log::debug('Notice - '.$msg.' in '.$trace['file'].' on line '.$trace['line']);
 
 		$data['message']	= $msg;
 		$data['type']		= 'Notice';
-		$data['filepath']	= Fuel::clean_path($trace['file']);
+		$data['filepath']	= App\Fuel::clean_path($trace['file']);
 		$data['line']		= $trace['line'];
 		$data['function']	= $trace['function'];
 
-		echo View::factory('errors'.DS.'php_short', $data);
+		echo App\View::factory('errors'.DS.'php_short', $data);
 	}
 
 }

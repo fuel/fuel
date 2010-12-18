@@ -11,6 +11,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class DB {
 
 	public static $query_count = 0;
@@ -146,19 +148,19 @@ class DB {
 			}
 			return $string;
 		}
-		return Database::instance($db)->quote_identifier($string);
+		return App\Database::instance($db)->quote_identifier($string);
 	}
 
 	/**
 	 * Escapes a string to be ready for use in a sql query
-	 * 
+	 *
 	 * @param	string	$string	the string to escape
 	 * @param	string	$db		the database connection to use
 	 * @return	string	the escaped string
 	 */
 	public static function escape($string, $db = null)
 	{
-		return Database::instance($db)->escape($string);
+		return App\Database::instance($db)->escape($string);
 	}
 
 } // End DB

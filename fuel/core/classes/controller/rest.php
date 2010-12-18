@@ -2,7 +2,7 @@
 
 namespace Fuel\Core\Controller;
 
-use Fuel\App;
+use Fuel\App as App;
 
 abstract class Rest extends App\Controller\Base
 {
@@ -33,7 +33,7 @@ abstract class Rest extends App\Controller\Base
 			$this->_prepare_basic_auth();
 		}
 
-		elseif (Config::get('rest.auth') == 'digest')
+		elseif (App\Config::get('rest.auth') == 'digest')
 		{
 			$this->_prepare_digest_auth();
 		}
@@ -74,7 +74,7 @@ abstract class Rest extends App\Controller\Base
 			return;
 		}
 
-		Output::$status = $http_code;
+		App\Output::$status = $http_code;
 
 		// If the format method exists, call and return the output in that format
 		if (method_exists('Controller_Rest', '_format_'.$this->request->format))
@@ -231,8 +231,8 @@ abstract class Rest extends App\Controller\Base
 		// mod_php
 		if (App\Input::server('PHP_AUTH_USER'))
 		{
-			$username = Input::server('PHP_AUTH_USER');
-			$password = Input::server('PHP_AUTH_PW');
+			$username = App\Input::server('PHP_AUTH_USER');
+			$password = App\Input::server('PHP_AUTH_PW');
 		}
 
 		// most other servers
@@ -312,12 +312,12 @@ abstract class Rest extends App\Controller\Base
 		header('HTTP/1.0 401 Unauthorized');
 		header('HTTP/1.1 401 Unauthorized');
 
-		if (Config::get('rest.auth') == 'basic')
+		if (App\Config::get('rest.auth') == 'basic')
 		{
 			header('WWW-Authenticate: Basic realm="'.App\Config::get('rest.realm').'"');
 		}
 
-		elseif (Config::get('rest.auth') == 'digest')
+		elseif (App\Config::get('rest.auth') == 'digest')
 		{
 			header('WWW-Authenticate: Digest realm="'.App\Config::get('rest.realm'). '" qop="auth" nonce="'.$nonce.'" opaque="'.md5(App\Config::get('rest.realm')).'"');
 		}

@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Crypt {
 
 	/**
@@ -52,7 +54,7 @@ class Crypt {
 		static::$have_mcrypt = function_exists('mcrypt_encrypt') ? true : false;
 
 		// load the config
-		$config = Config::load('encrypt', true);
+		$config = App\Config::load('encrypt', true);
 
 		// update the default salt value if one is defined in the config
 		isset($config['salt']) && static::$salt = $config['salt'];

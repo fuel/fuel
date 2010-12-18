@@ -16,6 +16,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Event {
 
 	/**

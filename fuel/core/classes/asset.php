@@ -13,7 +13,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App;
+use Fuel\App as App;
 
 class Asset {
 
@@ -151,7 +151,7 @@ class Asset {
 				{
 					throw new App\Exception('Could not find asset: '.$filename);
 				}
-				
+
 				$file = static::$_asset_url.$file;
 			}
 			else
@@ -191,7 +191,7 @@ class Asset {
 			}
 
 		}
-		
+
 		return $return;
 	}
 
@@ -317,7 +317,7 @@ class Asset {
 		{
 			$assets = array($assets);
 		}
-		
+
 		foreach ($assets as $key => $asset)
 		{
 			static::$_groups[$group][] = array(
@@ -349,7 +349,7 @@ class Asset {
 				return $path.$folder.$file;
 			}
 		}
-		
+
 		return false;
 	}
 }

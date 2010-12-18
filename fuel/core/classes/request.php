@@ -107,13 +107,13 @@ class Request {
 
 		App\Output::$status = 404;
 
-		if (Config::get('routes.404') === null)
+		if (App\Config::get('routes.404') === null)
 		{
 			static::active()->output = App\View::factory('404');
 		}
 		else
 		{
-			list($controller, $action) = array_pad(explode('/', Config::get('routes.404')), 2, false);
+			list($controller, $action) = array_pad(explode('/', App\Config::get('routes.404')), 2, false);
 
 			$action or $action = 'index';
 

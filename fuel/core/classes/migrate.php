@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // --------------------------------------------------------------------
 
 /**
@@ -47,19 +49,19 @@ class Migrate
 
 	public static function _init()
 	{
-		Log::debug('Migrate class initialized');
+		App\Log::debug('Migrate class initialized');
 
-		Config::load('migration', true);
+		App\Config::load('migration', true);
 
-		DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
+		App\DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
 
 		// Check if there is a version
-		$current = DB::select('current')->from('migration')->execute()->get('current');
+		$current = App\DB::select('current')->from('migration')->execute()->get('current');
 
 		// Not set, so we are on 0
 		if ($current === null)
 		{
-			DB::insert('migration')->set(array('current' => '0'))->execute();
+			App\DB::insert('migration')->set(array('current' => '0'))->execute();
 		}
 
 		else
@@ -78,7 +80,7 @@ class Migrate
 	{
 		if ( ! $migrations = static::find_migrations())
 		{
-			Log::error('no_migrations_found');
+			App\Log::error('no_migrations_found');
 			return FALSE;
 		}
 
@@ -130,12 +132,12 @@ class Migrate
 		// But first let's make sure that everything is the way it should be
 		for ($i = $start; $i != $stop; $i += $step)
 		{
-			$f = glob(sprintf(Config::get('migration.path') . '%03d_*.php', $i));
+			$f = glob(sprintf(App\Config::get('migration.path') . '%03d_*.php', $i));
 
 			// Only one migration per step is permitted
 			if (count($f) > 1)
 			{
-				Log::error('multiple_migrations_version');
+				App\Log::error('multiple_migrations_version');
 				return FALSE;
 			}
 
@@ -148,7 +150,7 @@ class Migrate
 
 				// If trying to migrate down but we're missing a step,
 				// something must definitely be wrong.
-				Log::error('migration_not_found');
+				App\Log::error('migration_not_found');
 				return FALSE;
 			}
 
@@ -163,7 +165,7 @@ class Migrate
 				// Cannot repeat a migration at different steps
 				if (in_array($match[1], $migrations))
 				{
-					Log::error('multiple_migrations_name');
+					App\Log::error('multiple_migrations_name');
 					return FALSE;
 				}
 
@@ -172,13 +174,13 @@ class Migrate
 
 				if ( ! class_exists($class))
 				{
-					Log::error('migration_class_doesnt_exist');
+					App\Log::error('migration_class_doesnt_exist');
 					return FALSE;
 				}
 
 				if ( ! is_callable(array($class, 'up')) || !is_callable(array($class, 'down')))
 				{
-					Log::error('wrong_migration_interface');
+					App\Log::error('wrong_migration_interface');
 					return FALSE;
 				}
 
@@ -186,7 +188,7 @@ class Migrate
 			}
 			else
 			{
-				Log::error('invalid_migration_filename');
+				App\Log::error('invalid_migration_filename');
 				return FALSE;
 			}
 		}
@@ -202,7 +204,7 @@ class Migrate
 		// Loop through the migrations
 		foreach ($migrations AS $migration)
 		{
-			Log::info('Migrating to: ' . static::$version + $step);
+			App\Log::info('Migrating to: ' . static::$version + $step);
 
 			$class = 'Fuel\\App\\Migration_' . ucfirst($migration);
 			call_user_func(array(new $class, $method));
@@ -211,7 +213,7 @@ class Migrate
 			static::_update_schema_version(static::$version - $step, static::$version);
 		}
 
-		Log::info('Migrated to '.static::$version.' successfully.');
+		App\Log::info('Migrated to '.static::$version.' successfully.');
 
 		return static::$version;
 	}
@@ -226,7 +228,7 @@ class Migrate
 	 */
 	public static function current()
 	{
-		return static::version(Config::get('migration.version'));
+		return static::version(App\Config::get('migration.version'));
 	}
 
 	// --------------------------------------------------------------------
@@ -241,7 +243,7 @@ class Migrate
 	protected static function find_migrations()
 	{
 		// Load all *_*.php files in the migrations path
-		$files = glob(Config::get('migration.path') . '*_*.php');
+		$files = glob(App\Config::get('migration.path') . '*_*.php');
 		$file_count = count($files);
 
 		for ($i = 0; $i < $file_count; $i++)
@@ -270,6 +272,6 @@ class Migrate
 	 */
 	private function _update_schema_version($old_version, $version)
 	{
-		DB::update('migration')->set(array('current' => (int) $version))->where('current', '=', (int) $old_version)->execute();
+		App\DB::update('migration')->set(array('current' => (int) $version))->where('current', '=', (int) $old_version)->execute();
 	}
 }
