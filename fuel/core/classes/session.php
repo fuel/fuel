@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Session {
 	/**
 	 * loaded session driver instance
@@ -50,9 +52,9 @@ class Session {
 	 */
 	public static function _init()
 	{
-		Config::load('session', true);
+		App\Config::load('session', true);
 
-		if (Config::get('session.auto_initialize', true))
+		if (App\Config::get('session.auto_initialize', true))
 		{
 			// need to catch errors here, the error handler isn't running yet
 			try
@@ -61,7 +63,7 @@ class Session {
 			}
 			catch (Exception $e)
 			{
-				Error::show_php_error($e);die();
+				App\Error::show_php_error($e);die();
 			}
 		}
 	}
@@ -77,7 +79,7 @@ class Session {
 	 */
 	public static function factory($custom = array())
 	{
-		$config = Config::get('session', array());
+		$config = App\Config::get('session', array());
 
 		// When a string was passed it's just the driver type
 		if ( ! empty($custom) && ! is_array($custom))
@@ -89,11 +91,11 @@ class Session {
 
 		if (empty($config['driver']))
 		{
-			throw new Session_Exception('No session driver given or no default session driver set.');
+			throw new App\Session_Exception('No session driver given or no default session driver set.');
 		}
 
 		// determine the driver to load
-		$class = 'Session_'.ucfirst($config['driver']);
+		$class = 'Fuel\\App\\Session_'.ucfirst($config['driver']);
 
 		$driver = new $class($config);
 
@@ -104,9 +106,10 @@ class Session {
 		if (isset(static::$_instances[$cookie]))
 		{
 			// if so, they must be using the same driver class!
-			if (get_class(static::$_instances[$cookie]) != ("Fuel\\".$class))
+			$class_instance = 'Fuel\\Core\\'.$class;
+			if (static::$_instances[$cookie] instanceof $class_instance)
 			{
-				throw new Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
+				throw new App\Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
 			}
 		}
 		else
@@ -115,7 +118,7 @@ class Session {
 			if ($driver->get_config('write_on_set') === false)
 			{
 				// register a shutdown event to update the session
-				Event::register('shutdown', array($driver, 'write'));
+				App\Event::register('shutdown', array($driver, 'write'));
 			}
 
 			// init the session
@@ -149,9 +152,19 @@ class Session {
 	 * @access	public
 	 * @return	Session_Driver object
 	 */
-	public static function instance()
+	public static function instance($instance = null)
 	{
-		if (is_null(static::$_instance))
+		if ($instance !== null)
+		{
+			if ( ! array_key_exists($instance, static::$_instances))
+			{
+				return false;
+			}
+
+			return static::$_instances[$instance];
+		}
+
+		if (static::$_instance === null)
 		{
 			static::$_instance = static::factory();
 		}

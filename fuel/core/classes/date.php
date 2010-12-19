@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // ------------------------------------------------------------------------
 
 /**
@@ -73,14 +75,14 @@ class Date {
 
 	public static function _init()
 	{
-		static::$server_gmt_offset	= Config::get('server_gmt_offset', 0);
+		static::$server_gmt_offset	= App\Config::get('server_gmt_offset', 0);
 
 		// Set the default timezone
 		static::$default_timezone	= date_default_timezone_get();
 
 		// Ugly temporary windows fix because windows doesn't support strptime()
 		// Better fix will accept custom pattern parsing but only parse numeric input on windows servers
-		if ( ! function_exists('strptime') && ! function_exists('Fuel\\strptime'))
+		if ( ! function_exists('strptime') && ! function_exists('Fuel\Core\strptime'))
 		{
 			function strptime($input, $format)
 			{
@@ -116,7 +118,7 @@ class Date {
 
 	/**
 	 * Returns the current time with offset
-	 * 
+	 *
 	 * @return Date
 	 */
 	public static function time($timezone = null)
@@ -133,20 +135,20 @@ class Date {
 	 */
 	public static function create_from_string($input, $pattern_key = 'human')
 	{
-		Config::load('date', 'date');
+		App\Config::load('date', 'date');
 
-		$pattern = Config::get('date.patterns.'.$pattern_key, null);
+		$pattern = App\Config::get('date.patterns.'.$pattern_key, null);
 		$pattern = ($pattern === null) ? $pattern_key : $pattern;
 
 		$time = strptime($input, $pattern);
 		if ($time === false)
 		{
-			Error::notice('Input was not recognized by pattern.');
+			App\Error::notice('Input was not recognized by pattern.');
 			return false;
 		}
 		$timestamp = mktime($time['tm_hour'], $time['tm_min'], $time['tm_sec'],
 						$time['tm_mon'], $time['tm_mday'], $time['tm_year']);
-		
+
 		return static::factory($timestamp + static::$server_gmt_offset);
 	}
 
@@ -166,7 +168,7 @@ class Date {
 
 		if ($interval <= 0)
 		{
-			Error::notice('Input was not recognized by pattern.');
+			App\Error::notice('Input was not recognized by pattern.');
 			return false;
 		}
 
@@ -196,7 +198,7 @@ class Date {
 
 		if ($month < 1 || $month > 12)
 		{
-			Error::notice('Invalid input for month given.');
+			App\Error::notice('Invalid input for month given.');
 			return false;
 		}
 		elseif ($month == 2)
@@ -223,22 +225,22 @@ class Date {
 
 	/**
 	 * Returns the date formatted according to the current locale
-	 * 
+	 *
 	 * @param	string	either a named pattern from date config file or a pattern
 	 * @return	string
 	 */
 	public function format($pattern_key = 'local')
 	{
-		Config::load('date', 'date');
+		App\Config::load('date', 'date');
 
-		$pattern = Config::get('date.patterns.'.$pattern_key, $pattern_key);
+		$pattern = App\Config::get('date.patterns.'.$pattern_key, $pattern_key);
 
 		// Temporarily change timezone when different from default
 		if (static::$default_timezone != $this->timezone)
 		{
 			date_default_timezone_set($this->timezone);
 		}
-		
+
 		// Create output
 		$output = strftime($pattern, $this->timestamp);
 
@@ -253,7 +255,7 @@ class Date {
 
 	/**
 	 * Returns the internal timestamp
-	 * 
+	 *
 	 * @return	string
 	 */
 	public function get_timestamp()
@@ -282,7 +284,7 @@ class Date {
 
 		return $this;
 	}
-	
+
 	/**
 	 * Allows you to just put the object in a string and get it inserted in the default pattern
 	 *

@@ -19,7 +19,7 @@ use Fuel\App\Cli;
 use Fuel\App\Exception;
 
 class Tests {
-	
+
 	public static $results = array(
 		'passes'		=> 0,
 		'failures'		=> 0,
@@ -27,7 +27,7 @@ class Tests {
 	);
 
 	public static $classes = array();
-	
+
 	public static function run_all($args)
 	{
 		foreach (Fuel::get_paths() as $path)
@@ -69,7 +69,7 @@ class Tests {
 
 		if (strncmp($name, 'run_', 4) !== 0)
 		{
-			throw new Exception('Invalid method call: '.$name);
+			throw new App\Exception('Invalid method call: '.$name);
 			return;
 		}
 

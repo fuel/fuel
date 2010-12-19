@@ -206,8 +206,8 @@ class Html
 	 */
 	public static function doctype($type = 'xhtml1-trans')
 	{
-		Config::load('doctypes', true);
-		static::$doctypes = Config::get('doctypes');
+		App\Config::load('doctypes', true);
+		static::$doctypes = App\Config::get('doctypes');
 		if(is_array(static::$doctypes) && isset(static::$doctypes[$type]))
 		{
 			if($type == "html5")

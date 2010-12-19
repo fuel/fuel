@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // --------------------------------------------------------------------
 
 class Session_Db extends Session_Driver {
@@ -55,14 +57,14 @@ class Session_Db extends Session_Driver {
 		// create a new session
 		$this->keys['session_id']	= $this->_new_session_id();
 		$this->keys['previous_id']	= $this->keys['session_id'];	// prevents errors if previous_id has a unique index
-		$this->keys['ip_address']	= Input::real_ip();
-		$this->keys['user_agent']	= Input::user_agent();
+		$this->keys['ip_address']	= App\Input::real_ip();
+		$this->keys['user_agent']	= App\Input::user_agent();
 		$this->keys['created'] 		= $this->time->get_timestamp();
 		$this->keys['updated'] 		= $this->keys['created'];
 		$this->keys['payload'] 		= '';
 
 		// create the session record
-		$result = DB::insert($this->config['table'], array_keys($this->keys))->values($this->keys)->execute($this->config['database']);
+		$result = App\DB::insert($this->config['table'], array_keys($this->keys))->values($this->keys)->execute($this->config['database']);
 
 		// and set the session cookie
 		$this->_set_cookie();
@@ -89,7 +91,7 @@ class Session_Db extends Session_Driver {
 		}
 
 		// read the session record
-		$this->record = DB::select()->where('session_id', '=', $this->keys['session_id'])->from($this->config['table'])->execute($this->config['database']);
+		$this->record = App\DB::select()->where('session_id', '=', $this->keys['session_id'])->from($this->config['table'])->execute($this->config['database']);
 
 		// record found?
 		if ($this->record->count())
@@ -99,7 +101,7 @@ class Session_Db extends Session_Driver {
 		else
 		{
 			// try to find the session on previous id
-			$this->record = DB::select()->where('previous_id', '=', $this->keys['session_id'])->from($this->config['table'])->execute($this->config['database']);
+			$this->record = App\DB::select()->where('previous_id', '=', $this->keys['session_id'])->from($this->config['table'])->execute($this->config['database']);
 
 			// record found?
 			if ($this->record->count())
@@ -139,7 +141,7 @@ class Session_Db extends Session_Driver {
 			$session['payload'] = $this->_serialize(array($this->data, $this->flash));
 
 			// update the database
-			$result = DB::update($this->config['table'])->set($session)->where('session_id', '=', $this->record->get('session_id'))->execute($this->config['database']);
+			$result = App\DB::update($this->config['table'])->set($session)->where('session_id', '=', $this->record->get('session_id'))->execute($this->config['database']);
 
 			// update went well?
 			if ($result)
@@ -156,7 +158,7 @@ class Session_Db extends Session_Driver {
 			if (mt_rand(0,100) < $this->config['gc_probability'])
 			{
 				$expired = $this->time->get_timestamp() - $this->config['expiration_time'];
-				$result = DB::delete($this->config['table'])->where('updated', '<', $expired)->execute($this->config['database']);
+				$result = App\DB::delete($this->config['table'])->where('updated', '<', $expired)->execute($this->config['database']);
 			}
 		}
 	}
@@ -175,7 +177,7 @@ class Session_Db extends Session_Driver {
 		if ( ! empty($this->keys) and ! empty($this->record))
 		{
 			// delete the session record
-			$result = DB::delete($this->config['table'])->where('session_id', '=', $this->keys['session_id'])->execute($this->config['database']);
+			$result = App\DB::delete($this->config['table'])->where('session_id', '=', $this->keys['session_id'])->execute($this->config['database']);
 		}
 
 		// reset the stored session data
@@ -214,12 +216,12 @@ class Session_Db extends Session_Driver {
 						// do we have a database?
 						if ( empty($item) OR ! is_string($item))
 						{
-							Config::load('db', true);
-							$item = Config::get('db.active', false);
+							App\Config::load('db', true);
+							$item = App\Config::get('db.active', false);
 						}
 						if ($item === false)
 						{
-							throw new Exception('You have specify a database to use database backed sessions.');
+							throw new App\Exception('You have specify a database to use database backed sessions.');
 						}
 					break;
 
@@ -227,7 +229,7 @@ class Session_Db extends Session_Driver {
 						// and a table name?
 						if ( empty($item) OR ! is_string($item))
 						{
-							throw new Exception('You have specify a database table name to use database backed sessions.');
+							throw new App\Exception('You have specify a database table name to use database backed sessions.');
 						}
 					break;
 

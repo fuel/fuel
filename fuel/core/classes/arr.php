@@ -14,10 +14,10 @@
 
 namespace Fuel\Core;
 
-use Fuel\App;
+use Fuel\App as App;
 
 class Arr {
-	
+
 	/**
 	 * Flattens a multi-dimensional associative array down into a 1 dimensional
 	 * assoc. array.
@@ -70,7 +70,7 @@ class Arr {
 		{
 			return $default;
 		}
-		
+
 		return $array[$key];
 	}
 
@@ -87,12 +87,12 @@ class Arr {
 	public static function elements($array, $keys, $default = false)
 	{
 		$return = array();
-		
+
 		if ( ! is_array($keys))
 		{
 			throw new App\Exception('Arr::elements() - $keys must be an array.');
 		}
-		
+
 		foreach ($keys as $key)
 		{
 			if ( ! array_key_exists($key, $array))
@@ -104,7 +104,7 @@ class Arr {
 				$return[$key] = $array[$key];
 			}
 		}
-		
+
 		return $return;
 	}
 
@@ -121,7 +121,7 @@ class Arr {
 	{
 		if (count($original) < abs($pos))
 		{
-			Error::notice('Position larger than number of elements in array in which to insert.');
+			App\Error::notice('Position larger than number of elements in array in which to insert.');
 			return false;
 		}
 
@@ -143,7 +143,7 @@ class Arr {
 		$pos = array_search($key, array_keys($original));
 		if ($pos === false)
 		{
-			Error::notice('Unknown key after which to insert the new value into the array.');
+			App\Error::notice('Unknown key after which to insert the new value into the array.');
 			return false;
 		}
 
@@ -163,7 +163,7 @@ class Arr {
 		$key = array_search($search, $original);
 		if ($key === false)
 		{
-			Error::notice('Unknown value after which to insert the new value into the array.');
+			App\Error::notice('Unknown value after which to insert the new value into the array.');
 			return false;
 		}
 

@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // --------------------------------------------------------------------
 
 /**
@@ -49,17 +51,17 @@ class Migrate
 	{
 		logger(Fuel::L_DEBUG, 'Migrate class initialized');
 
-		Config::load('migration', true);
+		App\Config::load('migration', true);
 
-		DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
+		App\DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
 
 		// Check if there is a version
-		$current = DB::select('current')->from('migration')->execute()->get('current');
+		$current = App\DB::select('current')->from('migration')->execute()->get('current');
 
 		// Not set, so we are on 0
 		if ($current === null)
 		{
-			DB::insert('migration')->set(array('current' => '0'))->execute();
+			App\DB::insert('migration')->set(array('current' => '0'))->execute();
 		}
 
 		else
@@ -130,7 +132,7 @@ class Migrate
 		// But first let's make sure that everything is the way it should be
 		for ($i = $start; $i != $stop; $i += $step)
 		{
-			$f = glob(sprintf(Config::get('migration.path') . '%03d_*.php', $i));
+			$f = glob(sprintf(App\Config::get('migration.path') . '%03d_*.php', $i));
 
 			// Only one migration per step is permitted
 			if (count($f) > 1)
@@ -226,7 +228,7 @@ class Migrate
 	 */
 	public static function current()
 	{
-		return static::version(Config::get('migration.version'));
+		return static::version(App\Config::get('migration.version'));
 	}
 
 	// --------------------------------------------------------------------
@@ -241,7 +243,7 @@ class Migrate
 	protected static function find_migrations()
 	{
 		// Load all *_*.php files in the migrations path
-		$files = glob(Config::get('migration.path') . '*_*.php');
+		$files = glob(App\Config::get('migration.path') . '*_*.php');
 		$file_count = count($files);
 
 		for ($i = 0; $i < $file_count; $i++)
@@ -270,6 +272,6 @@ class Migrate
 	 */
 	private function _update_schema_version($old_version, $version)
 	{
-		DB::update('migration')->set(array('current' => (int) $version))->where('current', '=', (int) $old_version)->execute();
+		App\DB::update('migration')->set(array('current' => (int) $version))->where('current', '=', (int) $old_version)->execute();
 	}
 }

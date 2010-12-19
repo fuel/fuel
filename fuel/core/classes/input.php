@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Input {
 
 	protected static $inspekt = null;

@@ -14,13 +14,15 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Output {
 
 	/**
 	 * @var	int		The HTTP status code
 	 */
 	public static $status = 200;
-	
+
 	/**
 	 * @var	array	An array of headers
 	 */
@@ -136,7 +138,7 @@ class Output {
 		if ( ! headers_sent())
 		{
 			// Send the protocol line first
-			$protocol = Input::server('SERVER_PROTOCOL') ? Input::server('SERVER_PROTOCOL') : 'HTTP/1.1';
+			$protocol = App\Input::server('SERVER_PROTOCOL') ? App\Input::server('SERVER_PROTOCOL') : 'HTTP/1.1';
 			header($protocol.' '.static::$status.' '.static::$statuses[static::$status]);
 
 			foreach (static::$headers as $name => $value)

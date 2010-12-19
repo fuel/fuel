@@ -13,6 +13,7 @@
  */
 
 namespace Fuel\Core;
+use Fuel\App;
 
 // ------------------------------------------------------------------------
 
@@ -63,6 +64,7 @@ class Validation_Object {
 	 * @param	string	field variable name
 	 * @param	string	field title
 	 * @param	array	consisting of rules, which are valid callbacks or array(callback, params array)
+	 * @return	Validation_Object
 	 */
 	public function add_field($field, $title = null, Array $rules = array())
 	{
@@ -73,7 +75,7 @@ class Validation_Object {
 			{
 				$this->add_rule($rule[0], $rule[1], $rule[2]);
 			}
-			return;
+			return $this;
 		}
 
 		$this->fields[$field] = array(
@@ -127,6 +129,8 @@ class Validation_Object {
 				}
 			}
 		}
+
+		return $this;
 	}
 
 	/**
@@ -135,12 +139,13 @@ class Validation_Object {
 	 * Add a Fuel Model to callables and expect it to add fields.
 	 *
 	 * @param	Model
+	 * @return	Validation_Object
 	 */
 	public function add_model($model)
 	{
 		if ( ! is_callable(array($model, '_fuel_validation')))
 		{
-			throw new Fuel_Exception('Invalid model or no _fuel_validation() method to return fields.');
+			throw new App\Fuel_Exception('Invalid model or no _fuel_validation() method to return fields.');
 		}
 
 		/**
@@ -151,6 +156,8 @@ class Validation_Object {
 		 */
 		$this->add_callable($model);
 		$model->_fuel_validation($this);
+
+		return $this;
 	}
 
 	/**
@@ -161,15 +168,18 @@ class Validation_Object {
 	 * from this object because the new class is prepended.
 	 *
 	 * @param	object|string	Class or object
+	 * @return	Validation_Object
 	 */
 	public function add_callable($class)
 	{
 		if ( ! (is_object($class) || class_exists($class)))
 		{
-			throw new Fuel_Exception('Input for add_callable is not a valid object or class.');
+			throw new App\Fuel_Exception('Input for add_callable is not a valid object or class.');
 		}
 
 		array_unshift($this->callables, $class);
+
+		return $this;
 	}
 
 	/**
@@ -224,7 +234,7 @@ class Validation_Object {
 
 		if ($output === false && $value !== false)
 		{
-			throw new Validation_Error($field, $value, $rule, $params);
+			throw new App\Validation_Error($field, $value, $rule, $params);
 		}
 		elseif ($output !== true)
 		{
@@ -424,7 +434,7 @@ class Validation_Object {
 	 */
 	public function valid_email($val)
 	{
-		return filter_var($val, FILTER_VALIDATE_EMAIL);
+		return empty($val) || filter_var($val, FILTER_VALIDATE_EMAIL);
 	}
 
 	/**
@@ -435,6 +445,11 @@ class Validation_Object {
 	 */
 	public function valid_emails($val)
 	{
+		if (empty($val))
+		{
+			return true;
+		}
+
 		$emails = explode(',', $val);
 
 		foreach ($emails as $e)
@@ -455,7 +470,7 @@ class Validation_Object {
 	 */
 	public function valid_url($val)
 	{
-		return filter_var($val, FILTER_VALIDATE_URL);
+		return empty($val) || filter_var($val, FILTER_VALIDATE_URL);
 	}
 
 	/**
@@ -466,7 +481,7 @@ class Validation_Object {
 	 */
 	public function valid_ip($val)
 	{
-		return filter_var($val, FILTER_VALIDATE_IP);
+		return empty($val) || filter_var($val, FILTER_VALIDATE_IP);
 	}
 
 	/**

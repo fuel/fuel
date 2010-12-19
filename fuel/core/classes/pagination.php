@@ -13,13 +13,15 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Pagination {
-	
+
 	/**
 	 * @var	integer	The current page
 	 */
 	public static $current_page = null;
-	
+
 	/**
 	 * @var	integer	The offset that the current page starts at
 	 */
@@ -29,7 +31,7 @@ class Pagination {
 	 * @var	integer	The number of items per page
 	 */
 	public static $per_page = 10;
-	
+
 	/**
 	 * @var	integer	The number of total pages
 	 */
@@ -39,7 +41,7 @@ class Pagination {
 	 * @var	integer	The total number of items
 	 */
 	protected static $total_items = 0;
-	
+
 	/**
 	 * @var	integer	The total number of links to show
 	 */
@@ -49,7 +51,7 @@ class Pagination {
 	 * @var	integer	The URI segment containg page number
 	 */
 	protected static $uri_segment = 3;
-	
+
 	/**
 	 * @var	mixed	The pagination URL
 	 */
@@ -65,13 +67,13 @@ class Pagination {
 	 */
 	public static function _init()
 	{
-		$config = Config::get('pagination', array());
+		$config = App\Config::get('pagination', array());
 
 		static::set_config($config);
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Set Config
 	 *
@@ -88,12 +90,12 @@ class Pagination {
 		{
 			static::${$key} = $value;
 		}
-		
+
 		static::initialize();
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Prepares vars for creating links
 	 *
@@ -104,8 +106,8 @@ class Pagination {
 	{
 
 		static::$total_pages = ceil(static::$total_items / static::$per_page) ?: 1;
-		
-		static::$current_page = (int) URI::segment(static::$uri_segment);
+
+		static::$current_page = (int) App\URI::segment(static::$uri_segment);
 
 		if (static::$current_page > static::$total_pages)
 		{
@@ -119,9 +121,9 @@ class Pagination {
 		// The current page must be zero based so that the offset for page 1 is 0.
 		static::$offset = (static::$current_page - 1) * static::$per_page;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Creates the pagination links
 	 *
@@ -144,7 +146,7 @@ class Pagination {
 		$end   = ((static::$current_page + static::$num_links) < static::$total_pages) ? static::$current_page + static::$num_links : static::$total_pages;
 
 		$pagination .= '&nbsp;'.static::prev_link('&laquo Previous').'&nbsp;&nbsp;';
-		
+
 		for($i = $start; $i <= $end; $i++)
 		{
 			if (static::$current_page == $i)
@@ -154,7 +156,7 @@ class Pagination {
 			else
 			{
 				$url = ($i == 1) ? '' : '/'.$i;
-				$pagination .= Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
+				$pagination .= App\Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
 			}
 		}
 
@@ -162,9 +164,9 @@ class Pagination {
 
 		return $pagination;
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Pagination "Next" link
 	 *
@@ -186,12 +188,12 @@ class Pagination {
 		else
 		{
 			$next_page = static::$current_page + 1;
-			return Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
+			return App\Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
 		}
 	}
-	
+
 	// --------------------------------------------------------------------
-	
+
 	/**
 	 * Pagination "Previous" link
 	 *
@@ -214,7 +216,7 @@ class Pagination {
 		{
 			$previous_page = static::$current_page - 1;
 			$previous_page = ($previous_page == 1) ? '' : '/' . $previous_page;
-			return Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
+			return App\Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
 		}
 	}
 }

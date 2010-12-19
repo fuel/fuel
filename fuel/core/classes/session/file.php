@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // --------------------------------------------------------------------
 
 class Session_File extends Session_Driver {
@@ -50,8 +52,8 @@ class Session_File extends Session_Driver {
 		// create a new session
 		$this->keys['session_id']	= $this->_new_session_id();
 		$this->keys['previous_id']	= $this->keys['session_id'];	// prevents errors if previous_id has a unique index
-		$this->keys['ip_address']	= Input::real_ip();
-		$this->keys['user_agent']	= Input::user_agent();
+		$this->keys['ip_address']	= App\Input::real_ip();
+		$this->keys['user_agent']	= App\Input::user_agent();
 		$this->keys['created'] 		= $this->time->get_timestamp();
 		$this->keys['updated'] 		= $this->keys['created'];
 
@@ -306,12 +308,12 @@ class Session_File extends Session_Driver {
 						// do we have a path?
 						if ( empty($item) OR ! is_dir($item))
 						{
-							throw new Exception('You have specify a valid path to store the session data files.');
+							throw new App\Exception('You have specify a valid path to store the session data files.');
 						}
 						// and can we write to it?
 						if ( ! is_writable($item))
 						{
-							throw new Exception('The webserver doesn\'t have write access to the path to store the session data files.');
+							throw new App\Exception('The webserver doesn\'t have write access to the path to store the session data files.');
 						}
 						// update the path, and add the trailing slash
 						$item = realpath($item).'/';

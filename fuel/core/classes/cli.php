@@ -2,7 +2,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App;
+use Fuel\App as App;
 
 class Cli {
 

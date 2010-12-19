@@ -90,7 +90,7 @@ class File_Area {
 			$info = pathinfo($path);
 			if ( ! empty(static::$extensions) && array_key_exists($info['extension'], static::$extensions))
 			{
-				throw new File_Exception('File operation not allowed: disallowed file extension.');
+				throw new App\File_Exception('File operation not allowed: disallowed file extension.');
 			}
 
 			// create specific driver when available
@@ -108,7 +108,7 @@ class File_Area {
 		}
 
 		// still here? path is invalid
-		throw new File_Exception('Invalid path for file or directory.');
+		throw new App\File_Exception('Invalid path for file or directory.');
 	}
 
 	/**
@@ -147,14 +147,14 @@ class File_Area {
 		// basedir prefix is required when it is set (may cause unexpected errors when realpath doesn't work)
 		if ( ! empty($this->basedir) && substr($path, 0, strlen($this->basedir)) != $this->basedir)
 		{
-			throw new File_Exception('File operation not allowed: given path is outside the basedir for this area.');
+			throw new App\File_Exception('File operation not allowed: given path is outside the basedir for this area.');
 		}
 
 		// check file extension
 		$info = pathinfo($path);
 		if ( ! empty(static::$extensions) && array_key_exists($info['extension'], static::$extensions))
 		{
-			throw new File_Exception('File operation not allowed: disallowed file extension.');
+			throw new App\File_Exception('File operation not allowed: disallowed file extension.');
 		}
 
 		return $path;

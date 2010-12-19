@@ -54,7 +54,14 @@ class Error {
 			$severity = static::$levels[$last_error['type']];
 			logger(Fuel::L_ERROR, $severity.' - '.$last_error['message'].' in '.$last_error['file'].' on line '.$last_error['line']);
 
-			static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
+			if (App\Fuel::$env != Fuel::PRODUCTION)
+			{
+				static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
+			}
+			else
+			{
+				echo 'An unrecoverable error occurred.';
+			}
 
 			exit(1);
 		}
@@ -65,7 +72,14 @@ class Error {
 		$severity = ( ! isset(static::$levels[$e->getCode()])) ? $e->getCode() : static::$levels[$e->getCode()];
 		logger(Fuel::L_ERROR, $severity.' - '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
 
-		static::show_php_error($e);
+		if (App\Fuel::$env != Fuel::PRODUCTION)
+		{
+			static::show_php_error($e);
+		}
+		else
+		{
+			echo 'An unrecoverable exception was thrown.';
+		}
 	}
 
 	public static function error_handler($severity, $message, $filepath, $line)
@@ -73,14 +87,15 @@ class Error {
 		if (static::$count <= Config::get('error_throttling', 10))
 		{
 			logger(Fuel::L_ERROR, $severity.' - '.$message.' in '.$filepath.' on line '.$line);
-	
-			if (($severity & error_reporting()) == $severity)
+
+			if (App\Fuel::$env != App\Fuel::PRODUCTION && ($severity & error_reporting()) == $severity)
 			{
 				static::$count++;
 				static::show_php_error(new \ErrorException($message, $severity, 0, $filepath, $line));
 			}
 		}
-		elseif (static::$count == (Config::get('error_throttling', 10) + 1)
+		elseif (App\Fuel::$env != App\Fuel::PRODUCTION
+				&& static::$count == (App\Config::get('error_throttling', 10) + 1)
 				&& ($severity & error_reporting()) == $severity)
 		{
 			static::$count++;
@@ -128,34 +143,34 @@ class Error {
 
 		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
 
-		$data['debug_lines'] = Debug::file_lines($debug_lines['file'], $debug_lines['line']);
+		$data['debug_lines'] = App\Debug::file_lines($debug_lines['file'], $debug_lines['line']);
 
-		$data['filepath'] = Fuel::clean_path($debug_lines['file']);
+		$data['filepath'] = App\Fuel::clean_path($debug_lines['file']);
 
 		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
 		$data['error_line'] = $debug_lines['line'];
 
-		echo View::factory('errors'.DS.'php_error', $data);
+		echo App\View::factory('errors'.DS.'php_error', $data);
 	}
 
 	public static function notice($msg, $always_show = false)
 	{
-		if ( ! $always_show && (Fuel::$env == Env::PRODUCTION || Config::get('show_notices', true) === false))
+		if ( ! $always_show && (App\Fuel::$env == App\Fuel::PRODUCTION || App\Config::get('show_notices', true) === false))
 		{
 			return;
 		}
 
-		$trace = array_merge(array('file' => '(unknown)', 'line' => '(unknown)'), Arr::element(debug_backtrace(), 1));
+		$trace = array_merge(array('file' => '(unknown)', 'line' => '(unknown)'), App\Arr::element(debug_backtrace(), 1));
 
 		logger(Fuel::L_DEBUG, 'Notice - '.$msg.' in '.$trace['file'].' on line '.$trace['line']);
 
 		$data['message']	= $msg;
 		$data['type']		= 'Notice';
-		$data['filepath']	= Fuel::clean_path($trace['file']);
+		$data['filepath']	= App\Fuel::clean_path($trace['file']);
 		$data['line']		= $trace['line'];
 		$data['function']	= $trace['function'];
 
-		echo View::factory('errors'.DS.'php_short', $data);
+		echo App\View::factory('errors'.DS.'php_short', $data);
 	}
 
 }

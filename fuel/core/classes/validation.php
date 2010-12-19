@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 // ------------------------------------------------------------------------
 
 /**
@@ -41,7 +43,7 @@ class Validation {
 		{
 			static::$_instance = static::factory();
 		}
-		
+
 		return static::$_instance;
 	}
 

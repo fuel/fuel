@@ -41,7 +41,7 @@ class BelongsTo extends Association {
 		}
 		else
 		{
-			throw new Exception("Did not get expected class: {$this->dest_class}", Exception::UnexpectedClass);
+			throw new App\Exception("Did not get expected class: {$this->dest_class}", Exception::UnexpectedClass);
 		}
 	}
 

@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 class Crypt {
 
 	/**
@@ -52,7 +54,7 @@ class Crypt {
 		static::$have_mcrypt = function_exists('mcrypt_encrypt') ? true : false;
 
 		// load the config
-		$config = Config::load('encrypt', true);
+		$config = App\Config::load('encrypt', true);
 
 		// update the default salt value if one is defined in the config
 		isset($config['salt']) && static::$salt = $config['salt'];
@@ -179,7 +181,7 @@ class Crypt {
 			if (substr($value,0,2) == '1:')
 			{
 				// houston, we have a problem!
-				throw new Exception('Encrypted string was encrypted using the PHP mcrypt library, which is not loaded on this system.');
+				throw new App\Exception('Encrypted string was encrypted using the PHP mcrypt library, which is not loaded on this system.');
 			}
 
 			$value = substr($value,2);

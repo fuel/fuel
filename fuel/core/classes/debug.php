@@ -49,7 +49,7 @@ class Debug {
 		$arguments = func_get_args();
 		$total_arguments = count($arguments);
 
-		$callee['file'] = Fuel::clean_path($callee['file']);
+		$callee['file'] = App\Fuel::clean_path($callee['file']);
 
 		if ( ! static::$js_displayed)
 		{
@@ -205,12 +205,12 @@ JS;
 		}
 
 		$debug_lines = array_slice(static::$files[$filepath], $start, $length, TRUE);
-	
+
 		if ($highlight)
 		{
 			$to_replace = array('<code>', '</code>', '<span style="color: #0000BB">&lt;?php&nbsp;', "\n");
 			$replace_with = array('', '', '<span style="color: #0000BB">', '');
-	
+
 			foreach ($debug_lines as & $line)
 			{
 				$line = str_replace($to_replace, $replace_with, highlight_string('<?php ' . $line, TRUE));

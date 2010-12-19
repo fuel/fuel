@@ -14,6 +14,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App as App;
+
 interface Cache_Handler_Driver {
 
 	/**
