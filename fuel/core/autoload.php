@@ -41,8 +41,8 @@ Autoloader::add_aliases(array(
 	'Cache_Storage_Redis'		=> 'Fuel\\App\\Cache_Storage_Redis',
 
 	'Config'					=> 'Fuel\\App\\Config',
-
 	'Cookie'					=> 'Fuel\\App\\Cookie',
+
 	'DB'						=> 'Fuel\\App\\DB',
 	'DBUtil'					=> 'Fuel\\App\\DBUtil',
 
@@ -84,18 +84,18 @@ Autoloader::add_aliases(array(
 	'Session_Memcached'			=> 'Fuel\\App\\Session_Memcached',
 	'Session_Redis'				=> 'Fuel\\App\\Session_Redis',
 
+	'Uri'						=> 'Fuel\\App\\Uri',
 	'Upload'					=> 'Fuel\\App\\Upload',
 
-	'Uri'						=> 'Fuel\\App\\Uri',
-
 	'Validation'				=> 'Fuel\\App\\Validation',
-	'Validation_Object'			=> 'Fuel\\App\\Validation_Object',
+	'Validation_Set'			=> 'Fuel\\App\\Validation_Set',
+	'Validation_Field'			=> 'Fuel\\App\\Validation_Field',
 	'Validation_Error'			=> 'Fuel\\App\\Validation_Error',
 
 	'View'						=> 'Fuel\\App\\View',
 	'View_Exception'			=> 'Fuel\\App\\View_Exception',
 
-	'Fuel'						=> 'Fuel\\App\\Fuel',
+	'Fuel'					=> 'Fuel\\App\\Fuel',
 
 ));
 

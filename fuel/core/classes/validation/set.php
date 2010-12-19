@@ -18,19 +18,16 @@ use Fuel\App;
 // ------------------------------------------------------------------------
 
 /**
- * Validation object
+ * Validation set
  *
- * Object that performs the actual validation
+ * A set of fields to be validated
  *
  * @package		Fuel
  * @subpackage	Core
  * @category	Core
  * @author		Jelmer Schreuder
- *
- * Notes:
- * - Needs a proper name, might become a driver but don't know why it would be yet.
  */
-class Validation_Object {
+class Validation_Set {
 
 	/**
 	 * @var	array	consists of fieldnames, field titles & rules to be used on them
@@ -58,79 +55,16 @@ class Validation_Object {
 	}
 
 	/**
-	 * Add field to be validated with title and rules
-	 * Note: valid callbacks are everything that is_callable() accepts, including closures
+	 * Add field to be validated with title
 	 *
 	 * @param	string	field variable name
-	 * @param	string	field title
-	 * @param	array	consisting of rules, which are valid callbacks or array(callback, params array)
-	 * @return	Validation_Object
+	 * @param	string	field label
+	 * @return	Validation_Field
 	 */
-	public function add_field($field, $title = null, Array $rules = array())
+	public function add_field($field, $label = '', Array $rules = array())
 	{
-		// Allow for passing multiple rules at once
-		if (is_array($field))
-		{
-			foreach($field as $rule)
-			{
-				$this->add_rule($rule[0], $rule[1], $rule[2]);
-			}
-			return $this;
-		}
-
-		$this->fields[$field] = array(
-			'field'	=> $field,
-			'title'	=> $title,
-			'rules'	=> array()
-		);
-
-		// Rules are validated and only accepted when given as an array consisting of
-		// array(callback, params) or just callbacks in an array.
-		foreach ($rules as $r)
-		{
-			// first try callables
-			$callable_rule = false;
-			if ((is_string($r) || (is_array($r) && is_string($r[0])))			// whether callback is a string
-				&& ( ! is_array($r) || ( ! isset($r[1]) || is_array($r[1]))))	// whether arguements are valid
-			{
-				foreach ($this->callables as $class)
-				{
-					if (is_array($r) || is_callable(array($class, $r[0])))
-					{
-						$callable_rule = true;
-						$this->fields[$field]['rules'][] = array(array($class, $r[0]), $r[1]);
-					}
-					elseif (is_string($r) && is_callable(array($class, $r)))
-					{
-						$callable_rule = true;
-						$this->fields[$field]['rules'][] = array(array($class, $r), array());
-					}
-				}
-			}
-
-			// when no callable function was found, try regular callbacks
-			if ( ! $callable_rule)
-			{
-				if (is_array($r) && (empty($r[1]) || is_array($r[1])) && is_callable($r[0]))
-				{
-					$this->fields[$field]['rules'][] = $r;
-				}
-				elseif (is_callable($r))
-				{
-					$this->fields[$field]['rules'][] = array($r, array());
-				}
-				else
-				{
-					// not found, give a notice but don't break
-					if ( ! $callable_rule)
-					{
-						Error::notice('Invalid rule passed to Validation, not used.');
-					}
-				}
-			}
-		}
-
-		return $this;
+		$this->fields[$field] = new Validation_Field($field, $label, $rules, $this);
+		return $this->fields[$field];
 	}
 
 	/**
@@ -139,7 +73,7 @@ class Validation_Object {
 	 * Add a Fuel Model to callables and expect it to add fields.
 	 *
 	 * @param	Model
-	 * @return	Validation_Object
+	 * @return	Validation_Set
 	 */
 	public function add_model($model)
 	{
@@ -168,7 +102,7 @@ class Validation_Object {
 	 * from this object because the new class is prepended.
 	 *
 	 * @param	object|string	Class or object
-	 * @return	Validation_Object
+	 * @return	Validation_Set
 	 */
 	public function add_callable($class)
 	{
@@ -180,6 +114,17 @@ class Validation_Object {
 		array_unshift($this->callables, $class);
 
 		return $this;
+	}
+
+	/**
+	 * Fetch the objects for which you don't need to add a full callback but
+	 * just the method name
+	 *
+	 * @return	array
+	 */
+	public function get_callables()
+	{
+		return $this->callables;
 	}
 
 	/**
@@ -195,22 +140,22 @@ class Validation_Object {
 	{
 		$this->output = array();
 		$this->errors = array();
-		foreach($this->fields as $field => $settings)
+		foreach($this->fields as $field)
 		{
-			$value = is_null($input) ? Input::post($field, null) : @$input[$field];
+			$value = is_null($input) ? Input::post($field->key, null) : @$input[$field->key];
 			try
 			{
-				foreach ($settings['rules'] as $rule)
+				foreach ($field->rules as $rule)
 				{
 					$callback	= $rule[0];
-					$params		= (array) @$rule[1];
-					$this->_run_rule($callback, $value, $params, $settings);
+					$params		= $rule[1];
+					$this->_run_rule($callback, $value, $params, $field);
 				}
-				$this->output[$field] = $value;
+				$this->output[$field->key] = $value;
 			}
 			catch (Validation_Error $v)
 			{
-				$this->errors[$field] = $v;
+				$this->errors[$field->key] = $v;
 			}
 		}
 
@@ -307,7 +252,7 @@ class Validation_Object {
 		$output = $options['open_list'];
 		foreach($this->errors as $e)
 		{
-			$output .= $e->get_message($options['open_error'], $options['close_error']);
+			$output .= $options['open_error'].$e->get_message().$options['close_error'];
 		}
 		$output .= $options['close_list'];
 

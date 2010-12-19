@@ -40,9 +40,26 @@ class Security {
 	 */
 	public static function clean_input()
 	{
-		// TODO: Make this configurable
-		$_GET = static::strip_tags($_GET);
-		$_POST = static::strip_tags($_POST);
+		$filters = App\Config::get('security.input_filter');
+		foreach ($filters as $filter)
+		{
+			if (is_callable('static::'.$filter))
+			{
+				$_GET = static::$filter($_GET);
+				$_POST = static::$filter($_POST);
+			}
+			elseif (function_exists($filter))
+			{
+				foreach($_GET as $key => $value)
+				{
+					$_GET[$key] = $filter($value);
+				}
+				foreach($_POST as $key => $value)
+				{
+					$_POST[$key] = $filter($value);
+				}
+			}
+		}
 	}
 
 	public static function strip_tags($value)

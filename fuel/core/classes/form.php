@@ -281,7 +281,7 @@ class Form
 	 * @param	string	$form_name
 	 * @return	string
 	 */
-	public static function form($form_name)
+	public static function create($form_name)
 	{
 		$form = static::get_form_array($form_name);
 
