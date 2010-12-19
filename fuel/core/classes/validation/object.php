@@ -434,7 +434,7 @@ class Validation_Object {
 	 */
 	public function valid_email($val)
 	{
-		return filter_var($val, FILTER_VALIDATE_EMAIL);
+		return empty($val) || filter_var($val, FILTER_VALIDATE_EMAIL);
 	}
 
 	/**
@@ -445,6 +445,11 @@ class Validation_Object {
 	 */
 	public function valid_emails($val)
 	{
+		if (empty($val))
+		{
+			return true;
+		}
+
 		$emails = explode(',', $val);
 
 		foreach ($emails as $e)
@@ -465,7 +470,7 @@ class Validation_Object {
 	 */
 	public function valid_url($val)
 	{
-		return filter_var($val, FILTER_VALIDATE_URL);
+		return empty($val) || filter_var($val, FILTER_VALIDATE_URL);
 	}
 
 	/**
@@ -476,7 +481,7 @@ class Validation_Object {
 	 */
 	public function valid_ip($val)
 	{
-		return filter_var($val, FILTER_VALIDATE_IP);
+		return empty($val) || filter_var($val, FILTER_VALIDATE_IP);
 	}
 
 	/**
