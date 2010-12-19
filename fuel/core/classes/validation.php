@@ -78,6 +78,11 @@ class Validation {
 	{
 		return static::instance()->errors($field, $default);
 	}
+
+	public static function show_errors($options = array())
+	{
+		return static::instance()->show_errors($options);
+	}
 }
 
 /* End of file validation.php */

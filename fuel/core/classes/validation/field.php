@@ -18,17 +18,14 @@ use Fuel\App;
 // ------------------------------------------------------------------------
 
 /**
- * Validation object
+ * Validation field
  *
- * Object that performs the actual validation
+ * Describes a field and which rules it has for validating.
  *
  * @package		Fuel
  * @subpackage	Core
  * @category	Core
  * @author		Jelmer Schreuder
- *
- * Notes:
- * - Needs a proper name, might become a driver but don't know why it would be yet.
  */
 class Validation_Field {
 
