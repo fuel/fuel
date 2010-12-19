@@ -136,7 +136,7 @@ class PhpQuickProfiler {
 	
 	public function gatherSpeedData() {
 		$speedTotals = array();
-		$speedTotals['total'] = $this->getReadableTime(($this->getMicroTime() - $this->startTime)*1000);
+		$speedTotals['total'] = $this->getReadableTime((static::getMicroTime() - $this->startTime)*1000);
 		$speedTotals['allowed'] = ini_get("max_execution_time");
 		$this->output['speedTotals'] = $speedTotals;
 	}
@@ -145,7 +145,7 @@ class PhpQuickProfiler {
 	     HELPER FUNCTIONS TO FORMAT DATA
 	-------------------------------------------*/
 	
-	function getMicroTime() {
+	public static function getMicroTime() {
 		$time = microtime();
 		$time = explode(' ', $time);
 		return $time[1] + $time[0];

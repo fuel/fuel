@@ -49,7 +49,7 @@ class Migrate
 
 	public static function _init()
 	{
-		App\Log::debug('Migrate class initialized');
+		logger(Fuel::L_DEBUG, 'Migrate class initialized');
 
 		App\Config::load('migration', true);
 
@@ -80,7 +80,7 @@ class Migrate
 	{
 		if ( ! $migrations = static::find_migrations())
 		{
-			App\Log::error('no_migrations_found');
+			logger(Fuel::L_ERROR, 'no_migrations_found');
 			return FALSE;
 		}
 
@@ -137,7 +137,7 @@ class Migrate
 			// Only one migration per step is permitted
 			if (count($f) > 1)
 			{
-				App\Log::error('multiple_migrations_version');
+				logger(Fuel::L_ERROR, 'multiple_migrations_version');
 				return FALSE;
 			}
 
@@ -150,7 +150,7 @@ class Migrate
 
 				// If trying to migrate down but we're missing a step,
 				// something must definitely be wrong.
-				App\Log::error('migration_not_found');
+				logger(Fuel::L_ERROR, 'migration_not_found');
 				return FALSE;
 			}
 
@@ -165,7 +165,7 @@ class Migrate
 				// Cannot repeat a migration at different steps
 				if (in_array($match[1], $migrations))
 				{
-					App\Log::error('multiple_migrations_name');
+					logger(Fuel::L_ERROR, 'multiple_migrations_name');
 					return FALSE;
 				}
 
@@ -174,13 +174,13 @@ class Migrate
 
 				if ( ! class_exists($class))
 				{
-					App\Log::error('migration_class_doesnt_exist');
+					logger(Fuel::L_ERROR, 'migration_class_doesnt_exist');
 					return FALSE;
 				}
 
 				if ( ! is_callable(array($class, 'up')) || !is_callable(array($class, 'down')))
 				{
-					App\Log::error('wrong_migration_interface');
+					logger(Fuel::L_ERROR, 'wrong_migration_interface');
 					return FALSE;
 				}
 
@@ -188,7 +188,7 @@ class Migrate
 			}
 			else
 			{
-				App\Log::error('invalid_migration_filename');
+				logger(Fuel::L_ERROR, 'invalid_migration_filename');
 				return FALSE;
 			}
 		}
@@ -204,7 +204,7 @@ class Migrate
 		// Loop through the migrations
 		foreach ($migrations AS $migration)
 		{
-			App\Log::info('Migrating to: ' . static::$version + $step);
+			logger(Fuel::L_INFO, 'Migrating to: ' . static::$version + $step);
 
 			$class = 'Fuel\\App\\Migration_' . ucfirst($migration);
 			call_user_func(array(new $class, $method));
@@ -213,7 +213,7 @@ class Migrate
 			static::_update_schema_version(static::$version - $step, static::$version);
 		}
 
-		App\Log::info('Migrated to '.static::$version.' successfully.');
+		logger(Fuel::L_INFO, 'Migrated to '.static::$version.' successfully.');
 
 		return static::$version;
 	}

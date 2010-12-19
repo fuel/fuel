@@ -11,6 +11,8 @@
 
 namespace Fuel\Core;
 
+use Fuel\App;
+
 class Database_MySQL extends Database {
 
 	// Database in use by each connection

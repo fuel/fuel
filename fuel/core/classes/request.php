@@ -43,13 +43,13 @@ class Request {
 	 */
 	public static function factory($uri = null)
 	{
-		App\Log::info('Creating a new Request with URI = "'.$uri.'"', __METHOD__);
+		logger(Fuel::L_INFO, 'Creating a new Request with URI = "'.$uri.'"', __METHOD__);
 
 		static::$active = new static($uri);
 
 		if ( ! static::$main)
 		{
-			App\Log::info('Setting main Request', __METHOD__);
+			logger(Fuel::L_INFO, 'Setting main Request', __METHOD__);
 			static::$main = static::$active;
 		}
 
@@ -68,7 +68,7 @@ class Request {
 	 */
 	public static function main()
 	{
-		App\Log::info('Called', __METHOD__);
+		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
 		return static::$main;
 	}
@@ -85,7 +85,7 @@ class Request {
 	 */
 	public static function active()
 	{
-		App\Log::info('Called', __METHOD__);
+		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
 		return static::$active;
 	}
@@ -103,7 +103,7 @@ class Request {
 	 */
 	public static function show_404()
 	{
-		App\Log::info('Called', __METHOD__);
+		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
 		App\Output::$status = 404;
 
@@ -246,7 +246,7 @@ class Request {
 	 */
 	public function execute()
 	{
-		App\Log::info('Called', __METHOD__);
+		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
 		$controller_prefix = 'Fuel\\App\\'.($this->module ? ucfirst($this->module).'\\' : '').'Controller\\';
 		$method_prefix = 'action_';
@@ -283,7 +283,7 @@ class Request {
 			}
 		}
 
-		App\Log::info('Loading controller '.$class, __METHOD__);
+		logger(Fuel::L_INFO, 'Loading controller '.$class, __METHOD__);
 		$controller = new $class($this);
 
 		$method = $method_prefix.($method ?: (@$controller->default_action ?: 'index'));
@@ -298,19 +298,19 @@ class Request {
 		// Call the before method if it exists
 		if (method_exists($controller, 'before'))
 		{
-			App\Log::info('Calling '.$class.'::before', __METHOD__);
+			logger(Fuel::L_INFO, 'Calling '.$class.'::before', __METHOD__);
 			$controller->before();
 		}
 
 		if (method_exists($controller, $method))
 		{
-			App\Log::info('Calling '.$class.'::'.$method, __METHOD__);
+			logger(Fuel::L_INFO, 'Calling '.$class.'::'.$method, __METHOD__);
 			call_user_func_array(array($controller, $method), $this->method_params);
 
 			// Call the after method if it exists
 			if (method_exists($controller, 'after'))
 			{
-				App\Log::info('Calling '.$class.'::after', __METHOD__);
+				logger(Fuel::L_INFO, 'Calling '.$class.'::after', __METHOD__);
 				$controller->after();
 			}
 

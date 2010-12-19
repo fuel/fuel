@@ -89,7 +89,7 @@ class Console {
 		$GLOBALS['pqp_logs'][$log] += 1;
 	}
 	
-	public function getLogs() {
+	public static function getLogs() {
 		if(!isset($GLOBALS['pqp_logs'])) self::init();
 		return $GLOBALS['pqp_logs'];
 	}

@@ -33,6 +33,12 @@ class Fuel {
 	const QA = 'qa';
 	const PRODUCTION = 'production';
 
+	const L_NONE = 0;
+	const L_ERROR = 1;
+	const L_DEBUG = 2;
+	const L_INFO = 3;
+	const L_ALL = 4;
+
 	const VERSION = '1.0.0-dev';
 
 	public static $initialized = false;
@@ -234,6 +240,11 @@ class Fuel {
 		return $found;
 	}
 
+	/**
+	 * Generates a base url.
+	 * 
+	 * @return	string	the base url
+	 */
 	protected static function generate_base_url()
 	{
 		$base_url = '';

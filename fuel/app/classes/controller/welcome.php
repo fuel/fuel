@@ -2,8 +2,6 @@
 
 namespace Fuel\App\Controller;
 
-use Fuel\Core\Controller;
-
 class Welcome extends Controller\Base {
 
 	public $default_action = 'index';

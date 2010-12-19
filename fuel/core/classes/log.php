@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+use Fuel\App;
 
 // --------------------------------------------------------------------
 
@@ -26,31 +26,25 @@ use Fuel\App as App;
  * @author		Phil Sturgeon
  */
 
-class Log
-{
-	const NONE = 0;
-	const ERROR = 1;
-	const DEBUG = 2;
-	const INFO = 3;
-	const ALL = 4;
+class Log {
 
 	public static function info($msg, $method = null)
 	{
-		return static::_write('Info', $msg, $method);
+		return static::write(App\Fuel::L_INFO, $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
 
 	public static function debug($msg, $method = null)
 	{
-		return static::_write('Debug', $msg, $method);
+		return static::write(App\Fuel::L_DEBUG, $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
 
 	public static function error($msg, $method = null)
 	{
-		return static::_write('Error', $msg, $method);
+		return static::write(App\Fuel::L_ERROR, $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
@@ -65,11 +59,19 @@ class Log
 	 * @param	string	the error message
 	 * @return	bool
 	 */
-	private static function _write($level, $msg, $method = null)
+	public static function write($level, $msg, $method = null)
 	{
-		if ( ! defined('self::'.strtoupper($level)) or (constant('self::'.strtoupper($level)) > App\Config::get('log_threshold')))
+		switch ($level)
 		{
-			return false;
+			case App\Fuel::L_ERROR:
+				$level = 'Error';
+			break;
+			case App\Fuel::L_DEBUG:
+				$level = 'Debug';
+			break;
+			case App\Fuel::L_INFO:
+				$level = 'Info';
+			break;
 		}
 
 		$filepath = App\Config::get('log_path').date('Y/m').'/';
@@ -81,7 +83,7 @@ class Log
 		}
 
 		$filename = $filepath.date('d').'.php';
-
+		
 		$message  = '';
 
 		if ( ! file_exists($filename))
