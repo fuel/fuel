@@ -101,7 +101,7 @@ return array(
 	 *     array('auth'	=> PKGPATH.'auth/')
 	 * );
 	 */
-	'packages'	=> array('auth'),
+	'packages'	=> array(),
 
 	/**
 	 * To enable you to split up your application into modules which can be
