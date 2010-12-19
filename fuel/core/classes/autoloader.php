@@ -39,7 +39,12 @@ class Autoloader {
 	/**
 	 * @var	array	The default path to look in if the class is not in a package
 	 */
-	protected static $default_path = NULL;
+	protected static $default_path = null;
+
+	/**
+	 * @var	bool	whether to initialize a loaded class
+	 */
+	protected static $auto_initialize = null;
 
 	/**
 	 * Adds a package to the autoloader.  The prefix is the prefix for the
@@ -211,6 +216,11 @@ class Autoloader {
 	 */
 	public static function load($class)
 	{
+		if (empty(static::$auto_initialize))
+		{
+			static::$auto_initialize = $class;
+		}
+
 		// Cleanup backslash prefix, messes up class_alias and other stuff
 		$class = ltrim($class, '\\');
 
@@ -348,9 +358,14 @@ class Autoloader {
 	 */
 	private static function _init_class($class)
 	{
-		if (is_callable($class.'::_init'))
+		if (static::$auto_initialize === $class)
 		{
-			call_user_func($class.'::_init');
+			if (is_callable($class.'::_init'))
+			{
+				call_user_func($class.'::_init');
+			}
+
+			static::$auto_initialize = null;
 		}
 	}
 }
