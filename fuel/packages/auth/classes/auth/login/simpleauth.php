@@ -28,8 +28,8 @@ use Fuel\App;
 		UNIQUE (
 			`username` ,
 			`email`
-		)
-	)
+		) 
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 */
 
 class Auth_Login_SimpleAuth extends Auth_Login_Driver {
