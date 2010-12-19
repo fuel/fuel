@@ -34,7 +34,7 @@ return array(
 	'environment'	=> Fuel::DEVELOPMENT,
 
 	'profile'		=> false,
-	
+
 	'caching'			=> false,
 	'cache_dir'			=> APPPATH.'cache/',
 	'cache_lifetime'	=> 3600, // In Seconds
@@ -101,7 +101,7 @@ return array(
 	 *     array('auth'	=> PKGPATH.'auth/')
 	 * );
 	 */
-	'packages'	=> array(),
+	'packages'	=> array('auth'),
 
 	/**
 	 * To enable you to split up your application into modules which can be
@@ -207,7 +207,7 @@ return array(
 		 * $this->param('month');
 		 * $this->param('id');
 		 */
-		
+
 		/**
 		 * HTTP verb based routing
 		 *
