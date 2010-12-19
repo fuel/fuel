@@ -60,7 +60,7 @@ class Validation_Field {
 
 		foreach ($rules as $rule)
 		{
-			call_user_func_array(array($this, 'add_rule'), array_slice($rule, 1));
+			call_user_func_array(array($this, 'add_rule'), $rule);
 		}
 	}
 
