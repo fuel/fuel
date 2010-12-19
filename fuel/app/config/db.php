@@ -23,7 +23,7 @@ return array(
 			'hostname'   => 'localhost',
 			'database'   => 'fuel_dev',
 			'username'   => 'root',
-			'password'   => 'root',
+			'password'   => '',
 			'persistent' => FALSE,
 		),
 		'table_prefix' => '',
@@ -37,7 +37,7 @@ return array(
 		'connection'	=> array(
 			'hostname'   => 'localhost',
 			'database'   => 'fuel_prod',
-			'username'   => '',
+			'username'   => 'root',
 			'password'   => '',
 			'persistent' => FALSE,
 		),
