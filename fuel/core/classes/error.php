@@ -155,7 +155,7 @@ class Error {
 
 	public static function notice($msg, $always_show = false)
 	{
-		if ( ! $always_show && (App\Fuel::$env == App\Env::PRODUCTION || App\Config::get('show_notices', true) === false))
+		if ( ! $always_show && (App\Fuel::$env == App\Fuel::PRODUCTION || App\Config::get('show_notices', true) === false))
 		{
 			return;
 		}
