@@ -149,7 +149,7 @@ class Session_Db extends Session_Driver {
 			}
 			else
 			{
-				Log::error('Session update failed, session record could not be found. Concurrency issue?');
+				logger(Fuel::L_ERROR, 'Session update failed, session record could not be found. Concurrency issue?');
 			}
 
 			// do some garbage collection

@@ -35,6 +35,30 @@ if ( ! function_exists('import'))
 	}
 }
 
+if ( ! function_exists('logger'))
+{
+	function logger($level, $msg, $method = null)
+	{
+		if (Config::get('profiling'))
+		{
+			if ($level == Fuel::L_ERROR)
+			{
+				Console::logError($method.' - '.$msg);
+			}
+			else
+			{
+				Console::log($method.' - '.$msg);
+			}
+		}
+		if ($level > Config::get('log_threshold'))
+		{
+			return false;
+		}
+		return Log::write($level, $msg, $method = null);
+	}
+}
+
+
 /**
  * Takes an array of attributes and turns it into a string for an html tag
  *

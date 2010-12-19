@@ -26,14 +26,14 @@ return array(
 	/**
 	 * Your environment.  Can be set to any of the following:
 	 *
-	 * Env::DEVELOPMENT
-	 * Env::TEST
-	 * Env::QA
-	 * Env::PRODUCTION
+	 * Fuel::DEVELOPMENT
+	 * Fuel::TEST
+	 * Fuel::QA
+	 * Fuel::PRODUCTION
 	 */
 	'environment'	=> Fuel::DEVELOPMENT,
 
-	'profile'		=> false,
+	'profiling'		=> false,
 	
 	'caching'			=> false,
 	'cache_dir'			=> APPPATH.'cache/',
@@ -71,13 +71,13 @@ return array(
 	/**
 	 * Logging Threshold.  Can be set to any of the following:
 	 *
-	 * Log::NONE
-	 * Log::ERROR
-	 * Log::DEBUG
-	 * Log::INFO
-	 * Log::ALL
+	 * Fuel::L_NONE
+	 * Fuel::L_ERROR
+	 * Fuel::L_DEBUG
+	 * Fuel::L_INFO
+	 * Fuel::L_ALL
 	 */
-	'log_threshold'		=> Log::ERROR,
+	'log_threshold'		=> Fuel::L_ERROR,
 	'log_path'			=> APPPATH.'logs/',
 	'log_date_format' 	=> 'Y-m-d H:i:s',
 
@@ -101,7 +101,9 @@ return array(
 	 *     array('auth'	=> PKGPATH.'auth/')
 	 * );
 	 */
-	'packages'	=> array(),
+	'packages'	=> array(
+		//'activerecord',
+	),
 
 	/**
 	 * To enable you to split up your application into modules which can be

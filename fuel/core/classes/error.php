@@ -52,7 +52,7 @@ class Error {
 		if ($last_error AND in_array($last_error['type'], static::$fatal_levels))
 		{
 			$severity = static::$levels[$last_error['type']];
-			Log::error($severity.' - '.$last_error['message'].' in '.$last_error['file'].' on line '.$last_error['line']);
+			logger(Fuel::L_ERROR, $severity.' - '.$last_error['message'].' in '.$last_error['file'].' on line '.$last_error['line']);
 
 			static::show_php_error(new \ErrorException($last_error['message'], $last_error['type'], 0, $last_error['file'], $last_error['line']));
 
@@ -63,7 +63,7 @@ class Error {
 	public static function exception_handler(\Exception $e)
 	{
 		$severity = ( ! isset(static::$levels[$e->getCode()])) ? $e->getCode() : static::$levels[$e->getCode()];
-		Log::error($severity.' - '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
+		logger(Fuel::L_ERROR, $severity.' - '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
 
 		static::show_php_error($e);
 	}
@@ -72,7 +72,7 @@ class Error {
 	{
 		if (static::$count <= Config::get('error_throttling', 10))
 		{
-			Log::error($severity.' - '.$message.' in '.$filepath.' on line '.$line);
+			logger(Fuel::L_ERROR, $severity.' - '.$message.' in '.$filepath.' on line '.$line);
 	
 			if (($severity & error_reporting()) == $severity)
 			{
@@ -147,7 +147,7 @@ class Error {
 
 		$trace = array_merge(array('file' => '(unknown)', 'line' => '(unknown)'), Arr::element(debug_backtrace(), 1));
 
-		Log::debug('Notice - '.$msg.' in '.$trace['file'].' on line '.$trace['line']);
+		logger(Fuel::L_DEBUG, 'Notice - '.$msg.' in '.$trace['file'].' on line '.$trace['line']);
 
 		$data['message']	= $msg;
 		$data['type']		= 'Notice';
