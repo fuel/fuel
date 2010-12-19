@@ -87,7 +87,8 @@ Autoloader::add_aliases(array(
 	'Uri'			=> 'Fuel\\App\\Uri',
 
 	'Validation'		=> 'Fuel\\App\\Validation',
-	'Validation_Object'	=> 'Fuel\\App\\Validation_Object',
+	'Validation_Set'	=> 'Fuel\\App\\Validation_Set',
+	'Validation_Field'	=> 'Fuel\\App\\Validation_Field',
 	'Validation_Error'	=> 'Fuel\\App\\Validation_Error',
 
 	'View'				=> 'Fuel\\App\\View',

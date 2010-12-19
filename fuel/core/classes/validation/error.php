@@ -72,7 +72,7 @@ class Validation_Error extends Exception {
 				: $msg;
 		if ($msg == false)
 		{
-			return $open.'Validation rule '.$this->callback.' failed for '.$this->field['title'].$close;
+			return $open.'Validation rule '.$this->callback.' failed for '.$this->field->label.$close;
 		}
 
 		// to safe some performance when there are no variables in the $msg
@@ -81,8 +81,8 @@ class Validation_Error extends Exception {
 			return $msg;
 		}
 
-		$find			= array(':field', ':title', ':value', ':rule');
-		$replace		= array($this->field['name'], $this->field['title'], $this->value, $this->callback);
+		$find			= array(':field', ':label', ':value', ':rule');
+		$replace		= array($this->field->key, $this->field->label, $this->value, $this->callback);
 		foreach($this->params as $key => $val)
 		{
 			$find[]		= ':param:'.$key;

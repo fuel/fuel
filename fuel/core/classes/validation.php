@@ -34,7 +34,7 @@ class Validation {
 
 	public static function factory()
 	{
-		return new Validation_Object();
+		return new Validation_Set();
 	}
 
 	public static function instance()
@@ -49,9 +49,9 @@ class Validation {
 
 	final private function __construct() {}
 
-	public static function add_field($field, $title = null, Array $rules = array())
+	public static function add_field($field, $label = '')
 	{
-		return static::instance()->add_field($field, $title, $rules);
+		return static::instance()->add_field($field, $label);
 	}
 
 	public static function add_model($model)
