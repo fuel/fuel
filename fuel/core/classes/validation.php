@@ -49,9 +49,9 @@ class Validation {
 
 	final private function __construct() {}
 
-	public static function add_field($field, $label = '')
+	public static function add_field($field, $label = '', Array $rules = array())
 	{
-		return static::instance()->add_field($field, $label);
+		return static::instance()->add_field($field, $label, $rules);
 	}
 
 	public static function add_model($model)

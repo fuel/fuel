@@ -61,9 +61,9 @@ class Validation_Set {
 	 * @param	string	field label
 	 * @return	Validation_Field
 	 */
-	public function add_field($field, $label = '')
+	public function add_field($field, $label = '', Array $rules = array())
 	{
-		$this->fields[$field] = new Validation_Field($field, $label, $this);
+		$this->fields[$field] = new Validation_Field($field, $label, $rules, $this);
 		return $this->fields[$field];
 	}
 

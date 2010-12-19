@@ -52,11 +52,16 @@ class Validation_Field {
 	 */
 	protected $rules = array();
 
-	public function __construct($key, $label = '', $validation_set = null)
+	public function __construct($key, $label = '', Array $rules = array(), $validation_set = null)
 	{
 		$this->set = $validation_set ?: Validation::instance();
 		$this->key = $key;
 		$this->label = $label;
+
+		foreach ($rules as $rule)
+		{
+			call_user_func_array(array($this, 'add_rule'), array_slice($rule, 1));
+		}
 	}
 
 	/**
