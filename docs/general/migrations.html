@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Migrations - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			show_nav('general', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Migrations</h2>
+
+		<p>Migrations are a convenient way for you to alter your database in a structured and organized manner. You could edit fragments of SQL by hand but you would then be responsible for telling other developers that they need to go and run them. You’d also have to keep track of which changes need to be run against the production machines next time you deploy.</p>
+
+		<p>The database table `migration` tracks which migrations have already been run so all you have to do is update your application files and call <kbd>Migrate::current()</kbd> to work out which migrations should be run. The current version is found in core/config/migration.php so like any other config file you should copy this to app/config to make changes.</p>
+
+		<h3>Creating a Migration</h3>
+
+		<p>Create a file in the app/migrations folder. The prefix should be an incremental count starting at 001, do not skip numbers and do not have two numbers that match. The first would be something like <kbd>app/migrations/001_example.php</kbd>.
+		<pre><code>&lt;?php
+
+namespace Fuel\App;
+
+class Migration_Example extends Migration {
+
+    function up()
+    {
+        DB::query('CREATE TABLE `articles` (`id` INT(11), `title` VARCHAR(100), `body` TEXT);')-&gt;execute();
+    }
+
+    function down()
+    {
+        DB::query('DROP TABLE `articles`')-&gt;execute();
+    }
+}
+</code></pre>
+
+	<h3>Run a Migration</h3>
+
+	<p>A migration can be run in two ways:</p>
+
+	<ol>
+		<li><a href="../classes/migrate.html">Migrate class</a></li>
+		<li><kbd>$ php oil refine migrate</kbd></li>
+	</ol>
+
+	<p>The oil command there uses refine to call the migrate task.</p>
+
+	<pre>$ php oil r migrate
+$ php oil r migrate:up
+$ php oil r migrate:down
+$ php oil r migrate --version=10</pre>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 Dan Horrigan
+		</p>
+	</section>
+
+</body>
+</html>

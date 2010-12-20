@@ -20,11 +20,14 @@ var nav = {
 		"General": {
 			"Controllers":		"general/controllers.html",
 			"Views":			"general/views.html",
+			"Tasks":			"general/tasks.html",
+			"Migrations":		"general/migrations.html",
 			"Coding Standards":	"general/coding_standards.html"
 		},
 		"Classes": {
 			"Config":	"classes/config.html",
 			"Event":	"classes/event.html",
+			"Migrate":	"classes/migrate.html",
 			"Session":	"classes/session.html",
 			"Html":		"classes/html.html"
 		}

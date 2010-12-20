@@ -36,9 +36,11 @@ class Refine
 		$task = '\\Fuel\\Tasks\\'.$task;
 
 		$new_task = new $task;
-		if (isset($args[0]) && is_callable(array($new_task, $args[0])))
+
+		// The help option hs been called, so call help instead
+		if (App\Cli::option('help') && is_callable(array($new_task, 'help')))
 		{
-			$method = array_shift($args);
+			$method = 'help';
 		}
 
 		if ($return = call_user_func_array(array($new_task, $method), $args))

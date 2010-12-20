@@ -10,6 +10,7 @@
  */
 
 namespace Fuel\Core;
+use Fuel\App;
 
 class Database_PDO extends Database {
 
@@ -44,26 +45,22 @@ class Database_PDO extends Database {
 		unset($this->_config['connection']);
 
 		// Force PDO to use exceptions for all errors
-		$attrs = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+		$attrs = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
 
 		if ( ! empty($persistent))
 		{
 			// Make the connection persistent
-			$attrs[PDO::ATTR_PERSISTENT] = TRUE;
+			$attrs[\PDO::ATTR_PERSISTENT] = TRUE;
 		}
 
 		try
 		{
 			// Create a new PDO connection
-			$this->_connection = new PDO($dsn, $username, $password, $attrs);
+			$this->_connection = new \PDO($dsn, $username, $password, $attrs);
 		}
-		catch (PDOException $e)
+		catch (\PDOException $e)
 		{
-			throw new App\Database_Exception(':error', array(
-					':error' => $e->getMessage(),
-				),
-				$e->getCode(),
-				$e);
+			throw new App\Database_Exception($e->getMessage(), $e->getCode(), $e);
 		}
 
 		if ( ! empty($this->_config['charset']))
@@ -135,15 +132,15 @@ class Database_PDO extends Database {
 			// Convert the result into an array, as PDOStatement::rowCount is not reliable
 			if ($as_object === FALSE)
 			{
-				$result->setFetchMode(PDO::FETCH_ASSOC);
+				$result->setFetchMode(\PDO::FETCH_ASSOC);
 			}
 			elseif (is_string($as_object))
 			{
-				$result->setFetchMode(PDO::FETCH_CLASS, $as_object);
+				$result->setFetchMode(\PDO::FETCH_CLASS, $as_object);
 			}
 			else
 			{
-				$result->setFetchMode(PDO::FETCH_CLASS, 'stdClass');
+				$result->setFetchMode(\PDO::FETCH_CLASS, 'stdClass');
 			}
 
 			$result = $result->fetchAll();
