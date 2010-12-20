@@ -29,17 +29,15 @@ use Fuel\App as App;
  */
 class Form
 {
-	public static $initialized = false;
-
 	/**
-	 * Used to store the forms
+	 * @var	array	Used to store form configurations
 	 */
 	protected static $_forms = array();
 
 	/**
-	 * Used to store the form_validation info
+	 * @var array	Used to store the created Form instances
 	 */
-	protected static $_validation = array();
+	protected static $_instances = array();
 
 	/**
 	 * Valid types for input tags (including HTML5)
@@ -63,36 +61,32 @@ class Form
 	 */
 	public static function init()
 	{
-		// Load for the first time
-		if (empty(static::$initialized))
-		{
-			App\Config::load('form', true);
+		App\Config::load('form', true);
 
-			static::$initialized = true;
-
-			static::$_forms = App\Config::get('form.forms');
-		}
+		static::$_forms = App\Config::get('form.forms');
 	}
 
 	// --------------------------------------------------------------------
 
 	public static $default = 'default';
 
-	public static $instances = array();
 
-	public static function instance($name = NULL, array $config = array())
+	public static function factory($name = null, array $config = array())
 	{
-		if ($name === NULL)
+		if ($name === null)
 		{
 			$name = static::$default;
 		}
+		elseif (array_key_exists($name, static::$_instances))
+		{
+			return static::$_instances[$name];
+		}
 
-		// This form is already set, lets use the config
+		// This form is pre-configured, lets use the config
 		if (isset(static::$_forms[$name]))
 		{
 			static::$_forms[$name] = array_merge_recursive(static::$_forms[$name], $config);
 		}
-
 		// This is new, so assign the config (which hopefully will be an array of fields, or an empty array)
 		else
 		{
@@ -100,19 +94,37 @@ class Form
 		}
 
 		// If this is a new instance, fire off the constructor
-		if ( ! isset(static::$instances[$name]))
+		static::$_instances[$name] = new Form($name, $config);
+
+		return static::$_instances[$name];
+	}
+
+	public static function instance($name = null)
+	{
+		if ($name === null)
 		{
-			static::$instances[$name] = new Form($name, $config);
+			if (empty(static::$_instances))
+			{
+				static::factory();
+			}
+
+			return reset(static::$_instances);
 		}
 
-		return static::$instances[$name];
+		if ( ! array_key_exists($name, static::$_instances))
+		{
+			return false;
+		}
+
+		return static::$_instances[$name];
 	}
 
 	// --------------------------------------------------------------------
 
-	protected $_form_name = 'default';
+	protected $_form_name;
 	protected $_fields = array();
 	protected $_attributes = array();
+	protected $_validation;
 
 	/**
 	 * Construct
@@ -135,8 +147,6 @@ class Form
 		{
 			static::add_fields($config['fields']);
 		}
-
-		static::parse_validation();
 	}
 
 	// --------------------------------------------------------------------
@@ -160,13 +170,23 @@ class Form
 		}
 
 		$this->_fields[$field_name] = $attributes;
+		static::$_forms[$this->_form_name]['fields'][$field_name] = $attributes;
 
 		if ($attributes['type'] == 'file')
 		{
 			$this->_attributes['enctype'] = 'multipart/form-data';
 		}
 
-		$this->parse_validation();
+		if (array_key_exists('validation', $attributes))
+		{
+			if (empty($this->_validation))
+			{
+				$this->_validation = App\Validation::factory();
+			}
+
+			$this->_validation->add_field($field_name, @$attributes['label'], $attributes['validation']);
+			unset($attributes['validation']);
+		}
 	}
 
 	// --------------------------------------------------------------------
@@ -202,15 +222,13 @@ class Form
 	 * @param	array	$attributes
 	 * @return	void
 	 */
-	public static function modify_field($field_name, $attributes)
+	public function modify_field($field_name, $attributes)
 	{
 		if ( ! $this->field_exists($field_name))
 		{
 			throw new App\Exception(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
 		}
 		$this->_fields[$field_name] = array_merge_recursive($this->_fields[$field_name], $attributes);
-
-		$this->parse_validation();
 	}
 
 	// --------------------------------------------------------------------
@@ -281,12 +299,10 @@ class Form
 	 * @param	string	$form_name
 	 * @return	string
 	 */
-	public static function create($form_name)
+	public function create()
 	{
-		$form = static::get_form_array($form_name);
-
-		$return = static::open($form_name) . PHP_EOL;
-		$return .= static::fields($form_name);
+		$return = static::open($this->_form_name) . PHP_EOL;
+		$return .= static::fields($this->_form_name);
 		$return .= static::close() . PHP_EOL;
 
 		return $return;
@@ -305,7 +321,7 @@ class Form
 	 * @param	string	$form_name
 	 * @return	string
 	 */
-	public static function field($name, $properties = array(), $form_name = null)
+	public function field($name, $properties = array())
 	{
 		$return = '';
 
@@ -314,11 +330,12 @@ class Form
 			$properties['name'] = $name;
 		}
 		$required = FALSE;
-		if (isset(static::$_validation[$form_name]))
+		if ( ! empty($this->_validation))
 		{
-			foreach (static::$_validation[$form_name] as $rule)
+			$field = $this->_validation->get_field($properties['name']);
+			foreach ($field->rules as $rule)
 			{
-				if ($rule['field'] == $properties['name'] and $rule['rules'] and strpos('required', $rule['rules']) !== FALSE)
+				if (reset($rule) === 'required')
 				{
 					$required = TRUE;
 				}
@@ -469,7 +486,7 @@ class Form
 		unset($parameters['options']);
 
 		// Get the selected options then unset it from the array
-		$selected = $parameters['selected'];
+		$selected = @$parameters['selected'];
 		unset($parameters['selected']);
 
 		$input = PHP_EOL;
@@ -483,7 +500,7 @@ class Form
 					$opt_attr = array('value' => $opt_key);
 					($opt_key == $selected) && $opt_attr[] = 'selected';
 					$optgroup .= str_repeat("\t", $indent_amount + 2);
-					$optgroup .= html_tag('option', $opt_array, static::prep_value($opt_val)).PHP_EOL;
+					$optgroup .= html_tag('option', $opt_attr, static::prep_value($opt_val)).PHP_EOL;
 				}
 				$optgroup .= str_repeat("\t", $indent_amount + 1);
 				$input .= str_repeat("\t", $indent_amount + 1).html_tag('optgroup', array('label' => $key), $optgroup).PHP_EOL;
@@ -516,7 +533,7 @@ class Form
 	public static function open($form_name = null, $options = array())
 	{
 		// The form name does not exist, must be an action as its not set in options either
-		if (isset(static::$_forms[$form_name]))
+		if (isset(static::$_instances[$form_name]))
 		{
 			$form = static::get_form_array($form_name);
 
@@ -527,7 +544,7 @@ class Form
 		}
 
 		// There is a form name, but no action is set
-		elseif ( $form_name and ! isset($options['action']))
+		elseif ($form_name and ! isset($options['action']))
 		{
 			$options['action'] = $form_name;
 		}
@@ -538,7 +555,7 @@ class Form
 			$options['action'] = App\Uri::current();
 		}
 
-		// If not a full URL, create one with CI
+		// If not a full URL, create one
 		if ( ! strpos($options['action'], '://'))
 		{
 			$options['action'] = App\Uri::create($options['action']);
@@ -547,7 +564,7 @@ class Form
 		// If method is empty, use POST
 		isset($options['method']) OR $options['method'] = 'post';
 
-		$form = '<form ' . static::attr_to_string($options) . '>';
+		$form = '<form '.static::attr_to_string($options).'>';
 
 		return $form;
 	}
@@ -567,18 +584,18 @@ class Form
 	public static function fields($form_name)
 	{
 		$hidden = array();
-		$form = static::get_form_array($form_name);
+		$form = static::instance($form_name);
 
 		$return = "\t" . App\Config::get('form.form_wrapper_open') . PHP_EOL;
 
-		foreach ($form['fields'] as $name => $properties)
+		foreach ($form->_fields as $name => $properties)
 		{
 			if($properties['type'] == 'hidden')
 			{
 				$hidden[$name] = $properties;
 				continue;
 			}
-			$return .= static::field($name, $properties, $form_name);
+			$return .= $form->field($name, $properties, $form_name);
 		}
 
 		$return .= "\t" . App\Config::get('form.form_wrapper_close') . PHP_EOL;
@@ -687,7 +704,7 @@ class Form
 	 * @param	array	$attr
 	 * @return	string
 	 */
-	private function attr_to_string($attr)
+	private static function attr_to_string($attr)
 	{
 		unset($attr['label']);
 		isset($attr['value']) && $attr['value'] = static::prep_value($attr['value']);
@@ -716,43 +733,6 @@ class Form
 	// --------------------------------------------------------------------
 
 	/**
-	 * Parse Validation
-	 *
-	 * Adds the validation rules in each field to the $_validation array
-	 * and removes it from the field attributes
-	 *
-	 * @access	private
-	 * @return	void
-	 */
-	private static function parse_validation()
-	{
-		foreach (static::$_forms as $form_name => $form)
-		{
-			if ( ! isset($form['fields']))
-			{
-				continue;
-			}
-
-			$i = 0;
-			foreach ($form['fields'] as $name => $attr)
-			{
-				if (isset($attr['validation']))
-				{
-					static::$_validation[$form_name][$i]['field'] = $name;
-					static::$_validation[$form_name][$i]['label'] = $attr['label'];
-					static::$_validation[$form_name][$i]['rules'] = $attr['validation'];
-
-					unset($this->_fields[$name]['validation']);
-				}
-
-				++$i;
-			}
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * Validate
 	 *
 	 * Runs form validation on the given form
@@ -761,19 +741,14 @@ class Form
 	 * @param	string	$form_name
 	 * @return	bool
 	 */
-	public static function validate($form_name)
+	public function validate()
 	{
-		// #TODO: Add validation support
-		return true;
-
-		if ( ! isset(static::$_validation[$form_name]))
+		if (empty($this->_validation))
 		{
-			return TRUE;
+			return true;
 		}
 
-		App\Validation::set_rules(static::$_validation[$form_name]);
-
-		return App\Validation::run();
+		return $this->_validation->run();
 	}
 
 	// --------------------------------------------------------------------
@@ -789,9 +764,9 @@ class Form
 	 * @param	string	$suffix
 	 * @return	string
 	 */
-	public static function error($field_name, $prefix = '', $suffix = '')
+	public function error($field_name)
 	{
-		return App\Validation::error($field_name, $prefix, $suffix);
+		return $this->_validation->errors($field_name);
 	}
 
 	// --------------------------------------------------------------------
@@ -806,9 +781,9 @@ class Form
 	 * @param	string	$suffix
 	 * @return	string
 	 */
-	public static function all_errors($prefix = '', $suffix = '')
+	public function all_errors(Array $config = array())
 	{
-		return App\Validation::error_string($prefix, $suffix);
+		return $this->_validation->show_errors($config);
 	}
 
 	// --------------------------------------------------------------------
@@ -824,7 +799,7 @@ class Form
 	 * @param	mixed	$value
 	 * @return	void
 	 */
-	public static function set_value($form_name, $field_name, $default = null)
+	public function set_value($form_name, $field_name, $default = null)
 	{
 		$post_name = str_replace('[]', '', $field_name);
 		$value = isset($_POST[$post_name]) ? $_POST[$post_name] : static::prep_value($default);
@@ -893,7 +868,7 @@ class Form
 	 * @param	string	$form_name
 	 * @return	string
 	 */
-	public static function repopulate($form_name)
+	public function repopulate($form_name)
 	{
 		foreach ($this->_fields as $field_name => $attr)
 		{
