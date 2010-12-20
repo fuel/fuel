@@ -49,6 +49,11 @@ class Validation_Set {
 	 */
 	protected $errors = array();
 
+	/**
+	 * @var	array	contains the validation input during and after run(), will be false otherwise
+	 */
+	protected $input = false;
+
 	public function __construct()
 	{
 		$this->callables = array($this);
@@ -99,19 +104,19 @@ class Validation_Set {
 	 */
 	public function add_model($model)
 	{
-		if ( ! is_callable(array($model, '_fuel_validation')))
+		if ( ! is_callable(array($model, '_validation_set_fields')))
 		{
-			throw new App\Fuel_Exception('Invalid model or no _fuel_validation() method to return fields.');
+			throw new App\Fuel_Exception('Invalid model or no _validation_set_fields() method to return fields.');
 		}
 
 		/**
-		 * The _fuel_validation() method should do a bunch of add_field() calls
+		 * The _validation_set_fields() method should do a bunch of add_field() calls
 		 * on the object it's given (this one).
 		 * Note: they don't need to include their model in the callback, can be only string
 		 * because $model is added as new first callable.
 		 */
 		$this->add_callable($model);
-		$model->_fuel_validation($this);
+		$model->_validation_set_fields($this);
 
 		return $this;
 	}
@@ -162,9 +167,10 @@ class Validation_Set {
 	{
 		$this->output = array();
 		$this->errors = array();
+		$this->input = $input ?: array();
 		foreach($this->fields as $field)
 		{
-			$value = is_null($input) ? Input::post($field->key, null) : @$input[$field->key];
+			$value = $this->input($field->key);
 			try
 			{
 				foreach ($field->rules as $rule)
@@ -207,6 +213,22 @@ class Validation_Set {
 		{
 			$value = $output;
 		}
+	}
+
+	/**
+	 * Fetches the input value from either post or given input
+	 *
+	 * @param	string
+	 * @param	mixed
+	 * @return	mixed
+	 */
+	public function input($key, $default = null)
+	{
+		if ( ! array_key_exists($key, $this->input))
+		{
+			$this->input[$key] = Input::post($key, $default);
+		}
+		return $this->input[$key];
 	}
 
 	/**
@@ -295,7 +317,7 @@ class Validation_Set {
 	 * @param	mixed
 	 * @return	bool
 	 */
-	public function required($val)
+	public function _validation_required($val)
 	{
 		return ($val !== false && $val !== null && $val !== '');
 	}
@@ -308,7 +330,7 @@ class Validation_Set {
 	 * @param	bool	whether to do type comparison
 	 * @return	bool
 	 */
-	public function match_value($val, $compare, $strict = false)
+	public function _validation_match_value($val, $compare, $strict = false)
 	{
 		// first try direct match
 		if ($val === $compare || ( ! $strict && $val == $compare))
@@ -339,7 +361,7 @@ class Validation_Set {
 	 * @param	string	a PRCE regex pattern
 	 * @return	bool
 	 */
-	public function match_pattern($val, $pattern)
+	public function _validation_match_pattern($val, $pattern)
 	{
 		return preg_match($pattern, $val) > 0;
 	}
@@ -352,9 +374,9 @@ class Validation_Set {
 	 * @param	string
 	 * @return	bool
 	 */
-	public function match_field($val, $field)
+	public function _validation_match_field($val, $field)
 	{
-		return Input::post($field) === $val;
+		return $this->input($field) === $val;
 	}
 
 	/**
@@ -364,7 +386,7 @@ class Validation_Set {
 	 * @param	int
 	 * @return	bool
 	 */
-	public function min_length($val, $length)
+	public function _validation_min_length($val, $length)
 	{
 		return (MBSTRING ? mb_strlen($val) : strlen($val)) >= $length;
 	}
@@ -376,7 +398,7 @@ class Validation_Set {
 	 * @param	int
 	 * @return	bool
 	 */
-	public function max_length($val, $length)
+	public function _validation_max_length($val, $length)
 	{
 		return (MBSTRING ? mb_strlen($val) : strlen($val)) <= $length;
 	}
@@ -388,7 +410,7 @@ class Validation_Set {
 	 * @param	int
 	 * @return	bool
 	 */
-	public function exact_length($val, $length)
+	public function _validation_exact_length($val, $length)
 	{
 		return (MBSTRING ? mb_strlen($val) : strlen($val)) == $length;
 	}
@@ -399,7 +421,7 @@ class Validation_Set {
 	 * @param	string
 	 * @return	bool
 	 */
-	public function valid_email($val)
+	public function _validation_valid_email($val)
 	{
 		return empty($val) || filter_var($val, FILTER_VALIDATE_EMAIL);
 	}
@@ -410,7 +432,7 @@ class Validation_Set {
 	 * @param	string
 	 * @return	bool
 	 */
-	public function valid_emails($val)
+	public function _validation_valid_emails($val)
 	{
 		if (empty($val))
 		{
@@ -435,7 +457,7 @@ class Validation_Set {
 	 * @param	string
 	 * @return	bool
 	 */
-	public function valid_url($val)
+	public function _validation_valid_url($val)
 	{
 		return empty($val) || filter_var($val, FILTER_VALIDATE_URL);
 	}
@@ -446,7 +468,7 @@ class Validation_Set {
 	 * @param	string
 	 * @return	bool
 	 */
-	public function valid_ip($val)
+	public function _validation_valid_ip($val)
 	{
 		return empty($val) || filter_var($val, FILTER_VALIDATE_IP);
 	}
@@ -458,7 +480,7 @@ class Validation_Set {
 	 * @param	string|array	either a named filter or combination of flags
 	 * @return	bool
 	 */
-	public function valid_string($val, $flags = array('alpha', 'utf8'))
+	public function _validation_valid_string($val, $flags = array('alpha', 'utf8'))
 	{
 		if ( ! is_array($flags))
 		{
@@ -515,7 +537,7 @@ class Validation_Set {
 	 * @param	float|int
 	 * @return	bool
 	 */
-	public function numeric_min($val, $min_val)
+	public function _validation_numeric_min($val, $min_val)
 	{
 		return floatval($val) >= floatval($min_val);
 	}
@@ -527,7 +549,7 @@ class Validation_Set {
 	 * @param	float|int
 	 * @return	bool
 	 */
-	public function numeric_max($val, $max_val)
+	public function _validation_numeric_max($val, $max_val)
 	{
 		return floatval($val) <= floatval($max_val);
 	}

@@ -87,10 +87,14 @@ class Validation_Field {
 		$callable_rule = false;
 		if (is_string($callback))
 		{
+			$callback_full = '_validation_'.$callback;
 			foreach ($this->set->get_callables() as $class)
 			{
-				$callable_rule = true;
-				$this->rules[] = array(array($class, $callback), $args);
+				if (is_callable(array($class, $callback_full)))
+				{
+					$callable_rule = true;
+					$this->rules[] = array(array($class, $callback_full), $args);
+				}
 			}
 		}
 
