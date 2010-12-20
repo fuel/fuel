@@ -68,7 +68,7 @@ class Validation_Error extends Exception {
 	public function get_message($msg = false)
 	{
 		$msg = $msg === false
-				? __('validation.'.$this->callback) ?: __('validation.'.array_pop(explode(':', $this->callback)))
+				? __('validation.'.$this->callback) ?: __('validation.'.Arr::element(explode(':', $this->callback), 0))
 				: $msg;
 		if ($msg == false)
 		{
