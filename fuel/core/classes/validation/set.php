@@ -116,7 +116,14 @@ class Validation_Set {
 		 * because $model is added as new first callable.
 		 */
 		$this->add_callable($model);
-		$model->_validation_set_fields($this);
+		if (is_object($model))
+		{
+			$model->_validation_set_fields($this);
+		}
+		else
+		{
+			$model::_validation_set_fields($this);
+		}
 
 		return $this;
 	}
