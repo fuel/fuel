@@ -20,6 +20,7 @@ var nav = {
 		"General": {
 			"Controllers":		"general/controllers.html",
 			"Views":			"general/views.html",
+			"Tasks":			"general/tasks.html",
 			"Coding Standards":	"general/coding_standards.html"
 		},
 		"Classes": {
