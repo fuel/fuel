@@ -6,46 +6,51 @@ use Fuel\App as App;
 
 class Migrate {
 
-	public function run($direction = null, $version = null)
+	public function run()
 	{
-		// By default, just upgrade to the current version
-		if ($direction === null)
+		$version = App\Cli::option('v', App\Cli::option('version'));
+
+		if ($version > 0)
 		{
-			App\Migrate::current();
+			App\Migrate::version($version);
 		}
 
 		else
 		{
-			// Find out what they want to do with it
-			switch ($direction)
-			{
-				case '-u':
-				case '--up':
-					App\Migrate::up();
-				break;
-
-				case '-d':
-				case '--down':
-					App\Migrate::down();
-				break;
-
-				case '-c':
-				case '--current':
-					App\Migrate::current();
-				break;
-
-				case '-v':
-				case '--version':
-
-					if (empty($version))
-					{
-						throw new App\Cli\Exception('');
-					}
-
-					App\Migrate::version($version);
-				break;
-			}
+			App\Migrate::current();
 		}
+	}
+
+	public function up()
+	{
+		App\Migrate::up();
+	}
+
+	public function down()
+	{
+		App\Migrate::down();
+	}
+
+	public function help()
+	{
+		echo <<<HELP
+Usage:
+    php oil refine migrate [--version=X]
+
+Fuel options:
+    -v, [--version]  # Migrate to a specific version
+
+Description:
+    The migrate task can run migrations. You can go up, down or by default go to the current migration marked in the ocnfig file.
+
+Examples:
+    php oil r migrate
+    php oil r migrate:up
+    php oil r migrate:down
+    php oil r migrate --version=10
+
+HELP;
+
 	}
 }
 
