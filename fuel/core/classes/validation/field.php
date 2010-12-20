@@ -121,6 +121,19 @@ class Validation_Field {
 	}
 
 	/**
+	 * This allows for chaining without needing end()
+	 *
+	 * @param	string
+	 * @param	string
+	 * @param	array
+	 * @return	Validation_Field
+	 */
+	public function add_field($field, $label = '', Array $rules = array())
+	{
+		return $this->set->add_field($field, $label, $rules);
+	}
+
+	/**
 	 * Magic get method to allow getting class properties but still having them protected
 	 * to disallow writing.
 	 *
