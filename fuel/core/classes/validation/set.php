@@ -68,6 +68,28 @@ class Validation_Set {
 	}
 
 	/**
+	 * Get a specific field object or all
+	 *
+	 * @param	string					null for all, string for specific field
+	 * @return	array|Validation_Field
+	 */
+	public function get_field($field = null)
+	{
+		if ($field === null)
+		{
+			return $this->fields;
+		}
+		elseif (array_key_exists($field, $this->fields))
+		{
+			return $this->fields[$field];
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
 	 * Add model
 	 *
 	 * Add a Fuel Model to callables and expect it to add fields.
