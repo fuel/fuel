@@ -64,9 +64,9 @@ class Validation {
 		return static::instance()->add_callable($class);
 	}
 
-	public static function run($input = null)
+	public static function run($input = null, $allow_partial = false)
 	{
-		return static::instance()->run($input);
+		return static::instance()->run($input, $allow_partial);
 	}
 
 	public static function validated($field = false, $default = false)

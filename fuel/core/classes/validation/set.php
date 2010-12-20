@@ -168,9 +168,10 @@ class Validation_Set {
 	 * wasn't given.
 	 *
 	 * @param	array	input that overwrites POST values
+	 * @param	bool	will skip validation of values it can't find or are null
 	 * @return	bool	whether validation succeeded
 	 */
-	public function run($input = null)
+	public function run($input = null, $allow_partial = false)
 	{
 		$this->output = array();
 		$this->errors = array();
@@ -178,6 +179,10 @@ class Validation_Set {
 		foreach($this->fields as $field)
 		{
 			$value = $this->input($field->key);
+			if ($allow_partial && $value = null)
+			{
+				continue;
+			}
 			try
 			{
 				foreach ($field->rules as $rule)
