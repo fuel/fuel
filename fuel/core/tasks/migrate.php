@@ -23,12 +23,43 @@ class Migrate {
 
 	public function up()
 	{
-		App\Migrate::up();
+		App\Config::load('migration', true);
+		$version = App\Config::get('migration.version') + 1;
+
+		App\Migrate::version($version);
+		static::_update_version($version);
 	}
 
 	public function down()
 	{
-		App\Migrate::down();
+		App\Config::load('migration', true);
+		$version = App\Config::get('migration.version') - 1;
+
+		App\Migrate::version($version);
+		static::_update_version($version);
+	}
+
+	private function _update_version($version)
+	{
+		$contents = '';
+		$path = '';
+		if (file_exists($path = APPPATH.'config'.DS.'migration.php'))
+		{
+			$contents = file_get_contents($path);
+		}
+		elseif (file_exists($path = COREPATH.'config'.DS.'migration.php'))
+		{
+			$contents = file_get_contents($path );
+		}
+
+		$contents = preg_replace("#('version'[ \t]+=>)[ \t]+([0-9]+),#i", "$1 $version,", $contents);
+
+		file_put_contents($path, $contents);
+	}
+
+	public function install()
+	{
+		App\Migrate::install();
 	}
 
 	public function help()
@@ -45,6 +76,7 @@ Description:
 
 Examples:
     php oil r migrate
+    php oil r migrate:install
     php oil r migrate:up
     php oil r migrate:down
     php oil r migrate --version=10
