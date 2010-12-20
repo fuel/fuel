@@ -173,6 +173,11 @@ class Validation_Set {
 	 */
 	public function run($input = null, $allow_partial = false)
 	{
+		if (empty($input) && empty($_POST))
+		{
+			return false;
+		}
+
 		$this->output = array();
 		$this->errors = array();
 		$this->input = $input ?: array();
