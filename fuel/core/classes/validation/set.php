@@ -179,7 +179,7 @@ class Validation_Set {
 		foreach($this->fields as $field)
 		{
 			$value = $this->input($field->key);
-			if ($allow_partial && $value = null)
+			if ($allow_partial && $value === null)
 			{
 				continue;
 			}
