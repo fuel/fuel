@@ -54,6 +54,11 @@ class Validation {
 		return static::instance()->add_field($field, $label, $rules);
 	}
 
+	public static function get_field($field = null)
+	{
+		return static::instance()->get_field($field);
+	}
+
 	public static function add_model($model)
 	{
 		return static::instance()->add_model($model);
