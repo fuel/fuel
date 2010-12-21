@@ -14,9 +14,9 @@
 
 namespace Fuel\Core\Controller;
 
-use Fuel\App as App;
+use Fuel\App;
 
-class Base {
+class BaseController {
 
 	/**
 	 * @var	object	The current Request object
