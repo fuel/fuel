@@ -130,9 +130,16 @@ class Upload {
 	 *
 	 * @return	array	list of uploaded files that are validated
 	 */
-	public static function get_files()
+	public static function get_files($index = null)
 	{
-		return array_filter(static::$files, function($file) { return $file['error'] == 0; } );
+		if (is_null($index) or ! isset(static::$files[$index]))
+		{
+			return array_filter(static::$files, function($file) { return $file['error'] == 0; } );
+		}
+		else
+		{
+			return static::$files[$index];
+		}
 	}
 
 	// ---------------------------------------------------------------------------
@@ -142,9 +149,16 @@ class Upload {
 	 *
 	 * @return	array	list of uploaded files that failed to validate
 	 */
-	public static function get_errors()
+	public static function get_errors($index = null)
 	{
-		return array_filter(static::$files, function($file) { return $file['error'] != 0; } );
+		if (is_null($index) or ! isset(static::$files[$index]) or $files[$index]['error'] == 0)
+		{
+			return array_filter(static::$files, function($file) { return $file['error'] != 0; } );
+		}
+		else
+		{
+			return static::$files[$index];
+		}
 	}
 
 	// ---------------------------------------------------------------------------
