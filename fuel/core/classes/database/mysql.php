@@ -27,6 +27,9 @@ class Database_MySQL extends Database {
 	// MySQL uses a backtick for identifiers
 	protected $_identifier = '`';
 
+	// Know which kind of DB is used
+	public $_db_type = 'mysql';
+
 	public function connect()
 	{
 		if ($this->_connection)
