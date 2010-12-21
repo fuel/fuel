@@ -1,28 +1,16 @@
 <?php
-
 /**
- * This is the path to the app directory.
+ * Set all the paths
  */
-$app_path = '../fuel/app';
-
-/**
- * This is the path to the package directory.
- */
-$package_path = '../fuel/packages';
-
-/**
- * This is the path to the core directory.
- */
-$core_path = '../fuel/core';
-
+$app_path		= '../fuel/app';
+$package_path	= '../fuel/packages';
+$core_path		= '../fuel/core';
 
 /**
  * If you want to use the server timezone, leave this null.  If the server does not have a default timezone set an
  * exception will be thrown.
  */
 $default_timezone = null;
-
-
 
 /**
  * We disable short open tags by default so as to not confuse people.  They
@@ -43,13 +31,9 @@ define('INTERNAL_ENC', 'ISO-8859-1');
 define('DOCROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
 
 
-
-
 /**
  * Do not edit below this line unless you know what you are doing.
  */
-
-
 if ($default_timezone != null)
 {
 	date_default_timezone_set($default_timezone);
@@ -59,7 +43,6 @@ elseif ( ! ini_get('date.timezone'))
 	die('Your server does not have a default timezone set.  Please open up index.php and set a default timezone on line 25.');
 }
 
-
 // Get the start time and memory for use later
 defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
@@ -68,13 +51,6 @@ defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 define('DS', DIRECTORY_SEPARATOR);
 
 define('CRLF', sprintf('%s%s', chr(13), chr(10)));
-
-
-/**
- * Do we have access to mbstring?
- * We need this in order to work with UTF-8 strings
- */
-define('MBSTRING', function_exists('mb_get_info'));
 
 // Determine the app path
 if ( ! is_dir($app_path) and is_dir(DOCROOT.$app_path))
@@ -102,20 +78,17 @@ define('COREPATH', realpath($core_path).DS);
 // save a bit of memory by unsetting the path array
 unset($app_path, $package_path);
 
+
 // If the user has added a base.php to their app load it
 if (is_file(APPPATH.'base.php'))
 {
 	require APPPATH.'base.php';
 }
-
 // Load in the core functions that are available app wide
 require COREPATH.'base.php';
 
-/**
- * Load in the autoloader class then register any app and core autoloaders.
- */
+// Load in the autoloader class then register any app and core autoloaders.
 require COREPATH.'classes'.DS.'autoloader.php';
-
 require COREPATH.'autoload.php';
 require APPPATH.'autoload.php';
 
@@ -133,17 +106,16 @@ else
 Fuel\App\Autoloader::register();
 
 // Initialize the framework
-// and start buffering the output.
 Fuel\App\Fuel::init();
 
-$request = Fuel\App\Request::factory();
-$request->execute();
-Fuel\App\Output::send_headers();
-echo $request->output;
+Fuel\App\Request::factory()
+                ->execute()
+                ->send_headers()
+                ->output();
 
 // Call all the shutdown events
 Fuel\App\Event::shutdown();
-
 Fuel\App\Fuel::finish();
+
 
 /* End of file index.php */
