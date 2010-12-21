@@ -50,6 +50,11 @@ class Form
 		'url','week'
 	);
 
+	/**
+	 * @var	bool	setting that determines whether html is converted to entities or simply allowed
+	 */
+	protected static $_allow_html = false;
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -169,9 +174,6 @@ class Form
 			throw new App\Exception(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
 		}
 
-		$this->_fields[$field_name] = $attributes;
-		static::$_forms[$this->_form_name]['fields'][$field_name] = $attributes;
-
 		if ($attributes['type'] == 'file')
 		{
 			$this->_attributes['enctype'] = 'multipart/form-data';
@@ -187,6 +189,9 @@ class Form
 			$this->_validation->add_field($field_name, @$attributes['label'], $attributes['validation']);
 			unset($attributes['validation']);
 		}
+
+		$this->_fields[$field_name] = $attributes;
+		static::$_forms[$this->_form_name]['fields'][$field_name] = $attributes;
 	}
 
 	// --------------------------------------------------------------------
@@ -713,6 +718,18 @@ class Form
 	// --------------------------------------------------------------------
 
 	/**
+	 * Switch allowing HTML in tags on or off
+	 *
+	 * @param	bool
+	 */
+	public static function allow_html($allow = true)
+	{
+		static::$_allow_html = (bool) $allow;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Prep Value
 	 *
 	 * Prepares the value for display in the form
@@ -723,8 +740,11 @@ class Form
 	 */
 	public static function prep_value($value)
 	{
-		$value = htmlspecialchars($value);
-		$value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
+		if ( ! static::$_allow_html)
+		{
+			$value = htmlspecialchars($value);
+			$value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
+		}
 
 		return $value;
 	}
