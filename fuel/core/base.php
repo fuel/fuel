@@ -13,13 +13,6 @@
  */
 
 /**
- * Do we have access to mbstring?
- * We need this in order to work with UTF-8 strings
- */
-define('MBSTRING', function_exists('mb_get_info'));
-
-
-/**
  * Loads in a core class and optionally an app class override if it exists.
  *
  * @param	string	$path
@@ -39,6 +32,40 @@ if ( ! function_exists('import'))
 		}
 	}
 }
+
+
+// Get the start time and memory for use later
+defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
+defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
+
+define('DS', DIRECTORY_SEPARATOR);
+define('CRLF', sprintf('%s%s', chr(13), chr(10)));
+
+define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
+
+( ! is_dir($app_path) and is_dir(DOCROOT.$app_path)) and $app_path = DOCROOT.$app_path;
+( ! is_dir($core_path) and is_dir(DOCROOT.$core_path)) and $core_path = DOCROOT.$core_path;
+( ! is_dir($package_path) and is_dir(DOCROOT.$package_path)) and $package_path = DOCROOT.$package_path;
+
+define('APPPATH', realpath($app_path).DS);
+define('PKGPATH', realpath($package_path).DS);
+define('COREPATH', realpath($core_path).DS);
+
+// save a bit of memory by unsetting the path array
+unset($app_path, $package_path);
+
+// If the user has added a base.php to their app load it
+
+
+import('fuel');
+
+( ! class_exists('Fuel\\App\\Fuel')) and class_alias('Fuel\\Core\\Fuel', 'Fuel\\App\\Fuel');
+
+/**
+ * Do we have access to mbstring?
+ * We need this in order to work with UTF-8 strings
+ */
+define('MBSTRING', function_exists('mb_get_info'));
 
 if ( ! function_exists('logger'))
 {
