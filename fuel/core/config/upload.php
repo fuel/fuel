@@ -61,9 +61,6 @@ return array(
 	// replace the extension of the uploaded file by this extension
 	'extension'			=> '',
 
-	// maximum lengh of the filename, after all name modifications have been made. 0 = no maximum
-	'max_length'		=> 0,
-
 	// default path the uploaded files will be saved to
 	'path'				=> '',
 
@@ -86,7 +83,10 @@ return array(
 	'randomize'			=> false,
 
 	// if true, normalize the filename (convert to ASCII, replace spaces by underscores)
-	'normalize'			=> false
+	'normalize'			=> false,
+
+	// maximum lengh of the filename, after all name modifications have been made. 0 = no maximum
+	'max_length'		=> 0
 );
 
 /* End of file config/upload.php */
