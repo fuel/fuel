@@ -744,7 +744,7 @@ class Form
 	{
 		if (empty($this->_validation))
 		{
-			return true;
+			return false;
 		}
 
 		return $this->_validation->run();
