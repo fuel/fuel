@@ -110,6 +110,11 @@ class Output {
 	{
 		static::$status = $redirect_code;
 
+		if (strpos($url, '://') === false)
+		{
+			$url = Uri::create($url);
+		}
+
 		if ($method == 'location')
 		{
 			static::set_header('Location', $url);
