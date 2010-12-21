@@ -330,9 +330,8 @@ class Form
 			$properties['name'] = $name;
 		}
 		$required = FALSE;
-		if ( ! empty($this->_validation))
+		if ( ! empty($this->_validation) && $field = $this->_validation->get_field($properties['name']))
 		{
-			$field = $this->_validation->get_field($properties['name']);
 			foreach ($field->rules as $rule)
 			{
 				if (reset($rule) === 'required')
@@ -741,7 +740,7 @@ class Form
 	 * @param	string	$form_name
 	 * @return	bool
 	 */
-	public function validate()
+	public function run_validation()
 	{
 		if (empty($this->_validation))
 		{
@@ -749,6 +748,16 @@ class Form
 		}
 
 		return $this->_validation->run();
+	}
+
+	public function validated($field = null, $default = null)
+	{
+		if (empty($this->_validation))
+		{
+			return Input::post($field, $default);
+		}
+
+		return $this->_validation->validated($field, $default);
 	}
 
 	// --------------------------------------------------------------------
@@ -764,7 +773,7 @@ class Form
 	 * @param	string	$suffix
 	 * @return	string
 	 */
-	public function error($field_name)
+	public function errors($field_name = null)
 	{
 		return $this->_validation->errors($field_name);
 	}
@@ -781,7 +790,7 @@ class Form
 	 * @param	string	$suffix
 	 * @return	string
 	 */
-	public function all_errors(Array $config = array())
+	public function show_errors(Array $config = array())
 	{
 		return $this->_validation->show_errors($config);
 	}
@@ -865,14 +874,13 @@ class Form
 	 * Repopulates the entire form with the submitted data.
 	 *
 	 * @access	public
-	 * @param	string	$form_name
 	 * @return	string
 	 */
-	public function repopulate($form_name)
+	public function repopulate()
 	{
 		foreach ($this->_fields as $field_name => $attr)
 		{
-			static::set_value($form_name, $field_name, (isset($attr['value']) ? $attr['value'] : null));
+			static::set_value($this->_form_name, $field_name, (isset($attr['value']) ? $attr['value'] : null));
 		}
 	}
 }
