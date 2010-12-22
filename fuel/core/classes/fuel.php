@@ -16,6 +16,11 @@ namespace Fuel\Core;
 
 use Fuel\App as App;
 
+// Load in the Autoloader
+require COREPATH.'classes'.DS.'autoloader.php';
+require COREPATH.'autoload.php';
+require APPPATH.'autoload.php';
+
 /**
  * The core of the framework.
  *
@@ -83,6 +88,7 @@ class Fuel {
 		{
 			throw new App\Exception("You can't initialize Fuel more than once.");
 		}
+		App\Autoloader::register();
 
 		static::$_paths = array(APPPATH, COREPATH);
 
