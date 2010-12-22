@@ -173,11 +173,16 @@ class Fieldset
 	/**
 	 * Get Field instance
 	 *
-	 * @param	$name
+	 * @param	string					null to fetch an array of all
 	 * @return	Fieldset_Field|false	returns false when field wasn't found
 	 */
-	public function field($name)
+	public function field($name = null)
 	{
+		if ($name === null)
+		{
+			return $this->fields;
+		}
+
 		if ( ! array_key_exists($name, $this->fields))
 		{
 			return false;
@@ -231,7 +236,7 @@ class Fieldset
 	 */
 	public function get_config($key = null, $default = null)
 	{
-		if (empty($key))
+		if ($key === null)
 		{
 			return $this->config;
 		}
@@ -258,7 +263,7 @@ class Fieldset
 	}
 
 	/**
-	 * Alias for $this->validation->input()
+	 * Alias for $this->validation()->input()
 	 */
 	public function input($field = null)
 	{
@@ -266,7 +271,7 @@ class Fieldset
 	}
 
 	/**
-	 * Alias for $this->validation->validated()
+	 * Alias for $this->validation()->validated()
 	 */
 	public function validated($field = null)
 	{
@@ -274,11 +279,19 @@ class Fieldset
 	}
 
 	/**
-	 * Alias for $this->validation->error()
+	 * Alias for $this->validation()->error()
 	 */
 	public function error($field = null)
 	{
 		return $this->validation()->error($field);
+	}
+
+	/**
+	 * Alias for $this->validation()->show_errors()
+	 */
+	public function show_errors(Array $config = array())
+	{
+		return $this->validation()->show_errors($config);
 	}
 }
 

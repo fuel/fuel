@@ -193,7 +193,7 @@ class Fieldset_Field
 	 */
 	public function get_attribute($key = null, $default = null)
 	{
-		if (empty($key))
+		if ($key === null)
 		{
 			return $this->attributes;
 		}
@@ -238,6 +238,17 @@ class Fieldset_Field
 	public function options()
 	{
 		return $this->options;
+	}
+
+	/**
+	 * Magic get method to allow getting class properties but still having them protected
+	 * to disallow writing.
+	 *
+	 * @return	mixed
+	 */
+	public function __get($property)
+	{
+		return $this->$property;
 	}
 
 	/**
