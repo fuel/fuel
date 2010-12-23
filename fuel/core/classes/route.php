@@ -41,7 +41,7 @@ class Route {
 	 */
 	public static function parse($uri, $reload = false)
 	{
-		static::load_routes();
+		static::load_routes($reload);
 
 		// This handles the default route
 		if ($uri->uri == '')

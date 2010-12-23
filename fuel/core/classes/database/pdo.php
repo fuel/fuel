@@ -10,11 +10,15 @@
  */
 
 namespace Fuel\Core;
+use Fuel\App;
 
 class Database_PDO extends Database {
 
 	// PDO uses no quoting for identifiers
 	protected $_identifier = '';
+
+	// Know which kind of DB is used
+	public $_db_type = '';
 
 	protected function __construct($name, array $config)
 	{
@@ -43,27 +47,27 @@ class Database_PDO extends Database {
 		// Clear the connection parameters for security
 		unset($this->_config['connection']);
 
+		// determine db type
+		$_dsn_find_collon = strpos($dsn, ':');
+		$this->_db_type = $_dsn_find_collon ? substr($dsn, 0, $_dsn_find_collon) : null;
+
 		// Force PDO to use exceptions for all errors
-		$attrs = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION);
+		$attrs = array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION);
 
 		if ( ! empty($persistent))
 		{
 			// Make the connection persistent
-			$attrs[PDO::ATTR_PERSISTENT] = TRUE;
+			$attrs[\PDO::ATTR_PERSISTENT] = TRUE;
 		}
 
 		try
 		{
 			// Create a new PDO connection
-			$this->_connection = new PDO($dsn, $username, $password, $attrs);
+			$this->_connection = new \PDO($dsn, $username, $password, $attrs);
 		}
-		catch (PDOException $e)
+		catch (\PDOException $e)
 		{
-			throw new App\Database_Exception(':error', array(
-					':error' => $e->getMessage(),
-				),
-				$e->getCode(),
-				$e);
+			throw new App\Database_Exception($e->getMessage(), $e->getCode(), $e);
 		}
 
 		if ( ! empty($this->_config['charset']))
@@ -105,7 +109,7 @@ class Database_PDO extends Database {
 		{
 			$result = $this->_connection->query($sql);
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
 			if (isset($benchmark))
 			{
@@ -114,12 +118,7 @@ class Database_PDO extends Database {
 			}
 
 			// Convert the exception in a database exception
-			throw new App\Database_Exception(':error [ :query ]', array(
-					':error' => $e->getMessage(),
-					':query' => $sql
-				),
-				$e->getCode(),
-				$e);
+			throw new App\Database_Exception($e->getMessage().' with query: "'.$sql.'"');
 		}
 
 		if (isset($benchmark))
@@ -135,15 +134,15 @@ class Database_PDO extends Database {
 			// Convert the result into an array, as PDOStatement::rowCount is not reliable
 			if ($as_object === FALSE)
 			{
-				$result->setFetchMode(PDO::FETCH_ASSOC);
+				$result->setFetchMode(\PDO::FETCH_ASSOC);
 			}
 			elseif (is_string($as_object))
 			{
-				$result->setFetchMode(PDO::FETCH_CLASS, $as_object);
+				$result->setFetchMode(\PDO::FETCH_CLASS, $as_object);
 			}
 			else
 			{
-				$result->setFetchMode(PDO::FETCH_CLASS, 'stdClass');
+				$result->setFetchMode(\PDO::FETCH_CLASS, 'stdClass');
 			}
 
 			$result = $result->fetchAll();

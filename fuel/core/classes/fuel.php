@@ -16,6 +16,11 @@ namespace Fuel\Core;
 
 use Fuel\App as App;
 
+// Load in the Autoloader
+require COREPATH.'classes'.DS.'autoloader.php';
+require COREPATH.'autoload.php';
+require APPPATH.'autoload.php';
+
 /**
  * The core of the framework.
  *
@@ -83,6 +88,7 @@ class Fuel {
 		{
 			throw new App\Exception("You can't initialize Fuel more than once.");
 		}
+		App\Autoloader::register();
 
 		static::$_paths = array(APPPATH, COREPATH);
 
@@ -211,7 +217,7 @@ class Fuel {
 	{
 		$path = $directory.DS.strtolower($file).$ext;
 
-		if (static::$path_cache != null && array_key_exists($path, static::$path_cache))
+		if (static::$path_cache !== null && array_key_exists($path, static::$path_cache))
 		{
 			return static::$path_cache[$path];
 		}
@@ -355,35 +361,40 @@ class Fuel {
 	 */
 	public static function add_module($name, $active = false)
 	{
-		// First attempt registered prefixes
-		$mod_path = App\Autoloader::prefix_path(ucfirst($name).'_');
-		// Or try registered module paths
-		if ($mod_path === false)
+		$paths = App\Config::get('module_paths', array());
+		
+		if (count($paths) === 0)
 		{
-			foreach (App\Config::get('module_paths', array()) as $path)
+			return false;
+		}
+
+		$found = false;
+
+		foreach ($paths as $path)
+		{
+			if (is_dir($mod_check_path = $path.strtolower($name).DS))
 			{
-				if (is_dir($mod_check_path = $path.strtolower($name).DS))
-				{
-					// Load module and end search
-					$mod_path = $mod_check_path;
-					$ns = 'Fuel\\App\\'.ucfirst($name);
-					App\Autoloader::add_namespaces(array(
-						$ns					=> $mod_path.'classes'.DS,
-						$ns.'\\Model'		=> $mod_path.'classes'.DS.'model'.DS,
-						$ns.'\\Controller'	=> $mod_path.'classes'.DS.'controller'.DS,
-					), true);
-					App\Autoloader::add_namespace_aliases(array(
-						$ns.'\\Controller'	=> 'Fuel\\App',
-						$ns.'\\Model'		=> 'Fuel\\App',
-						$ns					=> 'Fuel\\App',
-					), true);
-					break;
-				}
+				$found = true;
+
+				// Load module and end search
+				$mod_path = $mod_check_path;
+				$ns = 'Fuel\\App\\'.ucfirst($name);
+				App\Autoloader::add_namespaces(array(
+					$ns					=> $mod_path.'classes'.DS,
+					$ns.'\\Model'		=> $mod_path.'classes'.DS.'model'.DS,
+					$ns.'\\Controller'	=> $mod_path.'classes'.DS.'controller'.DS,
+				), true);
+				App\Autoloader::add_namespace_aliases(array(
+					$ns.'\\Controller'	=> 'Fuel\\App',
+					$ns.'\\Model'		=> 'Fuel\\App',
+					$ns					=> 'Fuel\\App',
+				), true);
+				break;
 			}
 		}
 
 		// not found
-		if ($mod_path === false)
+		if ($found === false)
 		{
 			return false;
 		}

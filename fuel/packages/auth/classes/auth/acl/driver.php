@@ -15,7 +15,7 @@
 namespace Fuel\Auth;
 use Fuel\App;
 
-abstract class Auth_Acl_Driver extends Auth_Driver {
+abstract class Auth_Acl_Driver extends App\Auth_Driver {
 
 	/**
 	 * @var	Auth_Driver
@@ -32,7 +32,7 @@ abstract class Auth_Acl_Driver extends Auth_Driver {
 		// default driver id to driver name when not given
 		! array_key_exists('id', $config) && $config['id'] = $config['driver'];
 
-		$class = 'Fuel\\Auth\\Auth_Acl_'.ucfirst($config['driver']);
+		$class = 'Fuel\\App\\Auth_Acl_'.ucfirst($config['driver']);
 		$driver = new $class($config);
 		static::$_instances[$driver->get_id()] = $driver;
 
@@ -43,7 +43,7 @@ abstract class Auth_Acl_Driver extends Auth_Driver {
 				$custom = is_int($d)
 					? array('driver' => $custom)
 					: array_merge($custom, array('driver' => $d));
-				$class = 'Fuel\\Auth\\Auth_'.$type.'_Driver';
+				$class = 'Fuel\\App\\Auth_'.$type.'_Driver';
 				$class::factory($custom);
 			}
 		}

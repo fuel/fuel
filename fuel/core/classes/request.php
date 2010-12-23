@@ -206,9 +206,10 @@ class Request {
 		$this->uri = new App\URI($uri);
 		$route = App\Route::parse($this->uri);
 
-		// Register module as such when found
+		// Attempts to register the first segment as a module
 		$mod_path = App\Fuel::add_module($route['segments'][0], true);
-		if ( ! empty($mod_path))
+
+		if ($mod_path !== false)
 		{
 			$this->module = array_shift($route['segments']);
 		}
@@ -228,7 +229,7 @@ class Request {
 		}
 
 		$this->controller = $route['segments'][0];
-		$this->action = ! empty($route['segments'][1]) ? $route['segments'][1] : '';
+		$this->action = isset($route['segments'][1]) ? $route['segments'][1] : '';
 		$this->method_params = array_slice($route['segments'], 2);
 		$this->named_params = $route['named_params'];
 		unset($route);
@@ -270,13 +271,10 @@ class Request {
 				$this->action = $this->controller;
 				$method = $this->action ?: '';
 				$this->controller = $controller;
-
-				// attempt autoload
-				class_exists($class);
 			}
 
 			// 404 if it's still not found
-			if ( ! class_exists($class, false))
+			if ( ! class_exists($class))
 			{
 				static::show_404();
 				return $this;
@@ -287,6 +285,7 @@ class Request {
 		$controller = new $class($this);
 
 		$method = $method_prefix.($method ?: (@$controller->default_action ?: 'index'));
+
 
 		// Allow to do in controller routing if method router(action, params) exists
 		if (method_exists($controller, 'router'))
@@ -316,12 +315,25 @@ class Request {
 
 			// Get the controller's output
 			$this->output =& $controller->output;
-
-			return $this;
 		}
-		static::show_404();
+		else
+		{
+			static::show_404();
+		}
 
 		return $this;
+	}
+
+	public function send_headers()
+	{
+		App\Output::send_headers();
+
+		return $this;
+	}
+
+	public function output()
+	{
+		echo $this->output;
 	}
 
 	/**

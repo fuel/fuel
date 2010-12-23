@@ -194,6 +194,20 @@ abstract class Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
+	 * get session key variables
+	 *
+	 * @access	public
+	 * @param	string	name of the variable to get, default is 'session_id'
+	 * @return	mixed	contents of the requested variable, or false if not found
+	 */
+	public function key($name)
+	{
+		return isset($this->keys[$name]) ? $this->keys[$name] : false;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * delete session variables
 	 *
 	 * @param	string	name of the variable to delete

@@ -108,14 +108,14 @@ class Uri {
 	 * @param	int		The segment number
 	 * @return	string
 	 */
-	public static function segment($segment)
+	public static function segment($segment, $default = null)
 	{
 		if (isset(App\Request::active()->uri->segments[$segment - 1]))
 		{
 			return App\Request::active()->uri->segments[$segment - 1];
 		}
 
-		return false;
+		return $default;
 	}
 
 	public static function string()

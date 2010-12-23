@@ -106,9 +106,14 @@ class Output {
 	 * @param	int		The redirect status code
 	 * @return	void
 	 */
-	public static function redirect($url, $method = 'location', $redirect_code = 302)
+	public static function redirect($url = '', $method = 'location', $redirect_code = 302)
 	{
 		static::$status = $redirect_code;
+
+		if (strpos($url, '://') === false)
+		{
+			$url = Uri::create($url);
+		}
 
 		if ($method == 'location')
 		{

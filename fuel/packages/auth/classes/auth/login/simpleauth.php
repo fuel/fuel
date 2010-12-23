@@ -32,7 +32,7 @@ use Fuel\App;
 	)
 */
 
-class Auth_Login_SimpleAuth extends Auth_Login_Driver {
+class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 
 	public static function _init()
 	{
@@ -91,8 +91,8 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 	 */
 	public function login($username = '', $password = '')
 	{
-		$username = trim($username) ?: trim(Input::post('username'));
-		$password = trim($password) ?: trim(Input::post('password'));
+		$username = trim($username) ?: trim(App\Input::post('username'));
+		$password = trim($password) ?: trim(App\Input::post('password'));
 
 		if (empty($username) || empty($password))
 		{
@@ -109,8 +109,8 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			return false;
 		}
 
-		Session::set('username', $username);
-		Session::set('login_hash', $this->create_login_hash());
+		App\Session::set('username', $username);
+		App\Session::set('login_hash', $this->create_login_hash());
 		return true;
 	}
 
@@ -122,8 +122,8 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 	public function logout()
 	{
 		$this->user = null;
-		Session::delete('username');
-		Session::delete('login_hash');
+		App\Session::delete('username');
+		App\Session::delete('login_hash');
 		return true;
 	}
 
@@ -176,19 +176,19 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			->from('simpleusers')->execute();
 		if (empty($current_values))
 		{
-			throw new Auth_Exception('not_found');
+			throw new App\Auth_Exception('not_found');
 		}
 
 		$update = array();
 		if (array_key_exists('username', $values))
 		{
-			throw new Auth_Exception('username_change_not_allowed');
+			throw new App\Auth_Exception('username_change_not_allowed');
 		}
 		if (array_key_exists('password', $values))
 		{
 			if ($current_values->get('password') != $this->hash_password(@$values['old_password']))
 			{
-				throw new Auth_Exception('invalid_old_password');
+				throw new App\Auth_Exception('invalid_old_password');
 			}
 
 			if ( ! empty($values['password']))
@@ -202,7 +202,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			$email = filter_var(trim($values['email']), FILTER_VALIDATE_EMAIL);
 			if ( ! $email)
 			{
-				throw new Auth_Exception('invalid_email');
+				throw new App\Auth_Exception('invalid_email');
 			}
 			$update['email'] = $email;
 			unset($values['email']);
@@ -263,7 +263,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 	{
 		if (empty($username))
 		{
-			throw new Auth_Exception('cannot_delete_empty_username');
+			throw new App\Auth_Exception('cannot_delete_empty_username');
 		}
 
 		$affected_rows = App\DB::delete('simpleusers')
@@ -281,7 +281,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			->from('simpleusers')->execute();
 		if (empty($user))
 		{
-			throw new Auth_Exception('not_found');
+			throw new App\Auth_Exception('not_found');
 		}
 
 		// MUST GET CODE TO RESET THE PASSWORD TO SOMETHING RANDOM AND EMAIL IT
