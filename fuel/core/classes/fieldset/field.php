@@ -86,14 +86,24 @@ class Fieldset_Field
 	public function __construct($name, $label = '', Array $attributes = array(), Array $rules = array(), App\Fieldset $fieldset)
 	{
 		$this->name = (string) $name;
-		$this->attributes = $attributes;
 		$this->fieldset = $fieldset;
 
-		$this->set_label($label);
+		foreach (array('label', 'type', 'value', 'options') as $prop)
+		{
+			if (array_key_exists($prop, $attributes))
+			{
+				$this->{'set_'.$prop}($attributes[$prop]);
+				unset($attributes[$prop]);
+			}
+		}
+		$this->attributes = array_merge($this->attributes, $attributes);
+
+		// only when non-empty, will overwrite what was given in $name
+		$label && $this->set_label($label);
 
 		foreach ($rules as $rule)
 		{
-			$this->add_rule($rule);
+			call_user_func_array(array($this, 'add_rule'), $rule);
 		}
 	}
 
@@ -116,6 +126,7 @@ class Fieldset_Field
 	public function set_type($type)
 	{
 		$this->type = (string) $type;
+		$this->set_attribute('type', $type);
 	}
 
 	/**
@@ -126,6 +137,7 @@ class Fieldset_Field
 	public function set_value($value)
 	{
 		$this->value = $value;
+		$this->set_attribute('value', $value);
 	}
 
 	/**
@@ -175,7 +187,12 @@ class Fieldset_Field
 			}
 			else
 			{
-				Error::notice('Invalid rule passed to Validation, not used.');
+				$string = ! is_array($callback)
+						? $callback
+						: is_object(@$callback[0])
+							? get_class(@$callback[0]).'->'.@$callback[1]
+							: @$callback[0].'::'.@$callback[1];
+				Error::notice('Invalid rule "'.$string.'" passed to Validation, not used.');
 			}
 		}
 
@@ -231,7 +248,7 @@ class Fieldset_Field
 			return $output;
 		}
 
-		return array_key_exists($key, $this->config) ? $this->config[$key] : $default;
+		return array_key_exists($key, $this->attributes) ? $this->attributes[$key] : $default;
 	}
 
 	/**
@@ -241,7 +258,7 @@ class Fieldset_Field
 	 * @param	string
 	 * @return	Fieldset_Field	this, to allow chaining
 	 */
-	public function add_option($value, $label = null)
+	public function set_options($value, $label = null)
 	{
 		$value = is_array($value) ? $value : array($value => $label);
 		foreach ($value as $key => $label)

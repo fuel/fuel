@@ -413,14 +413,14 @@ class Form {
 		if (is_array($label))
 		{
 			$label = $attributes['label'];
-			$for = $attributes['id'];
+			$id = $attributes['id'];
 		}
 
-		$attributes['for'] = $for;
+		$attributes['for'] = $id;
 		unset($attributes['label']);
 		unset($attributes['id']);
 
-		return static::html_tag('label', $attributes, $label);
+		return html_tag('label', $attributes, $label);
 	}
 
 	/**
@@ -437,6 +437,21 @@ class Form {
 		$value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
 
 		return $value;
+	}
+
+	/**
+	 * Attr to String
+	 *
+	 * Wraps the global attributes function and does some form specific work
+	 *
+	 * @access	private
+	 * @param	array	$attr
+	 * @return	string
+	 */
+	private static function attr_to_string($attr)
+	{
+		unset($attr['label']);
+		return array_to_attr($attr);
 	}
 
 	/* ----------------------------------------------------------------------------
@@ -484,6 +499,12 @@ class Form {
 		return $output;
 	}
 
+	/**
+	 * Build & template individual field
+	 *
+	 * @param	string|Fieldset_Field	field instance or name of a field in this form's fieldset
+	 * @return	string
+	 */
 	public function build_field($field)
 	{
 		! $field instanceof Fieldset_Field && $field = $this->field($field);
@@ -639,15 +660,25 @@ class Form {
 			foreach ($key as $k)
 			{
 				$output[$k] = $this->fieldset->get_config($k, null) === null
-							? $this->fieldset->get_config($k)
+							? $this->fieldset->get_config($k, $default)
 							: static::get_class_config($k, $default);
 			}
 			return $output;
 		}
 
 		return $this->fieldset->get_config($key, null) === null
-			? $this->fieldset->get_config($key)
+			? $this->fieldset->get_config($key, $default)
 			: static::get_class_config($key, $default);
+	}
+
+	/**
+	 * Magic method toString that will build this as a form
+	 *
+	 * @return	string
+	 */
+	public function __toString()
+	{
+		return $this->build();
 	}
 
 	/**
@@ -659,11 +690,31 @@ class Form {
 	}
 
 	/**
+	 * Alias for $this->fieldset->add_model()
+	 *
+	 * @return	Validation	this, to allow chaining
+	 */
+	public function add_model($class, $instance = null, $method = 'set_form_fields')
+	{
+		$this->fieldset->add_model($class);
+
+		return $this;
+	}
+
+	/**
 	 * Alias for $this->fieldset->field()
 	 */
 	public function field($name = null)
 	{
 		return $this->fieldset->field($name);
+	}
+
+	/**
+	 * Alias for $this->fieldset->repopulate() for this fieldset
+	 */
+	public function repopulate()
+	{
+		$this->fieldset->repopulate();
 	}
 }
 

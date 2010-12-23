@@ -301,7 +301,7 @@ class Validation {
 	 *
 	 * @return	Validation	this, to allow chaining
 	 */
-	public function add_model($class)
+	public function add_model($class, $instance = null, $method = 'set_form_fields')
 	{
 		$this->fieldset->add_model($class);
 

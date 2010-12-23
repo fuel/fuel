@@ -88,7 +88,7 @@ class Fieldset
 	/**
 	 * @var	array	array of Fieldset_Field objects
 	 */
-	protected $fields;
+	protected $fields = array();
 
 	/**
 	 * @var	Validation	instance of validation
@@ -197,13 +197,16 @@ class Fieldset
 	 * and adds fields to it.
 	 *
 	 * @param	string|Object	either a full classname (including full namespace) or object instance
+	 * @param	array|Object	array or object that has the exactly same named properties to populate the fields
+	 * @param	string			method name to call on model for field fetching
 	 * @return	Fieldset		this, to allow chaining
 	 */
-	public function add_model($class)
+	public function add_model($class, $instance = null, $method = 'set_form_fields')
 	{
-		if (is_callable($callback = array($class, 'set_form_fields')))
+		if ((is_string($class) && is_callable($callback = array('Fuel\\App\\'.$class, $method)))
+			|| is_callable($callback = array($class, $method)))
 		{
-			call_user_func($callback, $this);
+			$instance ? call_user_func($callback, $this, $instance) : call_user_func($callback, $this);
 		}
 
 		return $this;
@@ -252,6 +255,32 @@ class Fieldset
 		}
 
 		return array_key_exists($key, $this->config) ? $this->config[$key] : $default;
+	}
+
+	/**
+	 * Set all fields to the given and/or posted input
+	 *
+	 * @return Fieldset	this, to allow chaining
+	 */
+	public function repopulate()
+	{
+		foreach ($this->fields as $f)
+		{
+			if (($value = $this->input($f->name, null)) !== null)
+			$f->set_value($value);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Magic method toString that will build this as a form
+	 *
+	 * @return	string
+	 */
+	public function __toString()
+	{
+		return $this->build();
 	}
 
 	/**
