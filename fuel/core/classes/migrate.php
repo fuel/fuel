@@ -126,8 +126,6 @@ class Migrate
 		$method = $step === 1 ? 'up' : 'down';
 		$migrations = array();
 
-//		Debug::dump($start, $stop);
-
 		// We now prepare to actually DO the migrations
 		// But first let's make sure that everything is the way it should be
 		for ($i = $start; $i != $stop; $i += $step)
