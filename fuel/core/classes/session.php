@@ -220,6 +220,20 @@ class Session {
 	// --------------------------------------------------------------------
 
 	/**
+	 * get session key variables
+	 *
+	 * @access	public
+	 * @param	string	name of the variable to get, default is 'session_id'
+	 * @return	mixed
+	 */
+	public static function key($name = 'session_id')
+	{
+		return static::instance()->key($name);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * set session flash variables
 	 *
 	 * @param	string	name of the variable to set

@@ -85,6 +85,9 @@ return array(
 	// if true, normalize the filename (convert to ASCII, replace spaces by underscores)
 	'normalize'			=> false,
 
+	// valid values are 'upper', 'lower', and false. case will be changed after all other transformations
+	'change_case'		=> false,
+
 	// maximum lengh of the filename, after all name modifications have been made. 0 = no maximum
 	'max_length'		=> 0
 );
