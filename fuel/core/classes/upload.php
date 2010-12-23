@@ -73,7 +73,8 @@ class Upload {
 		'auto_rename'		=> true,
 		'overwrite'			=> false,
 		'randomize'			=> false,
-		'normalize'			=> false
+		'normalize'			=> false,
+		'change_case'		=> false
 	);
 
 	/**
@@ -226,9 +227,16 @@ class Upload {
 				$file['mimetype'] = 'application/octet-stream';
 			}
 
-			// add some filename details
-			$file['filename'] = pathinfo($file['name'], PATHINFO_FILENAME);
-			$file['extension'] = pathinfo(ltrim($file['name'], '.'), PATHINFO_EXTENSION);
+			// add some filename details (pathinfo can't be trusted with utf-8 filenames!)
+			$file['extension'] = ltrim(strrchr(ltrim($file['name'], '.'), '.'),'.');
+			if (empty($file['extension']))
+			{
+				$file['filename'] = $file['name'];
+			}
+			else
+			{
+				$file['filename'] = substr($file['name'], 0, strlen($file['name'])-(strlen($file['extension'])+1));
+			}
 
 			// does this upload exceed the maximum size?
 			if ($file['error'] == 0 and ! empty(static::$config['max_size']) and $file['size'] > static::$config['max_size'])
@@ -399,6 +407,22 @@ class Upload {
 				$save_as[4] = '';
 			}
 
+			// need to modify case?
+			switch(static::$config['change_case'])
+			{
+				case 'upper':
+					$save_as = array_map(function($var) { return strtoupper($var); }, $save_as);
+				break;
+
+				case 'lower':
+					$save_as = array_map(function($var) { return strtolower($var); }, $save_as);
+				break;
+
+				default:
+				break;
+			}
+
+
 			// check if the file already exists
 			if (file_exists($path.implode('', $save_as)))
 			{
@@ -407,7 +431,7 @@ class Upload {
 					$counter = 0;
 					do
 					{
-						$save_as[3] = '_'.++$counter.'.';
+						$save_as[3] = '_'.++$counter;
 					}
 					while (file_exists($path.implode('', $save_as)));
 				}
