@@ -341,7 +341,7 @@ class Auth {
 	 */
 	protected static function _driver_instance($type, $instance)
 	{
-		$class = 'Fuel\\Auth_'.ucfirst($type).'_Driver';
+		$class = 'Fuel\\App\\Auth_'.ucfirst($type).'_Driver';
 		return $class::instance($instance);
 	}
 

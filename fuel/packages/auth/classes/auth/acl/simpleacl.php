@@ -38,7 +38,7 @@ class Auth_Acl_SimpleAcl extends App\Auth_Acl_Driver {
 		$current_rights = '';
 		if (is_array($current_roles))
 		{
-			$roles = Config::get('simpleauth.roles', array());
+			$roles = App\Config::get('simpleauth.roles', array());
 			array_key_exists('#', $roles) && array_unshift($current_roles, '#');
 			foreach ($current_roles as $r_role)
 			{
