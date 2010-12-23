@@ -15,7 +15,7 @@
 namespace Fuel\Auth;
 use Fuel\App;
 
-class Auth_Group_SimpleGroup extends Auth_Group_Driver {
+class Auth_Group_SimpleGroup extends App\Auth_Group_Driver {
 
 	public static $_valid_groups = array();
 
@@ -32,12 +32,12 @@ class Auth_Group_SimpleGroup extends Auth_Group_Driver {
 	{
 		if ($user === null)
 		{
-			$groups = Auth::instance()->get_user_groups();
+			$groups = App\Auth::instance()->get_user_groups();
 		}
 		else
 		{
 			// to be written...
-			// $groups = Auth::instance($user[0])->get_user_groups();
+			// $groups = App\Auth::instance($user[0])->get_user_groups();
 		}
 
 		if ( ! $groups || ! in_array((int) $group, static::$_valid_groups))

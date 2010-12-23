@@ -15,7 +15,7 @@
 namespace Fuel\Auth;
 use Fuel\App;
 
-class Auth_Acl_SimpleAcl extends Auth_Acl_Driver {
+class Auth_Acl_SimpleAcl extends App\Auth_Acl_Driver {
 
 	protected static $_valid_roles = array();
 
@@ -26,7 +26,7 @@ class Auth_Acl_SimpleAcl extends Auth_Acl_Driver {
 
 	public function has_access($condition, Array $entity)
 	{
-		$group = Auth::group($entity[0]);
+		$group = App\Auth::group($entity[0]);
 		if ( ! is_array($condition) || empty($group) || ! is_callable(array($group, 'get_roles')))
 		{
 			return false;
