@@ -263,7 +263,6 @@ class Fieldset_Field
 		$value = is_array($value) ? $value : array($value => $label);
 		foreach ($value as $key => $label)
 		{
-			$key = is_int($key) ? $label : $key;
 			$this->options[(string) $key] = (string) $label;
 		}
 
