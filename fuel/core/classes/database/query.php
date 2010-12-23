@@ -209,7 +209,7 @@ class Database_Query {
 		}
 */
 
-		switch(substr($sql, 0, 6))
+		switch(strtoupper(substr($sql, 0, 6)))
 		{
 			case 'SELECT':
 				$this->_type = Database::SELECT;
