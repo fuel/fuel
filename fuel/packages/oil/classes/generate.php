@@ -57,9 +57,8 @@ class Generate
 <?php
 
 namespace Fuel\App\Controller;
-use Fuel\Core\Controller;
 
-class {$class_name} extends Controller\Template {
+class {$class_name} extends TemplateController{
 {$action_str}
 }
 
