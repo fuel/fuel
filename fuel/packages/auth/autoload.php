@@ -21,8 +21,7 @@ Autoloader::add_namespaces(array(
 ));
 
 Autoloader::add_namespace_aliases(array(
-	'Fuel\\Auth'		=> 'Fuel\\App',
-	'Fuel\\Auth\\Model'	=> 'Fuel\\App'
+	'Fuel\\App'			=> 'Fuel\\Auth'
 ));
 
 /* End of file autoload.php */

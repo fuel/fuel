@@ -155,9 +155,25 @@ class Autoloader {
 	 * @param	string	alias name
 	 * @return	void
 	 */
-	public static function add_namespace_alias($alias, $namespace)
+	public static function add_namespace_alias($alias, $namespace, $prepend = false)
 	{
-		static::$namespace_aliases[$alias] = $namespace;
+		$namespace = (array) $namespace;
+
+		if (array_key_exists($alias, static::$namespace_aliases))
+		{
+			static::$namespace_aliases[$alias] = array_merge($namespace, static::$namespace_aliases[$alias]);
+		}
+		else
+		{
+			if ($prepend)
+			{
+				static::$namespace_aliases = array($alias => $namespace) + static::$namespace_aliases;
+			}
+			else
+			{
+				static::$namespace_aliases[$alias] = $namespace;
+			}
+		}
 	}
 
 	/**
@@ -169,13 +185,10 @@ class Autoloader {
 	 */
 	public static function add_namespace_aliases(array $aliases, $prepend = false)
 	{
-		if ( ! $prepend)
+		foreach ($aliases as $alias => $namespace)
 		{
-			static::$namespace_aliases = array_merge(static::$namespace_aliases, $aliases);
-		}
-		else
-		{
-			static::$namespace_aliases = $aliases + static::$namespace_aliases;
+			$namespace = (array) $namespace;
+			static::add_namespace_alias($alias, $namespace, $prepend);
 		}
 	}
 
@@ -321,7 +334,7 @@ class Autoloader {
 	 */
 	public static function namespace_alias($class)
 	{
-		foreach (static::$namespace_aliases as $alias => $actual)
+		foreach (static::$namespace_aliases as $alias => $namespaces)
 		{
 			if ($alias == '')
 			{
@@ -329,11 +342,14 @@ class Autoloader {
 			}
 			if (strpos($class, $alias) === 0)
 			{
-				$alias = $actual.substr($class, strlen($alias));
-				if (class_exists($alias))
+				foreach ($namespaces as $actual)
 				{
-					class_alias($alias, $class);
-					return true;
+					$alias_class = $actual.substr($class, strlen($alias));
+					if (class_exists($alias_class))
+					{
+						class_alias($alias_class, $class);
+						return true;
+					}
 				}
 			}
 		}
