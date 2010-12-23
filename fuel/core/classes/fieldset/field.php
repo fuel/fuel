@@ -65,9 +65,14 @@ class Fieldset_Field
 	protected $attributes = array();
 
 	/**
-	 * @var	array	Options, only available for select field
+	 * @var	array	Options, only available for select, radio & checkbox types
 	 */
 	protected $options = array();
+
+	/**
+	 * @var	string	Template for form building
+	 */
+	protected $template;
 
 	/**
 	 * Constructor
@@ -100,6 +105,7 @@ class Fieldset_Field
 	public function set_label($label)
 	{
 		$this->label = (string) $label;
+		$this->set_attribute('label', $label);
 	}
 
 	/**
@@ -120,6 +126,16 @@ class Fieldset_Field
 	public function set_value($value)
 	{
 		$this->value = $value;
+	}
+
+	/**
+	 * Template the output
+	 *
+	 * @param	string
+	 */
+	public function set_template($template = null)
+	{
+		$this->template = $template;
 	}
 
 	/**
@@ -170,15 +186,22 @@ class Fieldset_Field
 	 * Sets an attribute on the field
 	 *
 	 * @param	string
-	 * @param	mixed
+	 * @param	mixed			new value or null to unset
 	 * @return	Fieldset_Field	this, to allow chaining
 	 */
-	public function set_attribute($config, $value = null)
+	public function set_attribute($config, $value)
 	{
 		$config = is_array($config) ? $config : array($config => $value);
 		foreach ($config as $key => $value)
 		{
-			$this->attributes[$key] = $value;
+			if ($value === null)
+			{
+				unset($this->attributes[$key]);
+			}
+			else
+			{
+				$this->attributes[$key] = $value;
+			}
 		}
 
 		return $this;

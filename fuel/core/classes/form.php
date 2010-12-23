@@ -21,23 +21,50 @@ use Fuel\App as App;
 /**
  * Form Class
  *
- * Create forms via a config file or create forms on the fly.
+ * Helper for creating forms with support for creating dynamic form objects.
  *
  * @package		Fuel
  * @category	Core
- * @author		Philip Sturgeon
+ * @author		Philip Sturgeon, Jelmer Schreuder
  */
-class Form
-{
-	/**
-	 * @var	array	Used to store form configurations
-	 */
-	protected static $_forms = array();
+class Form {
+
+	/* ----------------------------------------------------------------------------
+	 * Factory & instance methods
+	 * ---------------------------------------------------------------------------- */
+
+	public static function factory($fieldset, $config)
+	{
+		if ( ! $fieldset instanceof Fieldset)
+		{
+			$fieldset = (string) $fieldset;
+			if ( ! ($fieldset = App\Fieldset::instance($fieldset)))
+			{
+				$fieldset = App\Fieldset::factory($fieldset, $config);
+			}
+		}
+		return new Form($fieldset);
+	}
+
+	public static function instance($name = null)
+	{
+		$fieldset = App\Fieldset::instance($name);
+		return $fieldset === false ? false : $fieldset->validation();
+	}
+
+	/* ----------------------------------------------------------------------------
+	 * Class static properties & methods
+	 * ---------------------------------------------------------------------------- */
 
 	/**
-	 * @var array	Used to store the created Form instances
+	 * @var	array	default form config array
 	 */
-	protected static $_instances = array();
+	protected static $class_config = array(
+		'prep_value'		=> true,
+		'auto_id'			=> true,
+		'auto_id_prefix'	=> 'form_',
+		'form_method'		=> 'post'
+	);
 
 	/**
 	 * Valid types for input tags (including HTML5)
@@ -51,13 +78,6 @@ class Form
 	);
 
 	/**
-	 * @var	bool	setting that determines whether html is converted to entities or simply allowed
-	 */
-	protected static $_allow_html = false;
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * When autoloaded this will method will be fired, load once and once only
 	 *
 	 * @param   string  Ftp filename
@@ -68,430 +88,288 @@ class Form
 	{
 		App\Config::load('form', true);
 
-		static::$_forms = App\Config::get('form.forms');
+		static::$class_config = App\Config::get('form');
 	}
 
-	// --------------------------------------------------------------------
-
-	public static $default = 'default';
-
-
-	public static function factory($name = null, array $config = array())
+	/**
+	 * Sets a form class config value
+	 *
+	 * @param	string
+	 * @param	mixed	new value or null to unset
+	 */
+	public static function set_class_config($config, $value = null)
 	{
-		if ($name === null)
+		$config = is_array($config) ? $config : array($config => $value);
+		foreach ($config as $key => $value)
 		{
-			$name = static::$default;
+			if ($value === null)
+			{
+				unset(static::$class_config[$key]);
+			}
+			else
+			{
+				static::$class_config[$key] = $value;
+			}
 		}
-		elseif (array_key_exists($name, static::$_instances))
+	}
+
+	/**
+	 * Get a single or multiple config values by key
+	 *
+	 * @param	string|array	a single key or multiple in an array, empty to fetch all
+	 * @param	mixed			default output when config wasn't set
+	 * @return	mixed|array		a single config value or multiple in an array when $key input was an array
+	 */
+	public static function get_class_config($key = null, $default = null)
+	{
+		if ($key === null)
 		{
-			return static::$_instances[$name];
+			return static::$class_config;
 		}
 
-		// This form is pre-configured, lets use the config
-		if (isset(static::$_forms[$name]))
+		if (is_array($key))
 		{
-			static::$_forms[$name] = array_merge_recursive(static::$_forms[$name], $config);
+			$output = array();
+			foreach ($key as $k)
+			{
+				$output[$k] = array_key_exists($k, static::$class_config) ? static::$class_config[$k] : $default;
+			}
+			return $output;
 		}
-		// This is new, so assign the config (which hopefully will be an array of fields, or an empty array)
+
+		return array_key_exists($key, static::$class_config) ? static::$class_config[$key] : $default;
+	}
+
+	/**
+	 * Create a form open tag
+	 *
+	 * @param	string|array	action string or array with more tag attribute settings
+	 * @return	string
+	 */
+	public static function open($attributes, Array $hidden = array())
+	{
+		$attributes = ! is_array($attributes) ? array('action' => (string) $attributes) : $attributes;
+
+		// If there is still no action set, Form-post
+		empty($attributes['action']) && $attributes['action'] = App\Uri::current();
+
+		// If not a full URL, create one
+		! strpos($attributes['action'], '://') && $attributes['action'] = App\Uri::create($attributes['action']);
+
+		// If method is empty, use POST
+		! empty($attributes['method']) || $attributes['method'] = static::get_class_config('form_method', 'post');
+
+		$form = '<form';
+		foreach ($attributes as $prop => $value)
+		{
+			$form .= ' '.$prop.'="'.$value.'"';
+		}
+		$form .= '>';
+
+		// Add hidden fields when given
+		foreach ($hidden as $field => $value)
+		{
+			$form .= PHP_EOL.static::hidden($field, $value);
+		}
+
+		return $form;
+	}
+
+	/**
+	 * Create a form close tag
+	 *
+	 * @return string
+	 */
+	public static function close()
+	{
+		return '</form>';
+	}
+
+	/**
+	 * Create a form input
+	 *
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
+	 * @return	string
+	 */
+	public static function input($field, $value = null, Array $attributes = array())
+	{
+		if (is_array($field))
+		{
+			$attributes = $field;
+		}
 		else
 		{
-			static::$_forms[$name] = $config;
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
 		}
 
-		// If this is a new instance, fire off the constructor
-		static::$_instances[$name] = new Form($name, $config);
+		$attributes['type'] = @$attributes['type'] ?: 'text';
 
-		return static::$_instances[$name];
-	}
-
-	public static function instance($name = null)
-	{
-		if ($name === null)
+		if ( ! in_array($attributes['type'], static::$_valid_inputs))
 		{
-			if (empty(static::$_instances))
-			{
-				static::factory();
-			}
-
-			return reset(static::$_instances);
+			throw new App\Exception(sprintf('"%s" is not a valid input type.', $attributes['type']));
 		}
 
-		if ( ! array_key_exists($name, static::$_instances))
+		if (static::get_class_config('prep_value', true) || empty($attributes['dont_prep']))
 		{
-			return false;
+			$attributes['value'] = static::prep_value($attributes['value']);
+			unset($attributes['dont_prep']);
 		}
 
-		return static::$_instances[$name];
+		if (empty($attributes['id']) && static::get_class_config('auto_id', false) == true)
+		{
+			$attributes['id'] = static::get_class_config('auto_id_prefix', '').$attributes['name'];
+		}
+
+		return html_tag('input', static::attr_to_string($attributes));
 	}
-
-	// --------------------------------------------------------------------
-
-	protected $_form_name;
-	protected $_fields = array();
-	protected $_attributes = array();
-	protected $_validation;
 
 	/**
-	 * Construct
+	 * Create a hidden field
 	 *
-	 * Create
-	 *
-	 * @access	public
-	 * @param	array	$custom_config
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
+	 * @return
 	 */
-	public function __construct($name = NULL, array $config = array())
+	public static function hidden($field, $value = null, Array $attributes = array())
 	{
-		$this->_form_name = $name;
-
-		if(isset($config['attributes']))
+		if (is_array($field))
 		{
-			$this->_attributes = array_merge_recursive($this->_attributes, $config['attributes']);
+			$attributes = $field;
 		}
-
-		if (isset($config['fields']))
+		else
 		{
-			static::add_fields($config['fields']);
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
 		}
+		$attributes['type'] = 'hidden';
+
+		return static::input($attributes);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
-	 * Add Field
+	 * Create a radio button
 	 *
-	 * Adds a field to a given form
-	 *
-	 * @access	public
-	 * @param	string	$form_name
-	 * @param	string	$field_name
-	 * @param	array	$attributes
-	 * @return	void
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
+	 * @return
 	 */
-	public function add_field($field_name, $attributes)
+	public static function radio($field, $value = null, Array $attributes = array())
 	{
-		if ($this->field_exists($field_name))
+		if (is_array($field))
 		{
-			throw new App\Exception(sprintf('Field "%s" already exists in form "%s". If you were trying to modify the field, please use $form->modify_field($field_name, $attributes).', $field_name, $this->_form_name));
+			$attributes = $field;
 		}
-
-		if ($attributes['type'] == 'file')
+		else
 		{
-			$this->_attributes['enctype'] = 'multipart/form-data';
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
 		}
+		$attributes['type'] = 'radio';
 
-		if (array_key_exists('validation', $attributes))
-		{
-			if (empty($this->_validation))
-			{
-				$this->_validation = App\Validation::factory();
-			}
-
-			$this->_validation->add_field($field_name, @$attributes['label'], $attributes['validation']);
-			unset($attributes['validation']);
-		}
-
-		$this->_fields[$field_name] = $attributes;
-		static::$_forms[$this->_form_name]['fields'][$field_name] = $attributes;
+		return static::input($attributes);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
-	 * Add Fields
+	 * Create a checkbox
 	 *
-	 * Allows you to add multiple fields at once.
-	 *
-	 * @access	public
-	 * @param	string	$form_name
-	 * @param	array	$fields
-	 * @return	void
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
+	 * @return
 	 */
-	public function add_fields($fields)
+	public static function checkbox($field, $value = null, Array $attributes = array())
 	{
-		foreach ($fields as $field_name => $attributes)
+		if (is_array($field))
 		{
-			$this->add_field($field_name, $attributes);
+			$attributes = $field;
 		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Modify Field
-	 *
-	 * Allows you to modify a field.
-	 *
-	 * @access	public
-	 * @param	string	$form_name
-	 * @param	string	$field_name
-	 * @param	array	$attributes
-	 * @return	void
-	 */
-	public function modify_field($field_name, $attributes)
-	{
-		if ( ! $this->field_exists($field_name))
+		else
 		{
-			throw new App\Exception(sprintf('Field "%s" does not exist in form "%s".', $field_name, $this->_form_name));
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
 		}
-		$this->_fields[$field_name] = array_merge_recursive($this->_fields[$field_name], $attributes);
+		$attributes['type'] = 'checkbox';
+
+		return static::input($attributes);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
-	 * Modify Fields
+	 * Create a textarea field
 	 *
-	 * Allows you to modify multiple fields at once.
-	 *
-	 * @access	public
-	 * @param	string	$form_name
-	 * @param	array	$fields
-	 * @return	void
-	 */
-	public function modify_fields($fields)
-	{
-		foreach ($fields as $field_name => $attributes)
-		{
-			$this->modfy_field($field_name, $attributes);
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Field Exists
-	 *
-	 * Checks if a field exists.
-	 *
-	 * @param	string	$form_name
-	 * @param	string	$field_name
-	 * @return	bool
-	 */
-	public function field_exists($field_name)
-	{
-		return isset($this->_fields[$field_name]);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Get Form Array
-	 *
-	 * Returns the form with all fields and options as an array
-	 *
-	 * @access	private
-	 * @param	string	$form_name
-	 * @return	array
-	 */
-	private static function get_form_array($form_name)
-	{
-		if ( ! isset(static::$_forms[$form_name]))
-		{
-			throw new App\Exception(sprintf('Form "%s" does not exist.', $form_name));
-		}
-
-		return static::$_forms[$form_name];
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Form
-	 *
-	 * Builds a form and returns well-formatted, valid XHTML for output.
-	 *
-	 * @access	public
-	 * @param	string	$form_name
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
 	 * @return	string
 	 */
-	public function create()
+	public static function textarea($field, $value = null, Array $attributes = array())
 	{
-		$return = static::open($this->_form_name) . PHP_EOL;
-		$return .= static::fields($this->_form_name);
-		$return .= static::close() . PHP_EOL;
+		if (is_array($field))
+		{
+			$attributes = $field;
+		}
+		else
+		{
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
+		}
 
-		return $return;
+		$value = @$attributes['value'];
+		unset($attributes['value']);
+
+		if (static::get_class_config('prep_value', true) || empty($attributes['dont_prep']))
+		{
+			$value = static::prep_value($value);
+			unset($attributes['dont_prep']);
+		}
+
+		if (empty($attributes['id']) && static::get_class_config('auto_id', false) == true)
+		{
+			$attributes['id'] = static::get_class_config('auto_id_prefix', '').$attributes['name'];
+		}
+
+		return html_tag('textarea', static::attr_to_string($attributes), static::prep_value($value));
 	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Field
-	 *
-	 * Builds a field and returns well-formatted, valid XHTML for output.
-	 *
-	 * @access	public
-	 * @param	string	$name
-	 * @param	string	$properties
-	 * @param	string	$form_name
-	 * @return	string
-	 */
-	public function field($name, $properties = array())
-	{
-		$return = '';
-
-		if ( ! isset($properties['name']))
-		{
-			$properties['name'] = $name;
-		}
-		$required = FALSE;
-		if ( ! empty($this->_validation) && $field = $this->_validation->get_field($properties['name']))
-		{
-			foreach ($field->rules as $rule)
-			{
-				if (reset($rule) === 'required')
-				{
-					$required = TRUE;
-				}
-			}
-		}
-
-		$return .= static::_open_field($properties['type'], $required);
-
-		switch($properties['type'])
-		{
-			case 'hidden':
-				$return .= "\t\t" . static::input($properties) . PHP_EOL;
-				break;
-			case 'radio': case 'checkbox':
-				$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
-				if (isset($properties['items']))
-				{
-					$return .= "\t\t\t<span>\n";
-
-					if ($properties['type'] == 'checkbox' and count($properties['items']) > 1)
-					{
-						// More than one item exists, this should probably be an array
-						if (substr($properties['name'], -2) != '[]')
-						{
-							$properties['name'] .= '[]';
-						}
-					}
-
-					foreach ($properties['items'] as $count => $element)
-					{
-						if ( ! isset($element['id']))
-						{
-							$element['id'] = str_replace('[]', '', $name) . '_' . $count;
-						}
-
-						$element['type'] = $properties['type'];
-						$element['name'] = $properties['name'];
-						$return .= "\t\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $element['id']) . $element['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
-						$return .= "\t\t\t\t" . static::input($element) . PHP_EOL;
-					}
-					$return .= "\t\t\t</span>\n";
-				}
-				else
-				{
-					$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
-					$return .= "\t\t\t" . static::input($properties) . PHP_EOL;
-				}
-				break;
-			case 'select':
-				$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
-				$return .= "\t\t\t" . static::select($properties, 3) . PHP_EOL;
-				break;
-			case 'textarea':
-				$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
-				$return .= "\t\t\t" . static::textarea($properties) . PHP_EOL;
-				break;
-			default:
-				$return .= "\t\t\t" . sprintf(App\Config::get('form.label_wrapper_open'), $name) . $properties['label'] . App\Config::get('form.label_wrapper_close') . PHP_EOL;
-				$return .= "\t\t\t" . static::input($properties) . PHP_EOL;
-				break;
-		}
-
-		$return .= static::_close_field($properties['type'], $required);
-
-		return $return;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Open Field
-	 *
-	 * Generates the fields opening tags.
-	 *
-	 * @access	private
-	 * @param	string	$type
-	 * @param	bool	$required
-	 * @return	string
-	 */
-	private static function _open_field($type, $required = FALSE)
-	{
-		if($type == 'hidden')
-		{
-			return '';
-		}
-
-		$return = "\t\t" . App\Config::get('form.input_wrapper_open') . PHP_EOL;
-
-		if ($required and App\Config::get('form.required_location') == 'before')
-		{
-			$return .= "\t\t\t" . App\Config::get('form.required_tag') . PHP_EOL;
-		}
-
-		return $return;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Close Field
-	 *
-	 * Generates the fields closing tags.
-	 *
-	 * @access	private
-	 * @param	string	$type
-	 * @param	bool	$required
-	 * @return	string
-	 */
-	private static function _close_field($type, $required = FALSE)
-	{
-		if($type == 'hidden')
-		{
-			return '';
-		}
-
-		$return = "";
-
-		if ($required and App\Config::get('form.required_location') == 'after')
-		{
-			$return .= "\t\t\t" . App\Config::get('form.required_tag') . PHP_EOL;
-		}
-
-		$return .= "\t\t" . App\Config::get('form.input_wrapper_close') . PHP_EOL;
-
-		return $return;
-	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Select
 	 *
 	 * Generates a <select> element based on the given parameters
 	 *
-	 * @access	public
-	 * @param	array	$parameters
-	 * @param	int		$indent_amount
+	 * @param	array
 	 * @return	string
 	 */
-	public static function select($parameters, $indent_amount = 0)
+	public static function select($field, $value = null, Array $options = array(), Array $attributes = array())
 	{
-		if ( ! isset($parameters['options']) OR !is_array($parameters['options']))
+		if (is_array($field))
 		{
-			throw new App\Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $parameters['name']));
+			$attributes = $field;
+		}
+		else
+		{
+			$attributes['name'] = (string) $field;
+			$attributes['selected'] = (string) $value;
+			$attributes['options'] = $options;
+		}
+
+		$value = @$attributes['value'];
+		unset($attributes['value']);
+
+		if ( ! isset($attributes['options']) || ! is_array($attributes['options']))
+		{
+			throw new App\Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $attributes['name']));
 		}
 		// Get the options then unset them from the array
-		$options = $parameters['options'];
-		unset($parameters['options']);
+		$options = $attributes['options'];
+		unset($attributes['options']);
 
 		// Get the selected options then unset it from the array
-		$selected = @$parameters['selected'];
-		unset($parameters['selected']);
+		$selected = @$attributes['selected'];
+		unset($attributes['selected']);
 
 		$input = PHP_EOL;
 		foreach ($options as $key => $val)
@@ -503,405 +381,289 @@ class Form
 				{
 					$opt_attr = array('value' => $opt_key);
 					($opt_key == $selected) && $opt_attr[] = 'selected';
-					$optgroup .= str_repeat("\t", $indent_amount + 2);
+					$optgroup .= str_repeat("\t", 2);
 					$optgroup .= html_tag('option', $opt_attr, static::prep_value($opt_val)).PHP_EOL;
 				}
-				$optgroup .= str_repeat("\t", $indent_amount + 1);
-				$input .= str_repeat("\t", $indent_amount + 1).html_tag('optgroup', array('label' => $key), $optgroup).PHP_EOL;
+				$optgroup .= str_repeat("\t", 1);
+				$input .= str_repeat("\t", 1).html_tag('optgroup', array('label' => $key), $optgroup).PHP_EOL;
 			}
 			else
 			{
 				$opt_attr = array('value' => $key);
 				($key == $selected) && $opt_attr[] = 'selected';
-				$input .= str_repeat("\t", $indent_amount + 1);
+				$input .= str_repeat("\t", 1);
 				$input .= html_tag('option', $opt_attr, static::prep_value($val)).PHP_EOL;
 			}
 		}
-		$input .= str_repeat("\t", $indent_amount);
+		$input .= str_repeat("\t", 0);
 
-		return html_tag('select', static::attr_to_string($parameters), $input);
+		return html_tag('select', static::attr_to_string($attributes), $input);
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
-	 * Open
+	 * Create a label field
 	 *
-	 * Generates the opening <form> tag
-	 *
-	 * @access	public
-	 * @param	string	$action
-	 * @param	array	$options
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
 	 * @return	string
 	 */
-	public static function open($form_name = null, $options = array())
+	public static function label($label, $id = null, Array $attributes = array())
 	{
-		// The form name does not exist, must be an action as its not set in options either
-		if (isset(static::$_instances[$form_name]))
+		if (is_array($label))
 		{
-			$form = static::get_form_array($form_name);
-
-			if (isset($form['attributes']))
-			{
-				$options = array_merge($form['attributes'], $options);
-			}
+			$label = $attributes['label'];
+			$for = $attributes['id'];
 		}
 
-		// There is a form name, but no action is set
-		elseif ($form_name and ! isset($options['action']))
-		{
-			$options['action'] = $form_name;
-		}
+		$attributes['for'] = $for;
+		unset($attributes['label']);
+		unset($attributes['id']);
 
-		// If there is still no action set, Form-post
-		if (empty($options['action']))
-		{
-			$options['action'] = App\Uri::current();
-		}
-
-		// If not a full URL, create one
-		if ( ! strpos($options['action'], '://'))
-		{
-			$options['action'] = App\Uri::create($options['action']);
-		}
-
-		// If method is empty, use POST
-		isset($options['method']) OR $options['method'] = 'post';
-
-		$form = '<form '.static::attr_to_string($options).'>';
-
-		return $form;
+		return static::html_tag('label', $attributes, $label);
 	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Fields
-	 *
-	 * Generates the list of fields without the form open and form close tags
-	 *
-	 * @access	public
-	 * @param	string	$action
-	 * @param	array	$options
-	 * @return	string
-	 */
-	public static function fields($form_name)
-	{
-		$hidden = array();
-		$form = static::instance($form_name);
-
-		$return = "\t" . App\Config::get('form.form_wrapper_open') . PHP_EOL;
-
-		foreach ($form->_fields as $name => $properties)
-		{
-			if($properties['type'] == 'hidden')
-			{
-				$hidden[$name] = $properties;
-				continue;
-			}
-			$return .= $form->field($name, $properties, $form_name);
-		}
-
-		$return .= "\t" . App\Config::get('form.form_wrapper_close') . PHP_EOL;
-
-		foreach ($hidden as $name => $properties)
-		{
-			if ( ! isset($properties['name']))
-			{
-				$properties['name'] = $name;
-			}
-			$return .= "\t" . static::input($properties) . PHP_EOL;
-		}
-
-		return $return;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Close
-	 *
-	 * Generates the closing </form> tag
-	 *
-	 * @access	public
-	 * @return	string
-	 */
-	public static function close()
-	{
-		return '</form>';
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Label
-	 *
-	 * Generates a label based on given parameters
-	 *
-	 * @access	public
-	 * @param	string	$value
-	 * @param	string	$for
-	 * @return	string
-	 */
-	public static function label($value, $for = null)
-	{
-		return html_tag('label', (isset($for) ? array('for' => $for) : array()), $value);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Input
-	 *
-	 * Generates an <input> tag
-	 *
-	 * @access	public
-	 * @param	array	$options
-	 * @return	string
-	 */
-	public static function input($options)
-	{
-		if ( ! isset($options['type']))
-		{
-			throw new App\Exception('You must specify a type for the input.');
-		}
-		elseif ( ! in_array($options['type'], static::$_valid_inputs))
-		{
-			throw new App\Exception(sprintf('"%s" is not a valid input type.', $options['type']));
-		}
-
-		return html_tag('input', static::attr_to_string($options));
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Textarea
-	 *
-	 * Generates a <textarea> tag
-	 *
-	 * @access	public
-	 * @param	array	$options
-	 * @return	string
-	 */
-	public static function textarea($options)
-	{
-		$value = '';
-		if (isset($options['value']))
-		{
-			$value = $options['value'];
-			unset($options['value']);
-		}
-
-		return html_tag('textarea', static::attr_to_string($options), static::prep_value($value));
-	}
-
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Attr to String
-	 *
-	 * Wraps the global attributes function and does some form specific work
-	 *
-	 * @access	private
-	 * @param	array	$attr
-	 * @return	string
-	 */
-	private static function attr_to_string($attr)
-	{
-		unset($attr['label']);
-		isset($attr['value']) && $attr['value'] = static::prep_value($attr['value']);
-		return array_to_attr($attr);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Switch allowing HTML in tags on or off
-	 *
-	 * @param	bool
-	 */
-	public static function allow_html($allow = true)
-	{
-		static::$_allow_html = (bool) $allow;
-	}
-
-	// --------------------------------------------------------------------
 
 	/**
 	 * Prep Value
 	 *
 	 * Prepares the value for display in the form
 	 *
-	 * @access	public
-	 * @param	string	$value
+	 * @param	string
 	 * @return	string
 	 */
 	public static function prep_value($value)
 	{
-		if ( ! static::$_allow_html)
-		{
-			$value = htmlspecialchars($value);
-			$value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
-		}
+		$value = htmlspecialchars($value);
+		$value = str_replace(array("'", '"'), array("&#39;", "&quot;"), $value);
 
 		return $value;
 	}
 
-	// --------------------------------------------------------------------
+	/* ----------------------------------------------------------------------------
+	 * Class dynamic properties & methods
+	 * ---------------------------------------------------------------------------- */
 
 	/**
-	 * Validate
-	 *
-	 * Runs form validation on the given form
-	 *
-	 * @access	public
-	 * @param	string	$form_name
-	 * @return	bool
+	 * @var	Fieldset
 	 */
-	public function run_validation()
+	protected $fieldset;
+
+	protected function __construct(Fieldset $fieldset)
 	{
-		if (empty($this->_validation))
+		$this->fieldset = $fieldset;
+	}
+
+	/**
+	 * Returns the related fieldset
+	 *
+	 * @return	Fieldset
+	 */
+	public function fieldset()
+	{
+		return $this->fieldset;
+	}
+
+	/**
+	 * Build the form
+	 *
+	 * @return string
+	 */
+	public function build($action = null)
+	{
+		$attributes = $this->get_config('form_attributes');
+		$action && $attributes['action'] = $action;
+
+		$output = static::open($attributes).PHP_EOL;
+		$fields = $this->field();
+		foreach ($fields as $f)
 		{
-			return false;
+			$output .= $this->build_field($f).PHP_EOL;
 		}
+		$output .= static::close();
 
-		return $this->_validation->run();
+		return $output;
 	}
 
-	public function validated($field = null, $default = null)
+	public function build_field($field)
 	{
-		if (empty($this->_validation))
+		! $field instanceof Fieldset_Field && $field = $this->field($field);
+
+		$required = $field->get_attribute('required', null);
+		$field->set_attribute('required', null);
+		if ($required === null)
 		{
-			return Input::post($field, $default);
-		}
-
-		return $this->_validation->validated($field, $default);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Error
-	 *
-	 * Returns a single form validation error
-	 *
-	 * @access	public
-	 * @param	string	$field_name
-	 * @param	string	$prefix
-	 * @param	string	$suffix
-	 * @return	string
-	 */
-	public function errors($field_name = null)
-	{
-		return $this->_validation->errors($field_name);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * All Errors
-	 *
-	 * Returns all of the form validation errors
-	 *
-	 * @access	public
-	 * @param	string	$prefix
-	 * @param	string	$suffix
-	 * @return	string
-	 */
-	public function show_errors(Array $config = array())
-	{
-		return $this->_validation->show_errors($config);
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set Value
-	 *
-	 * Set's a fields value
-	 *
-	 * @access	public
-	 * @param	string	$form_name
-	 * @param	string	$field_name
-	 * @param	mixed	$value
-	 * @return	void
-	 */
-	public function set_value($form_name, $field_name, $default = null)
-	{
-		$post_name = str_replace('[]', '', $field_name);
-		$value = isset($_POST[$post_name]) ? $_POST[$post_name] : static::prep_value($default);
-
-		$field =& $this->_fields[$field_name];
-
-		switch($field['type'])
-		{
-			case 'radio': case 'checkbox':
-				if (isset($field['items']))
+			$required = false;
+			foreach ($field->rules as $rule)
+			{
+				if (reset($rule) === 'required')
 				{
-					foreach ($field['items'] as &$element)
+					$required = true;
+				}
+			}
+		}
+
+		switch($field->type)
+		{
+			case 'hidden':
+				$build_field = static::hidden($field);
+				break;
+			case 'radio': case 'checkbox':
+				if (isset($field->options))
+				{
+					$build_field = array();
+					$attributes = $field->attributes;
+					$i = 0;
+					foreach ($field->options as $value => $label)
 					{
-						if (is_array($value))
+						$attributes['name'] = $field->name;
+						$field->type == 'checkbox' && $attributes['name'] .= '['.$i.']';
+
+						$attributes['value'] = $value;
+						$attributes['label'] = $label;
+
+						if (empty($attributes['id']) && $this->get_config('auto_id', false) == true)
 						{
-							if (in_array($element['value'], $value))
-							{
-								$element['checked'] = 'checked';
-							}
-							else
-							{
-								if (isset($element['checked']))
-								{
-									unset($element['checked']);
-								}
-							}
+							$attributes['id'] = $this->get_config('auto_id_prefix', '').$field->name.'_'.$i;
 						}
-						else
+						elseif( ! empty($attributes['id']))
 						{
-							if ($element['value'] === $value)
-							{
-								$element['checked'] = 'checked';
-							}
-							else
-							{
-								if (isset($element['checked']))
-								{
-									unset($element['checked']);
-								}
-							}
+							$attributes['id'] .= '_'.$i;
 						}
+
+						$build_tag[static::label($label, @$attributes['id'])] = $field->type == 'radio'
+							? static::radio($attributes)
+							: static::checkbox($attributes);
 					}
 				}
 				else
 				{
-					$field['value'] = $value;
+					$build_field = $field->type == 'radio'
+						? static::radio($field->name, $field->value, $field->attributes)
+						: static::checkbox($field->name, $field->value, $field->attributes);
 				}
 				break;
 			case 'select':
-				$field['selected'] = $value;
+				$build_field = static::select($field->name, $field->value, $field->options, $field->attributes);
+				break;
+			case 'textarea':
+				$build_field = static::textarea($field->name, $field->value, $field->attributes);
 				break;
 			default:
-				$field['value'] = static::prep_value($value);
+				$build_field = static::input($field->name, $field->value, $field->attributes);
 				break;
 		}
+
+		$output = $field->type != 'hidden' ? $this->field_template($build_field, $field, $required) : "\t\t".$build_field.PHP_EOL;
+
+		return $output;
 	}
 
-	// --------------------------------------------------------------------
-
 	/**
-	 * Repopulate
+	 * Allows for templating fields
 	 *
-	 * Repopulates the entire form with the submitted data.
-	 *
-	 * @access	public
+	 * @param	string
+	 * @param	Fieldset_Field
+	 * @param	bool
 	 * @return	string
 	 */
-	public function repopulate()
+	protected function field_template($build_field, Fieldset_Field $field, $required)
 	{
-		foreach ($this->_fields as $field_name => $attr)
+		$required_mark = $required ? $this->get_config('required_mark', null) : null;
+
+		if (is_array($build_field))
 		{
-			static::set_value($this->_form_name, $field_name, (isset($attr['value']) ? $attr['value'] : null));
+			$template = $field->template ?: $this->get_config('multi_field_template', null);
+			if ($template && preg_match('#\{fields\}(.*)\{fields\}#uD', $template, $match) > 0)
+			{
+				$build_fields = '';
+				foreach ($build_field as $label => $bf)
+				{
+					$bf_temp = str_replace('{field}', $bf, $match[1]);
+					$bf_temp = str_replace('{label}', $label, $bf_temp);
+					$build_fields .= $bf_temp;
+				}
+				$template = str_replace($match[1], $build_fields, $template);
+				if ($required_mark)
+				{
+					$template = str_replace('{required}', $required_mark, $template);
+				}
+				return $template;
+			}
+
+			// still here? wasn't a multi field template available, try the normal one with imploded $build_field
+			$build_field = implode(' ', $build_field);
 		}
+
+		$label = $field->label ? static::label($field->label, $field->get_attribute('id', null)) : '';
+		$template = $field->template ?: $this->get_config('field_template', "\t\t\t{label} {field}\n");
+		$template = str_replace('{field}', $build_field, $template);
+		$template = str_replace('{label}', $label, $template);
+		if ($required_mark)
+		{
+			$template = str_replace('{required}', $required_mark, $template);
+		}
+		return $template;
+	}
+
+	/**
+	 * Sets a config value on the fieldset
+	 *
+	 * @param	string
+	 * @param	mixed
+	 * @return	Fieldset	this, to allow chaining
+	 */
+	public function set_config($config, $value = null)
+	{
+		$this->fieldset->set_config($config, $value);
+
+		return $this;
+	}
+
+	/**
+	 * Get a single or multiple config values by key
+	 *
+	 * @param	string|array	a single key or multiple in an array, empty to fetch all
+	 * @param	mixed			default output when config wasn't set
+	 * @return	mixed|array		a single config value or multiple in an array when $key input was an array
+	 */
+	public function get_config($key = null, $default = null)
+	{
+		if ($key === null)
+		{
+			return $this->fieldset->get_config();
+		}
+
+		if (is_array($key))
+		{
+			$output = array();
+			foreach ($key as $k)
+			{
+				$output[$k] = $this->fieldset->get_config($k, null) === null
+							? $this->fieldset->get_config($k)
+							: static::get_class_config($k, $default);
+			}
+			return $output;
+		}
+
+		return $this->fieldset->get_config($key, null) === null
+			? $this->fieldset->get_config($key)
+			: static::get_class_config($key, $default);
+	}
+
+	/**
+	 * Alias for $this->fieldset->add()
+	 */
+	public function add($name, $label = '', array $attributes = array(), array $rules = array())
+	{
+		return $this->fieldset->add($name, $label, $attributes, $rules);
+	}
+
+	/**
+	 * Alias for $this->fieldset->field()
+	 */
+	public function field($name = null)
+	{
+		return $this->fieldset->field($name);
 	}
 }
 

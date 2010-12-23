@@ -30,8 +30,6 @@ use Fuel\App as App;
  */
 class Validation {
 
-	protected static $_instance = null;
-
 	public static function factory($fieldset)
 	{
 		if ( ! $fieldset instanceof Fieldset)
@@ -80,6 +78,16 @@ class Validation {
 	{
 		$this->fieldset = $fieldset;
 		$this->callables = array($this);
+	}
+
+	/**
+	 * Returns the related fieldset
+	 *
+	 * @return	Fieldset
+	 */
+	public function fieldset()
+	{
+		return $this->fieldset;
 	}
 
 	/**
