@@ -284,7 +284,7 @@ class Request {
 		logger(Fuel::L_INFO, 'Loading controller '.$class, __METHOD__);
 		$controller = new $class($this);
 
-		$method = $method_prefix.($method ?: (@$controller->default_action ?: 'index'));
+		$method = $method_prefix.($method ?: (property_exists($controller, 'default_action') ? $controller->default_action : 'index'));
 
 
 		// Allow to do in controller routing if method router(action, params) exists
