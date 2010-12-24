@@ -75,8 +75,8 @@ class Autoloader {
 	/**
 	 * Returns the prefix's path or false when it doesn't exist
 	 *
-	 * @param  string
-	 * @return array|bool
+	 * @param	string
+	 * @return	array|bool
 	 */
 	public static function prefix_path($prefix)
 	{
@@ -121,10 +121,10 @@ class Autoloader {
 	}
 
 	/**
-	 * Returns the prefix's path or false when it doesn't exist
+	 * Returns the namespace's path or false when it doesn't exist
 	 *
-	 * @param  string
-	 * @return array|bool
+	 * @param	string
+	 * @return	array|bool
 	 */
 	public static function namespace_path($namespace)
 	{
