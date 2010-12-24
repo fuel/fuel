@@ -212,7 +212,7 @@ class Form {
 			throw new App\Exception(sprintf('"%s" is not a valid input type.', $attributes['type']));
 		}
 
-		if (static::get_class_config('prep_value', true) || empty($attributes['dont_prep']))
+		if (static::get_class_config('prep_value', true) || @$attributes['dont_prep'] !== true)
 		{
 			$attributes['value'] = static::prep_value($attributes['value']);
 			unset($attributes['dont_prep']);
@@ -321,7 +321,7 @@ class Form {
 		$value = @$attributes['value'];
 		unset($attributes['value']);
 
-		if (static::get_class_config('prep_value', true) || empty($attributes['dont_prep']))
+		if (static::get_class_config('prep_value', true) || @$attributes['dont_prep'] !== true)
 		{
 			$value = static::prep_value($value);
 			unset($attributes['dont_prep']);
@@ -332,7 +332,7 @@ class Form {
 			$attributes['id'] = static::get_class_config('auto_id_prefix', '').$attributes['name'];
 		}
 
-		return html_tag('textarea', static::attr_to_string($attributes), static::prep_value($value));
+		return html_tag('textarea', static::attr_to_string($attributes), $value);
 	}
 
 	/**
@@ -382,7 +382,9 @@ class Form {
 					$opt_attr = array('value' => $opt_key);
 					($opt_key == $selected) && $opt_attr[] = 'selected';
 					$optgroup .= str_repeat("\t", 2);
-					$optgroup .= html_tag('option', $opt_attr, static::prep_value($opt_val)).PHP_EOL;
+					$opt_attr['value'] = (static::get_class_config('prep_value', true) || @$attributes['dont_prep'] !== true) ?
+						static::prep_value($opt_attr['value']) : $opt_attr['value'];
+					$optgroup .= html_tag('option', $opt_attr, $opt_val).PHP_EOL;
 				}
 				$optgroup .= str_repeat("\t", 1);
 				$input .= str_repeat("\t", 1).html_tag('optgroup', array('label' => $key), $optgroup).PHP_EOL;
@@ -392,7 +394,9 @@ class Form {
 				$opt_attr = array('value' => $key);
 				($key == $selected) && $opt_attr[] = 'selected';
 				$input .= str_repeat("\t", 1);
-				$input .= html_tag('option', $opt_attr, static::prep_value($val)).PHP_EOL;
+				$opt_attr['value'] = (static::get_class_config('prep_value', true) || @$attributes['dont_prep'] !== true) ?
+					static::prep_value($opt_attr['value']) : $opt_attr['value'];
+				$input .= html_tag('option', $opt_attr, $val).PHP_EOL;
 			}
 		}
 		$input .= str_repeat("\t", 0);
