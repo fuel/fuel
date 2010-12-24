@@ -78,6 +78,15 @@ class Upload {
 	);
 
 	/**
+	 * @var array defined callbacks
+	 */
+	protected static $callbacks = array(
+		'validate'	=> null,
+		'before'	=> null,
+		'after'		=> null
+	);
+
+	/**
 	 * @var array configuration of this instance
 	 */
 	protected static $config = array();
@@ -162,6 +171,40 @@ class Upload {
 		}
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Register
+	 *
+	 * Registers a Callback for a given event
+	 *
+	 * @access	public
+	 * @param	string	The name of the event
+	 * @param	mixed	callback information
+	 * @return	void
+	 */
+	public static function register()
+	{
+		// get any arguments passed
+		$callback = func_get_args();
+
+		// if the arguments are valid, register the callback
+		if (isset($callback[0]) && is_string($callback[0]) && isset($callback[1]) && is_callable($callback[1]))
+		{
+			// make sure we have an entry for this callback
+			if (array_key_exists($callback[0], static::$callbacks))
+			{
+				static::$callbacks[array_shift($callback)] = $callback;
+
+				// report success
+				return true;
+			}
+		}
+
+		// can't register the callback
+		return false;
+	}
+
 	// ---------------------------------------------------------------------------
 
 	/**
@@ -177,120 +220,149 @@ class Upload {
 			static::$config = array_merge(static::$config, $config);
 		}
 
-		// reset the processed files array
-		static::$files = array();
+		// processed files array
+		static::$files = $files = array();
 
-		// process the uploaded files
+		// normalize the $_FILES array
 		foreach($_FILES as $name => $value)
 		{
-			// store the form variable name
-			$file = array('field' => $name);
-
-			// if the variable is an array, store the index key
+			// if the variable is an array, flatten it
 			if (is_array($value['name']))
 			{
-				$file['key'] = key($value['name']);
-				$file['name'] = $value['name'][$file['key']];
-				$file['type'] = $value['type'][$file['key']];
-				$file['file'] = $value['tmp_name'][$file['key']];
-				$file['error'] = $value['error'][$file['key']];
-				$file['size'] = $value['size'][$file['key']];
-			}
-			else
-			{
-				$file = $value;
-				$file['key'] = false;
-				$file['file'] = $value['tmp_name'];
-				unset($file['tmp_name']);
-			}
-
-			// skip this entry if no file was uploaded
-			if ($file['error'] == static::UPLOAD_ERR_NO_FILE)
-			{
-				continue;
-			}
-
-			// get the file's mime type
-			if ($file['error'] == 0)
-			{
-				$handle = finfo_open(FILEINFO_MIME_TYPE);
-				$file['mimetype'] = finfo_file($handle, $file['file']);
-				finfo_close($handle);
-				if ($file['mimetype'] == 'application/octet-stream' and $file['type'] != $file['mimetype'])
+				$keys = array_keys($value['name']);
+				foreach ($keys as $key)
 				{
-					$file['mimetype'] = $file['type'];
+					// skip this entry if no file was uploaded
+					if ($value['error'][$key] == static::UPLOAD_ERR_NO_FILE)
+					{
+						continue;
+					}
+					// store the file data
+					$file = array('field' => $name, 'key' => $key);
+					$file['name'] = $value['name'][$key];
+					$file['type'] = $value['type'][$key];
+					$file['file'] = $value['tmp_name'][$key];
+					$file['error'] = $value['error'][$key];
+					$file['size'] = $value['size'][$key];
+					$files[] = $file;
 				}
 			}
-			// make sure it contains something valid
-			if (empty($file['mimetype']))
+			else
 			{
-				$file['mimetype'] = 'application/octet-stream';
+				// skip this entry if no file was uploaded
+				if ($value['error'] == static::UPLOAD_ERR_NO_FILE)
+				{
+					continue;
+				}
+				// store the file data
+				$file = array('field' => $name, 'key' => false, 'file' => $value['tmp_name']);
+				unset($value['tmp_name']);
+				$files[] = array_merge($value, $file);
 			}
+		}
 
+		// verify and augment the files data
+		foreach($files as $key => $value)
+		{
 			// add some filename details (pathinfo can't be trusted with utf-8 filenames!)
-			$file['extension'] = ltrim(strrchr(ltrim($file['name'], '.'), '.'),'.');
-			if (empty($file['extension']))
+			$files[$key]['extension'] = ltrim(strrchr(ltrim($files[$key]['name'], '.'), '.'),'.');
+			if (empty($files[$key]['extension']))
 			{
-				$file['filename'] = $file['name'];
+				$files[$key]['filename'] = $files[$key]['name'];
 			}
 			else
 			{
-				$file['filename'] = substr($file['name'], 0, strlen($file['name'])-(strlen($file['extension'])+1));
+				$files[$key]['filename'] = substr($files[$key]['name'], 0, strlen($files[$key]['name'])-(strlen($files[$key]['extension'])+1));
 			}
 
 			// does this upload exceed the maximum size?
-			if ($file['error'] == 0 and ! empty(static::$config['max_size']) and $file['size'] > static::$config['max_size'])
+			if (! empty(static::$config['max_size']) and $files[$key]['size'] > static::$config['max_size'])
 			{
-				$file['error'] = static::UPLOAD_ERR_MAX_SIZE;
+				$files[$key]['error'] = static::UPLOAD_ERR_MAX_SIZE;
+			}
+
+			// add mimetype information
+			if ($files[$key]['error'] == UPLOAD_ERR_OK)
+			{
+				$handle = finfo_open(FILEINFO_MIME_TYPE);
+				$files[$key]['mimetype'] = finfo_file($handle, $value['file']);
+				finfo_close($handle);
+				if ($files[$key]['mimetype'] == 'application/octet-stream' and $files[$key]['type'] != $files[$key]['mimetype'])
+				{
+					$files[$key]['mimetype'] = $files[$key]['type'];
+				}
+
+				// make sure it contains something valid
+				if (empty($files[$key]['mimetype']))
+				{
+					$files[$key]['mimetype'] = 'application/octet-stream';
+				}
 			}
 
 			// check the file extension black- and whitelists
-			if ($file['error'] == 0)
+			if ($files[$key]['error'] == UPLOAD_ERR_OK)
 			{
-				if (in_array($file['extension'], (array) static::$config['ext_blacklist']))
+				if (in_array($files[$key]['extension'], (array) static::$config['ext_blacklist']))
 				{
-					$file['error'] = $file['error'] = static::UPLOAD_ERR_EXT_BLACKLISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_EXT_BLACKLISTED;
 				}
-				elseif ( ! empty(static::$config['ext_whitelist']) and ! in_array($file['extension'], (array) static::$config['ext_whitelist']))
+				elseif ( ! empty(static::$config['ext_whitelist']) and ! in_array($files[$key]['extension'], (array) static::$config['ext_whitelist']))
 				{
-					$file['error'] = static::UPLOAD_ERR_EXT_NOT_WHITELISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_EXT_NOT_WHITELISTED;
 				}
 			}
 
 			// check the file type black- and whitelists
-			if ($file['error'] == 0)
+			if ($files[$key]['error'] == UPLOAD_ERR_OK)
 			{
 				// split the mimetype info so we can run some tests
-				preg_match('|^(.*)/(.*)|', $file['mimetype'], $mimeinfo);
+				preg_match('|^(.*)/(.*)|', $files[$key]['mimetype'], $mimeinfo);
 
 				if (in_array($mimeinfo[1], (array) static::$config['type_blacklist']))
 				{
-					$file['error'] = $file['error'] = static::UPLOAD_ERR_TYPE_BLACKLISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_TYPE_BLACKLISTED;
 				}
 				if ( ! empty(static::$config['type_whitelist']) and ! in_array($mimeinfo[1], (array) static::$config['type_whitelist']))
 				{
-					$file['error'] = static::UPLOAD_ERR_TYPE_NOT_WHITELISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_TYPE_NOT_WHITELISTED;
 				}
 			}
 
 			// check the file mimetype black- and whitelists
-			if ($file['error'] == 0)
+			if ($files[$key]['error'] == UPLOAD_ERR_OK)
 			{
-				if (in_array($file['mimetype'], (array) static::$config['mime_blacklist']))
+				if (in_array($files[$key]['mimetype'], (array) static::$config['mime_blacklist']))
 				{
-					$file['error'] = $file['error'] = static::UPLOAD_ERR_MIME_BLACKLISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_MIME_BLACKLISTED;
 				}
-				elseif ( ! empty(static::$config['ext_whitelist']) and ! in_array($file['mimetype'], (array) static::$config['ext_whitelist']))
+				elseif ( ! empty(static::$config['ext_whitelist']) and ! in_array($files[$key]['mimetype'], (array) static::$config['ext_whitelist']))
 				{
-					$file['error'] = static::UPLOAD_ERR_MIME_NOT_WHITELISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_MIME_NOT_WHITELISTED;
+				}
+			}
+
+			// store the normalized and validated result
+			static::$files[$key] = $files[$key];
+
+			// validation callback defined?
+			if (array_key_exists('validate', static::$callbacks) and ! is_null(static::$callbacks['validate']))
+			{
+				// get the callback method
+				$callback = static::$callbacks['validate'][0];
+
+				// call the callback
+				if (is_callable($callback))
+				{
+					$result = call_user_func_array($callback, array(&static::$files[$key]));
+					if (is_numeric($result))
+					{
+						static::$files[$key]['error'] = $result;
+					}
 				}
 			}
 
 			// update the valid flag
-			static::$valid = (static::$valid or ($file['error'] === 0));
-
-			// store the normalized and validated result
-			static::$files[] = $file;
+			static::$valid = (static::$valid or ($files[$key]['error'] === 0));
 		}
 	}
 
@@ -456,20 +528,57 @@ class Upload {
 			}
 
 			// if no error was detected, move the file
-			if (static::$files[$key]['error'] == 0)
+			if (static::$files[$key]['error'] == UPLOAD_ERR_OK)
 			{
 				// save the additional information
 				static::$files[$key]['saved_to'] = $path;
 				static::$files[$key]['saved_as'] = $save_as;
 
-				// move the uploaded file
-				if( ! @move_uploaded_file($file['file'], $path.$save_as) )
+				// before callback defined?
+				if (array_key_exists('before', static::$callbacks) and ! is_null(static::$callbacks['before']))
 				{
-					static::$files[$key]['error'] = static::UPLOAD_ERR_MOVE_FAILED;
+					// get the callback method
+					$callback = static::$callbacks['before'][0];
+
+					// call the callback
+					if (is_callable($callback))
+					{
+						$result = call_user_func_array($callback, array(&static::$files[$key]));
+						if (is_numeric($result))
+						{
+							static::$files[$key]['error'] = $result;
+						}
+					}
 				}
-				else
+
+				// move the uploaded file
+				if (static::$files[$key]['error'] == UPLOAD_ERR_OK)
 				{
-					@chmod($path.$save_as, static::$config['file_chmod']);
+					if( ! @move_uploaded_file($file['file'], $path.$save_as) )
+					{
+						static::$files[$key]['error'] = static::UPLOAD_ERR_MOVE_FAILED;
+					}
+					else
+					{
+						@chmod($path.$save_as, static::$config['file_chmod']);
+					}
+
+					// after callback defined?
+					if (array_key_exists('after', static::$callbacks) and ! is_null(static::$callbacks['after']))
+					{
+						// get the callback method
+						$callback = static::$callbacks['after'][0];
+
+						// call the callback
+						if (is_callable($callback))
+						{
+							$result = call_user_func_array($callback, array(&static::$files[$key]));
+							if (is_numeric($result))
+							{
+								static::$files[$key]['error'] = $result;
+							}
+						}
+					}
 				}
 			}
 		}

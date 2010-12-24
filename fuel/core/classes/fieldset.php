@@ -158,6 +158,21 @@ class Fieldset
 	 */
 	public function add($name, $label = '', array $attributes = array(), array $rules = array())
 	{
+		if (empty($name) || (is_array($name) && empty($name['name'])))
+		{
+			throw new App\Exception('Cannot create field without name.');
+		}
+
+		// Allow passing the whole config in an array, will overwrite other values if that's the case
+		if (is_array($name))
+		{
+			$attributes = $name;
+			$label = isset($name['label']) ? $name['label'] : '';
+			$rules = isset($name['rules']) ? $name['rules'] : array();
+			$name = $name['name'];
+		}
+
+		// Check if it exists already, if so: return and give notice
 		if ($field = static::field($name))
 		{
 			App\Error::notice('Field with this name exists already, cannot be overwritten through add().');

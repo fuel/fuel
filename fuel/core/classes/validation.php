@@ -143,9 +143,10 @@ class Validation {
 		$this->validated = array();
 		$this->errors = array();
 		$this->input = $input ?: array();
-		foreach($this->fields as $field)
+		$fields = $this->field();
+		foreach($fields as $field)
 		{
-			$value = $this->input($field->key);
+			$value = $this->input($field->name);
 			if ($allow_partial && $value === null)
 			{
 				continue;
@@ -158,11 +159,11 @@ class Validation {
 					$params		= $rule[1];
 					$this->_run_rule($callback, $value, $params, $field);
 				}
-				$this->validated[$field->key] = $value;
+				$this->validated[$field->name] = $value;
 			}
 			catch (Validation_Error $v)
 			{
-				$this->errors[$field->key] = $v;
+				$this->errors[$field->name] = $v;
 			}
 		}
 

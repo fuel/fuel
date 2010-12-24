@@ -88,6 +88,10 @@ class Fieldset_Field
 		$this->name = (string) $name;
 		$this->fieldset = $fieldset;
 
+		// Don't allow name in attributes
+		unset($attributes['name']);
+
+		// Set certain types through specific setter
 		foreach (array('label', 'type', 'value', 'options') as $prop)
 		{
 			if (array_key_exists($prop, $attributes))
@@ -263,7 +267,6 @@ class Fieldset_Field
 		$value = is_array($value) ? $value : array($value => $label);
 		foreach ($value as $key => $label)
 		{
-			$key = is_int($key) ? $label : $key;
 			$this->options[(string) $key] = (string) $label;
 		}
 
