@@ -34,7 +34,7 @@ return array(
 	'environment'	=> Fuel::DEVELOPMENT,
 
 	'profiling'		=> false,
-	
+
 	'caching'			=> false,
 	'cache_dir'			=> APPPATH.'cache/',
 	'cache_lifetime'	=> 3600, // In Seconds
@@ -92,28 +92,15 @@ return array(
 	),
 
 	/**
-	 * These packages are loaded on Fuel's startup.  You can specify them in
-	 * the following manner:
-	 *
-	 * array('auth'); // This will assume the packages are in PKGPATH
-	 *
-	 * // Use this format to specify the path to the package explicitly
-	 * array(
-	 *     array('auth'	=> PKGPATH.'auth/')
-	 * );
-	 */
-	'packages'	=> array(
-		//'activerecord',
-	),
-
-	/**
 	 * To enable you to split up your application into modules which can be
 	 * routed by the first uri segment you have to define their basepaths
 	 * here. By default empty, but to use them you can add something
 	 * like this:
 	 *      array(APPPATH.'modules'.DS)
 	 */
-	// 'module_paths' => array(APPPATH.'modules'.DS),
+	'module_paths' => array(
+		//APPPATH.'modules'.DS
+	),
 
 
 	/**************************************************************************/
@@ -121,6 +108,31 @@ return array(
 	/**************************************************************************/
 
 	'always_load'	=> array(
+
+		/**
+		 * These packages are loaded on Fuel's startup.  You can specify them in
+		 * the following manner:
+		 *
+		 * array('auth'); // This will assume the packages are in PKGPATH
+		 *
+		 * // Use this format to specify the path to the package explicitly
+		 * array(
+		 *     array('auth'	=> PKGPATH.'auth/')
+		 * );
+		 */
+		'packages'	=> array(
+			//'activerecord',
+		),
+
+		/**
+		 * These modules are always loaded on Fuel's startup. You can specify them
+		 * in the following manner:
+		 *
+		 * array('module_name');
+		 *
+		 * A path must be set in module_paths for this to work.
+		 */
+		'modules'	=> array(),
 
 		/**
 		 * Classes to autoload & initialize even when not used
@@ -210,7 +222,7 @@ return array(
 		 * $this->param('month');
 		 * $this->param('id');
 		 */
-		
+
 		/**
 		 * HTTP verb based routing
 		 *

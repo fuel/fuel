@@ -120,6 +120,21 @@ class Autoloader {
 		}
 	}
 
+	/**
+	 * Returns the prefix's path or false when it doesn't exist
+	 *
+	 * @param  string
+	 * @return array|bool
+	 */
+	public static function namespace_path($namespace)
+	{
+		if ( ! array_key_exists($namespace, static::$namespaces))
+		{
+			return false;
+		}
+
+		return static::$namespaces[$namespace];
+	}
 
 	/**
 	 * Adds an alias for a class.

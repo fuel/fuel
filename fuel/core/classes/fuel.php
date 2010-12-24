@@ -139,7 +139,7 @@ class Fuel {
 		static::$locale = App\Config::get('locale');
 
 		//Load in the packages
-		foreach (App\Config::get('packages', array()) as $package)
+		foreach (App\Config::get('always_load.packages', array()) as $package)
 		{
 			static::add_package($package);
 		}
@@ -248,7 +248,7 @@ class Fuel {
 
 	/**
 	 * Generates a base url.
-	 * 
+	 *
 	 * @return	string	the base url
 	 */
 	protected static function generate_base_url()
@@ -332,7 +332,6 @@ class Fuel {
 				continue;
 			}
 			static::add_path($path);
-			App\Route::load_routes(true);
 			static::load($path.'autoload.php');
 			static::$packages[$name] = true;
 		}
@@ -362,39 +361,38 @@ class Fuel {
 	public static function add_module($name, $active = false)
 	{
 		$paths = App\Config::get('module_paths', array());
-		
-		if (count($paths) === 0)
+
+		if (empty($paths))
 		{
 			return false;
 		}
 
-		$found = false;
-
-		foreach ($paths as $path)
+		$path = App\Autoloader::namespace_path($name);
+		if ( ! $path)
 		{
-			if (is_dir($mod_check_path = $path.strtolower($name).DS))
+			foreach ($paths as $path)
 			{
-				$found = true;
-
-				// Load module and end search
-				$mod_path = $mod_check_path;
-				$ns = 'Fuel\\App\\'.ucfirst($name);
-				App\Autoloader::add_namespaces(array(
-					$ns					=> $mod_path.'classes'.DS,
-					$ns.'\\Model'		=> $mod_path.'classes'.DS.'model'.DS,
-					$ns.'\\Controller'	=> $mod_path.'classes'.DS.'controller'.DS,
-				), true);
-				App\Autoloader::add_namespace_aliases(array(
-					$ns.'\\Controller'	=> 'Fuel\\App',
-					$ns.'\\Model'		=> 'Fuel\\App',
-					$ns					=> 'Fuel\\App',
-				), true);
-				break;
+				if (is_dir($mod_check_path = $path.strtolower($name).DS))
+				{
+					$path = $mod_check_path;
+					$ns = 'Fuel\\App\\'.ucfirst($name);
+					App\Autoloader::add_namespaces(array(
+						$ns					=> $path.'classes'.DS,
+						$ns.'\\Model'		=> $path.'classes'.DS.'model'.DS,
+						$ns.'\\Controller'	=> $path.'classes'.DS.'controller'.DS,
+					), true);
+					App\Autoloader::add_namespace_aliases(array(
+						$ns.'\\Controller'	=> 'Fuel\\App',
+						$ns.'\\Model'		=> 'Fuel\\App',
+						$ns					=> 'Fuel\\App',
+					), true);
+					break;
+				}
 			}
 		}
 
 		// not found
-		if ($found === false)
+		if ( ! $path)
 		{
 			return false;
 		}
@@ -402,15 +400,15 @@ class Fuel {
 		// Active modules get their path prefixed and routes loaded
 		if ($active)
 		{
-			static::add_path($mod_path, true);
+			static::add_path($path, true);
 
-			// We want modules to be able to have their own routes, so we reload routes.
+			// We want active modules to be able to have their own routes, so we reload routes.
 			App\Route::load_routes(true);
-			return $mod_path;
+			return $path;
 		}
 
-		static::add_path($mod_path);
-		return $mod_path;
+		static::add_path($path);
+		return $path;
 	}
 
 	/**
@@ -485,17 +483,43 @@ class Fuel {
 	}
 
 	/**
-	 * Always load classes, config & language files set in always_load.php config
+	 * Always load packages, modules, classes, config & language files set in always_load.php config
+	 *
+	 * @param	array	what to autoload
 	 */
 	public static function always_load($array = null)
 	{
-		$array = is_null($array) ? App\Config::get('always_load', array()) : $array;
-
-		foreach ($array['classes'] as $class)
+		if (is_null($array))
 		{
-			if ( ! class_exists($class))
+			$array = App\Config::get('always_load', array());
+			// packages were loaded by Fuel's init already
+			$array['packages'] = array();
+		}
+
+		if (isset($array['packages']))
+		{
+			foreach ($array['packages'] as $packages)
 			{
-				throw new App\Exception('Always load class does not exist.');
+				static::add_packages($packages);
+			}
+		}
+
+		if (isset($array['modules']))
+		{
+			foreach ($array['modules'] as $module)
+			{
+				static::add_module($module);
+			}
+		}
+
+		if (isset($array['classes']))
+		{
+			foreach ($array['classes'] as $class)
+			{
+				if ( ! class_exists($class))
+				{
+					throw new App\Exception('Always load class does not exist.');
+				}
 			}
 		}
 
@@ -504,14 +528,20 @@ class Fuel {
 		 * or the filename as key and the group as value, example: array(filename => some_group)
 		 */
 
-		foreach ($array['config'] as $config => $config_group)
+		if (isset($array['config']))
 		{
-			App\Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
+			foreach ($array['config'] as $config => $config_group)
+			{
+				App\Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
+			}
 		}
 
-		foreach ($array['language'] as $lang => $lang_group)
+		if (isset($array['language']))
 		{
-			App\Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
+			foreach ($array['language'] as $lang => $lang_group)
+			{
+				App\Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
+			}
 		}
 	}
 
