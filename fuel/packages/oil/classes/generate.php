@@ -201,7 +201,7 @@ VIEW;
 
 	public function help()
 	{
-		echo <<<HELP
+		$output = <<<HELP
 Usage:
   php oil generate [controller|model|migration|view|views] [options]
 
@@ -222,6 +222,8 @@ Examples:
     php oil generate controller <controllername> [<action1> |<action2> |..]
     php oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
 HELP;
+
+		App\Cli::write($output);
 	}
 
 
