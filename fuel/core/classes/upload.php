@@ -177,121 +177,133 @@ class Upload {
 			static::$config = array_merge(static::$config, $config);
 		}
 
-		// reset the processed files array
-		static::$files = array();
+		// processed files array
+		$files = array();
 
-		// process the uploaded files
+		// normalize the $_FILES array
 		foreach($_FILES as $name => $value)
 		{
-			// store the form variable name
-			$file = array('field' => $name);
-
-			// if the variable is an array, store the index key
+			// if the variable is an array, flatten it
 			if (is_array($value['name']))
 			{
-				$file['key'] = key($value['name']);
-				$file['name'] = $value['name'][$file['key']];
-				$file['type'] = $value['type'][$file['key']];
-				$file['file'] = $value['tmp_name'][$file['key']];
-				$file['error'] = $value['error'][$file['key']];
-				$file['size'] = $value['size'][$file['key']];
-			}
-			else
-			{
-				$file = $value;
-				$file['key'] = false;
-				$file['file'] = $value['tmp_name'];
-				unset($file['tmp_name']);
-			}
-
-			// skip this entry if no file was uploaded
-			if ($file['error'] == static::UPLOAD_ERR_NO_FILE)
-			{
-				continue;
-			}
-
-			// get the file's mime type
-			if ($file['error'] == 0)
-			{
-				$handle = finfo_open(FILEINFO_MIME_TYPE);
-				$file['mimetype'] = finfo_file($handle, $file['file']);
-				finfo_close($handle);
-				if ($file['mimetype'] == 'application/octet-stream' and $file['type'] != $file['mimetype'])
+				$keys = array_keys($value['name']);
+				foreach ($keys as $key)
 				{
-					$file['mimetype'] = $file['type'];
+					// skip this entry if no file was uploaded
+					if ($value['error'][$key] == static::UPLOAD_ERR_NO_FILE)
+					{
+						continue;
+					}
+					// store the file data
+					$file = array('field' => $name, 'key' => $key);
+					$file['name'] = $value['name'][$key];
+					$file['type'] = $value['type'][$key];
+					$file['file'] = $value['tmp_name'][$key];
+					$file['error'] = $value['error'][$key];
+					$file['size'] = $value['size'][$key];
+					$files[] = $file;
 				}
 			}
-			// make sure it contains something valid
-			if (empty($file['mimetype']))
+			else
 			{
-				$file['mimetype'] = 'application/octet-stream';
+				// skip this entry if no file was uploaded
+				if ($value['error'] == static::UPLOAD_ERR_NO_FILE)
+				{
+					continue;
+				}
+				// store the file data
+				$file = array('field' => $name, 'key' => false, 'file' => $value['tmp_name']);
+				unset($value['tmp_name']);
+				$files[] = array_merge($value, $file);
 			}
+		}
 
+		// verify and augment the files data
+		foreach($files as $key => $value)
+		{
 			// add some filename details (pathinfo can't be trusted with utf-8 filenames!)
-			$file['extension'] = ltrim(strrchr(ltrim($file['name'], '.'), '.'),'.');
-			if (empty($file['extension']))
+			$files[$key]['extension'] = ltrim(strrchr(ltrim($files[$key]['name'], '.'), '.'),'.');
+			if (empty($files[$key]['extension']))
 			{
-				$file['filename'] = $file['name'];
+				$files[$key]['filename'] = $files[$key]['name'];
 			}
 			else
 			{
-				$file['filename'] = substr($file['name'], 0, strlen($file['name'])-(strlen($file['extension'])+1));
+				$files[$key]['filename'] = substr($files[$key]['name'], 0, strlen($files[$key]['name'])-(strlen($files[$key]['extension'])+1));
 			}
 
 			// does this upload exceed the maximum size?
-			if ($file['error'] == 0 and ! empty(static::$config['max_size']) and $file['size'] > static::$config['max_size'])
+			if (! empty(static::$config['max_size']) and $files[$key]['size'] > static::$config['max_size'])
 			{
-				$file['error'] = static::UPLOAD_ERR_MAX_SIZE;
+				$files[$key]['error'] = static::UPLOAD_ERR_MAX_SIZE;
+			}
+
+			// add mimetype information
+			if ($files[$key]['error'] == UPLOAD_ERR_OK)
+			{
+				$handle = finfo_open(FILEINFO_MIME_TYPE);
+				$files[$key]['mimetype'] = finfo_file($handle, $value['file']);
+				finfo_close($handle);
+				if ($files[$key]['mimetype'] == 'application/octet-stream' and $files[$key]['type'] != $files[$key]['mimetype'])
+				{
+					$files[$key]['mimetype'] = $files[$key]['type'];
+				}
+
+				// make sure it contains something valid
+				if (empty($files[$key]['mimetype']))
+				{
+					$files[$key]['mimetype'] = 'application/octet-stream';
+				}
 			}
 
 			// check the file extension black- and whitelists
-			if ($file['error'] == 0)
+			if ($files[$key]['error'] == UPLOAD_ERR_OK)
 			{
-				if (in_array($file['extension'], (array) static::$config['ext_blacklist']))
+				if (in_array($files[$key]['extension'], (array) static::$config['ext_blacklist']))
 				{
-					$file['error'] = $file['error'] = static::UPLOAD_ERR_EXT_BLACKLISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_EXT_BLACKLISTED;
 				}
-				elseif ( ! empty(static::$config['ext_whitelist']) and ! in_array($file['extension'], (array) static::$config['ext_whitelist']))
+				elseif ( ! empty(static::$config['ext_whitelist']) and ! in_array($files[$key]['extension'], (array) static::$config['ext_whitelist']))
 				{
-					$file['error'] = static::UPLOAD_ERR_EXT_NOT_WHITELISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_EXT_NOT_WHITELISTED;
 				}
 			}
 
 			// check the file type black- and whitelists
-			if ($file['error'] == 0)
+			if ($files[$key]['error'] == UPLOAD_ERR_OK)
 			{
 				// split the mimetype info so we can run some tests
-				preg_match('|^(.*)/(.*)|', $file['mimetype'], $mimeinfo);
+				preg_match('|^(.*)/(.*)|', $files[$key]['mimetype'], $mimeinfo);
 
 				if (in_array($mimeinfo[1], (array) static::$config['type_blacklist']))
 				{
-					$file['error'] = $file['error'] = static::UPLOAD_ERR_TYPE_BLACKLISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_TYPE_BLACKLISTED;
 				}
 				if ( ! empty(static::$config['type_whitelist']) and ! in_array($mimeinfo[1], (array) static::$config['type_whitelist']))
 				{
-					$file['error'] = static::UPLOAD_ERR_TYPE_NOT_WHITELISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_TYPE_NOT_WHITELISTED;
 				}
 			}
 
 			// check the file mimetype black- and whitelists
-			if ($file['error'] == 0)
+			if ($files[$key]['error'] == UPLOAD_ERR_OK)
 			{
-				if (in_array($file['mimetype'], (array) static::$config['mime_blacklist']))
+				if (in_array($files[$key]['mimetype'], (array) static::$config['mime_blacklist']))
 				{
-					$file['error'] = $file['error'] = static::UPLOAD_ERR_MIME_BLACKLISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_MIME_BLACKLISTED;
 				}
-				elseif ( ! empty(static::$config['ext_whitelist']) and ! in_array($file['mimetype'], (array) static::$config['ext_whitelist']))
+				elseif ( ! empty(static::$config['ext_whitelist']) and ! in_array($files[$key]['mimetype'], (array) static::$config['ext_whitelist']))
 				{
-					$file['error'] = static::UPLOAD_ERR_MIME_NOT_WHITELISTED;
+					$files[$key]['error'] = static::UPLOAD_ERR_MIME_NOT_WHITELISTED;
 				}
 			}
 
 			// update the valid flag
-			static::$valid = (static::$valid or ($file['error'] === 0));
-
-			// store the normalized and validated result
-			static::$files[] = $file;
+			static::$valid = (static::$valid or ($files[$key]['error'] === 0));
 		}
+
+		// store the normalized and validated result
+		static::$files = $files;
 	}
 
 	// ---------------------------------------------------------------------------
