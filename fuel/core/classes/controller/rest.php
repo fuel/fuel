@@ -2,9 +2,9 @@
 
 namespace Fuel\Core\Controller;
 
-use Fuel\App;
+use Fuel\App as App;
 
-abstract class RestController extends App\Controller\BaseController
+abstract class Rest extends App\Controller\Base
 {
 	protected $rest_format = NULL; // Set this in a controller to use a default format
 

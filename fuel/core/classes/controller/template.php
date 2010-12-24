@@ -14,7 +14,7 @@
 
 namespace Fuel\Core\Controller;
 
-use Fuel\App;
+use Fuel\App as App;
 
 /**
  * Template Controller class
@@ -25,7 +25,7 @@ use Fuel\App;
  * @category	Core
  * @author		Fuel Development Team
  */
-abstract class TemplateController extends App\Controller\BaseController {
+abstract class Template extends App\Controller\Base {
 
 	/**
 	* @var string page template

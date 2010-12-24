@@ -58,7 +58,7 @@ class Generate
 
 namespace Fuel\App\Controller;
 
-class {$class_name} extends TemplateController{
+class {$class_name} extends Controller\Template {
 {$action_str}
 }
 
@@ -68,7 +68,7 @@ CONTROLLER;
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			echo "Created controller $plural";
+			App\Cli::write('Created controller '.$plural);
 		}
 	}
 

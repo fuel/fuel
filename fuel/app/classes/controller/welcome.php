@@ -2,7 +2,7 @@
 
 namespace Fuel\App\Controller;
 
-class Welcome extends BaseController {
+class Welcome extends Controller\Base {
 
 	public $default_action = 'index';
 
