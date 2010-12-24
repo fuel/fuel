@@ -78,6 +78,15 @@ class Upload {
 	);
 
 	/**
+	 * @var array defined callbacks
+	 */
+	protected static $callbacks = array(
+		'validate'	=> null,
+		'before'	=> null,
+		'after'		=> null
+	);
+
+	/**
 	 * @var array configuration of this instance
 	 */
 	protected static $config = array();
@@ -162,6 +171,40 @@ class Upload {
 		}
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Register
+	 *
+	 * Registers a Callback for a given event
+	 *
+	 * @access	public
+	 * @param	string	The name of the event
+	 * @param	mixed	callback information
+	 * @return	void
+	 */
+	public static function register()
+	{
+		// get any arguments passed
+		$callback = func_get_args();
+
+		// if the arguments are valid, register the callback
+		if (isset($callback[0]) && is_string($callback[0]) && isset($callback[1]) && is_callable($callback[1]))
+		{
+			// make sure we have an entry for this callback
+			if (array_key_exists($callback[0], static::$callbacks))
+			{
+				static::$callbacks[array_shift($callback)] = $callback;
+
+				// report success
+				return true;
+			}
+		}
+
+		// can't register the callback
+		return false;
+	}
+
 	// ---------------------------------------------------------------------------
 
 	/**
@@ -178,7 +221,7 @@ class Upload {
 		}
 
 		// processed files array
-		$files = array();
+		static::$files = $files = array();
 
 		// normalize the $_FILES array
 		foreach($_FILES as $name => $value)
@@ -298,12 +341,29 @@ class Upload {
 				}
 			}
 
+			// store the normalized and validated result
+			static::$files[$key] = $files[$key];
+
+			// validation callback defined?
+			if (array_key_exists('validate', static::$callbacks) and ! is_null(static::$callbacks['validate']))
+			{
+				// get the callback method
+				$callback = static::$callbacks['validate'][0];
+
+				// call the callback
+				if (is_callable($callback))
+				{
+					$result = call_user_func_array($callback, array(&static::$files[$key]));
+					if (is_numeric($result))
+					{
+						static::$files[$key]['error'] = $result;
+					}
+				}
+			}
+
 			// update the valid flag
 			static::$valid = (static::$valid or ($files[$key]['error'] === 0));
 		}
-
-		// store the normalized and validated result
-		static::$files = $files;
 	}
 
 	// ---------------------------------------------------------------------------
@@ -468,20 +528,57 @@ class Upload {
 			}
 
 			// if no error was detected, move the file
-			if (static::$files[$key]['error'] == 0)
+			if (static::$files[$key]['error'] == UPLOAD_ERR_OK)
 			{
 				// save the additional information
 				static::$files[$key]['saved_to'] = $path;
 				static::$files[$key]['saved_as'] = $save_as;
 
-				// move the uploaded file
-				if( ! @move_uploaded_file($file['file'], $path.$save_as) )
+				// before callback defined?
+				if (array_key_exists('before', static::$callbacks) and ! is_null(static::$callbacks['before']))
 				{
-					static::$files[$key]['error'] = static::UPLOAD_ERR_MOVE_FAILED;
+					// get the callback method
+					$callback = static::$callbacks['before'][0];
+
+					// call the callback
+					if (is_callable($callback))
+					{
+						$result = call_user_func_array($callback, array(&static::$files[$key]));
+						if (is_numeric($result))
+						{
+							static::$files[$key]['error'] = $result;
+						}
+					}
 				}
-				else
+
+				// move the uploaded file
+				if (static::$files[$key]['error'] == UPLOAD_ERR_OK)
 				{
-					@chmod($path.$save_as, static::$config['file_chmod']);
+					if( ! @move_uploaded_file($file['file'], $path.$save_as) )
+					{
+						static::$files[$key]['error'] = static::UPLOAD_ERR_MOVE_FAILED;
+					}
+					else
+					{
+						@chmod($path.$save_as, static::$config['file_chmod']);
+					}
+
+					// after callback defined?
+					if (array_key_exists('after', static::$callbacks) and ! is_null(static::$callbacks['after']))
+					{
+						// get the callback method
+						$callback = static::$callbacks['after'][0];
+
+						// call the callback
+						if (is_callable($callback))
+						{
+							$result = call_user_func_array($callback, array(&static::$files[$key]));
+							if (is_numeric($result))
+							{
+								static::$files[$key]['error'] = $result;
+							}
+						}
+					}
 				}
 			}
 		}
