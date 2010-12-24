@@ -212,7 +212,7 @@ class Form {
 			throw new App\Exception(sprintf('"%s" is not a valid input type.', $attributes['type']));
 		}
 
-		if (static::get_class_config('prep_value', true) || @$attributes['dont_prep'] !== true)
+		if (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true)
 		{
 			$attributes['value'] = static::prep_value($attributes['value']);
 			unset($attributes['dont_prep']);
@@ -321,7 +321,7 @@ class Form {
 		$value = @$attributes['value'];
 		unset($attributes['value']);
 
-		if (static::get_class_config('prep_value', true) || @$attributes['dont_prep'] !== true)
+		if (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true)
 		{
 			$value = static::prep_value($value);
 			unset($attributes['dont_prep']);
@@ -382,7 +382,7 @@ class Form {
 					$opt_attr = array('value' => $opt_key);
 					($opt_key == $selected) && $opt_attr[] = 'selected';
 					$optgroup .= str_repeat("\t", 2);
-					$opt_attr['value'] = (static::get_class_config('prep_value', true) || @$attributes['dont_prep'] !== true) ?
+					$opt_attr['value'] = (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true) ?
 						static::prep_value($opt_attr['value']) : $opt_attr['value'];
 					$optgroup .= html_tag('option', $opt_attr, $opt_val).PHP_EOL;
 				}
@@ -394,7 +394,7 @@ class Form {
 				$opt_attr = array('value' => $key);
 				($key == $selected) && $opt_attr[] = 'selected';
 				$input .= str_repeat("\t", 1);
-				$opt_attr['value'] = (static::get_class_config('prep_value', true) || @$attributes['dont_prep'] !== true) ?
+				$opt_attr['value'] = (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true) ?
 					static::prep_value($opt_attr['value']) : $opt_attr['value'];
 				$input .= html_tag('option', $opt_attr, $val).PHP_EOL;
 			}
