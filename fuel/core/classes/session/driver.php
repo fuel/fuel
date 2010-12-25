@@ -431,6 +431,20 @@ abstract class Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
+	 * get the encrypted cookie
+	 *
+	 * @access	public
+	 * @return  string
+	 */
+	public function get_cookie()
+	{
+		// encrypt the session keys and return it
+		return App\Crypt::encode(array($this->keys));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * removes flash variables marked as old
 	 *
 	 * @access	private
