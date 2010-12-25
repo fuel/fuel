@@ -234,19 +234,6 @@ class Session {
 	// --------------------------------------------------------------------
 
 	/**
-	 * get the session cookie
-	 *
-	 * @access	public
-	 * @return	string	the encrypted session cookie
-	 */
-	public static function get_cookie()
-	{
-		return static::instance()->get_cookie();
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * set session flash variables
 	 *
 	 * @param	string	name of the variable to set
