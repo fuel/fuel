@@ -38,11 +38,15 @@ class File_Driver_File {
 	 */
 	protected $readonly = false;
 
-	protected function __construct($path, Array $config, File_Area $area) {}
-
-	public static function factory($path, Array $config = array(), File_Area $area = null)
+	protected function __construct($path, Array $config, File_Area $area, $content = array())
 	{
-		$obj = new static($path, $config, App\File::instance($area));
+		$this->path = $path;
+		$this->area = $area;
+	}
+
+	public static function factory($path, Array $config = array(), File_Area $area = null, $content = array())
+	{
+		$obj = new static($path, $config, App\File::instance($area), $content);
 
 		$config['path'] = $path;
 		$config['area'] = $area;
@@ -54,18 +58,11 @@ class File_Driver_File {
 			}
 		}
 
-		if (is_null($obj->resource))
-		{
-			$obj->resource = App\File::open_file($obj->path, true, $obj->area);
-		}
+		return $obj;
 	}
 
 	public function __destruct()
 	{
-		if (is_resource($this->resource))
-		{
-			App\File::close_file($this->resource, $this->area);
-		}
 	}
 
 	/**

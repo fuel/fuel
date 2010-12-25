@@ -78,7 +78,7 @@ class File_Area {
 	 * @return	File_Driver_File
 	 * @throws	File_Exception		when outside basedir restriction or disallowed file extension
 	 */
-	public function get_driver($path, Array $config = array())
+	public function get_driver($path, Array $config = array(), $content = array())
 	{
 		$path = $this->get_path($path);
 
@@ -88,23 +88,23 @@ class File_Area {
 
 			// check file extension
 			$info = pathinfo($path);
-			if ( ! empty(static::$extensions) && array_key_exists($info['extension'], static::$extensions))
+			if ( ! empty($this->extensions) && array_key_exists($info['extension'], $this->extensions))
 			{
 				throw new App\File_Exception('File operation not allowed: disallowed file extension.');
 			}
 
 			// create specific driver when available
-			if (array_key_exists($info['extension'], static::$file_drivers))
+			if (array_key_exists($info['extension'], $this->file_drivers))
 			{
-				$class = 'App\\'.static::$file_drivers[$info['extension']];
-				return new $class($path, $config, $this);
+				$class = 'App\\'.$this->file_drivers[$info['extension']];
+				return $class::factory($path, $config, $this);
 			}
 
-			return new App\File_Driver_File($path, $config, $this);
+			return App\File_Driver_File::factory($path, $config, $this);
 		}
 		elseif (is_dir($path))
 		{
-			return new App\File_Driver_Directory($path, $config, $this);
+			return App\File_Driver_Directory::factory($path, $config, $this, $content);
 		}
 
 		// still here? path is invalid
@@ -181,7 +181,8 @@ class File_Area {
 
 	public function read_dir($path, $depth = 0, $filter = null)
 	{
-		return App\File::read_dir($path, $depth, $filter, $this);
+		$content = App\File::read_dir($path, $depth, $filter, $this);
+		return $this->get_driver($path, array(), $content);
 	}
 
 	public function rename($path, $new_path)

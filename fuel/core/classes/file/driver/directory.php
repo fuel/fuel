@@ -23,10 +23,27 @@ class File_Driver_Directory {
 	 */
 	protected $content = array();
 
-	protected function __construct($path, Array &$config, File_Area $area)
+	protected function __construct($path, Array &$config, File_Area $area, $content = array())
 	{
 		$this->path		= rtrim($path, '\\/').DS;
 		$this->resource = false;
+
+		foreach ($content as $key => $value)
+		{
+			if ( ! is_int($key))
+			{
+				$this->content[$key] = $value === false ? false : $area->get_driver($path.DS.$key, $config, $value);
+			}
+			else
+			{
+				$this->content[$key] = $area->get_driver($path.DS.$value, $config);
+			}
+		}
+	}
+
+	public static function factory($path, Array $config = array(), File_Area $area = null, $content = array())
+	{
+		return new static($path, $config, $area, $content);
 	}
 
 	/**

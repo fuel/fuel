@@ -61,7 +61,16 @@ class File {
 	 */
 	public static function instance($area = null)
 	{
-		return $area === null ? static::$base_area : (array_key_exists($area, static::$areas) ? static::$areas[$area] : $area);
+		if ($area instanceof File_Area)
+		{
+			return $area;
+		}
+		elseif ($area === null)
+		{
+			return static::$base_area;
+		}
+
+		return array_key_exists($area, static::$areas) ? static::$areas[$area] : false;
 	}
 
 	/**
