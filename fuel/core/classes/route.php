@@ -105,7 +105,7 @@ class Route {
 	 * @param	string	The matched route
 	 * @return	array
 	 */
-	protected static function parse_match($route, $named_params = array())
+	public static function parse_match($route, $named_params = array())
 	{
 		$method_params = array();
 

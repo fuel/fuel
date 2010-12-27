@@ -39,13 +39,14 @@ class Request {
 	 *
 	 * @access	public
 	 * @param	string	The URI of the request
+	 * @param	bool	if true use routes to process the URI
 	 * @return	object	The new request
 	 */
-	public static function factory($uri = null)
+	public static function factory($uri = null, $route = true)
 	{
 		logger(Fuel::L_INFO, 'Creating a new Request with URI = "'.$uri.'"', __METHOD__);
 
-		static::$active = new static($uri);
+		static::$active = new static($uri, $route);
 
 		if ( ! static::$main)
 		{
@@ -199,12 +200,13 @@ class Request {
 	 *
 	 * @access	public
 	 * @param	string	the uri string
+	 * @param	bool	whether or not to route the URI
 	 * @return	void
 	 */
-	public function __construct($uri)
+	public function __construct($uri, $route)
 	{
 		$this->uri = new App\URI($uri);
-		$route = App\Route::parse($this->uri);
+		$route = $route === true ? App\Route::parse($this->uri) : App\Route::parse_match($uri);
 
 		// Attempts to register the first segment as a module
 		$mod_path = App\Fuel::add_module($route['segments'][0], true);
