@@ -133,7 +133,15 @@ class Crypt {
 			$value = '0:'.$value;
 		}
 
-		return base64_encode($value);
+		// make the encoding URL save
+		return strtr(
+				base64_encode($value),
+				array(
+					'+' => '.',
+					'=' => '-',
+					'/' => '~'
+				)
+			);
 	}
 
 	// --------------------------------------------------------------------
@@ -157,7 +165,14 @@ class Crypt {
 		}
 
 		// decode the value passed
-		$value = base64_decode($value);
+		$value = base64_decode(strtr(
+				$value,
+				array(
+					'.' => '+',
+					'-' => '=',
+					'~' => '/'
+				)
+			));
 
 		// check if we have mcrypt available, and the value was encrypted by mcrypt
 		if (static::$have_mcrypt && substr($value,0,2) == '1:')
