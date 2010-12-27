@@ -197,7 +197,7 @@ class Session {
 	 * @param	mixed	default value to return if the variable does not exist
 	 * @return	mixed
 	 */
-	public static function get($name, $default = null)
+	public static function get($name = null, $default = null)
 	{
 		return static::instance()->get($name, $default);
 	}

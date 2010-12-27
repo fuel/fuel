@@ -134,7 +134,11 @@ abstract class Session_Driver {
 	 */
 	public function get($name, $default = null)
 	{
-		if (isset($this->data[$name]))
+		if (is_null($name))
+		{
+			return $this->data;
+		}
+		elseif (isset($this->data[$name]))
 		{
 			return $this->data[$name];
 		}
