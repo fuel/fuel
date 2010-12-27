@@ -336,7 +336,16 @@ abstract class Session_Driver {
 	 */
 	public function get_flash($name, $default = null)
 	{
-		if (isset($this->flash[$this->config['flash_id'].'::'.$name]))
+		if (is_null($name))
+		{
+			$default = array();
+			foreach($this->flash as $key => $value)
+			{
+				$key = substr($key, strpos($key, '::')+2);
+				$default[$key] = $value;
+			}
+		}
+		elseif (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
 			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = '';
 			return $this->flash[$this->config['flash_id'].'::'.$name]['value'];
@@ -355,7 +364,14 @@ abstract class Session_Driver {
 	 */
 	public function keep_flash($name)
 	{
-		if (isset($this->flash[$this->config['flash_id'].'::'.$name]))
+		if (is_null($name))
+		{
+			foreach($this->flash as $key => $value)
+			{
+				$this->flash[$key]['state'] = 'new';
+			}
+		}
+		elseif (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
 			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = 'new';
 		}
@@ -379,7 +395,11 @@ abstract class Session_Driver {
 	 */
 	public function delete_flash($name)
 	{
-		if (isset($this->flash[$this->config['flash_id'].'::'.$name]))
+		if (is_null($name))
+		{
+			$this->flash = array();
+		}
+		elseif (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
 			unset($this->flash[$this->config['flash_id'].'::'.$name]);
 		}

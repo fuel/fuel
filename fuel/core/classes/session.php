@@ -256,7 +256,7 @@ class Session {
 	 * @param	mixed	default value to return if the variable does not exist
 	 * @return	mixed
 	 */
-	public static function get_flash($name, $default = null)
+	public static function get_flash($name = null, $default = null)
 	{
 		return static::instance()->get_flash($name, $default);
 	}
@@ -270,7 +270,7 @@ class Session {
 	 * @param	string	name of the variable to keep
 	 * @return	void
 	 */
-	public static function keep_flash($name)
+	public static function keep_flash($name = null)
 	{
 		return static::instance()->keep_flash($name);
 	}
@@ -285,7 +285,7 @@ class Session {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function delete_flash($name)
+	public static function delete_flash($name = null)
 	{
 		return static::instance()->delete_flash($name);
 	}
