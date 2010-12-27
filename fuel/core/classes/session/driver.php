@@ -558,13 +558,13 @@ abstract class Session_Driver {
 	 */
 	 protected function _get_cookie()
 	 {
-		// fetch the cookie
-		$cookie = App\Cookie::get($this->config['cookie_name'], false);
+		// was the cookie posted?
+		$cookie = App\Input::get_post($this->config['post_cookie_name'], false);
 
-		// if not found, check for the post_cookie variable
+		// if not found, fetch the regular cookie
 		if ($cookie === false)
 		{
-			$cookie = App\Input::get_post($this->config['post_cookie_name'], false);
+			$cookie = App\Cookie::get($this->config['cookie_name'], false);
 		}
 
 		if ($cookie !== false)
