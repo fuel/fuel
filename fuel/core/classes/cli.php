@@ -142,7 +142,7 @@ class Cli {
 		// If options are provided and the choice is not in the array, tell them to try again
 		if( ! empty($options) && ! in_array($input, $options))
 		{
-			static::write("This is not a valid option. Please try again.\n");
+			static::write('This is not a valid option. Please try again.'.PHP_EOL);
 
 			$input = static::read($output, $options);
 		}
