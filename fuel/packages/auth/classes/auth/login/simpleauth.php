@@ -104,7 +104,7 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 				->where('username', '=', $username)
 				->where('password', '=', $password)
 				->from('simpleusers')->execute();
-		if (empty($this->user))
+		if ($this->user->count() == 0)
 		{
 			return false;
 		}
