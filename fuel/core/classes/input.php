@@ -224,7 +224,11 @@ class Input {
 	 */
 	private static function _fetch_from_array(&$array, $index = '', $default = null)
 	{
-		if ( ! isset($array[$index]))
+		if (is_null($index))
+		{
+			return $array;
+		}
+		elseif ( ! isset($array[$index]))
 		{
 			return $default;
 		}
