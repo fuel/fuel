@@ -27,6 +27,15 @@ var nav = {
 		"Classes": {
 			"Config":	"classes/config.html",
 			"Event":	"classes/event.html",
+			"Session":	{
+				"Configuration":	"classes/session/config.html",
+				"Usage":			"classes/session/usage.html",
+				"Advanced":			"classes/session/advanced.html"
+			},
+			"Upload":	{
+				"Configuration":	"classes/upload/config.html",
+				"Usage":			"classes/upload/usage.html"
+			},
 			"Migrate":	"classes/migrate.html",
 			"Session":	"classes/session.html",
 			"Html":		"classes/html.html"
@@ -53,16 +62,33 @@ function show_nav(page, path)
 		}
 
 		var ul = div.append('<ul></ul>');
-		$.each(links, function(title, href) {
+		ul.find('ul').append(generate_nav(path, links));
+
+		$('#main-nav').append(div);
+		$('#main-nav').find('#nav_'+page).next('div').slideDown();
+	});
+}
+
+//generate the navigation
+function generate_nav(path, links)
+{
+	var html = '';
+	$.each(links, function(title, href) {
+		if (typeof(href) == "object")
+		{
+			for(var link in href) break;
+			html = html + '<li><a href="'+path+href[link]+'">' + title + '</a>';
+			html = html + '<ul>' + generate_nav(path, href) + '</ul></li>';
+		}
+		else
+		{
 			active = '';
 			if (active_path.indexOf(href, active_path.length - href.length) != -1)
 			{
 				active = ' class="active"';
 			}
-			ul.find('ul').append('<li><a href="'+path+href+'"'+active+'>'+title+'</a></li>');
-		});
-
-		$('#main-nav').append(div);
-		$('#main-nav').find('#nav_'+page).next('div').slideDown();
+			html = html + '<li><a href="'+path+href+'"'+active+'>'+title+'</a></li>';
+		}
 	});
+	return html;
 }
