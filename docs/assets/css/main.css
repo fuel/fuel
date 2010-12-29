@@ -191,6 +191,16 @@ header h1 {
 	letter-spacing: 1px;
 }
 
+#main-nav li ul {
+	padding-left: 10px;
+	margin: 0px;
+}
+
+#main-nav li ul li {
+	font-size: 90%;
+	letter-spacing: 1px;
+}
+
 #main-nav li a {
 	display: block;
 	padding: 2px 5px;
@@ -221,6 +231,7 @@ table {
 
 table.method {
 	border: 3px solid #CCC;
+	width: 100%;
 }
 
 table.method td,
@@ -253,6 +264,7 @@ table.method td code {
 
 table.config {
 	border: 3px solid #CCC;
+	width: 100%;
 }
 
 table.config td,
@@ -289,7 +301,19 @@ table tr.header th {
 }
 
 table.parameters {
-	margin: 0px;
+	margin: -5px;
+}
+
+th.description {
+	width: 100%;
+}
+
+th.legend {
+	width: 125px;
+}
+
+table table {
+	font-size: 110%;
 }
 
 section#content {
