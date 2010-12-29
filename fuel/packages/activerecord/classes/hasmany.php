@@ -215,6 +215,11 @@ class HasMany extends Association {
 		$dest_inst = new $this->dest_class;
 		$columns = $dest_inst->get_columns();
 
+		if (isset($dest_inst->table_name))
+		{
+			$dest_table = $dest_inst->table_name;
+		}
+
 		if ( ! isset($this->options['through']) || ! $this->options['through'])
 		{
 			$join = array(
