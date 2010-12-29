@@ -12,14 +12,12 @@
  * @link		http://fuelphp.com
  */
 
-$loader = new Autoloader;
-$loader->default_path(__DIR__.'/classes/');
+namespace Fuel\App;
 
-$loader->add_namespaces(array(
-	APP_NAMESPACE		=> __DIR__.'/classes/',
+Autoloader::add_namespaces(array(
+	'Fuel\\App'				=> __DIR__.DS.'classes'.DS,
+	'Fuel\\App\\Model'		=> __DIR__.DS.'classes'.DS.'model'.DS,
+	'Fuel\\App\\Controller'	=> __DIR__.DS.'classes'.DS.'controller'.DS,
 ));
-
-$loader->register();
-return $loader;
 
 /* End of file autoload.php */

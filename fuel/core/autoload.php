@@ -12,73 +12,91 @@
  * @link		http://fuelphp.com
  */
 
-$loader = new Autoloader;
+namespace Fuel\App;
 
-$loader->default_path(__DIR__.'/classes/');
-
-$loader->add_namespaces(array(
-	'Fuel'	=>	__DIR__.'/classes/',
+Autoloader::add_namespaces(array(
+	'Fuel\\Core'	=>	__DIR__.DS.'classes'.DS,
 ));
 
-
-$loader->add_namespace_alias(APP_NAMESPACE, 'Fuel');
-
-$loader->add_prefixes(array(
-	'Fuel_'		=> COREPATH.'classes/',
+Autoloader::add_namespace_aliases(array(
+	'Fuel\\App' => 'Fuel\\Core',
+	'Fuel\\App\\Model' => 'Fuel\\App',
+	'Fuel\\App\\Controller' => 'Fuel\\App',
 ));
 
-$loader->add_aliases(array(
-	'Arr'			=> 'Fuel\\Arr',
-	'Asset'			=> 'Fuel\\Asset',
-	'Benchmark'		=> 'Fuel\\Benchmark',
+Autoloader::add_aliases(array(
+	'Autoloader'				=> 'Fuel\\App\\Autoloader',
+	'Fuel\\Autoloader'			=> 'Fuel\\App\\Autoloader',
+	'Arr'						=> 'Fuel\\App\\Arr',
+	'Asset'						=> 'Fuel\\App\\Asset',
 
-	'Cache'						=> 'Fuel\\Cache',
-	'Cache_Handler_Driver'		=> 'Fuel\\Cache_Handler_Driver',
-	'Cache_Handler_Json'		=> 'Fuel\\Cache_Handler_Json',
-	'Cache_Handler_Serialized'	=> 'Fuel\\Cache_Handler_Serialized',
-	'Cache_Handler_String'		=> 'Fuel\\Cache_Handler_String',
-	'Cache_Storage_Driver'		=> 'Fuel\\Cache_Storage_Driver',
-	'Cache_Storage_File'		=> 'Fuel\\Cache_Storage_File',
+	'Cache'						=> 'Fuel\\App\\Cache',
+	'Cache_Handler_Driver'		=> 'Fuel\\App\\Cache_Handler_Driver',
+	'Cache_Handler_Json'		=> 'Fuel\\App\\Cache_Handler_Json',
+	'Cache_Handler_Serialized'	=> 'Fuel\\App\\Cache_Handler_Serialized',
+	'Cache_Handler_String'		=> 'Fuel\\App\\Cache_Handler_String',
+	'Cache_Storage_Driver'		=> 'Fuel\\App\\Cache_Storage_Driver',
+	'Cache_Storage_File'		=> 'Fuel\\App\\Cache_Storage_File',
+	'Cache_Storage_Memcached'	=> 'Fuel\\App\\Cache_Storage_Memcached',
+	'Cache_Storage_Redis'		=> 'Fuel\\App\\Cache_Storage_Redis',
 
-	'Config'		=> 'Fuel\\Config',
+	'Config'					=> 'Fuel\\App\\Config',
+	'Cookie'					=> 'Fuel\\App\\Cookie',
 
-	'Cookie'		=> 'Fuel\\Cookie',
-	'DB'			=> 'Fuel\\DB',
-	'Database'		=> 'Fuel\\Database',
-	'Date'			=> 'Fuel\\Date',
-	'Debug'			=> 'Fuel\\Debug',
-	'Crypt'			=> 'Fuel\\Crypt',
-	'Env'			=> 'Fuel\\Env',
-	'Event'			=> 'Fuel\\Event',
-	'Error'			=> 'Fuel\\Error',
-	'Form'			=> 'Fuel\\Form',
-	'Ftp'			=> 'Fuel\\Ftp',
-	'Input'			=> 'Fuel\\Input',
-	'Lang'			=> 'Fuel\\Lang',
-	'Log'			=> 'Fuel\\Log',
-	'Migrate'		=> 'Fuel\\Migrate',
-	'Model'			=> 'Fuel\\Model',
-	'Output'		=> 'Fuel\\Output',
-	'Request'		=> 'Fuel\\Request',
-	'Route'			=> 'Fuel\\Route',
+	'DB'						=> 'Fuel\\App\\DB',
+	'DBUtil'					=> 'Fuel\\App\\DBUtil',
 
-	'Session'					=> 'Fuel\\Session',
-	'Session_Driver'			=> 'Fuel\\Session_Driver',
-	'Session_Exception'			=> 'Fuel\\Session_Exception',
-	'Session_Cookie_Driver'		=> 'Fuel\\Session_Cookie_Driver',
-	'Session_File_Driver'		=> 'Fuel\\Session_File_Driver',
-	'Session_Memcached_Driver'	=> 'Fuel\\Session_Memcached_Driver',
+	'Database'					=> 'Fuel\\App\\Database',
+	'Database_Exception'		=> 'Fuel\\App\\Database_Exception',
 
-	'URI'			=> 'Fuel\\URI',
-	'URL'			=> 'Fuel\\URL',
+	'Email'						=> 'Fuel\\App\\Email',
+	'Email_Driver'				=> 'Fuel\\App\\Email_Driver',
+	'Email_Mail'				=> 'Fuel\\App\\Email_Mail',
+	'Email_Sendmail'			=> 'Fuel\\App\\Email_Sendmail',
+	'Email_Smtp'				=> 'Fuel\\App\\Email_Smtp',
 
-	'View'				=> 'Fuel\\View',
-	'View_Exception'	=> 'Fuel\\View_Exception',
+	'Date'						=> 'Fuel\\App\\Date',
+	'Debug'						=> 'Fuel\\App\\Debug',
+	'Crypt'						=> 'Fuel\\App\\Crypt',
+	'Env'						=> 'Fuel\\App\\Env',
+	'Event'						=> 'Fuel\\App\\Event',
+	'Error'						=> 'Fuel\\App\\Error',
+	'Form'						=> 'Fuel\\App\\Form',
+	'Ftp'						=> 'Fuel\\App\\Ftp',
+	'Html'						=> 'Fuel\\App\\Html',
+	'Input'						=> 'Fuel\\App\\Input',
+	'Lang'						=> 'Fuel\\App\\Lang',
+	'Log'						=> 'Fuel\\App\\Log',
+	'Migrate'					=> 'Fuel\\App\\Migrate',
+	'Migration'					=> 'Fuel\\App\\Migration',
+	'Model'						=> 'Fuel\\App\\Model',
+	'Output'					=> 'Fuel\\App\\Output',
+	'Pagination'				=> 'Fuel\\App\\Pagination',
+	'Profiler'					=> 'Fuel\\App\\Profiler',
+	'Request'					=> 'Fuel\\App\\Request',
+	'Route'						=> 'Fuel\\App\\Route',
 
-	'Fuel'			=> 'Fuel\\Fuel',
+	'Session'					=> 'Fuel\\App\\Session',
+	'Session_Driver'			=> 'Fuel\\App\\Session_Driver',
+	'Session_Db'				=> 'Fuel\\App\\Session_Db',
+	'Session_Cookie'			=> 'Fuel\\App\\Session_Cookie',
+	'Session_File'				=> 'Fuel\\App\\Session_File',
+	'Session_Memcached'			=> 'Fuel\\App\\Session_Memcached',
+	'Session_Redis'				=> 'Fuel\\App\\Session_Redis',
+
+	'Uri'						=> 'Fuel\\App\\Uri',
+	'Upload'					=> 'Fuel\\App\\Upload',
+
+	'Validation'				=> 'Fuel\\App\\Validation',
+	'Validation_Set'			=> 'Fuel\\App\\Validation_Set',
+	'Validation_Field'			=> 'Fuel\\App\\Validation_Field',
+	'Validation_Error'			=> 'Fuel\\App\\Validation_Error',
+
+	'View'						=> 'Fuel\\App\\View',
+	'View_Exception'			=> 'Fuel\\App\\View_Exception',
+
+	'Fuel'					=> 'Fuel\\App\\Fuel',
+
 ));
-
-$loader->register();
-return $loader;
 
 /* End of file autoload.php */

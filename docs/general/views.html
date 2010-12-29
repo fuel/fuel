@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Views - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			show_nav('general', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Views</h2>
+
+		<h3>What is a view?</h3>
+
+		<p>Views are files that present data to the browser. These files enable the separation of logic and presentation for your application. Views are typically html, javascript, or css but can contain variables passed into them from the controller.</p>
+
+		<h3>Creating a view</h3>
+
+		<p>In Fuel, Views are located in the fuel/app/views directory. Views can be located in subdirectories. Views are named by their directory path from the fuel/app/views and the file name. So a view file located fuel/app/views/user/join.php would be named user/join.</p>
+
+		<p>Example:</p>
+
+<pre><code>&lt;html&gt;
+	&lt;head&gt;
+		&lt;?php echo $title; ?&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		Welcome, &lt;?php echo $username; ?&gt;.
+	&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+		<h3>Using views</h3>
+
+		<p>Views in the Fuel framework are very flexible. You can create a single view and nest views within other views. This can be done multiple ways.</p>
+
+		<p><strong>Example View (fuel/app/views/home/index.php):</strong></p>
+<pre class="html"><code>&lt;html&gt;
+	&lt;head&gt;
+		&lt;?php echo $title; ?&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		Welcome, &lt;?php echo $username; ?&gt;.
+	&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+		<p><strong>Method 1 (using example view above):</strong></p>
+
+<pre><code>namespace Fuel\App;
+
+class Controller_Home extends Controller\Base {
+
+	$data = array(); //stores variables going to views
+
+	$data['username'] = 'Joe14';
+	$data['title'] = 'Home';
+
+	//assign the view to browser output
+	$this->output = new View('home/index', $data);
+}</code></pre>
+
+		<p><strong>Method 2 (using example view above):</strong></p>
+
+<pre><code>namespace Fuel\App;
+
+class Controller_Home extends Controller\Base {
+	//create the view
+	$view = new View('home/index');
+
+	//assign variables for the view
+	$view->username = 'Joe14';
+	$view->title = 'Home';
+
+	//another way to assign variables for the view
+	$view->set('username', 'Joe14');
+	$view->set('title', 'Home');
+
+	//assign the view to browser output
+	$this->output = $view;
+}</code></pre>
+
+		<p><strong>Method 3 (using example view above):</strong></p>
+
+<pre><code>namespace Fuel\App;
+
+class Controller_Home extends Controller\Base {
+	$data = array(); //stores variables going to views
+
+	$data['username'] = 'Joe14';
+	$data['title'] = 'Home';
+
+	//assign the view to browser output
+	$this->output = View::factory('home/index', $data);
+}</code></pre>
+
+		<h2>Nesting Views</h2>
+
+		<p>Views can also be nested, meaning views can contain other views. This can be done multiple ways.</p>
+
+		<h3>Example Views</h3>
+
+		<p>fuel/app/views/layout.php</p>
+
+<pre><code>&lt;html&gt;
+	&lt;head&gt;
+		&lt;?php echo $head; ?&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		&lt;?php echo $header; ?&gt;
+		&lt;?php echo $content; ?&gt;
+		&lt;?php echo $footer; ?&gt;
+	&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+		<p>fuel/app/views/head.php</p>
+
+<pre><code>&lt;title&gt;&lt;?php echo $title; ?&gt;&lt;/title&gt;</code></pre>
+
+		<p>fuel/app/views/header.php</p>
+
+<pre><code>&lt;div class=&quot;logo&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;logo_text&quot;&gt;&lt;?php echo $site_title; ?&gt;&lt;/div&gt;</code></pre>
+
+		<p>fuel/app/views/content.php</p>
+
+<pre><code>&lt;title&gt;&lt;?php echo $title; ?&gt;&lt;/title&gt;
+&lt;div class=&quot;welcome_user&quot;&gt;Welcome &lt;?php echo $username; ?&gt;&lt;/div&gt;</code></pre>
+
+		<p>fuel/app/views/footer.php</p>
+
+<pre><code>&lt;div class=&quot;footer&quot;&gt;
+	&amp;copy; Copyright &lt;?php echo date(&#x27;Y&#x27;);?&gt; &lt;?php echo $site_title; ?&gt;
+&lt;/div&gt;</code></pre>
+
+		<h3>Method 1 (using example views above):</h3>
+
+<pre><code>namespace Fuel\App;
+
+class Controller_Home extends Controller\Base {
+	//create the view
+	$view = new View('layout');
+
+	//assign variables
+	$view->username = 'Joe14';
+	$view->set('title', 'Home');
+	$view->site_title = 'My Website';
+
+	//assign views as variables
+	$view->head = new View('head');
+	$view->header = new View('header');
+	$view->content = new View('content');
+	$view->footer = new View('footer');
+
+	//assign to browser output
+	$this->output = $view;
+}</code></pre>
+
+		<h3>Method 2 (using example views above):</h3>
+
+<pre><code>namespace Fuel\App;
+
+class Controller_Home extends Controller\Base {
+	//assign variables
+	$data = array();
+	$data['title'] = 'Home';
+	$data['site_title'] = 'My Website';
+	$data['username'] = 'Joe14';
+
+	//assign views as variables
+	$data['head'] = View::factory('head', $data)->render();
+	$data['header'] = View::factory('header', $data)->render();
+	$data['content'] = View::factory('content', $data)->render();
+	$data['footer'] = View::factory('footer', $data)->render();
+
+	//assign to browser output
+	$this->output = new View('layout', $data);
+}</code></pre>
+
+		<h2>View Functions</h2>
+
+		<h3>capture</h3>
+
+		<h3>set_global</h3>
+
+		<h3>bind_global</h3>
+
+		<h3>set_filename</h3>
+
+		<h3>set</h3>
+
+		<h3>bind</h3>
+
+		<h3>render</h3>
+
+		<p>This method returns the output of the view as a string.</p>
+
+<pre><code>$view-&gt;render();
+View::factory('home', $data)-&gt;render();</code></pre>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 Dan Horrigan
+		</p>
+	</section>
+
+</body>
+</html>

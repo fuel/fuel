@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel\App;
+
 return array(
 	'active' => Config::get('environment'),
 
@@ -22,7 +24,7 @@ return array(
 			'database'   => 'fuel_dev',
 			'username'   => 'root',
 			'password'   => '',
-			'persistent' => FALSE,
+			'persistent' => false,
 		),
 		'table_prefix' => '',
 		'charset'      => 'utf8',
@@ -37,7 +39,7 @@ return array(
 			'database'   => 'fuel_prod',
 			'username'   => 'root',
 			'password'   => '',
-			'persistent' => FALSE,
+			'persistent' => false,
 		),
 		'table_prefix' => '',
 		'charset'      => 'utf8',
@@ -52,7 +54,7 @@ return array(
 			'database'   => 'fuel_test',
 			'username'   => 'root',
 			'password'   => '',
-			'persistent' => FALSE,
+			'persistent' => false,
 		),
 		'table_prefix' => '',
 		'charset'      => 'utf8',
@@ -67,12 +69,19 @@ return array(
 			'database'   => 'fuel_qa',
 			'username'   => 'root',
 			'password'   => '',
-			'persistent' => FALSE,
+			'persistent' => false,
 		),
 		'table_prefix' => '',
 		'charset'      => 'utf8',
 		'caching'      => false,
 		'profiling'    => false,
+	),
+
+	'redis' => array(
+		'default' => array(
+			'hostname'	=> '127.0.0.1',
+			'port'		=> 6379,
+		)
 	),
 
 );
