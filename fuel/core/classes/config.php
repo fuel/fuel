@@ -46,12 +46,12 @@ class Config {
 		}
 		if ($group === null)
 		{
-			static::$items = static::$items + $config;
+			static::$items = $reload ? $config : static::$items + $config;
 		}
 		else
 		{
 			$group = ($group === true) ? $file : $group;
-			if ( ! isset(static::$items[$group]))
+			if ( ! isset(static::$items[$group]) or $reload)
 			{
 				static::$items[$group] = array();
 			}
