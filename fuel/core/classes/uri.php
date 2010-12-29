@@ -153,6 +153,16 @@ class Uri {
 	 *
 	 * @param	string	the url
 	 */
+	public static function main()
+	{
+		return static::create(App\Request::main()->uri->uri);
+	}
+
+	/**
+	 * Gets the current URL, including the BASE_URL
+	 *
+	 * @param	string	the url
+	 */
 	public static function current()
 	{
 		return static::create();
