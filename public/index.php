@@ -19,6 +19,11 @@ $core_path		= '../fuel/core/';
  */
 define('INTERNAL_ENC', 'ISO-8859-1');
 
+/**
+ * Website docroot
+ */
+define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
+
 // Load in the base, which initializes the framework and sets up some global functions.
 is_file($app_path.'base.php') and require $app_path.'base.php';
 require $core_path.'base.php';

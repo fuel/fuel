@@ -41,8 +41,6 @@ defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 define('DS', DIRECTORY_SEPARATOR);
 define('CRLF', sprintf('%s%s', chr(13), chr(10)));
 
-define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
-
 ( ! is_dir($app_path) and is_dir(DOCROOT.$app_path)) and $app_path = DOCROOT.$app_path;
 ( ! is_dir($core_path) and is_dir(DOCROOT.$core_path)) and $core_path = DOCROOT.$core_path;
 ( ! is_dir($package_path) and is_dir(DOCROOT.$package_path)) and $package_path = DOCROOT.$package_path;
