@@ -19,6 +19,7 @@ var nav = {
 		},
 		"General": {
 			"Controllers":		"general/controllers.html",
+			"Routing":			"general/routing.html",
 			"Views":			"general/views.html",
 			"Tasks":			"general/tasks.html",
 			"Migrations":		"general/migrations.html",
