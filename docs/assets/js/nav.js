@@ -38,7 +38,6 @@ var nav = {
 				"Usage":			"classes/upload/usage.html"
 			},
 			"Migrate":	"classes/migrate.html",
-			"Session":	"classes/session.html",
 			"Html":		"classes/html.html"
 		}
 };
