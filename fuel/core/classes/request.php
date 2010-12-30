@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Request {
 
@@ -106,19 +106,19 @@ class Request {
 	{
 		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
-		App\Output::$status = 404;
+		\Output::$status = 404;
 
-		if (App\Config::get('routes.404') === null)
+		if (\Config::get('routes.404') === null)
 		{
-			static::active()->output = App\View::factory('404');
+			static::active()->output = \View::factory('404');
 		}
 		else
 		{
-			list($controller, $action) = array_pad(explode('/', App\Config::get('routes.404')), 2, false);
+			list($controller, $action) = array_pad(explode('/', \Config::get('routes.404')), 2, false);
 
 			$action or $action = 'index';
 
-			$class = 'Fuel\\App\\Controller\\'.ucfirst($controller);
+			$class = '\\Controller\\'.ucfirst($controller);
 			$method = 'action_'.$action;
 
 			if (class_exists($class))
@@ -144,12 +144,12 @@ class Request {
 				}
 				else
 				{
-					throw new App\Exception('404 Action not found.');
+					throw new \Exception('404 Action not found.');
 				}
 			}
 			else
 			{
-				throw new App\Exception('404 Controller not found.');
+				throw new \Exception('404 Controller not found.');
 			}
 		}
 	}
@@ -205,11 +205,11 @@ class Request {
 	 */
 	public function __construct($uri, $route)
 	{
-		$this->uri = new App\URI($uri);
-		$route = $route === true ? App\Route::parse($this->uri) : App\Route::parse_match($uri);
+		$this->uri = new \URI($uri);
+		$route = $route === true ? \Route::parse($this->uri) : \Route::parse_match($uri);
 
 		// Attempts to register the first segment as a module
-		$mod_path = App\Fuel::add_module($route['segments'][0], true);
+		$mod_path = \Fuel::add_module($route['segments'][0], true);
 
 		if ($mod_path !== false)
 		{
@@ -251,7 +251,7 @@ class Request {
 	{
 		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
-		$controller_prefix = 'Fuel\\App\\'.($this->module ? ucfirst($this->module).'\\' : '').'Controller\\';
+		$controller_prefix = '\\'.($this->module ? ucfirst($this->module).'\\' : '').'Controller_';
 		$method_prefix = 'action_';
 
 		$class = $controller_prefix.($this->directory ? ucfirst($this->directory).'_' : '').ucfirst($this->controller);
@@ -263,7 +263,7 @@ class Request {
 			// set the new controller to directory or module when applicable
 			$controller = $this->directory ?: $this->module;
 			// ... or to the default controller if it was in neither
-			$controller = $controller ?: preg_replace('#/([a-z0-9/_]*)$#uiD', '', App\Route::$routes['#']);
+			$controller = $controller ?: preg_replace('#/([a-z0-9/_]*)$#uiD', '', \Route::$routes['#']);
 
 			// try again with new controller if it differs from the previous attempt
 			if ($controller != $this->controller)
@@ -328,7 +328,7 @@ class Request {
 
 	public function send_headers()
 	{
-		App\Output::send_headers();
+		\Output::send_headers();
 
 		return $this;
 	}

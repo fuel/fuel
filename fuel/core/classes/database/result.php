@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 abstract class Database_Result implements \Countable, \Iterator, \SeekableIterator, \ArrayAccess {
 
@@ -245,7 +245,7 @@ abstract class Database_Result implements \Countable, \Iterator, \SeekableIterat
 	 */
 	final public function offsetSet($offset, $value)
 	{
-		throw new App\Exception('Database results are read-only');
+		throw new \Exception('Database results are read-only');
 	}
 
 	/**
@@ -258,7 +258,7 @@ abstract class Database_Result implements \Countable, \Iterator, \SeekableIterat
 	 */
 	final public function offsetUnset($offset)
 	{
-		throw new App\Exception('Database results are read-only');
+		throw new \Exception('Database results are read-only');
 	}
 
 	/**

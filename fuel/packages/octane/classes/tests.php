@@ -14,9 +14,9 @@
 
 namespace Fuel\Octane;
 
-use Fuel\App\Fuel;
-use Fuel\App\Cli;
-use Fuel\App\Exception;
+use \Fuel;
+use \Cli;
+use \Exception;
 
 class Tests {
 
@@ -69,7 +69,7 @@ class Tests {
 
 		if (strncmp($name, 'run_', 4) !== 0)
 		{
-			throw new App\Exception('Invalid method call: '.$name);
+			throw new \Exception('Invalid method call: '.$name);
 			return;
 		}
 

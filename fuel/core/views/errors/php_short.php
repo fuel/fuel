@@ -1,4 +1,4 @@
-<?php namespace Fuel\App; ?>
+<?php  ?>
 <style type="text/css">
 .fuel_notice_box,
 .fuel_notice_box div,

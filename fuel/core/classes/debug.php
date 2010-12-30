@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Debug {
 
@@ -38,7 +38,7 @@ class Debug {
 		if (strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE)
 		{
 			$callee = $backtrace[1];
-			$label = App\Inflector::humanize($backtrace[1]['function']);
+			$label = \Inflector::humanize($backtrace[1]['function']);
 		}
 		else
 		{
@@ -49,7 +49,7 @@ class Debug {
 		$arguments = func_get_args();
 		$total_arguments = count($arguments);
 
-		$callee['file'] = App\Fuel::clean_path($callee['file']);
+		$callee['file'] = \Fuel::clean_path($callee['file']);
 
 		if ( ! static::$js_displayed)
 		{

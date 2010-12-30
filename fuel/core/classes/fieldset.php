@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // ------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ class Fieldset
 
 		if ($exists = static::instance($name))
 		{
-			App\Error::notice('Fieldset with this name exists already, cannot be overwritten.');
+			\Error::notice('Fieldset with this name exists already, cannot be overwritten.');
 			return $exists;
 		}
 
@@ -160,7 +160,7 @@ class Fieldset
 	{
 		if (empty($name) || (is_array($name) && empty($name['name'])))
 		{
-			throw new App\Exception('Cannot create field without name.');
+			throw new \Exception('Cannot create field without name.');
 		}
 
 		// Allow passing the whole config in an array, will overwrite other values if that's the case
@@ -175,7 +175,7 @@ class Fieldset
 		// Check if it exists already, if so: return and give notice
 		if ($field = static::field($name))
 		{
-			App\Error::notice('Field with this name exists already, cannot be overwritten through add().');
+			\Error::notice('Field with this name exists already, cannot be overwritten through add().');
 			return $field;
 		}
 
@@ -218,7 +218,7 @@ class Fieldset
 	 */
 	public function add_model($class, $instance = null, $method = 'set_form_fields')
 	{
-		if ((is_string($class) && is_callable($callback = array('Fuel\\App\\'.$class, $method)))
+		if ((is_string($class) && is_callable($callback = array('\\'.$class, $method)))
 			|| is_callable($callback = array($class, $method)))
 		{
 			$instance ? call_user_func($callback, $this, $instance) : call_user_func($callback, $this);

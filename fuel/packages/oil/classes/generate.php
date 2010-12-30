@@ -14,7 +14,7 @@
 
 namespace Oil;
 
-use Fuel\App as App;
+
 
 class Generate
 {
@@ -29,7 +29,7 @@ class Generate
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
 		
-		$plural = App\Inflector::pluralize($singular);
+		$plural = \Inflector::pluralize($singular);
 
 		$filepath = APPPATH . 'classes/controller/' . $plural .'.php';
 
@@ -47,7 +47,7 @@ class Generate
 			$action_str .= '
 	public function action_'.$action.'()
 	{
-		$this->template->title = \'' . App\Inflector::humanize($plural) .' &raquo ' . App\Inflector::humanize($action) . '\';
+		$this->template->title = \'' . \Inflector::humanize($plural) .' &raquo ' . \Inflector::humanize($action) . '\';
 		$this->template->content = View::factory(\''.$plural .'/' . $action .'\');
 	}'.PHP_EOL;
 		}
@@ -56,7 +56,7 @@ class Generate
 		$controller = <<<CONTROLLER
 <?php
 
-namespace Fuel\App\Controller;
+namespace \Controller;
 
 class {$class_name} extends Controller\Template {
 {$action_str}
@@ -68,7 +68,7 @@ CONTROLLER;
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			App\Cli::write('Created controller '.$plural);
+			\Cli::write('Created controller '.$plural);
 		}
 	}
 
@@ -77,7 +77,7 @@ CONTROLLER;
 	{
 		$singular = strtolower(array_shift($args));
 
-		$plural = App\Inflector::pluralize($singular);
+		$plural = \Inflector::pluralize($singular);
 
 		$filepath = APPPATH . 'classes/model/' . $singular .'.php';
 
@@ -86,7 +86,7 @@ CONTROLLER;
 		$model = <<<MODEL
 <?php
 
-namespace Fuel\App\Model;
+namespace \Model;
 
 use ActiveRecord;
 
@@ -97,7 +97,7 @@ MODEL;
 
 		if (self::write($filepath, $model))
 		{
-			echo "Created model: " . App\Fuel::clean_path($filepath).PHP_EOL;
+			echo "Created model: " . \Fuel::clean_path($filepath).PHP_EOL;
 		}
 
 		if ( ! empty($args))
@@ -112,7 +112,7 @@ MODEL;
 	{
 		$args = self::_clear_args($args);
 		$folder = array_shift($args);
-		$controller_title = App\Inflector::humanize($folder);
+		$controller_title = \Inflector::humanize($folder);
 
 		if (empty($args))
 		{
@@ -135,8 +135,8 @@ MODEL;
 
 		foreach ($args as $action)
 		{
-			$view_title = App\Inflector::humanize($action);
-			$view_filepath = App\Fuel::clean_path($view_file = $view_dir . $action . '.php');
+			$view_title = \Inflector::humanize($action);
+			$view_filepath = \Fuel::clean_path($view_file = $view_dir . $action . '.php');
 
 			$view = <<<VIEW
 <p>Edit this content in {$view_filepath}</p>
@@ -194,7 +194,7 @@ VIEW;
 
 		if ($filepath = static::_build_migration($migration_name, $mode, $table, $args))
 		{
-			echo "Created migration: " . App\Fuel::clean_path($filepath).PHP_EOL;
+			echo "Created migration: " . \Fuel::clean_path($filepath).PHP_EOL;
 		}
 	}
 
@@ -223,7 +223,7 @@ Examples:
     php oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
 HELP;
 
-		App\Cli::write($output);
+		\Cli::write($output);
 	}
 
 
@@ -234,7 +234,7 @@ HELP;
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
-			throw new App\Exception('Cannot open file: '. $filepath);
+			throw new \Exception('Cannot open file: '. $filepath);
 		}
 
 		$result = @fwrite($handle, $data);
@@ -242,7 +242,7 @@ HELP;
 		// Write $somecontent to our opened file.
 		if ($result === FALSE)
 		{
-			throw new App\Exception('Cannot write to file: '. $filepath);
+			throw new \Exception('Cannot write to file: '. $filepath);
 		}
 
 		@fclose($handle);
@@ -325,7 +325,7 @@ UP;
 		$migration = <<<MIGRATION
 <?php
 
-namespace Fuel\App;
+
 
 class Migration_{$migration_name} extends Migration {
 
@@ -346,7 +346,7 @@ MIGRATION;
 
 		if (glob(APPPATH .'migrations/*_' . strtolower($migration_name) . '.php'))
 		{
-			throw new App\Exception('A migration with this name already exists.');
+			throw new \Exception('A migration with this name already exists.');
 		}
 
 		if (self::write($filepath, $migration))

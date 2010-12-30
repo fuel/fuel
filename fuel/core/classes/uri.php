@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Uri {
 
@@ -27,15 +27,15 @@ class Uri {
 			return static::$detected_uri;
 		}
 
-		if (App\Fuel::$is_cli)
+		if (\Fuel::$is_cli)
 		{
-			if ($uri = App\Cli::option('uri') !== null)
+			if ($uri = \Cli::option('uri') !== null)
 			{
 				static::$detected_uri = $uri;
 			}
 			else
 			{
-				static::$detected_uri = App\Cli::option(1);
+				static::$detected_uri = \Cli::option(1);
 			}
 
 			return static::$detected_uri;
@@ -53,7 +53,7 @@ class Uri {
 				// Some servers require 'index.php?' as the index page
 				// if we are using mod_rewrite or the server does not require
 				// the question mark, then parse the url.
-				if (App\Config::get('index_file') != 'index.php?')
+				if (\Config::get('index_file') != 'index.php?')
 				{
 					$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 				}
@@ -64,18 +64,18 @@ class Uri {
 			}
 			else
 			{
-				throw new App\Exception('Unable to detect the URI.');
+				throw new \Exception('Unable to detect the URI.');
 			}
 
 			// Remove the base URL from the URI
-			$base_url = parse_url(App\Config::get('base_url'), PHP_URL_PATH);
+			$base_url = parse_url(\Config::get('base_url'), PHP_URL_PATH);
 			if ($uri != '' and strncmp($uri, $base_url, strlen($base_url)) === 0)
 			{
 				$uri = substr($uri, strlen($base_url));
 			}
 
 			// If we are using an index file (not mod_rewrite) then remove it
-			$index_file = App\Config::get('index_file');
+			$index_file = \Config::get('index_file');
 			if ($index_file and strncmp($uri, $index_file, strlen($index_file)) === 0)
 			{
 				$uri = substr($uri, strlen($index_file));
@@ -110,9 +110,9 @@ class Uri {
 	 */
 	public static function segment($segment, $default = null)
 	{
-		if (isset(App\Request::active()->uri->segments[$segment - 1]))
+		if (isset(\Request::active()->uri->segments[$segment - 1]))
 		{
-			return App\Request::active()->uri->segments[$segment - 1];
+			return \Request::active()->uri->segments[$segment - 1];
 		}
 
 		return $default;
@@ -120,7 +120,7 @@ class Uri {
 
 	public static function string()
 	{
-		return App\Request::active()->uri->uri;
+		return \Request::active()->uri->uri;
 	}
 
 	/**
@@ -131,11 +131,11 @@ class Uri {
 	 */
 	public static function create($uri = null, $variables = array())
 	{
-		$url = App\Config::get('base_url');
+		$url = \Config::get('base_url');
 
-		if (App\Config::get('index_file'))
+		if (\Config::get('index_file'))
 		{
-			$url .= App\Config::get('index_file').'/';
+			$url .= \Config::get('index_file').'/';
 		}
 
 		$url = $url.ltrim(is_null($uri) ? static::string() : $uri, '/');
@@ -155,7 +155,7 @@ class Uri {
 	 */
 	public static function main()
 	{
-		return static::create(App\Request::main()->uri->uri);
+		return static::create(\Request::main()->uri->uri);
 	}
 
 	/**

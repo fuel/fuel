@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Arr {
 
@@ -90,7 +90,7 @@ class Arr {
 
 		if ( ! is_array($keys))
 		{
-			throw new App\Exception('Arr::elements() - $keys must be an array.');
+			throw new \Exception('Arr::elements() - $keys must be an array.');
 		}
 
 		foreach ($keys as $key)
@@ -121,7 +121,7 @@ class Arr {
 	{
 		if (count($original) < abs($pos))
 		{
-			App\Error::notice('Position larger than number of elements in array in which to insert.');
+			\Error::notice('Position larger than number of elements in array in which to insert.');
 			return false;
 		}
 
@@ -143,7 +143,7 @@ class Arr {
 		$pos = array_search($key, array_keys($original));
 		if ($pos === false)
 		{
-			App\Error::notice('Unknown key after which to insert the new value into the array.');
+			\Error::notice('Unknown key after which to insert the new value into the array.');
 			return false;
 		}
 
@@ -163,7 +163,7 @@ class Arr {
 		$key = array_search($search, $original);
 		if ($key === false)
 		{
-			App\Error::notice('Unknown value after which to insert the new value into the array.');
+			\Error::notice('Unknown value after which to insert the new value into the array.');
 			return false;
 		}
 

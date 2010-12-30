@@ -14,20 +14,20 @@
 
 namespace Oil;
 
-use Fuel\App as App;
+
 
 class Package
 {
 	public function install($package, $version = null)
 	{
-		$config = App\Config::load('package');
+		$config = \Config::load('package');
 
-		$version = App\Cli::option('version', 'master');
+		$version = \Cli::option('version', 'master');
 
 		// Check to see if this package is already installed
 		if (is_dir(PKGPATH . $package))
 		{
-			App\Cli::write(App\Cli::color('Package "' . $package . '" is already installed.', 'red'));
+			\Cli::write(\Cli::color('Package "' . $package . '" is already installed.', 'red'));
 			return;
 		}
 
@@ -39,7 +39,7 @@ class Package
 
 			if ($fp = @fopen($zip_url, 'r'))
 			{
-				App\Cli::write('Downloading package: '.$zip_url);
+				\Cli::write('Downloading package: '.$zip_url);
 
 				$package_found = TRUE;
 
@@ -63,19 +63,19 @@ class Package
 
 		if ($package_found === TRUE)
 		{
-			App\Cli::write('Installing package "' . $package . '"');
+			\Cli::write('Installing package "' . $package . '"');
 		}
 
 		else
 		{
-			App\Cli::write('Package "' . $package . '" could not be found.');
+			\Cli::write('Package "' . $package . '" could not be found.');
 			return;
 		}
 
 		// Make the folder so we can extract the ZIP to it
 		mkdir($tmp_folder);
 
-		$unzip = new App\Unzip;
+		$unzip = new \Unzip;
 		$files = $unzip->extract($zip_file, $tmp_folder);
 
 		// Grab the first folder out of it (we dont know what it's called)
@@ -93,7 +93,7 @@ class Package
 		{
 			$path = str_replace($tmp_package_folder, $package_folder, $file);
 			chmod($path, octdec(755));
-			App\Cli::write("\t" . $path);
+			\Cli::write("\t" . $path);
 		}
 	}
 
@@ -105,13 +105,13 @@ class Package
 		// Check to see if this package is already installed
 		if ( ! is_dir($package_folder))
 		{
-			App\Cli::write(App\Cli::color('Package "' . $package . '" is not installed.', 'red'));
+			\Cli::write(\Cli::color('Package "' . $package . '" is not installed.', 'red'));
 			return;
 		}
 
-		App\Cli::write('Uninstalling package "' . $package . '"');
+		\Cli::write('Uninstalling package "' . $package . '"');
 
-		App\File::delete_dir($package_folder);
+		\File::delete_dir($package_folder);
 	}
 }
 

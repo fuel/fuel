@@ -13,7 +13,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 /**
  * Some of this code was written by Flinn Mueller.
@@ -279,7 +279,7 @@ class Inflector {
 		// Only allow 7bit characters
 		$str = static::ascii($str);
 
-		$str = App\Security::strip_tags($str);
+		$str = \Security::strip_tags($str);
 
 		if ($lowercase === true)
 		{

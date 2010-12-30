@@ -13,7 +13,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Asset {
 
@@ -64,21 +64,21 @@ class Asset {
 			return;
 		}
 
-		App\Config::load('asset', true);
+		\Config::load('asset', true);
 
-		$paths = App\Config::get('asset.paths');
+		$paths = \Config::get('asset.paths');
 
 		foreach($paths as $path)
 		{
 			static::add_path($path);
 		}
 
-		static::$_asset_url = App\Config::get('asset.url');
+		static::$_asset_url = \Config::get('asset.url');
 
 		static::$_folders = array(
-			'css'	=>	App\Config::get('asset.css_dir'),
-			'js'	=>	App\Config::get('asset.js_dir'),
-			'img'	=>	App\Config::get('asset.img_dir')
+			'css'	=>	\Config::get('asset.css_dir'),
+			'js'	=>	\Config::get('asset.js_dir'),
+			'img'	=>	\Config::get('asset.img_dir')
 		);
 
 		static::$initialized = true;
@@ -149,7 +149,7 @@ class Asset {
 			{
 				if ( ! ($file = static::find_file($filename, static::$_folders[$type])))
 				{
-					throw new App\Exception('Could not find asset: '.$filename);
+					throw new \Exception('Could not find asset: '.$filename);
 				}
 
 				$file = static::$_asset_url.$file;

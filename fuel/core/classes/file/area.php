@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class File_Area {
 
@@ -90,25 +90,25 @@ class File_Area {
 			$info = pathinfo($path);
 			if ( ! empty($this->extensions) && array_key_exists($info['extension'], $this->extensions))
 			{
-				throw new App\File_Exception('File operation not allowed: disallowed file extension.');
+				throw new \File_Exception('File operation not allowed: disallowed file extension.');
 			}
 
 			// create specific driver when available
 			if (array_key_exists($info['extension'], $this->file_drivers))
 			{
-				$class = 'App\\'.$this->file_drivers[$info['extension']];
+				$class = '\\'.$this->file_drivers[$info['extension']];
 				return $class::factory($path, $config, $this);
 			}
 
-			return App\File_Driver_File::factory($path, $config, $this);
+			return \File_Driver_File::factory($path, $config, $this);
 		}
 		elseif (is_dir($path))
 		{
-			return App\File_Driver_Directory::factory($path, $config, $this, $content);
+			return \File_Driver_Directory::factory($path, $config, $this, $content);
 		}
 
 		// still here? path is invalid
-		throw new App\File_Exception('Invalid path for file or directory.');
+		throw new \File_Exception('Invalid path for file or directory.');
 	}
 
 	/**
@@ -147,14 +147,14 @@ class File_Area {
 		// basedir prefix is required when it is set (may cause unexpected errors when realpath doesn't work)
 		if ( ! empty($this->basedir) && substr($path, 0, strlen($this->basedir)) != $this->basedir)
 		{
-			throw new App\File_Exception('File operation not allowed: given path is outside the basedir for this area.');
+			throw new \File_Exception('File operation not allowed: given path is outside the basedir for this area.');
 		}
 
 		// check file extension
 		$info = pathinfo($path);
 		if ( ! empty(static::$extensions) && array_key_exists($info['extension'], static::$extensions))
 		{
-			throw new App\File_Exception('File operation not allowed: disallowed file extension.');
+			throw new \File_Exception('File operation not allowed: disallowed file extension.');
 		}
 
 		return $path;
@@ -166,53 +166,53 @@ class File_Area {
 
 	public function create($basepath, $name, $contents = null)
 	{
-		return App\File::create($basepath, $name, $contents, $this);
+		return \File::create($basepath, $name, $contents, $this);
 	}
 
 	public function create_dir($basepath, $name, $chmod = 0777)
 	{
-		return App\File::create_dir($basepath, $name, $chmod, $this);
+		return \File::create_dir($basepath, $name, $chmod, $this);
 	}
 
 	public function read($path, $as_string = false)
 	{
-		return App\File::read($path, $as_string, $this);
+		return \File::read($path, $as_string, $this);
 	}
 
 	public function read_dir($path, $depth = 0, $filter = null)
 	{
-		$content = App\File::read_dir($path, $depth, $filter, $this);
+		$content = \File::read_dir($path, $depth, $filter, $this);
 		return $this->get_driver($path, array(), $content);
 	}
 
 	public function rename($path, $new_path)
 	{
-		return App\File::rename($path, $new_path, $this);
+		return \File::rename($path, $new_path, $this);
 	}
 
 	public function rename_dir($path, $new_path)
 	{
-		return App\File::rename_dir($path, $new_path, $this);
+		return \File::rename_dir($path, $new_path, $this);
 	}
 
 	public function copy($path, $new_path)
 	{
-		return App\File::copy($path, $new_path, $this);
+		return \File::copy($path, $new_path, $this);
 	}
 
 	public function copy_dir($path, $new_path)
 	{
-		return App\File::copy_dir($path, $new_path, $this);
+		return \File::copy_dir($path, $new_path, $this);
 	}
 
 	public function delete($path)
 	{
-		return App\File::delete($path, $this);
+		return \File::delete($path, $this);
 	}
 
 	public function delete_dir($path, $recursive = false)
 	{
-		return App\File::delete($path, $recursive, $this);
+		return \File::delete($path, $recursive, $this);
 	}
 }
 

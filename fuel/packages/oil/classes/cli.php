@@ -14,7 +14,7 @@
 
 namespace Oil;
 
-use Fuel\App as App;
+
 
 class Cli
 {
@@ -68,10 +68,10 @@ class Cli
 
 			case '-v':
 			case '--version':
-				echo 'Fuel: ' . App\Fuel::VERSION;
+				echo 'Fuel: ' . \Fuel::VERSION;
 
 			case 'test':
-				App\Fuel::add_package('octane');
+				\Fuel::add_package('octane');
 				call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
 				break;
 			

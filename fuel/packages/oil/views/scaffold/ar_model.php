@@ -1,6 +1,6 @@
 <?php echo '<?php' ?>
 
-namespace Fuel\App\Model;
+namespace \Model;
 
 use ActiveRecord;
 

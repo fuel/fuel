@@ -1,25 +1,13 @@
 <?php
-/**
- * Fuel
- *
- * Fuel is a fast, lightweight, community driven PHP5 framework.
- *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 Dan Horrigan
- * @link		http://fuelphp.com
- */
 
-namespace Fuel\App;
+namespace Fuel\Core;
 
 class Autoloader {
-
+	
 	/**
-	 * @var	array	Holds all the prefixes and paths
+	 * @var	array	$classes	holds all the classes and paths
 	 */
-	protected static $prefixes = array();
+	protected static $classes = array();
 
 	/**
 	 * @var	array	Holds all the class aliases
@@ -205,20 +193,42 @@ class Autoloader {
 			$namespace = (array) $namespace;
 			static::add_namespace_alias($alias, $namespace, $prepend);
 		}
+	}	
+	/**
+	 * Adds a class path
+	 * 
+	 * @param	string	$class	the class name
+	 * @param	string	$path	the path to the class file
+	 */
+	public static function add_class($class, $path)
+	{
+		static::$classes[$class] = $path;
 	}
 
 	/**
-	 * Sets the default path to look in, should the loader not find the file in
-	 * any packages.
-	 *
-	 * @access	public
-	 * @param	string	the alias
-	 * @param	string	class name
-	 * @return	void
+	 * Adds multiple class paths
+	 * 
+	 * @param	array	$classes	the class names and paths
 	 */
-	public static function add_path($path)
+	public static function add_classes($classes)
 	{
-		Fuel::add_path($path);
+		foreach ($classes as $class => $path)
+		{
+			static::$classes[$class] = $path;
+		}
+	}
+
+	/**
+	 * Aliases a class to a namespace, the root by default
+	 * 
+	 * @param	string	$class		the class name
+	 * @param	string	$namespace	the namespace to alias to
+	 */
+	public static function alias_to_namespace($class, $namespace = '')
+	{
+		$parts = explode('\\', $class);
+		$root_class = $namespace.array_pop($parts);
+		class_alias($class, $root_class);
 	}
 
 	/**
@@ -228,157 +238,47 @@ class Autoloader {
 	 */
 	public static function register()
 	{
-		spl_autoload_register('\Fuel\App\Autoloader::load', true, true);
+		spl_autoload_register('\\Fuel\\Core\\Autoloader::load', true, true);
 	}
 
-	/**
-	 * Loads the given class by first determining if it is a namespaced class
-	 * or a class in the global namespace.  If it cannot find the class this way
-	 * then it tries to load it from the default path.  Next it sees if the
-	 * class is an alias of another class.  If so, it will create a class alias.
-	 * Finally it checks to see if the namespace of the class is an alias of
-	 * another namespace.  If all that fails then it returns false.
-	 *
-	 * @param	string	the class name
-	 * @return	bool	if the class has been loaded
-	 */
 	public static function load($class)
 	{
+		$class = ltrim($class, '\\');
+		$namespaced = strpos($class, '\\') !== false;
+
 		if (empty(static::$auto_initialize))
 		{
 			static::$auto_initialize = $class;
 		}
-
-		// Cleanup backslash prefix, messes up class_alias and other stuff
-		$class = ltrim($class, '\\');
-
-		if (Fuel::$path_cache != null && array_key_exists($class, Fuel::$path_cache))
+		if (array_key_exists($class, static::$classes))
 		{
-			require Fuel::$path_cache[$class];
+			include str_replace('/', DS, static::$classes[$class]);
 			static::_init_class($class);
 			return true;
 		}
-
-		// Checks if there is a \ in the class name.  This indicates it is a
-		// namespace.  It sets $pos to the position of the last \.
-		if (($pos = strripos($class, '\\')) !== false)
+		elseif ( ! $namespaced and array_key_exists($class_name = 'Fuel\\Core\\'.$class, static::$classes))
 		{
-			$namespace = substr($class, 0, $pos);
-
-			foreach (static::$namespaces as $ns => $path)
+			include str_replace('/', DS, static::$classes[$class_name]);
+			static::alias_to_namespace($class_name);
+			static::_init_class($class);
+			return true;
+		}
+		elseif ( ! $namespaced)
+		{
+			$file_path = str_replace('_', DS, $class);
+			$file_path = \Fuel::find_file('classes', $file_path);
+			if ($file_path !== false)
 			{
-				if (strncmp($ns, $namespace, $ns_len = strlen($ns)) === 0)
-				{
-					$class_no_ns = substr($class, $pos + 1);
-
-					$file_path = strtolower($path.substr($namespace, strlen($ns) + 1).DS.str_replace('_', DS, $class_no_ns).'.php');
-					if (file_exists($file_path))
-					{
-						Fuel::$path_cache[$class] = $file_path;
-						Fuel::$paths_changed = true;
-						require $file_path;
-						static::_init_class($class);
-						return true;
-					}
-				}
-			}
-			if (static::namespace_alias($class))
-			{
+				require $file_path;
 				static::_init_class($class);
 				return true;
 			}
 		}
 		else
 		{
-			if (static::is_alias($class))
-			{
-				static::create_alias_class($class);
-				static::_init_class($class);
-				return true;
-			}
-
-
-			foreach (static::$prefixes as $prefix => $path)
-			{
-				if (strncmp($class, $prefix, strlen($prefix)) === 0)
-				{
-					$file_path = $path.str_replace('_', DS, strtolower($class)).'.php';
-					if (is_file($file_path))
-					{
-						Fuel::$path_cache[$class] = $file_path;
-						Fuel::$paths_changed = true;
-						require $file_path;
-						static::_init_class($class);
-						return true;
-					}
-				}
-			}
-		}
-
-		$file_path = Fuel::find_file('classes', $class);
-
-		if ($file_path !== false)
-		{
-			Fuel::$path_cache[$class] = $file_path;
-			Fuel::$paths_changed = true;
-			require $file_path;
-			static::_init_class($class);
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Checks to see if the given class in an alias of another class.
-	 *
-	 * @param	string	the class name
-	 * @return	bool	if the class name is an alias
-	 */
-	public static function is_alias($class)
-	{
-		return array_key_exists(strtolower($class), static::$aliases);
-	}
-
-	/**
-	 * Checks to see if the namespace of the given class is an alias for another
-	 * namespace.  If it is then create the alias class.
-	 *
-	 * @param	string	the class name
-	 * @return	bool	whether it was an alias
-	 */
-	public static function namespace_alias($class)
-	{
-		foreach (static::$namespace_aliases as $alias => $namespaces)
-		{
-			if ($alias == '')
-			{
-				continue;
-			}
-			if (strpos($class, $alias) === 0)
-			{
-				foreach ($namespaces as $actual)
-				{
-					$alias_class = $actual.substr($class, strlen($alias));
-					if (class_exists($alias_class))
-					{
-						class_alias($alias_class, $class);
-						return true;
-					}
-				}
-			}
+			// TODO: Implement the Namespace path autoload.
 		}
 		return false;
-	}
-
-	/**
-	 * Creates an alias class for the given class name.
-	 *
-	 * @param	string	the class name
-	 */
-	public static function create_alias_class($class)
-	{
-		class_alias(static::$aliases[strtolower($class)], $class);
 	}
 
 	/**
@@ -399,5 +299,3 @@ class Autoloader {
 		}
 	}
 }
-
-/* End of file autoloader.php */

@@ -2,40 +2,40 @@
 
 namespace Fuel\Tasks;
 
-use Fuel\App as App;
+
 
 class Migrate {
 
 	public function run()
 	{
-		$version = App\Cli::option('v', App\Cli::option('version'));
+		$version = \Cli::option('v', \Cli::option('version'));
 
 		if ($version > 0)
 		{
-			App\Migrate::version($version);
+			\Migrate::version($version);
 		}
 
 		else
 		{
-			App\Migrate::current();
+			\Migrate::current();
 		}
 	}
 
 	public function up()
 	{
-		App\Config::load('migration', true);
-		$version = App\Config::get('migration.version') + 1;
+		\Config::load('migration', true);
+		$version = \Config::get('migration.version') + 1;
 
-		App\Migrate::version($version);
+		\Migrate::version($version);
 		static::_update_version($version);
 	}
 
 	public function down()
 	{
-		App\Config::load('migration', true);
-		$version = App\Config::get('migration.version') - 1;
+		\Config::load('migration', true);
+		$version = \Config::get('migration.version') - 1;
 
-		App\Migrate::version($version);
+		\Migrate::version($version);
 		static::_update_version($version);
 	}
 
@@ -59,7 +59,7 @@ class Migrate {
 
 	public function install()
 	{
-		App\Migrate::install();
+		\Migrate::install();
 	}
 
 	public function help()

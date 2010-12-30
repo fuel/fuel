@@ -12,13 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\App;
-
-Autoloader::add_path(__DIR__.'/classes/');
-
-Autoloader::add_namespaces(array(
-	'ActiveRecord'	=> __DIR__.'/classes/',
-));
 
 
-/* End of file autoload.php */
+/* End of file bootstrap.php */

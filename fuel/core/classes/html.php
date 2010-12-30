@@ -13,7 +13,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // ------------------------------------------------------------------------
 
@@ -55,7 +55,7 @@ class Html
 	{
 		if ( ! preg_match('#^\w+://# i', $href))
 		{
-			$href = App\Uri::create($href);
+			$href = \Uri::create($href);
 		}
 		$attributes['href'] = $href;
 
@@ -206,8 +206,8 @@ class Html
 	 */
 	public static function doctype($type = 'xhtml1-trans')
 	{
-		App\Config::load('doctypes', true);
-		static::$doctypes = App\Config::get('doctypes');
+		\Config::load('doctypes', true);
+		static::$doctypes = \Config::get('doctypes');
 		if(is_array(static::$doctypes) && isset(static::$doctypes[$type]))
 		{
 			if($type == "html5")

@@ -13,15 +13,15 @@
  */
 
 namespace Fuel\Auth;
-use Fuel\App;
 
-class Auth_Group_SimpleGroup extends App\Auth_Group_Driver {
+
+class Auth_Group_SimpleGroup extends \Auth_Group_Driver {
 
 	public static $_valid_groups = array();
 
 	public static function _init()
 	{
-		static::$_valid_groups = array_keys(App\Config::get('simpleauth.groups'));
+		static::$_valid_groups = array_keys(\Config::get('simpleauth.groups'));
 	}
 
 	protected $config = array(
@@ -32,12 +32,12 @@ class Auth_Group_SimpleGroup extends App\Auth_Group_Driver {
 	{
 		if ($user === null)
 		{
-			$groups = App\Auth::instance()->get_user_groups();
+			$groups = \Auth::instance()->get_user_groups();
 		}
 		else
 		{
 			// to be written...
-			// $groups = App\Auth::instance($user[0])->get_user_groups();
+			// $groups = \Auth::instance($user[0])->get_user_groups();
 		}
 
 		if ( ! $groups || ! in_array((int) $group, static::$_valid_groups))
@@ -60,7 +60,7 @@ class Auth_Group_SimpleGroup extends App\Auth_Group_Driver {
 			return false;
 		}
 
-		$groups = App\Config::get('simpleauth.groups');
+		$groups = \Config::get('simpleauth.groups');
 		return $groups[(int) $group]['roles'];
 	}
 }

@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 /**
  * View class
@@ -273,9 +273,9 @@ class View {
 	 */
 	public function set_filename($file)
 	{
-		if (($path = App\Fuel::find_file('views', $file)) === false)
+		if (($path = \Fuel::find_file('views', $file)) === false)
 		{
-			throw new App\View_Exception('The requested view could not be found: '.App\Fuel::clean_path($file));
+			throw new \View_Exception('The requested view could not be found: '.\Fuel::clean_path($file));
 		}
 
 		// Store the file path locally
@@ -360,7 +360,7 @@ class View {
 
 		if (empty($this->_file))
 		{
-			throw new App\View_Exception('You must set the file to use within your view before rendering');
+			throw new \View_Exception('You must set the file to use within your view before rendering');
 		}
 
 		// Combine local and global data and capture the output

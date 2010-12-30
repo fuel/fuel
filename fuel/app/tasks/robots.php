@@ -26,7 +26,7 @@
 
 namespace Fuel\Tasks;
 
-use Fuel\App as App;
+
 
 class Robots {
 
@@ -50,14 +50,14 @@ class Robots {
 			$speech = 'KILL ALL HUMANS!';
 		}
 
-		$eye = App\Cli::color("*", 'red');
+		$eye = \Cli::color("*", 'red');
 
-		return App\Cli::color("
+		return \Cli::color("
 					\"{$speech}\"
 			          _____     /
 			         /_____\\", 'blue')."\n"
-.App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue')."\n"
-.App\Cli::color("			   /\\ #\\ \\_____/ /# /\\
+.\Cli::color("			    ____[\\", 'blue').$eye.\Cli::color('---', 'blue').$eye.\Cli::color('/]____', 'blue')."\n"
+.\Cli::color("			   /\\ #\\ \\_____/ /# /\\
 			  /  \\# \\_.---._/ #/  \\
 			 /   /|\\  |   |  /|\\   \\
 			/___/ | | |   | | | \\___\\
@@ -86,14 +86,14 @@ class Robots {
 	 */
 	public function protect()
 	{
-		$eye = App\Cli::color("*", 'green');
+		$eye = \Cli::color("*", 'green');
 
-		return App\Cli::color("
+		return \Cli::color("
 					\"PROTECT ALL HUMANS\"
 			          _____     /
 			         /_____\\", 'blue')."\n"
-.App\Cli::color("			    ____[\\", 'blue').$eye.App\Cli::color('---', 'blue').$eye.App\Cli::color('/]____', 'blue')."\n"
-.App\Cli::color("			   /\\ #\\ \\_____/ /# /\\
+.\Cli::color("			    ____[\\", 'blue').$eye.\Cli::color('---', 'blue').$eye.\Cli::color('/]____', 'blue')."\n"
+.\Cli::color("			   /\\ #\\ \\_____/ /# /\\
 			  /  \\# \\_.---._/ #/  \\
 			 /   /|\\  |   |  /|\\   \\
 			/___/ | | |   | | | \\___\\

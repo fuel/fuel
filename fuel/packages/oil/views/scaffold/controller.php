@@ -1,9 +1,9 @@
 <?php echo '<?php' ?>
 
-namespace Fuel\App;
+
 <?php if (isset($model)): ?>
 
-use Fuel\App\Model\<?php echo ucfirst($model); ?>;
+use \Model\<?php echo ucfirst($model); ?>;
 <?php endif; ?>
 
 class Controller_<?php echo ucfirst($name); ?> extends Controller\Template {

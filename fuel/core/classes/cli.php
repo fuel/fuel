@@ -2,7 +2,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Cli {
 
@@ -224,12 +224,12 @@ class Cli {
 	{
 		if ( ! array_key_exists($foreground, static::$foreground_colors))
 		{
-			throw new App\Exception('Invalid CLI foreground color: '.$foreground);
+			throw new \Exception('Invalid CLI foreground color: '.$foreground);
 		}
 
 		if ( $background !== null and ! array_key_exists($background, static::$background_colors))
 		{
-			throw new App\Exception('Invalid CLI background color: '.$background);
+			throw new \Exception('Invalid CLI background color: '.$background);
 		}
 
 		$string = "\033[".static::$foreground_colors[$foreground]."m";

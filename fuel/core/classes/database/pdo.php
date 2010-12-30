@@ -10,7 +10,7 @@
  */
 
 namespace Fuel\Core;
-use Fuel\App;
+
 
 class Database_PDO extends Database {
 
@@ -67,7 +67,7 @@ class Database_PDO extends Database {
 		}
 		catch (\PDOException $e)
 		{
-			throw new App\Database_Exception($e->getMessage(), $e->getCode(), $e);
+			throw new \Database_Exception($e->getMessage(), $e->getCode(), $e);
 		}
 
 		if ( ! empty($this->_config['charset']))
@@ -118,7 +118,7 @@ class Database_PDO extends Database {
 			}
 
 			// Convert the exception in a database exception
-			throw new App\Database_Exception($e->getMessage().' with query: "'.$sql.'"');
+			throw new \Database_Exception($e->getMessage().' with query: "'.$sql.'"');
 		}
 
 		if (isset($benchmark))
@@ -167,13 +167,13 @@ class Database_PDO extends Database {
 
 	public function list_tables($like = NULL)
 	{
-		throw new App\Exception('Database method :method is not supported by :class',
+		throw new \Exception('Database method :method is not supported by :class',
 			array(':method' => __FUNCTION__, ':class' => __CLASS__));
 	}
 
 	public function list_columns($table, $like = NULL)
 	{
-		throw new App\Exception('Database method :method is not supported by :class',
+		throw new \Exception('Database method :method is not supported by :class',
 			array(':method' => __FUNCTION__, ':class' => __CLASS__));
 	}
 

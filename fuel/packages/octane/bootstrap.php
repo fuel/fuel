@@ -12,16 +12,10 @@
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\App;
 
-Autoloader::add_path(__DIR__.'/classes/');
-
-Autoloader::add_namespaces(array(
-	'Fuel\\Octane'		=> __DIR__.'/classes/',
+Fuel\Core\Autoloader::add_classes(array(
+	'Fuel\\Octane\\Tests'		=> __DIR__.'/classes/tests',
+	'Fuel\\Octane\\TestCase'	=> __DIR__.'/classes/testcase.php',
 ));
 
-Autoloader::add_namespace_aliases(array(
-	'Fuel\\Octane\\Test'	=> 'Fuel\\App',
-));
-
-/* End of file autoload.php */
+/* End of file bootstrap.php */

@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class File_Driver_Directory {
 
@@ -114,7 +114,7 @@ class File_Driver_Directory {
 	 */
 	public function update()
 	{
-		throw new App\File_Exception('Update method is unavailable on directories.');
+		throw new \File_Exception('Update method is unavailable on directories.');
 	}
 
 	/**

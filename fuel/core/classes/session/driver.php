@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 abstract class Session_Driver {
 
@@ -98,7 +98,7 @@ abstract class Session_Driver {
 	public function init()
 	{
 		// get a time object
-		$this->time = App\Date::time();
+		$this->time = \Date::time();
 	}
 
 	// --------------------------------------------------------------------
@@ -529,22 +529,22 @@ abstract class Session_Driver {
 		array_unshift($payload, $this->keys);
 
 		// encrypt the payload
-		$payload = App\Crypt::encode($this->_serialize($payload));
+		$payload = \Crypt::encode($this->_serialize($payload));
 
 		// make sure it doesn't exceed the cookie size specification
 		if (strlen($payload) > 4000)
 		{
-			throw new App\Exception('The session data stored by the application in the cookie exceeds 4Kb. Select a different session storage driver.');
+			throw new \Exception('The session data stored by the application in the cookie exceeds 4Kb. Select a different session storage driver.');
 		}
 
 		// write the session cookie
 		if ($this->config['expire_on_close'])
 		{
-			return App\Cookie::set($this->config['cookie_name'], $payload, 0);
+			return \Cookie::set($this->config['cookie_name'], $payload, 0);
 		}
 		else
 		{
-			return App\Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
+			return \Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
 		}
 	}
 
@@ -559,18 +559,18 @@ abstract class Session_Driver {
 	 protected function _get_cookie()
 	 {
 		// was the cookie posted?
-		$cookie = App\Input::get_post($this->config['post_cookie_name'], false);
+		$cookie = \Input::get_post($this->config['post_cookie_name'], false);
 
 		// if not found, fetch the regular cookie
 		if ($cookie === false)
 		{
-			$cookie = App\Cookie::get($this->config['cookie_name'], false);
+			$cookie = \Cookie::get($this->config['cookie_name'], false);
 		}
 
 		if ($cookie !== false)
 		{
 			// fetch the payload
-			$cookie = $this->_unserialize(App\Crypt::decode($cookie));
+			$cookie = $this->_unserialize(\Crypt::decode($cookie));
 
 			// validate the cookie
 			if ( ! isset($cookie[0]) )
@@ -581,11 +581,11 @@ abstract class Session_Driver {
 			{
 				// session has expired
 			}
-			elseif ($this->config['match_ip'] && $cookie[0]['ip_address'] !== App\Input::real_ip())
+			elseif ($this->config['match_ip'] && $cookie[0]['ip_address'] !== \Input::real_ip())
 			{
 				// IP address doesn't match
 			}
-			elseif ($this->config['match_ua'] && $cookie[0]['user_agent'] !== App\Input::user_agent())
+			elseif ($this->config['match_ua'] && $cookie[0]['user_agent'] !== \Input::user_agent())
 			{
 				// user agent doesn't match
 			}

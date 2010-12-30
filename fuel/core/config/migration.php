@@ -11,7 +11,7 @@
  * @copyright	2010 Dan Horrigan
  */
 
-namespace Fuel\App;
+
 
 return array(
 

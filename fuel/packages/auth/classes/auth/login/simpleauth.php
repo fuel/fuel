@@ -13,7 +13,7 @@
  */
 
 namespace Fuel\Auth;
-use Fuel\App;
+
 
 /*
 	CREATE TABLE `simpleusers` (
@@ -32,11 +32,11 @@ use Fuel\App;
 	)
 */
 
-class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
+class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 
 	public static function _init()
 	{
-		App\Config::load('simpleauth', true);
+		\Config::load('simpleauth', true);
 	}
 
 	/**
@@ -62,12 +62,12 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 	 */
 	public function perform_check()
 	{
-		$username = App\Session::get('username');
-		$login_hash = App\Session::get('login_hash');
+		$username = \Session::get('username');
+		$login_hash = \Session::get('login_hash');
 
 		if ($this->user === null || (is_object($this->user) && $this->user->get('username') != $username))
 		{
-			$this->user = App\DB::select()->where('username', '=', $username)->from('simpleusers')->execute();
+			$this->user = \DB::select()->where('username', '=', $username)->from('simpleusers')->execute();
 			// this prevents a second check to query again, but will still fail the login_hash check
 			if ($this->user->count() == 0)
 			{
@@ -91,8 +91,8 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 	 */
 	public function login($username = '', $password = '')
 	{
-		$username = trim($username) ?: trim(App\Input::post('username'));
-		$password = trim($password) ?: trim(App\Input::post('password'));
+		$username = trim($username) ?: trim(\Input::post('username'));
+		$password = trim($password) ?: trim(\Input::post('password'));
 
 		if (empty($username) || empty($password))
 		{
@@ -100,7 +100,7 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 		}
 
 		$password = $this->hash_password($password);
-		$this->user = App\DB::select()
+		$this->user = \DB::select()
 				->where('username', '=', $username)
 				->where('password', '=', $password)
 				->from('simpleusers')->execute();
@@ -109,8 +109,8 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 			return false;
 		}
 
-		App\Session::set('username', $username);
-		App\Session::set('login_hash', $this->create_login_hash());
+		\Session::set('username', $username);
+		\Session::set('login_hash', $this->create_login_hash());
 		return true;
 	}
 
@@ -122,8 +122,8 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 	public function logout()
 	{
 		$this->user = null;
-		App\Session::delete('username');
-		App\Session::delete('login_hash');
+		\Session::delete('username');
+		\Session::delete('login_hash');
 		return true;
 	}
 
@@ -153,7 +153,7 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 			'group'			=> (int) $group,
 			'profile_fields'=> serialize($profile_fields)
 		);
-		$result = App\DB::insert('simpleusers')
+		$result = \DB::insert('simpleusers')
 			->set($user)
 			->execute();
 
@@ -171,24 +171,24 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 	public function update_user($values, $username = null)
 	{
 		$username = $username ?: $this->user->get('username');
-		$current_values = App\DB::select()
+		$current_values = \DB::select()
 			->where('username', '=', $username)
 			->from('simpleusers')->execute();
 		if (empty($current_values))
 		{
-			throw new App\Auth_Exception('not_found');
+			throw new \Auth_Exception('not_found');
 		}
 
 		$update = array();
 		if (array_key_exists('username', $values))
 		{
-			throw new App\Auth_Exception('username_change_not_allowed');
+			throw new \Auth_Exception('username_change_not_allowed');
 		}
 		if (array_key_exists('password', $values))
 		{
 			if ($current_values->get('password') != $this->hash_password(@$values['old_password']))
 			{
-				throw new App\Auth_Exception('invalid_old_password');
+				throw new \Auth_Exception('invalid_old_password');
 			}
 
 			if ( ! empty($values['password']))
@@ -202,7 +202,7 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 			$email = filter_var(trim($values['email']), FILTER_VALIDATE_EMAIL);
 			if ( ! $email)
 			{
-				throw new App\Auth_Exception('invalid_email');
+				throw new \Auth_Exception('invalid_email');
 			}
 			$update['email'] = $email;
 			unset($values['email']);
@@ -232,7 +232,7 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 			$update['profile_fields'] = $profile_fields;
 		}
 
-		$affected_rows = App\DB::update('simpleusers')
+		$affected_rows = \DB::update('simpleusers')
 			->set($update)
 			->where('username', '=', $username)
 			->execute();
@@ -263,10 +263,10 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 	{
 		if (empty($username))
 		{
-			throw new App\Auth_Exception('cannot_delete_empty_username');
+			throw new \Auth_Exception('cannot_delete_empty_username');
 		}
 
-		$affected_rows = App\DB::delete('simpleusers')
+		$affected_rows = \DB::delete('simpleusers')
 			->where('username', '=', $username)
 			->execute();
 
@@ -276,12 +276,12 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 	public function forgotten_password($username)
 	{
 		$username = $username;
-		$user = App\DB::select()
+		$user = \DB::select()
 			->where('username', '=', $username)
 			->from('simpleusers')->execute();
 		if (empty($user))
 		{
-			throw new App\Auth_Exception('not_found');
+			throw new \Auth_Exception('not_found');
 		}
 
 		// MUST GET CODE TO RESET THE PASSWORD TO SOMETHING RANDOM AND EMAIL IT
@@ -297,13 +297,13 @@ class Auth_Login_SimpleAuth extends App\Auth_Login_Driver {
 	{
 		if (empty($this->user))
 		{
-			throw new App\Auth_Exception('User not logged in, can\'t create login hash.');
+			throw new \Auth_Exception('User not logged in, can\'t create login hash.');
 		}
 
-		$last_login = App\Date::factory()->get_timestamp();
+		$last_login = \Date::factory()->get_timestamp();
 		$login_hash = sha1($this->config['login_hash_salt'].$this->user->get('username').$last_login);
 
-		App\DB::update('simpleusers')
+		\DB::update('simpleusers')
 			->set(array('last_login' => $last_login, 'login_hash' => $login_hash))
 			->where('username', '=', $this->user->get('username'))->execute();
 

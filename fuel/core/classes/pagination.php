@@ -13,7 +13,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Pagination {
 
@@ -67,7 +67,7 @@ class Pagination {
 	 */
 	public static function _init()
 	{
-		$config = App\Config::get('pagination', array());
+		$config = \Config::get('pagination', array());
 
 		static::set_config($config);
 	}
@@ -107,7 +107,7 @@ class Pagination {
 
 		static::$total_pages = ceil(static::$total_items / static::$per_page) ?: 1;
 
-		static::$current_page = (int) App\URI::segment(static::$uri_segment);
+		static::$current_page = (int) \URI::segment(static::$uri_segment);
 
 		if (static::$current_page > static::$total_pages)
 		{
@@ -156,7 +156,7 @@ class Pagination {
 			else
 			{
 				$url = ($i == 1) ? '' : '/'.$i;
-				$pagination .= App\Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
+				$pagination .= \Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
 			}
 		}
 
@@ -188,7 +188,7 @@ class Pagination {
 		else
 		{
 			$next_page = static::$current_page + 1;
-			return App\Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
+			return \Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
 		}
 	}
 
@@ -216,7 +216,7 @@ class Pagination {
 		{
 			$previous_page = static::$current_page - 1;
 			$previous_page = ($previous_page == 1) ? '' : '/' . $previous_page;
-			return App\Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
+			return \Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
 		}
 	}
 }

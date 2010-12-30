@@ -14,9 +14,9 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
 
-class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
+
+class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 
 	/**
 	 * @const	string	Tag used for opening & closing cache properties
@@ -53,7 +53,7 @@ class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
 			// do we have the PHP memcached extension available
 			if ( ! class_exists('Memcached') )
 			{
-				throw new App\Cache_Exception('Memcached sessions are configured, but your PHP installation doesn\'t have the Memcached extension loaded.');
+				throw new \Cache_Exception('Memcached sessions are configured, but your PHP installation doesn\'t have the Memcached extension loaded.');
 			}
 
 			// instantiate the memcached object
@@ -65,7 +65,7 @@ class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
 			// check if we can connect to the server(s)
 			if ($this->memcached->getVersion() === false)
 			{
-				throw new App\Cache_Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
+				throw new \Cache_Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
 			}
 		}
 
@@ -105,7 +105,7 @@ class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
 		$properties_end = strpos($payload, '{{/'.self::PROPS_TAG.'}}');
 		if ($properties_end === FALSE)
 		{
-			throw new App\Cache_Exception('Incorrect formatting');
+			throw new \Cache_Exception('Incorrect formatting');
 		}
 
 		$this->contents = substr($payload, $properties_end + strlen('{{/'.self::PROPS_TAG.'}}'));
@@ -113,7 +113,7 @@ class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
 		$props = json_decode($props, true);
 		if ($props === NULL)
 		{
-			throw new App\Cache_Exception('Properties retrieval failed');
+			throw new \Cache_Exception('Properties retrieval failed');
 		}
 
 		$this->created			= $props['created'];
@@ -178,7 +178,7 @@ class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
 		{
 			if ($this->memcached->getResultCode() !== \Memcached::RES_NOTFOUND)
 			{
-				throw new App\Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
+				throw new \Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
 			}
 		}
 
@@ -248,7 +248,7 @@ class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
 		// write it to the memcached server
 		if ($this->memcached->set($key, $payload, is_numeric($this->expiration) ? $this->expiration : 0) === false)
 		{
-			throw new App\Cache_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
+			throw new \Cache_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
 		}
 	}
 
@@ -321,12 +321,12 @@ class Cache_Storage_Memcached extends App\Cache_Storage_Driver {
 					// do we have a host?
 					if ( ! isset($server['host']) OR ! is_string($server['host']))
 					{
-						throw new App\Exception('Invalid Memcached server definition in the session configuration.');
+						throw new \Exception('Invalid Memcached server definition in the session configuration.');
 					}
 					// do we have a port number?
 					if ( ! isset($server['port']) OR ! is_numeric($server['port']) OR $server['port'] < 1025 OR $server['port'] > 65535)
 					{
-						throw new App\Exception('Invalid Memcached server definition in the session configuration.');
+						throw new \Exception('Invalid Memcached server definition in the session configuration.');
 					}
 					// do we have a relative server weight?
 					if ( ! isset($server['weight']) OR ! is_numeric($server['weight']) OR $server['weight'] < 0)

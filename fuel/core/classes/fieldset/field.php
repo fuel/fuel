@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // ------------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ class Fieldset_Field
 	 * @param	array
 	 * @param	Fieldset
 	 */
-	public function __construct($name, $label = '', Array $attributes = array(), Array $rules = array(), App\Fieldset $fieldset)
+	public function __construct($name, $label = '', Array $attributes = array(), Array $rules = array(), \Fieldset $fieldset)
 	{
 		$this->name = (string) $name;
 		$this->fieldset = $fieldset;

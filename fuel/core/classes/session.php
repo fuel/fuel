@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Session {
 	/**
@@ -52,9 +52,9 @@ class Session {
 	 */
 	public static function _init()
 	{
-		App\Config::load('session', true);
+		\Config::load('session', true);
 
-		if (App\Config::get('session.auto_initialize', true))
+		if (\Config::get('session.auto_initialize', true))
 		{
 			// need to catch errors here, the error handler isn't running yet
 			try
@@ -63,7 +63,7 @@ class Session {
 			}
 			catch (Exception $e)
 			{
-				App\Error::show_php_error($e);die();
+				\Error::show_php_error($e);die();
 			}
 		}
 	}
@@ -79,7 +79,7 @@ class Session {
 	 */
 	public static function factory($custom = array())
 	{
-		$config = App\Config::get('session', array());
+		$config = \Config::get('session', array());
 
 		// When a string was passed it's just the driver type
 		if ( ! empty($custom) && ! is_array($custom))
@@ -91,11 +91,11 @@ class Session {
 
 		if (empty($config['driver']))
 		{
-			throw new App\Session_Exception('No session driver given or no default session driver set.');
+			throw new \Session_Exception('No session driver given or no default session driver set.');
 		}
 
 		// determine the driver to load
-		$class = 'Fuel\\App\\Session_'.ucfirst($config['driver']);
+		$class = '\\Session_'.ucfirst($config['driver']);
 
 		$driver = new $class($config);
 
@@ -109,7 +109,7 @@ class Session {
 			$class_instance = 'Fuel\\Core\\'.$class;
 			if (static::$_instances[$cookie] instanceof $class_instance)
 			{
-				throw new App\Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
+				throw new \Exception('You can not instantiate two different sessions using the same cookie name "'.$cookie.'"');
 			}
 		}
 		else
@@ -118,7 +118,7 @@ class Session {
 			if ($driver->get_config('write_on_set') === false)
 			{
 				// register a shutdown event to update the session
-				App\Event::register('shutdown', array($driver, 'write'));
+				\Event::register('shutdown', array($driver, 'write'));
 			}
 
 			// init the session

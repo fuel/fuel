@@ -13,20 +13,20 @@
  */
 
 namespace Fuel\Auth;
-use Fuel\App;
 
-class Auth_Acl_SimpleAcl extends App\Auth_Acl_Driver {
+
+class Auth_Acl_SimpleAcl extends \Auth_Acl_Driver {
 
 	protected static $_valid_roles = array();
 
 	public static function _init()
 	{
-		static::$_valid_roles = array_keys(App\Config::get('simpleauth.roles'));
+		static::$_valid_roles = array_keys(\Config::get('simpleauth.roles'));
 	}
 
 	public function has_access($condition, Array $entity)
 	{
-		$group = App\Auth::group($entity[0]);
+		$group = \Auth::group($entity[0]);
 		if ( ! is_array($condition) || empty($group) || ! is_callable(array($group, 'get_roles')))
 		{
 			return false;
@@ -38,7 +38,7 @@ class Auth_Acl_SimpleAcl extends App\Auth_Acl_Driver {
 		$current_rights = '';
 		if (is_array($current_roles))
 		{
-			$roles = App\Config::get('simpleauth.roles', array());
+			$roles = \Config::get('simpleauth.roles', array());
 			array_key_exists('#', $roles) && array_unshift($current_roles, '#');
 			foreach ($current_roles as $r_role)
 			{

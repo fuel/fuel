@@ -14,7 +14,7 @@
 
 namespace Oil;
 
-use Fuel\App as App;
+
 
 class Refine
 {
@@ -25,9 +25,9 @@ class Refine
 
 		$task = ucfirst(strtolower($task));
 
-		if ( ! $file = App\Fuel::find_file('tasks', $task))
+		if ( ! $file = \Fuel::find_file('tasks', $task))
 		{
-			throw new App\Exception('Well that didnt work...');
+			throw new \Exception('Well that didnt work...');
 			return;
 		}
 
@@ -38,7 +38,7 @@ class Refine
 		$new_task = new $task;
 
 		// The help option hs been called, so call help instead
-		if (App\Cli::option('help') && is_callable(array($new_task, 'help')))
+		if (\Cli::option('help') && is_callable(array($new_task, 'help')))
 		{
 			$method = 'help';
 		}

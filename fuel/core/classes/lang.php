@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Lang {
 
@@ -29,14 +29,14 @@ class Lang {
 		$lang = array();
 
 		// Use the current language, failing that use the fallback language
-		foreach (array(App\Config::get('language'), static::$fallback) as $language)
+		foreach (array(\Config::get('language'), static::$fallback) as $language)
 		{
-			if ($path = App\Fuel::find_file('lang/'.$language, $file, '.php', true))
+			if ($path = \Fuel::find_file('lang/'.$language, $file, '.php', true))
 			{
 				$lang = array();
 				foreach ($path as $p)
 				{
-					$lang = $lang + App\Fuel::load($p);
+					$lang = $lang + \Fuel::load($p);
 				}
 				break;
 			}

@@ -17,7 +17,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App;
+
 
 class Database_Expression {
 

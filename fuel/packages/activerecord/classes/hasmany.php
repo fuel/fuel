@@ -14,15 +14,15 @@
 
 namespace ActiveRecord;
 
-use Fuel\App as App;
-use Fuel\App\DB;
+
+use \DB;
 
 class HasMany extends Association {
 
 	public function __construct(&$source, $dest, $options=null)
 	{
 		parent::__construct($source, $dest, $options);
-		$this->foreign_key = App\Inflector::foreign_key($this->source_class);
+		$this->foreign_key = \Inflector::foreign_key($this->source_class);
 	}
 
 	public function push($args, &$source)
@@ -31,11 +31,11 @@ class HasMany extends Association {
 		{
 			if (($source->is_new_record() || $object->is_new_record()) && isset($this->options['through']) && $this->options['through'])
 			{
-				throw new App\Exception("Has-many-through can't associate new records.", Exception::HasManyThroughCantAssociateNewRecords);
+				throw new \Exception("Has-many-through can't associate new records.", Exception::HasManyThroughCantAssociateNewRecords);
 			}
 			if (!$object instanceof $this->dest_class)
 			{
-				throw new App\Exception("Expected class: {$this->dest_class}; Received: " . get_class($object), Exception::UnexpectedClass);
+				throw new \Exception("Expected class: {$this->dest_class}; Received: " . get_class($object), Exception::UnexpectedClass);
 			}
 			if ($source->is_new_record())
 			{
@@ -63,9 +63,9 @@ class HasMany extends Association {
 				}
 				if ( ! $skip)
 				{
-					$through_class = App\Inflector::classify($this->options['through']);
-					$fk_1 = App\Inflector::foreign_key($this->dest_class);
-					$fk_2 = App\Inflector::foreign_key($this->source_class);
+					$through_class = \Inflector::classify($this->options['through']);
+					$fk_1 = \Inflector::foreign_key($this->dest_class);
+					$fk_2 = \Inflector::foreign_key($this->source_class);
 					$k1 = $object->{$object->get_primary_key()};
 					$k2 = $source->{$source->get_primary_key()};
 					$through = new $through_class(array($fk_1 => $k1, $fk_2 => $k2));
@@ -184,9 +184,9 @@ class HasMany extends Association {
 				}
 				else
 				{
-					$through_class = App\Inflector::classify($this->options['through']);
-					$fk_1 = App\Inflector::foreign_key($this->dest_class);
-					$fk_2 = App\Inflector::foreign_key($this->source_class);
+					$through_class = \Inflector::classify($this->options['through']);
+					$fk_1 = \Inflector::foreign_key($this->dest_class);
+					$fk_2 = \Inflector::foreign_key($this->source_class);
 					$k1 = $object->{$object->get_primary_key()};
 					$k2 = $source->{$source->get_primary_key()};
 					$through = call_user_func_array(
@@ -209,8 +209,8 @@ class HasMany extends Association {
 
 	public function join()
 	{
-		$dest_table = App\Inflector::tableize($this->dest_class);
-		$source_table = App\Inflector::tableize($this->source_class);
+		$dest_table = \Inflector::tableize($this->dest_class);
+		$source_table = \Inflector::tableize($this->source_class);
 		$source_inst = new $this->source_class;
 		$dest_inst = new $this->dest_class;
 		$columns = $dest_inst->get_columns();
@@ -234,7 +234,7 @@ class HasMany extends Association {
 				array(
 					'table'	=> $dest_table,
 					'type'	=> 'LEFT OUTER',
-					'on'	=> array($dest_table.'.'.$dest_inst->get_primary_key(), '=', $this->options['through'].'.'.App\Inflector::foreign_key($this->dest_class))
+					'on'	=> array($dest_table.'.'.$dest_inst->get_primary_key(), '=', $this->options['through'].'.'.\Inflector::foreign_key($this->dest_class))
 				)
 			);
 		}

@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // --------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ class Session_Memcached extends Session_Driver {
 			// do we have the PHP memcached extension available
 			if ( ! class_exists('Memcached') )
 			{
-				throw new App\Exception('Memcached sessions are configured, but your PHP installation doesn\'t have the Memcached extension loaded.');
+				throw new \Exception('Memcached sessions are configured, but your PHP installation doesn\'t have the Memcached extension loaded.');
 			}
 
 			// instantiate the memcached object
@@ -75,7 +75,7 @@ class Session_Memcached extends Session_Driver {
 			// check if we can connect to the server(s)
 			if ($this->memcached->getVersion() === false)
 			{
-				throw new App\Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
+				throw new \Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
 			}
 		}
 	}
@@ -93,8 +93,8 @@ class Session_Memcached extends Session_Driver {
 		// create a new session
 		$this->keys['session_id']	= $this->_new_session_id();
 		$this->keys['previous_id']	= $this->keys['session_id'];	// prevents errors if previous_id has a unique index
-		$this->keys['ip_address']	= App\Input::real_ip();
-		$this->keys['user_agent']	= App\Input::user_agent();
+		$this->keys['ip_address']	= \Input::real_ip();
+		$this->keys['user_agent']	= \Input::user_agent();
 		$this->keys['created'] 		= $this->time->get_timestamp();
 		$this->keys['updated'] 		= $this->keys['created'];
 
@@ -219,7 +219,7 @@ class Session_Memcached extends Session_Driver {
 			// delete the key from the memcached server
 			if ($this->memcached->delete($this->config['cookie_name'].'_'.$this->keys['session_id']) === false)
 			{
-				throw new App\Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
+				throw new \Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
 			}
 		}
 
@@ -243,7 +243,7 @@ class Session_Memcached extends Session_Driver {
 		// write it to the memcached server
 		if ($this->memcached->set($this->config['cookie_name'].'_'.$this->keys['session_id'], $payload, $this->config['expiration_time']) === false)
 		{
-			throw new App\Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
+			throw new \Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
 		}
 	}
 
@@ -302,12 +302,12 @@ class Session_Memcached extends Session_Driver {
 								// do we have a host?
 								if ( ! isset($server['host']) OR ! is_string($server['host']))
 								{
-									throw new App\Exception('Invalid Memcached server definition in the session configuration.');
+									throw new \Exception('Invalid Memcached server definition in the session configuration.');
 								}
 								// do we have a port number?
 								if ( ! isset($server['port']) OR ! is_numeric($server['port']) OR $server['port'] < 1025 OR $server['port'] > 65535)
 								{
-									throw new App\Exception('Invalid Memcached server definition in the session configuration.');
+									throw new \Exception('Invalid Memcached server definition in the session configuration.');
 								}
 								// do we have a relative server weight?
 								if ( ! isset($server['weight']) OR ! is_numeric($server['weight']) OR $server['weight'] < 0)

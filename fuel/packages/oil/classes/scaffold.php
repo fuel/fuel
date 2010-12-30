@@ -14,7 +14,7 @@
 
 namespace Oil;
 
-use Fuel\App as App;
+
 
 class Scaffold
 {
@@ -26,10 +26,10 @@ class Scaffold
 
 		$singular = strtolower(array_shift($args));
 		$model_name = ucfirst($singular);
-		$plural = App\Inflector::pluralize($singular);
+		$plural = \Inflector::pluralize($singular);
 
 		$filepath = APPPATH.'classes/controller/'.$plural.'.php';
-		$controller = new App\View('scaffold/controller');
+		$controller = new \View('scaffold/controller');
 
 		$controller->name = $plural;
 
@@ -61,7 +61,7 @@ class Scaffold
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
-			throw new App\Exception('Cannot open file: '. $filepath);
+			throw new \Exception('Cannot open file: '. $filepath);
 		}
 
 		$result = @fwrite($handle, $data);
@@ -69,7 +69,7 @@ class Scaffold
 		// Write $somecontent to our opened file.
 		if ($result === FALSE)
 		{
-			throw new App\Exception('Cannot write to file: '. $filepath);
+			throw new \Exception('Cannot write to file: '. $filepath);
 		}
 
 		@fclose($handle);

@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // ------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ class Cookie {
 	 */
 	public static function get($index, $default = NULL)
 	{
-		return App\Input::cookie($index, $default);
+		return \Input::cookie($index, $default);
 	}
 
 	/**

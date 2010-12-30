@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // ------------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ class Date {
 
 	public static function _init()
 	{
-		static::$server_gmt_offset	= App\Config::get('server_gmt_offset', 0);
+		static::$server_gmt_offset	= \Config::get('server_gmt_offset', 0);
 
 		// Set the default timezone
 		static::$default_timezone	= date_default_timezone_get();
@@ -135,15 +135,15 @@ class Date {
 	 */
 	public static function create_from_string($input, $pattern_key = 'human')
 	{
-		App\Config::load('date', 'date');
+		\Config::load('date', 'date');
 
-		$pattern = App\Config::get('date.patterns.'.$pattern_key, null);
+		$pattern = \Config::get('date.patterns.'.$pattern_key, null);
 		$pattern = ($pattern === null) ? $pattern_key : $pattern;
 
 		$time = strptime($input, $pattern);
 		if ($time === false)
 		{
-			App\Error::notice('Input was not recognized by pattern.');
+			\Error::notice('Input was not recognized by pattern.');
 			return false;
 		}
 		$timestamp = mktime($time['tm_hour'], $time['tm_min'], $time['tm_sec'],
@@ -168,7 +168,7 @@ class Date {
 
 		if ($interval <= 0)
 		{
-			App\Error::notice('Input was not recognized by pattern.');
+			\Error::notice('Input was not recognized by pattern.');
 			return false;
 		}
 
@@ -198,7 +198,7 @@ class Date {
 
 		if ($month < 1 || $month > 12)
 		{
-			App\Error::notice('Invalid input for month given.');
+			\Error::notice('Invalid input for month given.');
 			return false;
 		}
 		elseif ($month == 2)
@@ -231,9 +231,9 @@ class Date {
 	 */
 	public function format($pattern_key = 'local')
 	{
-		App\Config::load('date', 'date');
+		\Config::load('date', 'date');
 
-		$pattern = App\Config::get('date.patterns.'.$pattern_key, $pattern_key);
+		$pattern = \Config::get('date.patterns.'.$pattern_key, $pattern_key);
 
 		// Temporarily change timezone when different from default
 		if (static::$default_timezone != $this->timezone)

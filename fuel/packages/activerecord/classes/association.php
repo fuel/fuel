@@ -14,8 +14,8 @@
 
 namespace ActiveRecord;
 
-use Fuel\App as App;
-use Fuel\App\DB;
+
+use \DB;
 
 class Association {
 
@@ -34,7 +34,7 @@ class Association {
 		}
 		else
 		{
-			$this->dest_class = App\Inflector::classify($dest);
+			$this->dest_class = \Inflector::classify($dest);
 		}
 
 		if (isset($options['foreign_key']))
@@ -43,17 +43,17 @@ class Association {
 		}
 		else
 		{
-			$this->foreign_key = App\Inflector::foreign_key($this->source_class);
+			$this->foreign_key = \Inflector::foreign_key($this->source_class);
 		}
 
 		if ( ! class_exists($this->dest_class))
 		{
-			$this->dest_class = 'Fuel\\App\\Model\\'.$this->dest_class;
+			$this->dest_class = '\\Model\\'.$this->dest_class;
 		}
 
 		if ( ! class_exists($this->source_class))
 		{
-			$this->source_class = 'Fuel\\App\\Model\\'.$this->source_class;
+			$this->source_class = '\\Model\\'.$this->source_class;
 		}
 
 		$this->options = $options;

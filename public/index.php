@@ -29,9 +29,9 @@ is_file($app_path.'base.php') and require $app_path.'base.php';
 require $core_path.'base.php';
 
 // Initialize the framework
-Fuel\App\Fuel::init();
-Fuel\App\Request::factory()->execute()->send_headers()->output();
-Fuel\App\Event::shutdown();
-Fuel\App\Fuel::finish();
+\Fuel::init();
+\Request::factory()->execute()->send_headers()->output();
+\Event::shutdown();
+\Fuel::finish();
 
 /* End of file index.php */

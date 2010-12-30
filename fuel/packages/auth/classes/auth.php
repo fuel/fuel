@@ -13,7 +13,7 @@
  */
 
 namespace Fuel\Auth;
-use Fuel\App;
+
 
 // ------------------------------------------------------------------------
 
@@ -57,12 +57,12 @@ class Auth {
 
 	public static function _init()
 	{
-		App\Config::load('auth', true);
+		\Config::load('auth', true);
 
 		// Whether to allow multiple drivers of any type, defaults to not allowed
-		static::$_verify_multiple = App\Config::get('auth.verify_multiple_logins', false);
+		static::$_verify_multiple = \Config::get('auth.verify_multiple_logins', false);
 
-		foreach((array) App\Config::get('auth.driver', array()) as $driver => $config)
+		foreach((array) \Config::get('auth.driver', array()) as $driver => $config)
 		{
 			$config = is_int($driver)
 				? array('driver' => $config)
@@ -89,17 +89,17 @@ class Auth {
 	{
 		// Driver is given as array key or just string in custom
 		$custom = ! is_array($custom) ? array('driver' => $custom) : $custom;
-		$config = App\Config::get('auth.'.$custom['driver'].'_config', array());
+		$config = \Config::get('auth.'.$custom['driver'].'_config', array());
 		$config = array_merge($config, $custom);
 
 		// Driver must be set
 		if (empty($config['driver']) || ! is_string($config['driver']))
 		{
-			throw new App\Auth_Exception('No auth driver given.');
+			throw new \Auth_Exception('No auth driver given.');
 		}
 
 		// determine the driver to load
-		$driver = App\Auth_Login_Driver::factory($config);
+		$driver = \Auth_Login_Driver::factory($config);
 
 		// get the driver's cookie name
 		$id = $driver->get_id();
@@ -111,7 +111,7 @@ class Auth {
 			$class = get_class($driver);
 			if ( ! static::$_instances[$id] instanceof $class)
 			{
-				throw new App\Auth_Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
+				throw new \Auth_Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
 			}
 		}
 		else
@@ -198,7 +198,7 @@ class Auth {
 				return true;
 			}
 
-			$i = $i instanceof App\Auth_Login_Driver ? $i : static::instance($i);
+			$i = $i instanceof \Auth_Login_Driver ? $i : static::instance($i);
 			if ( ! array_key_exists($i->get_id(), static::$_verified))
 			{
 				$i->check();
@@ -283,7 +283,7 @@ class Auth {
 
 		if ($driver_exists || $method_exists)
 		{
-			App\Error::notice('Cannot add driver type, its name conflicts with another driver or method.');
+			\Error::notice('Cannot add driver type, its name conflicts with another driver or method.');
 			return false;
 		}
 
@@ -301,7 +301,7 @@ class Auth {
 	{
 		if (in_array('login', 'group', 'acl'))
 		{
-			App\Error::notice('Cannot remove driver type, included drivers login, group and acl cannot be removed.');
+			\Error::notice('Cannot remove driver type, included drivers login, group and acl cannot be removed.');
 			return false;
 		}
 
@@ -328,7 +328,7 @@ class Auth {
 			return static::_driver_check($type, $args[0], @$args[1], @$args[2]);
 		}
 
-		throw new App\Auth_Exception('Invalid method.');
+		throw new \Auth_Exception('Invalid method.');
 	}
 
 	/**
@@ -341,7 +341,7 @@ class Auth {
 	 */
 	protected static function _driver_instance($type, $instance)
 	{
-		$class = 'Fuel\\App\\Auth_'.ucfirst($type).'_Driver';
+		$class = '\\Auth_'.ucfirst($type).'_Driver';
 		return $class::instance($instance);
 	}
 

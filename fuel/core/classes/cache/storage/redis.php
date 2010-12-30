@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Cache_Storage_Redis extends Cache_Storage_Driver {
 
@@ -53,18 +53,18 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 			// get the redis database instance
 			try
 			{
-				$this->redis = App\Redis::instance($this->config['database']);
+				$this->redis = \Redis::instance($this->config['database']);
 			}
 			catch (Exception $e)
 			{
-				throw new App\Cache_Exception('Can not connect to the Redis engine. The error message says "'.$e->getMessage().'".');
+				throw new \Cache_Exception('Can not connect to the Redis engine. The error message says "'.$e->getMessage().'".');
 			}
 
 			// get the redis version
 			preg_match('/redis_version:(.*?)\n/', $this->redis->info(), $info);
 			if (version_compare(trim($info[1]), '1.2') < 0)
 			{
-				throw new App\Cache_Exception('Version 1.2 or higher of the Redis NoSQL engine is required to use the redis cache driver.');
+				throw new \Cache_Exception('Version 1.2 or higher of the Redis NoSQL engine is required to use the redis cache driver.');
 			}
 		}
 
@@ -118,7 +118,7 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 		$properties_end = strpos($payload, '{{/'.self::PROPS_TAG.'}}');
 		if ($properties_end === FALSE)
 		{
-			throw new App\Cache_Exception('Incorrect formatting');
+			throw new \Cache_Exception('Incorrect formatting');
 		}
 
 		$this->contents = substr($payload, $properties_end + strlen('{{/'.self::PROPS_TAG.'}}'));
@@ -126,7 +126,7 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 		$props = json_decode($props, true);
 		if ($props === NULL)
 		{
-			throw new App\Cache_Exception('Properties retrieval failed');
+			throw new \Cache_Exception('Properties retrieval failed');
 		}
 
 		$this->created			= $props['created'];

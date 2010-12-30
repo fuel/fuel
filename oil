@@ -24,9 +24,9 @@ is_file($app_path.'base.php') and require $app_path.'base.php';
 require $core_path.'base.php';
 
 // Initialize the framework
-Fuel\App\Fuel::init();
+\Fuel::init();
 
-Fuel\App\Fuel::add_package('oil');
+\Fuel::add_package('oil');
 
 // Fire up the command line interfact
 Oil\Cli::init($_SERVER['argv']);

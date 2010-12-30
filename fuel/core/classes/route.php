@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Route {
 
@@ -22,13 +22,13 @@ class Route {
 
 	public static function load_routes($reload = false)
 	{
-		if (App\Config::load('config', false, $reload))
+		if (\Config::load('config', false, $reload))
 		{
-			static::$routes = App\Config::get('routes');
+			static::$routes = \Config::get('routes');
 		}
 		elseif ( ! $reload)
 		{
-			static::$routes = App\Config::get('routes');
+			static::$routes = \Config::get('routes');
 		}
 	}
 
@@ -148,7 +148,7 @@ class Route {
 				$verb = $r[0];
 				$forward = $r[1];
 
-				if (App\Input::method() == strtoupper($verb))
+				if (\Input::method() == strtoupper($verb))
 				{
 					$result = static::_parse_search($uri, $search, $forward);
 

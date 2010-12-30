@@ -57,7 +57,7 @@ unset($app_path, $package_path);
 
 import('fuel');
 
-( ! class_exists('Fuel\\App\\Fuel')) and class_alias('Fuel\\Core\\Fuel', 'Fuel\\App\\Fuel');
+( ! class_exists('Fuel')) and class_alias('Fuel\\Core\\Fuel', 'Fuel');
 
 /**
  * Do we have access to mbstring?
@@ -71,20 +71,20 @@ if ( ! function_exists('logger'))
 	{
 		if (Config::get('profiling'))
 		{
-			if ($level == Fuel\App\Fuel::L_ERROR)
+			if ($level == \Fuel::L_ERROR)
 			{
-				Fuel\App\Console::logError($method.' - '.$msg);
+				\Console::logError($method.' - '.$msg);
 			}
 			else
 			{
-				Fuel\App\Console::log($method.' - '.$msg);
+				\Console::log($method.' - '.$msg);
 			}
 		}
-		if ($level > Fuel\App\Config::get('log_threshold'))
+		if ($level > \Config::get('log_threshold'))
 		{
 			return false;
 		}
-		return Fuel\App\Log::write($level, $msg, $method = null);
+		return \Log::write($level, $msg, $method = null);
 	}
 }
 
@@ -175,7 +175,7 @@ if ( ! function_exists('render'))
 {
 	function render($view, $data = array())
 	{
-		return Fuel\App\View::factory($view, $data)->render();
+		return \View::factory($view, $data)->render();
 	}
 }
 
@@ -190,7 +190,7 @@ if ( ! function_exists('__'))
 {
 	function __($string, $params = array())
 	{
-		return Fuel\App\Lang::line($string, $params);
+		return \Lang::line($string, $params);
 	}
 }
 
@@ -198,7 +198,7 @@ if ( ! function_exists('fuel_shutdown_handler'))
 {
 	function fuel_shutdown_handler()
 	{
-		return Fuel\App\Error::shutdown_handler();
+		return \Error::shutdown_handler();
 	}
 }
 
@@ -206,7 +206,7 @@ if ( ! function_exists('fuel_exception_handler'))
 {
 	function fuel_exception_handler(\Exception $e)
 	{
-		return Fuel\App\Error::exception_handler($e);
+		return \Error::exception_handler($e);
 	}
 }
 
@@ -214,7 +214,7 @@ if ( ! function_exists('fuel_error_handler'))
 {
 	function fuel_error_handler($severity, $message, $filepath, $line)
 	{
-		return Fuel\App\Error::error_handler($severity, $message, $filepath, $line);
+		return \Error::error_handler($severity, $message, $filepath, $line);
 	}
 }
 

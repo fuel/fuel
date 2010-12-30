@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class DB {
 
@@ -148,7 +148,7 @@ class DB {
 			}
 			return $string;
 		}
-		return App\Database::instance($db)->quote_identifier($string);
+		return \Database::instance($db)->quote_identifier($string);
 	}
 
 	/**
@@ -160,7 +160,7 @@ class DB {
 	 */
 	public static function escape($string, $db = null)
 	{
-		return App\Database::instance($db)->escape($string);
+		return \Database::instance($db)->escape($string);
 	}
 
 } // End DB

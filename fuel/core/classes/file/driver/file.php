@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class File_Driver_File {
 
@@ -46,7 +46,7 @@ class File_Driver_File {
 
 	public static function factory($path, Array $config = array(), File_Area $area = null, $content = array())
 	{
-		$obj = new static($path, $config, App\File::instance($area), $content);
+		$obj = new static($path, $config, \File::instance($area), $content);
 
 		$config['path'] = $path;
 		$config['area'] = $area;

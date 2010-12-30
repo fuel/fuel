@@ -14,15 +14,15 @@
 
 namespace ActiveRecord;
 
-use Fuel\App as App;
-use Fuel\App\DB;
+
+use \DB;
 
 class BelongsTo extends Association {
 
 	public function __construct(&$source, $dest, $options = null)
 	{
 		parent::__construct($source, $dest, $options);
-		$this->foreign_key = App\Inflector::foreign_key($this->dest_class);
+		$this->foreign_key = \Inflector::foreign_key($this->dest_class);
 	}
 
 	public function set($value, &$source)
@@ -41,7 +41,7 @@ class BelongsTo extends Association {
 		}
 		else
 		{
-			throw new App\Exception("Did not get expected class: {$this->dest_class}", Exception::UnexpectedClass);
+			throw new \Exception("Did not get expected class: {$this->dest_class}", Exception::UnexpectedClass);
 		}
 	}
 
@@ -62,8 +62,8 @@ class BelongsTo extends Association {
 
 	public function join()
 	{
-		$dest_table = App\Inflector::tableize($this->dest_class);
-		$source_table = App\Inflector::tableize($this->source_class);
+		$dest_table = \Inflector::tableize($this->dest_class);
+		$source_table = \Inflector::tableize($this->source_class);
 		$dest_inst = new $this->dest_class;
 		$columns = $dest_inst->get_columns();
 

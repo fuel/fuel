@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Cache_Handler_String implements Cache_Handler_Driver {
 

@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Output {
 
@@ -143,7 +143,7 @@ class Output {
 		if ( ! headers_sent())
 		{
 			// Send the protocol line first
-			$protocol = App\Input::server('SERVER_PROTOCOL') ? App\Input::server('SERVER_PROTOCOL') : 'HTTP/1.1';
+			$protocol = \Input::server('SERVER_PROTOCOL') ? \Input::server('SERVER_PROTOCOL') : 'HTTP/1.1';
 			header($protocol.' '.static::$status.' '.static::$statuses[static::$status]);
 
 			foreach (static::$headers as $name => $value)

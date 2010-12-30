@@ -14,10 +14,10 @@
 
 namespace ActiveRecord;
 
-use Fuel\App as App;
-use Fuel\App\DB;
-use Fuel\App\Database;
-use Fuel\App\Inflector;
+
+use \DB;
+use \Database;
+use \Inflector;
 
 class Model {
 
@@ -90,7 +90,7 @@ class Model {
 		}
 		if (strncmp($name, 'find_by_', 8) !== 0 && $name != '_init')
 		{
-			throw new App\Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
+			throw new \Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
 		}
 
 		$name = substr($name, 8);
@@ -342,7 +342,7 @@ class Model {
 			}
 		}
 
-		throw new App\Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+		throw new \Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 	}
 
 	/**
@@ -366,7 +366,7 @@ class Model {
 	{
 		if ($this->frozen)
 		{
-			throw new App\Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
+			throw new \Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
 		}
 
 		if (preg_match('#(.+?)_ids$#', $name, $matches))
@@ -397,7 +397,7 @@ class Model {
 		}
 		else
 		{
-			throw new App\Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+			throw new \Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 		}
 	}
 
@@ -436,7 +436,7 @@ class Model {
 		}
 		else
 		{
-			throw new App\Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
+			throw new \Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
 		}
 	}
 
@@ -842,7 +842,7 @@ class Model {
 		}
 		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
 		{
-			throw new App\Exception("Couldn't find anything.", Exception::RecordNotFound);
+			throw new \Exception("Couldn't find anything.", Exception::RecordNotFound);
 		}
 
 		return (is_array($id) || $id == 'all')

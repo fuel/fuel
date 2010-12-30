@@ -24,7 +24,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 /**
  * Redisent, a Redis interface for the modest among us
@@ -42,11 +42,11 @@ class Redis {
 
 		if (empty(static::$instances))
 		{
-			App\Config::load('db', true);
+			\Config::load('db', true);
 		}
-		if ( ! ($config = App\Config::get('db.redis.'.$name)))
+		if ( ! ($config = \Config::get('db.redis.'.$name)))
 		{
-			throw new App\Redis_Exception('Invalid instance name given.');
+			throw new \Redis_Exception('Invalid instance name given.');
 		}
 
 		static::$instances[$name] = new static($config);
@@ -62,7 +62,7 @@ class Redis {
 
 		if ( ! $this->connection)
 		{
-			throw new App\Redis_Exception($errstr, $errno);
+			throw new \Redis_Exception($errstr, $errno);
 		}
 	}
 
@@ -95,7 +95,7 @@ class Redis {
 		{
 			// Error
 			case '-':
-				throw new App\Redis_Exception(substr(trim($reply), 4));
+				throw new \Redis_Exception(substr(trim($reply), 4));
 			break;
 
 			// In-line reply
@@ -160,7 +160,7 @@ class Redis {
 
 			// Don't know what to do?  Throw it outta here
 			default:
-				throw new App\Redis_Exception("invalid server response: {$reply}");
+				throw new \Redis_Exception("invalid server response: {$reply}");
 			break;
 		}
 

@@ -14,12 +14,12 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // Load in the Autoloader
 require COREPATH.'classes'.DS.'autoloader.php';
-require COREPATH.'autoload.php';
-require APPPATH.'autoload.php';
+require COREPATH.'bootstrap.php';
+require APPPATH.'bootstrap.php';
 
 /**
  * The core of the framework.
@@ -48,7 +48,7 @@ class Fuel {
 
 	public static $initialized = false;
 
-	public static $env = App\Fuel::DEVELOPMENT;
+	public static $env = \Fuel::DEVELOPMENT;
 
 	public static $profiling = false;
 
@@ -86,9 +86,9 @@ class Fuel {
 	{
 		if (static::$initialized)
 		{
-			throw new App\Exception("You can't initialize Fuel more than once.");
+			throw new \Exception("You can't initialize Fuel more than once.");
 		}
-		App\Autoloader::register();
+		Autoloader::register();
 
 		static::$_paths = array(APPPATH, COREPATH);
 
@@ -105,8 +105,8 @@ class Fuel {
 
 		if (static::$profiling)
 		{
-			App\Profiler::init();
-			App\Profiler::mark(__METHOD__.' Start');
+			\Profiler::init();
+			\Profiler::mark(__METHOD__.' Start');
 		}
 
 		static::$cache_dir = isset($config['cache_dir']) ? $config['cache_dir'] : APPPATH.'cache/';
@@ -118,28 +118,28 @@ class Fuel {
 			static::$path_cache = static::cache('Fuel::path_cache');
 		}
 
-		App\Config::load($config);
+		\Config::load($config);
 
 		static::$is_cli = (bool) (php_sapi_name() == 'cli');
 
 		if ( ! static::$is_cli)
 		{
-			if (App\Config::get('base_url') === null)
+			if (\Config::get('base_url') === null)
 			{
-				App\Config::set('base_url', static::generate_base_url());
+				\Config::set('base_url', static::generate_base_url());
 			}
 
-			App\Uri::detect();
+			\Uri::detect();
 		}
 
 		// Run Input Filtering
-		App\Security::clean_input();
+		\Security::clean_input();
 
-		static::$env = App\Config::get('environment');
-		static::$locale = App\Config::get('locale');
+		static::$env = \Config::get('environment');
+		static::$locale = \Config::get('locale');
 
 		//Load in the packages
-		foreach (App\Config::get('always_load.packages', array()) as $package)
+		foreach (\Config::get('always_load.packages', array()) as $package)
 		{
 			static::add_package($package);
 		}
@@ -154,7 +154,7 @@ class Fuel {
 
 		if (static::$profiling)
 		{
-			App\Profiler::mark(__METHOD__.' End');
+			\Profiler::mark(__METHOD__.' End');
 		}
 	}
 
@@ -177,20 +177,20 @@ class Fuel {
 
 		if (static::$profiling)
 		{
-			App\Profiler::mark('End of Fuel Execution');
+			\Profiler::mark('End of Fuel Execution');
 			if (preg_match("|</body>.*?</html>|is", $output))
 			{
 				$output  = preg_replace("|</body>.*?</html>|is", '', $output);
-				$output .= App\Profiler::output();
+				$output .= \Profiler::output();
 				$output .= '</body></html>';
 			}
 			else
 			{
-				$output .= App\Profiler::output();
+				$output .= \Profiler::output();
 			}
 		}
 
-		$bm = App\Profiler::app_total();
+		$bm = \Profiler::app_total();
 
 		// TODO: There is probably a better way of doing this, but this works for now.
 		$output = \str_replace(
@@ -254,13 +254,13 @@ class Fuel {
 	protected static function generate_base_url()
 	{
 		$base_url = '';
-		if(App\Input::server('http_host'))
+		if(\Input::server('http_host'))
 		{
-			$base_url .= App\Input::protocol().'://'.App\Input::server('http_host');
+			$base_url .= \Input::protocol().'://'.\Input::server('http_host');
 		}
-		if (App\Input::server('script_name'))
+		if (\Input::server('script_name'))
 		{
-			$base_url .= str_replace('\\', '/', dirname(App\Input::server('script_name')));
+			$base_url .= str_replace('\\', '/', dirname(\Input::server('script_name')));
 
 			// Add a slash if it is missing
 			$base_url = rtrim($base_url, '/').'/';
@@ -332,7 +332,7 @@ class Fuel {
 				continue;
 			}
 			static::add_path($path);
-			static::load($path.'autoload.php');
+			static::load($path.'bootstrap.php');
 			static::$packages[$name] = true;
 		}
 	}
@@ -360,14 +360,14 @@ class Fuel {
 	 */
 	public static function add_module($name, $active = false)
 	{
-		$paths = App\Config::get('module_paths', array());
+		$paths = \Config::get('module_paths', array());
 
 		if (empty($paths))
 		{
 			return false;
 		}
 
-		$path = App\Autoloader::namespace_path($name);
+		$path = \Autoloader::namespace_path($name);
 		if ( ! $path)
 		{
 			foreach ($paths as $path)
@@ -375,13 +375,13 @@ class Fuel {
 				if (is_dir($mod_check_path = $path.strtolower($name).DS))
 				{
 					$path = $mod_check_path;
-					$ns = 'Fuel\\App\\'.ucfirst($name);
-					App\Autoloader::add_namespaces(array(
+					$ns = '\\'.ucfirst($name);
+					Autoloader::add_namespaces(array(
 						$ns					=> $path.'classes'.DS,
 						$ns.'\\Model'		=> $path.'classes'.DS.'model'.DS,
 						$ns.'\\Controller'	=> $path.'classes'.DS.'controller'.DS,
 					), true);
-					App\Autoloader::add_namespace_aliases(array(
+					Autoloader::add_namespace_aliases(array(
 						$ns.'\\Controller'	=> 'Fuel\\App',
 						$ns.'\\Model'		=> 'Fuel\\App',
 						$ns					=> 'Fuel\\App',
@@ -403,7 +403,7 @@ class Fuel {
 			static::add_path($path, true);
 
 			// We want active modules to be able to have their own routes, so we reload routes.
-			App\Route::load_routes(true);
+			\Route::load_routes(true);
 			return $path;
 		}
 
@@ -491,7 +491,7 @@ class Fuel {
 	{
 		if (is_null($array))
 		{
-			$array = App\Config::get('always_load', array());
+			$array = \Config::get('always_load', array());
 			// packages were loaded by Fuel's init already
 			$array['packages'] = array();
 		}
@@ -518,7 +518,7 @@ class Fuel {
 			{
 				if ( ! class_exists($class))
 				{
-					throw new App\Exception('Always load class does not exist.');
+					throw new \Exception('Always load class does not exist.');
 				}
 			}
 		}
@@ -532,7 +532,7 @@ class Fuel {
 		{
 			foreach ($array['config'] as $config => $config_group)
 			{
-				App\Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
+				\Config::load((is_int($config) ? $config_group : $config), (is_int($config) ? true : $config_group));
 			}
 		}
 
@@ -540,7 +540,7 @@ class Fuel {
 		{
 			foreach ($array['language'] as $lang => $lang_group)
 			{
-				App\Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
+				\Lang::load((is_int($lang) ? $lang_group : $lang), (is_int($lang) ? true : $lang_group));
 			}
 		}
 	}

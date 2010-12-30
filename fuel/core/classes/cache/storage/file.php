@@ -14,9 +14,9 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
 
-class Cache_Storage_File extends App\Cache_Storage_Driver {
+
+class Cache_Storage_File extends \Cache_Storage_Driver {
 
 	/**
 	 * @const	string	Tag used for opening & closing cache properties
@@ -46,7 +46,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		static::$path = !empty($this->config['path']) ? $this->config['path'] : APPPATH.'cache'.DS;
 		if ( ! is_dir(static::$path) || ! is_writable(static::$path))
 		{
-			throw new App\Cache_Exception('Cache directory does not exist or is not writable.');
+			throw new \Cache_Exception('Cache directory does not exist or is not writable.');
 		}
 
 		parent::__construct($identifier, $config);
@@ -102,7 +102,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		$properties_end = strpos($payload, '{{/'.self::PROPS_TAG.'}}');
 		if ($properties_end === FALSE)
 		{
-			throw new App\Cache_Exception('Incorrect formatting');
+			throw new \Cache_Exception('Incorrect formatting');
 		}
 
 		$this->contents = substr($payload, $properties_end + strlen('{{/'.self::PROPS_TAG.'}}'));
@@ -110,7 +110,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		$props = json_decode($props, true);
 		if ($props === NULL)
 		{
-			throw new App\Cache_Exception('Properties retrieval failed');
+			throw new \Cache_Exception('Properties retrieval failed');
 		}
 
 		$this->created			= $props['created'];
@@ -177,7 +177,7 @@ class Cache_Storage_File extends App\Cache_Storage_Driver {
 		$path = rtrim(static::$path, '\\/').DS;
 		$section = static::identifier_to_path($section);
 
-		return App\File::delete_dir($path.$section);
+		return \File::delete_dir($path.$section);
 	}
 
 	// ---------------------------------------------------------------------

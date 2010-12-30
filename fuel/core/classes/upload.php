@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 class Upload {
 
@@ -113,10 +113,10 @@ class Upload {
 	public static function _init()
 	{
 		// get the config for this upload
-		App\Config::load('upload', true);
+		\Config::load('upload', true);
 
 		// make sure we have defaults for those not defined
-		static::$config = array_merge(static::$_defaults, App\Config::get('upload', array()));
+		static::$config = array_merge(static::$_defaults, \Config::get('upload', array()));
 
 		static::$config['auto_process'] and self::process();
 	}
@@ -460,7 +460,7 @@ class Upload {
 				$filename  = $file['filename'];
 				if ( (bool) static::$config['normalize'])
 				{
-					$filename = App\Inflector::friendly_title($filename, '_');
+					$filename = \Inflector::friendly_title($filename, '_');
 				}
 			}
 

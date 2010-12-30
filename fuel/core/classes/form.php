@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // ------------------------------------------------------------------------
 
@@ -38,9 +38,9 @@ class Form {
 		if ( ! $fieldset instanceof Fieldset)
 		{
 			$fieldset = (string) $fieldset;
-			if ( ! ($fieldset = App\Fieldset::instance($fieldset)))
+			if ( ! ($fieldset = \Fieldset::instance($fieldset)))
 			{
-				$fieldset = App\Fieldset::factory($fieldset, $config);
+				$fieldset = \Fieldset::factory($fieldset, $config);
 			}
 		}
 		return new Form($fieldset);
@@ -48,7 +48,7 @@ class Form {
 
 	public static function instance($name = null)
 	{
-		$fieldset = App\Fieldset::instance($name);
+		$fieldset = \Fieldset::instance($name);
 		return $fieldset === false ? false : $fieldset->validation();
 	}
 
@@ -86,9 +86,9 @@ class Form {
 	 */
 	public static function init()
 	{
-		App\Config::load('form', true);
+		\Config::load('form', true);
 
-		static::$class_config = App\Config::get('form');
+		static::$class_config = \Config::get('form');
 	}
 
 	/**
@@ -151,10 +151,10 @@ class Form {
 		$attributes = ! is_array($attributes) ? array('action' => (string) $attributes) : $attributes;
 
 		// If there is still no action set, Form-post
-		empty($attributes['action']) && $attributes['action'] = App\Uri::current();
+		empty($attributes['action']) && $attributes['action'] = \Uri::current();
 
 		// If not a full URL, create one
-		! strpos($attributes['action'], '://') && $attributes['action'] = App\Uri::create($attributes['action']);
+		! strpos($attributes['action'], '://') && $attributes['action'] = \Uri::create($attributes['action']);
 
 		// If method is empty, use POST
 		! empty($attributes['method']) || $attributes['method'] = static::get_class_config('form_method', 'post');
@@ -209,7 +209,7 @@ class Form {
 
 		if ( ! in_array($attributes['type'], static::$_valid_inputs))
 		{
-			throw new App\Exception(sprintf('"%s" is not a valid input type.', $attributes['type']));
+			throw new \Exception(sprintf('"%s" is not a valid input type.', $attributes['type']));
 		}
 
 		if (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true)
@@ -361,7 +361,7 @@ class Form {
 
 		if ( ! isset($attributes['options']) || ! is_array($attributes['options']))
 		{
-			throw new App\Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $attributes['name']));
+			throw new \Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $attributes['name']));
 		}
 		// Get the options then unset them from the array
 		$options = $attributes['options'];

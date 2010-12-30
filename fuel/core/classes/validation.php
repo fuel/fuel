@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App as App;
+
 
 // ------------------------------------------------------------------------
 
@@ -35,9 +35,9 @@ class Validation {
 		if ( ! $fieldset instanceof Fieldset)
 		{
 			$fieldset = (string) $fieldset;
-			if ( ! ($fieldset = App\Fieldset::instance($fieldset)))
+			if ( ! ($fieldset = \Fieldset::instance($fieldset)))
 			{
-				$fieldset = App\Fieldset::factory($fieldset);
+				$fieldset = \Fieldset::factory($fieldset);
 			}
 		}
 		return new Validation($fieldset);
@@ -45,7 +45,7 @@ class Validation {
 
 	public static function instance($name = null)
 	{
-		$fieldset = App\Fieldset::instance($name);
+		$fieldset = \Fieldset::instance($name);
 		return $fieldset === false ? false : $fieldset->validation();
 	}
 
@@ -104,7 +104,7 @@ class Validation {
 	{
 		if ( ! (is_object($class) || class_exists($class)))
 		{
-			throw new App\Fuel_Exception('Input for add_callable is not a valid object or class.');
+			throw new \Fuel_Exception('Input for add_callable is not a valid object or class.');
 		}
 
 		array_unshift($this->callables, $class);
@@ -187,7 +187,7 @@ class Validation {
 
 		if ($output === false && $value !== false)
 		{
-			throw new App\Validation_Error($field, $value, $rule, $params);
+			throw new \Validation_Error($field, $value, $rule, $params);
 		}
 		elseif ($output !== true)
 		{

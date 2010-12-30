@@ -13,8 +13,8 @@
  */
 
 namespace Fuel\Auth;
-use Fuel\App;
 
-class Auth_Exception extends App\Exception { }
+
+class Auth_Exception extends \Exception { }
 
 // End of file exception.php

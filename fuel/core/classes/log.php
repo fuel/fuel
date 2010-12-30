@@ -14,7 +14,7 @@
 
 namespace Fuel\Core;
 
-use Fuel\App;
+
 
 // --------------------------------------------------------------------
 
@@ -30,21 +30,21 @@ class Log {
 
 	public static function info($msg, $method = null)
 	{
-		return static::write(App\Fuel::L_INFO, $msg, $method);
+		return static::write(\Fuel::L_INFO, $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
 
 	public static function debug($msg, $method = null)
 	{
-		return static::write(App\Fuel::L_DEBUG, $msg, $method);
+		return static::write(\Fuel::L_DEBUG, $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
 
 	public static function error($msg, $method = null)
 	{
-		return static::write(App\Fuel::L_ERROR, $msg, $method);
+		return static::write(\Fuel::L_ERROR, $msg, $method);
 	}
 
 	// --------------------------------------------------------------------
@@ -63,18 +63,18 @@ class Log {
 	{
 		switch ($level)
 		{
-			case App\Fuel::L_ERROR:
+			case \Fuel::L_ERROR:
 				$level = 'Error';
 			break;
-			case App\Fuel::L_DEBUG:
+			case \Fuel::L_DEBUG:
 				$level = 'Debug';
 			break;
-			case App\Fuel::L_INFO:
+			case \Fuel::L_INFO:
 				$level = 'Info';
 			break;
 		}
 
-		$filepath = App\Config::get('log_path').date('Y/m').'/';
+		$filepath = \Config::get('log_path').date('Y/m').'/';
 
 		if ( ! is_dir($filepath))
 		{
@@ -103,7 +103,7 @@ class Log {
 		}
 
 		$message .= $level.' '.(($level == 'info') ? ' -' : '-').' ';
-		$message .= date(App\Config::get('log_date_format'));
+		$message .= date(\Config::get('log_date_format'));
 		$message .= ' --> '.(empty($call) ? '' : $call.' - ').$msg.PHP_EOL;
 
 		flock($fp, LOCK_EX);
