@@ -37,6 +37,8 @@ Fuel\Core\Autoloader::add_classes(array(
 
 	'Fuel\\Core\\Database'					=> COREPATH.'classes/database.php',
 	'Fuel\\Core\\Database_Exception'		=> COREPATH.'classes/database/exception.php',
+	'Fuel\\Core\\Database_Query'			=> COREPATH.'classes/database/query.php',
+	'Fuel\\Core\\Database_Mysql'			=> COREPATH.'classes/database/mysql.php',
 
 	'Fuel\\Core\\Email'						=> COREPATH.'classes/email.php',
 	'Fuel\\Core\\Email_Driver'				=> COREPATH.'classes/email/driver.php',
