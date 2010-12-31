@@ -67,12 +67,12 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Security'					=> COREPATH.'classes/security.php',
 
 	'Fuel\\Core\\Session'					=> COREPATH.'classes/session.php',
-	'Fuel\\Core\\Session_Driver'			=> COREPATH.'classes/session_Driver.php',
-	'Fuel\\Core\\Session_Db'				=> COREPATH.'classes/session_Db.php',
-	'Fuel\\Core\\Session_Cookie'			=> COREPATH.'classes/session_Cookie.php',
-	'Fuel\\Core\\Session_File'				=> COREPATH.'classes/session_File.php',
-	'Fuel\\Core\\Session_Memcached'			=> COREPATH.'classes/session_Memcached.php',
-	'Fuel\\Core\\Session_Redis'				=> COREPATH.'classes/session_Redis.php',
+	'Fuel\\Core\\Session_Driver'			=> COREPATH.'classes/session/driver.php',
+	'Fuel\\Core\\Session_Db'				=> COREPATH.'classes/session/db.php',
+	'Fuel\\Core\\Session_Cookie'			=> COREPATH.'classes/session/cookie.php',
+	'Fuel\\Core\\Session_File'				=> COREPATH.'classes/session/file.php',
+	'Fuel\\Core\\Session_Memcached'			=> COREPATH.'classes/session/memcached.php',
+	'Fuel\\Core\\Session_Redis'				=> COREPATH.'classes/session/redis.php',
 
 	'Fuel\\Core\\Uri'						=> COREPATH.'classes/uri.php',
 	'Fuel\\Core\\Upload'					=> COREPATH.'classes/upload.php',
