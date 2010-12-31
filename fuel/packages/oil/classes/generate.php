@@ -14,8 +14,6 @@
 
 namespace Oil;
 
-
-
 class Generate
 {
 	private static $_default_constraints = array(
@@ -29,14 +27,12 @@ class Generate
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
 		
-		$plural = \Inflector::pluralize($singular);
+		$filepath = APPPATH . 'classes/controller/' . $singular .'.php';
 
-		$filepath = APPPATH . 'classes/controller/' . $plural .'.php';
-
-		$class_name = ucfirst($plural);
+		$class_name = ucfirst($singular);
 
 		// Stick "blogs" to the start of the array
-		array_unshift($args, $plural);
+		array_unshift($args, $singular);
 
 		// Create views folder and each view file
 		static::views($args);
@@ -47,8 +43,8 @@ class Generate
 			$action_str .= '
 	public function action_'.$action.'()
 	{
-		$this->template->title = \'' . \Inflector::humanize($plural) .' &raquo ' . \Inflector::humanize($action) . '\';
-		$this->template->content = View::factory(\''.$plural .'/' . $action .'\');
+		$this->template->title = \'' . \Inflector::humanize($singular) .' &raquo ' . \Inflector::humanize($action) . '\';
+		$this->template->content = View::factory(\''.$singular .'/' . $action .'\');
 	}'.PHP_EOL;
 		}
 
@@ -56,9 +52,7 @@ class Generate
 		$controller = <<<CONTROLLER
 <?php
 
-namespace \Controller;
-
-class {$class_name} extends Controller\Template {
+class Controller_{$class_name} extends Controller_Template {
 {$action_str}
 }
 
@@ -68,7 +62,7 @@ CONTROLLER;
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			\Cli::write('Created controller '.$plural);
+			\Cli::write('Created controller '.$singular);
 		}
 	}
 
@@ -86,11 +80,9 @@ CONTROLLER;
 		$model = <<<MODEL
 <?php
 
-namespace \Model;
-
 use ActiveRecord;
 
-class {$class_name} extends ActiveRecord\Model { }
+class Model_{$class_name} extends ActiveRecord\Model { }
 
 /* End of file $singular.php */
 MODEL;
@@ -136,7 +128,8 @@ MODEL;
 		foreach ($args as $action)
 		{
 			$view_title = \Inflector::humanize($action);
-			$view_filepath = \Fuel::clean_path($view_file = $view_dir . $action . '.php');
+//			$view_filepath = \Fuel::clean_path($view_file = $view_dir . $action . '.php');
+			$view_filepath = $view_file = $view_dir . $action . '.php';
 
 			$view = <<<VIEW
 <p>Edit this content in {$view_filepath}</p>
