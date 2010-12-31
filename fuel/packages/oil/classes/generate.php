@@ -318,8 +318,6 @@ UP;
 		$migration = <<<MIGRATION
 <?php
 
-
-
 class Migration_{$migration_name} extends Migration {
 
 	function up()
