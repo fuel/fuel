@@ -55,6 +55,7 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Form'						=> COREPATH.'classes/form.php',
 	'Fuel\\Core\\Ftp'						=> COREPATH.'classes/ftp.php',
 	'Fuel\\Core\\Html'						=> COREPATH.'classes/html.php',
+	'Fuel\\Core\\Inflector'					=> COREPATH.'classes/inflector.php',
 	'Fuel\\Core\\Input'						=> COREPATH.'classes/input.php',
 	'Fuel\\Core\\Lang'						=> COREPATH.'classes/lang.php',
 	'Fuel\\Core\\Log'						=> COREPATH.'classes/log.php',
