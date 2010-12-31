@@ -44,6 +44,8 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Email_Sendmail'			=> COREPATH.'classes/email/sendmail.php',
 	'Fuel\\Core\\Email_Smtp'				=> COREPATH.'classes/email/smtp.php',
 
+	'Fuel\\Core\\Exception'					=> COREPATH.'classes/exception.php',
+
 	'Fuel\\Core\\Date'						=> COREPATH.'classes/date.php',
 	'Fuel\\Core\\Debug'						=> COREPATH.'classes/debug.php',
 	'Fuel\\Core\\Cli'						=> COREPATH.'classes/cli.php',
