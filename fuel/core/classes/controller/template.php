@@ -14,8 +14,6 @@
 
 namespace Fuel\Core;
 
-
-
 /**
  * Template Controller class
  *
