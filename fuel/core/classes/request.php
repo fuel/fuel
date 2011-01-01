@@ -217,7 +217,7 @@ class Request {
 		}
 
 		// Check for directory
-		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
+		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'controller'.DS;
 		if ( ! empty($route['segments']) && is_dir($dirpath = $path.strtolower($route['segments'][0])))
 		{
 			$this->directory = array_shift($route['segments']);
@@ -234,6 +234,7 @@ class Request {
 		$this->action = isset($route['segments'][1]) ? $route['segments'][1] : '';
 		$this->method_params = array_slice($route['segments'], 2);
 		$this->named_params = $route['named_params'];
+
 		unset($route);
 	}
 

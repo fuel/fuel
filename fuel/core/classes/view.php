@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Fuel
  *
@@ -207,10 +207,10 @@ class View {
 			// Load the view within the current scope
 			include $view_filename;
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
-			die('Error');
-			
+			die('Error in view: '.$view_filename);
+
 			// Delete the output buffer
 			ob_end_clean();
 

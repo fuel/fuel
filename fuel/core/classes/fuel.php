@@ -367,7 +367,8 @@ class Fuel {
 			return false;
 		}
 
-		$path = \Autoloader::namespace_path($name);
+		$path = Autoloader::namespace_path('\\'.ucfirst($name));
+
 		if ( ! $path)
 		{
 			foreach ($paths as $path)
@@ -396,6 +397,12 @@ class Fuel {
 		{
 			return false;
 		}
+
+		// add the module path
+		static::add_path($path);
+
+		// get the path for this modules namespace
+		$path = Autoloader::namespace_path('\\'.ucfirst($name));
 
 		// Active modules get their path prefixed and routes loaded
 		if ($active)
