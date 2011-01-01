@@ -182,7 +182,7 @@ class Session {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function set($name, $value = false)
+	public static function set($name, $value = null)
 	{
 		return static::instance()->set($name, $value);
 	}
@@ -241,7 +241,7 @@ class Session {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function set_flash($name, $value = false)
+	public static function set_flash($name, $value = null)
 	{
 		return static::instance()->set_flash($name, $value);
 	}

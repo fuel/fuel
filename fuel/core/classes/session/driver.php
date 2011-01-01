@@ -111,7 +111,7 @@ abstract class Session_Driver {
 	 * @access	public
 	 * @return	void
 	 */
-	public function set($name, $value = false)
+	public function set($name, $value)
 	{
 		$this->data[$name] = $value;
 
@@ -601,7 +601,7 @@ abstract class Session_Driver {
 		}
 
 		// no payload
-		return FALSE;
+		return false;
 	 }
 
 	// --------------------------------------------------------------------
