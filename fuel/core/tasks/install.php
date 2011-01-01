@@ -1,10 +1,33 @@
 <?php
+/**
+ * Fuel
+ *
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Fuel Development Team
+ * @license		MIT License
+ * @copyright	2010 Dan Horrigan
+ * @link		http://fuelphp.com
+ */
 
 namespace Fuel\Tasks;
 
+/**
+ * Install task
+ *
+ * Run this task to set default write permissions and environment stuff
+ * for your app. This could be expanded in app/tasks for applicaiton specific stuff.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Phil Sturgeon
+ */
+
 class Install {
 
-	public function run()
+	public static function run()
 	{
 		$writable_paths = array(
 			APPPATH . 'cache',
@@ -27,4 +50,4 @@ class Install {
 	}
 }
 
-/* End of file tasks/migrate.php */
+/* End of file tasks/install.php */

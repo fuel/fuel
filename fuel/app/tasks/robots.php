@@ -12,6 +12,8 @@
  * @link		http://fuelphp.com
  */
 
+namespace Fuel\Tasks;
+
 /**
  * Robot example task
  *
@@ -23,10 +25,6 @@
  * @version		1.0
  * @author		Phil Sturgeon
  */
-
-namespace Fuel\Tasks;
-
-
 
 class Robots {
 
@@ -43,7 +41,7 @@ class Robots {
 	 *
 	 * @return string
 	 */
-	public function run($speech = null)
+	public static function run($speech = null)
 	{
 		if ( ! isset($speech))
 		{
@@ -84,7 +82,7 @@ class Robots {
 	 *
 	 * @return string
 	 */
-	public function protect()
+	public static function protect()
 	{
 		$eye = \Cli::color("*", 'green');
 
@@ -113,4 +111,4 @@ class Robots {
 	}
 }
 
-/* End of file tasks/migrate.php */
+/* End of file tasks/robots.php */
