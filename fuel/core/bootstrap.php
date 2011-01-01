@@ -33,7 +33,7 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Cookie'					=> COREPATH.'classes/cookie.php',
 
 	'Fuel\\Core\\DB'						=> COREPATH.'classes/db.php',
-	'Fuel\\Core\\DBUtil'					=> COREPATH.'classes/dbtil.php',
+	'Fuel\\Core\\DBUtil'					=> COREPATH.'classes/dbutil.php',
 
 	'Fuel\\Core\\Database'						=> COREPATH.'classes/database.php',
 	'Fuel\\Core\\Database_Exception'			=> COREPATH.'classes/database/exception.php',
