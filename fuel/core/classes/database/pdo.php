@@ -67,7 +67,7 @@ class Database_PDO extends Database {
 		}
 		catch (\PDOException $e)
 		{
-			throw new \Database_Exception($e->getMessage(), $e->getCode(), $e);
+			throw new Database_Exception($e->getMessage(), $e->getCode(), $e);
 		}
 
 		if ( ! empty($this->_config['charset']))
@@ -118,7 +118,7 @@ class Database_PDO extends Database {
 			}
 
 			// Convert the exception in a database exception
-			throw new \Database_Exception($e->getMessage().' with query: "'.$sql.'"');
+			throw new Database_Exception($e->getMessage().' with query: "'.$sql.'"');
 		}
 
 		if (isset($benchmark))
