@@ -92,12 +92,6 @@ if ( ! function_exists('logger'))
 				\Console::log($method.' - '.$msg);
 			}
 		}
-
-		elseif (IS_CLI)
-		{
-			\Cli::write($msg);
-		}
-
 		if ($level > \Config::get('log_threshold'))
 		{
 			return false;
