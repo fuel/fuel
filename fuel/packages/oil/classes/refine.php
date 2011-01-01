@@ -18,7 +18,7 @@ namespace Oil;
 
 class Refine
 {
-	public function run($task, $args)
+	public static function run($task, $args)
 	{
 		// Just call and run() or did they have a specific method in mind?
 		list($task, $method)=array_pad(explode(':', $task), 2, 'run');
@@ -50,4 +50,4 @@ class Refine
 	}
 }
 
-/* End of file model.php */
+/* End of file refine.php */
