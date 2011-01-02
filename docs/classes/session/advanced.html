@@ -124,8 +124,8 @@ $session = Session::factory( array('driver' => 'memcached', 'expiration_time' =>
 
 		<p>
 			To solve this problem, the Session class allows you to pass the cookie to the application using a POST variable.
-			You can set the name of the variable using the configuration setting 'post_cookie_name'. If the Session class can't locate the session cookie,
-			it will check for this variable, and if it exists, use it's contents instead. This allows you to copy the contents of the session cookie
+			You can set the name of the variable using the configuration setting 'post_cookie_name'. If the Session class finds a $_POST variable with this name,
+			it will assume it contains the session cookie, and will not use the session cookie. This allows you to copy the contents of the session cookie
 			client-side into the POST variable using a bit of javascript.
 		</p>
 
