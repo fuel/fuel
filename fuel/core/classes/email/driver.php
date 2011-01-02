@@ -22,7 +22,7 @@ namespace Fuel\Core;
 abstract class Email_Driver {
 
 	// Recipient Related things
-	
+
 	/** @var array		An array of all recipients to add in the To: header */
 	protected $recipients = array();
 
@@ -139,13 +139,6 @@ abstract class Email_Driver {
 		$this->smtp_vars['auth'] = (!empty($this->smtp_vars['user']) && !empty($this->smtp_vars['pass'])) ? FALSE : TRUE;
 		$this->safe_mode = ((boolean) @ini_get("safe_mode") === FALSE) ? FALSE : TRUE;
 
-		$initconfig = Config::load('email');
-
-		if (is_array($config) && $initconfig !== NULL)
-		{
-			$config = array_merge($initconfig, $config);
-		}
-
 		$this->init($config);
 
 		// See if our mimes have been loaded.
@@ -158,7 +151,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Used to set class information.
-	 * 
+	 *
 	 * @param	array	$config		An array of configuration settings.
 	 */
 	public function init($config = array())
@@ -240,7 +233,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Adds a blind carbon copy recipient
-	 * 
+	 *
 	 * @param	string	$address	A single email, a comma seperated list of emails, or an array of emails
 	 * @return	Email_Driver
 	 */
@@ -280,7 +273,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Sets a header for the email.
-	 * 
+	 *
 	 * @param	string	$index	The name of the header
 	 * @param	string	$value	The value of the header
 	 * @return	Email_Driver
@@ -294,7 +287,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Sets the message of the email, content type is determined by 'mailtype'
-	 * 
+	 *
 	 * @param	string	$content
 	 * @return	Email_Driver
 	 */
@@ -356,7 +349,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Sends the email.
-	 * 
+	 *
 	 * @return	boolean		True if success, false if failure.
 	 */
 	public function send()
@@ -446,7 +439,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Dynamically attaches a file to the email.
-	 * 
+	 *
 	 * @param	string	$contents		The contents of the attachment
 	 * @param	string	$filename		The filename to use in the email
 	 * @param	string	$disposition	Defaults to attachment, can also be inline?
@@ -481,7 +474,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Adds a recipient to the email.
-	 * 
+	 *
 	 * @param	string	$address	Either a string, comma seperated string, or an array is accepted
 	 */
 	protected function _add_recipient($type, $args)
@@ -536,7 +529,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Compiles the message to be sent.
-	 * 
+	 *
 	 * @return	string	The message.
 	 */
 	protected function _compile_message()
@@ -648,7 +641,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Compiles the headers to be sent in the email.
-	 * 
+	 *
 	 * @return	string	The headers.
 	 */
 	protected function _compile_headers($for_debug = false)
@@ -688,7 +681,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Used to clean out the $recipients, $cc_recipients, and $bcc_recipients variables.
-	 * 
+	 *
 	 * @param	array|string	$email	An array of emails or a single email
 	 * @return	array|string	An array of emails or a single email.
 	 */
@@ -718,7 +711,7 @@ abstract class Email_Driver {
 
 	/**
 	 * Takes an email and formats it for use in the headers.
-	 * 
+	 *
 	 * @param	string	$address	The email address to format
 	 * @return	string	The formatted email address
 	 */
