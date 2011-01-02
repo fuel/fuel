@@ -32,6 +32,7 @@ var nav = {
 		"Classes": {
 			"Config":	"classes/config.html",
 			"Event":	"classes/event.html",
+			"Input":	"classes/input.html",
 			"Session":	{
 				"Configuration":	"classes/session/config.html",
 				"Usage":			"classes/session/usage.html",
