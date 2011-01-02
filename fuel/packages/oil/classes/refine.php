@@ -45,8 +45,26 @@ class Refine
 
 		if ($return = call_user_func_array(array($new_task, $method), $args))
 		{
-			echo $return.PHP_EOL;
+			\Cli::write($return);
 		}
+	}
+
+	public static function help()
+	{
+		echo <<<HELP
+   
+Usage:
+  php oil refine <taskname>
+
+Description:
+    Tasks are classes that can be run through the the command line or set up as a cron job.
+
+Examples:
+    php oil refine robots [<message>]
+    php oil refine robots:protect
+
+HELP;
+
 	}
 }
 
