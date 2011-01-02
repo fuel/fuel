@@ -40,6 +40,8 @@ define('MBSTRING', function_exists('mb_get_info'));
 // Load in the Autoloader
 require COREPATH.'classes'.DS.'autoloader.php';
 
+Fuel\Core\Autoloader::add_namespace('Fuel\\Core', COREPATH.'classes/');
+
 Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Arr'						=> COREPATH.'classes/arr.php',
 	'Fuel\\Core\\Asset'						=> COREPATH.'classes/asset.php',
