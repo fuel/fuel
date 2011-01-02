@@ -482,7 +482,6 @@ abstract class Session_Driver {
 	 */
 	protected function _cleanup_flash()
 	{
-var_dump($this->flash);
 		foreach($this->flash as $key => $value)
 		{
 			if ($value['state'] === 'old')
