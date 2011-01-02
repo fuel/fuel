@@ -189,7 +189,7 @@ abstract class Cache_Storage_Driver {
 		}
 		else
 		{
-			throw new \Cache_Exception('Illigal method call: ' . $method);
+			throw new \Cache_Exception('Illegal method call: ' . $method);
 		}
 	}
 
