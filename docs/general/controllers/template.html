@@ -70,6 +70,23 @@
 &lt;/body>
 &lt;/html></code></pre>
 
+        <h3>Changing the default template file</h3>
+
+        <p>
+            You can easily change the default <kbd>APPPATH/views/template.php</kbd> file to something different.<br/>
+            You must set the public variable <kbd>$template</kbd> (note: you don't need .php extention here) to something different, example:
+        </p>
+
+<pre><code>class Controller_Example extends Controller_Template {
+
+    public $template = 'template_admin';
+    
+    public function action_index()
+    {
+        $this->template->title = 'Example Page';
+        $this->template->content = View::factory('test/index', $data);
+    }
+}</code></pre>
 	</section>
 
 	<section id="footer">
