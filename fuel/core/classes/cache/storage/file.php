@@ -114,7 +114,7 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		}
 
 		$this->created			= $props['created'];
-		$this->expiration		= is_null($this->expiration) ? null : (int) ($props['expiration'] - time()) / 60;
+		$this->expiration		= is_null($this->expiration) ? null : (int) ($props['expiration'] - time());
 		$this->dependencies		= $props['dependencies'];
 		$this->content_handler	= $props['content_handler'];
 	}
