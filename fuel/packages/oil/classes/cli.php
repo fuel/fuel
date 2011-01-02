@@ -58,6 +58,13 @@ class Cli
 
 			case 'r':
 			case 'refine':
+
+				if ( ! isset($args[2]))
+				{
+					Refine::help();
+					return;
+				}
+
 				call_user_func('Oil\Refine::run', $args[2], array_slice($args, 3));
 			break;
 
@@ -68,22 +75,22 @@ class Cli
 
 			case '-v':
 			case '--version':
-				echo 'Fuel: ' . \Fuel::VERSION;
+				\Cli::write('Fuel: ' . \Fuel::VERSION);
 
 			case 'test':
 				\Fuel::add_package('octane');
 				call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
-				break;
+			break;
 
 			default:
 				static::help();
 		}
-		echo "Complete";
 	}
 
 	public static function help()
 	{
 		echo <<<HELP
+   
 Usage:
   php oil generate [controller|model|migration|view|views] [options]
 
@@ -108,6 +115,5 @@ HELP;
 
 	}
 }
-
 
 /* End of file cli.php */
