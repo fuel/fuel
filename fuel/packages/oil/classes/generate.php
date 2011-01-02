@@ -8,13 +8,11 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
 namespace Oil;
-
-
 
 class Generate
 {
@@ -28,15 +26,13 @@ class Generate
 		$args = self::_clear_args($args);
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
-		
-		$plural = \Inflector::pluralize($singular);
 
-		$filepath = APPPATH . 'classes/controller/' . $plural .'.php';
+		$filepath = APPPATH . 'classes/controller/' . $singular .'.php';
 
-		$class_name = ucfirst($plural);
+		$class_name = ucfirst($singular);
 
 		// Stick "blogs" to the start of the array
-		array_unshift($args, $plural);
+		array_unshift($args, $singular);
 
 		// Create views folder and each view file
 		static::views($args);
@@ -47,8 +43,8 @@ class Generate
 			$action_str .= '
 	public function action_'.$action.'()
 	{
-		$this->template->title = \'' . \Inflector::humanize($plural) .' &raquo ' . \Inflector::humanize($action) . '\';
-		$this->template->content = View::factory(\''.$plural .'/' . $action .'\');
+		$this->template->title = \'' . \Inflector::humanize($singular) .' &raquo ' . \Inflector::humanize($action) . '\';
+		$this->template->content = View::factory(\''.$singular .'/' . $action .'\');
 	}'.PHP_EOL;
 		}
 
@@ -56,9 +52,7 @@ class Generate
 		$controller = <<<CONTROLLER
 <?php
 
-namespace \Controller;
-
-class {$class_name} extends Controller\Template {
+class Controller_{$class_name} extends Controller_Template {
 {$action_str}
 }
 
@@ -68,11 +62,11 @@ CONTROLLER;
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			\Cli::write('Created controller '.$plural);
+			\Cli::write('Created controller '.$singular);
 		}
 	}
 
-	
+
 	public function model($args)
 	{
 		$singular = strtolower(array_shift($args));
@@ -86,18 +80,14 @@ CONTROLLER;
 		$model = <<<MODEL
 <?php
 
-namespace \Model;
-
-use ActiveRecord;
-
-class {$class_name} extends ActiveRecord\Model { }
+class Model_{$class_name} extends ActiveRecord\Model { }
 
 /* End of file $singular.php */
 MODEL;
 
 		if (self::write($filepath, $model))
 		{
-			echo "Created model: " . \Fuel::clean_path($filepath).PHP_EOL;
+			\Cli::write('Created model: ' . \Fuel::clean_path($filepath));
 		}
 
 		if ( ! empty($args))
@@ -136,7 +126,8 @@ MODEL;
 		foreach ($args as $action)
 		{
 			$view_title = \Inflector::humanize($action);
-			$view_filepath = \Fuel::clean_path($view_file = $view_dir . $action . '.php');
+//			$view_filepath = \Fuel::clean_path($view_file = $view_dir . $action . '.php');
+			$view_filepath = $view_file = $view_dir . $action . '.php';
 
 			$view = <<<VIEW
 <p>Edit this content in {$view_filepath}</p>
@@ -144,7 +135,7 @@ VIEW;
 
 			if (self::write($view_file, $view))
 			{
-				echo "\tCreated view: {$view_file}".PHP_EOL;
+				\Cli::write("\tCreated view: " . $view_file);
 			}
 		}
 	}
@@ -167,7 +158,7 @@ VIEW;
 			$mode = 'add_fields';
 
 			preg_match('/add_[a-z0-9_]+_to_([a-z0-9_]+)/i', $migration_name, $matches);
-			
+
 			$table = $matches[1];
 		}
 
@@ -325,8 +316,6 @@ UP;
 		$migration = <<<MIGRATION
 <?php
 
-
-
 class Migration_{$migration_name} extends Migration {
 
 	function up()
@@ -391,9 +380,9 @@ MIGRATION;
 		if (substr($action, 0, 1) === '-')
 			unset($actions[$key]);
         }
-        
+
 		return $actions;
-	}		
+	}
 }
 
 /* End of file model.php */

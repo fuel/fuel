@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -53,7 +53,7 @@ class Scaffold
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			echo "Created controller".PHP_EOL;
+			\Cli::write('Created controller');
 		}
 	}
 

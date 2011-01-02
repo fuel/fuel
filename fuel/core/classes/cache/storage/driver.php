@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -189,7 +189,7 @@ abstract class Cache_Storage_Driver {
 		}
 		else
 		{
-			throw new \Cache_Exception('Illigal method call');
+			throw new \Cache_Exception('Illigal method call: ' . $method);
 		}
 	}
 
@@ -253,7 +253,7 @@ abstract class Cache_Storage_Driver {
 	 *
 	 * @access	public
 	 * @param	mixed			The content to be cached
-	 * @param	int				The time in minutes until the cache will expire, =< 0 or null means no expiration
+	 * @param	int				The time in seconds until the cache will expire, =< 0 or null means no expiration
 	 * @param	array			Array of names on which this cache depends for
 	 * @return	object			The new request
 	 */
@@ -274,7 +274,7 @@ abstract class Cache_Storage_Driver {
 			{
 				throw new \Cache_Exception('Expiration must be a valid number.');
 			}
-			$this->expiration = time() + intval($this->expiration) * 60;
+			$this->expiration = time() + intval($this->expiration);
 		}
 
 		// Convert dependency identifiers to string when set

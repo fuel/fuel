@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -118,7 +118,7 @@ class Request {
 
 			$action or $action = 'index';
 
-			$class = '\\Controller\\'.ucfirst($controller);
+			$class = '\\Controller_'.ucfirst($controller);
 			$method = 'action_'.$action;
 
 			if (class_exists($class))
@@ -139,8 +139,9 @@ class Request {
 					{
 						$controller->after();
 					}
+
 					// Get the controller's output
-					static::active()->output =& $controller->output;
+					exit($controller->output);
 				}
 				else
 				{
@@ -217,7 +218,7 @@ class Request {
 		}
 
 		// Check for directory
-		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
+		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'controller'.DS;
 		if ( ! empty($route['segments']) && is_dir($dirpath = $path.strtolower($route['segments'][0])))
 		{
 			$this->directory = array_shift($route['segments']);
@@ -234,6 +235,7 @@ class Request {
 		$this->action = isset($route['segments'][1]) ? $route['segments'][1] : '';
 		$this->method_params = array_slice($route['segments'], 2);
 		$this->named_params = $route['named_params'];
+
 		unset($route);
 	}
 
@@ -353,7 +355,7 @@ class Request {
 	 */
 	public function __toString()
 	{
-		return $this->output;
+		return (string) $this->output;
 	}
 }
 

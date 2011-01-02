@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -45,6 +45,7 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Asset'						=> COREPATH.'classes/asset.php',
 
 	'Fuel\\Core\\Cache'						=> COREPATH.'classes/cache.php',
+	'Fuel\\Core\\Cache_Exception'			=> COREPATH.'classes/cache/exception.php',
 	'Fuel\\Core\\Cache_Handler_Driver'		=> COREPATH.'classes/cache/handler/driver.php',
 	'Fuel\\Core\\Cache_Handler_Json'		=> COREPATH.'classes/cache/handler/json.php',
 	'Fuel\\Core\\Cache_Handler_Serialized'	=> COREPATH.'classes/cache/handler/serialized.php',
@@ -61,10 +62,21 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Cookie'					=> COREPATH.'classes/cookie.php',
 
 	'Fuel\\Core\\DB'						=> COREPATH.'classes/db.php',
-	'Fuel\\Core\\DBUtil'					=> COREPATH.'classes/dbtil.php',
+	'Fuel\\Core\\DBUtil'					=> COREPATH.'classes/dbutil.php',
 
-	'Fuel\\Core\\Database'					=> COREPATH.'classes/database.php',
-	'Fuel\\Core\\Database_Exception'		=> COREPATH.'classes/database/exception.php',
+	'Fuel\\Core\\Database'						=> COREPATH.'classes/database.php',
+	'Fuel\\Core\\Database_Exception'			=> COREPATH.'classes/database/exception.php',
+	'Fuel\\Core\\Database_Query'				=> COREPATH.'classes/database/query.php',
+	'Fuel\\Core\\Database_Query_Builder'		=> COREPATH.'classes/database/query/builder.php',
+	'Fuel\\Core\\Database_Query_Builder_Insert'	=> COREPATH.'classes/database/query/builder/insert.php',
+	'Fuel\\Core\\Database_Query_Builder_Delete'	=> COREPATH.'classes/database/query/builder/delete.php',
+	'Fuel\\Core\\Database_Query_Builder_Update'	=> COREPATH.'classes/database/query/builder/update.php',
+	'Fuel\\Core\\Database_Query_Builder_Select'	=> COREPATH.'classes/database/query/builder/select.php',
+	'Fuel\\Core\\Database_Query_Builder_Where'	=> COREPATH.'classes/database/query/builder/where.php',
+	'Fuel\\Core\\Database_Query_Builder_Join'	=> COREPATH.'classes/database/query/builder/join.php',
+	'Fuel\\Core\\Database_Result'				=> COREPATH.'classes/database/result.php',
+	'Fuel\\Core\\Database_Mysql'				=> COREPATH.'classes/database/mysql.php',
+	'Fuel\\Core\\Database_MySQL_Result'			=> COREPATH.'classes/database/mysql/result.php',
 
 	'Fuel\\Core\\Email'						=> COREPATH.'classes/email.php',
 	'Fuel\\Core\\Email_Driver'				=> COREPATH.'classes/email/driver.php',
@@ -72,20 +84,29 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Email_Sendmail'			=> COREPATH.'classes/email/sendmail.php',
 	'Fuel\\Core\\Email_Smtp'				=> COREPATH.'classes/email/smtp.php',
 
+	'Fuel\\Core\\Exception'					=> COREPATH.'classes/exception.php',
+
 	'Fuel\\Core\\Date'						=> COREPATH.'classes/date.php',
 	'Fuel\\Core\\Debug'						=> COREPATH.'classes/debug.php',
 	'Fuel\\Core\\Cli'						=> COREPATH.'classes/cli.php',
 	'Fuel\\Core\\Crypt'						=> COREPATH.'classes/crypt.php',
 	'Fuel\\Core\\Event'						=> COREPATH.'classes/event.php',
 	'Fuel\\Core\\Error'						=> COREPATH.'classes/error.php',
+
+	'Fuel\\Core\\File'						=> COREPATH.'classes/file.php',
+	'Fuel\\Core\\File_Area'					=> COREPATH.'classes/file/area.php',
+	'Fuel\\Core\\File_Driver\\File'			=> COREPATH.'classes/file/driver/file.php',
+	'Fuel\\Core\\File_Driver\\Directory'	=> COREPATH.'classes/file/driver/directory.php',
+
 	'Fuel\\Core\\Form'						=> COREPATH.'classes/form.php',
 	'Fuel\\Core\\Ftp'						=> COREPATH.'classes/ftp.php',
 	'Fuel\\Core\\Html'						=> COREPATH.'classes/html.php',
+	'Fuel\\Core\\Inflector'					=> COREPATH.'classes/inflector.php',
 	'Fuel\\Core\\Input'						=> COREPATH.'classes/input.php',
 	'Fuel\\Core\\Lang'						=> COREPATH.'classes/lang.php',
 	'Fuel\\Core\\Log'						=> COREPATH.'classes/log.php',
 	'Fuel\\Core\\Migrate'					=> COREPATH.'classes/migrate.php',
-	'Fuel\\Core\\Migration'					=> COREPATH.'classes/migration.php',
+	'Fuel\\Core\\Migration'					=> COREPATH.'classes/migrate.php',
 	'Fuel\\Core\\Model'						=> COREPATH.'classes/model.php',
 	'Fuel\\Core\\Output'					=> COREPATH.'classes/output.php',
 	'Fuel\\Core\\Pagination'				=> COREPATH.'classes/pagination.php',

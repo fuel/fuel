@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -27,7 +27,7 @@ class DBUtil {
 	 */
 	public static function create_database($database)
 	{
-		return \DB::query('CREATE DATABASE '.\DB::quote_identifier($database), \Database::UPDATE)->execute();
+		return DB::query('CREATE DATABASE '.DB::quote_identifier($database), \Database::UPDATE)->execute();
 	}
 
 	/**
@@ -39,7 +39,7 @@ class DBUtil {
 	 */
 	public static function drop_database($database)
 	{
-		return \DB::query('DROP DATABASE '.\DB::quote_identifier($database), \Database::DELETE)->execute();
+		return DB::query('DROP DATABASE '.DB::quote_identifier($database), \Database::DELETE)->execute();
 	}
 
 	/**
@@ -51,7 +51,7 @@ class DBUtil {
 	 */
 	public static function drop_table($table)
 	{
-		return \DB::query('DROP TABLE IF EXISTS '.\DB::escape($table), \Database::DELETE);
+		return DB::query('DROP TABLE IF EXISTS '.DB::escape($table), \Database::DELETE);
 	}
 
 	/**
@@ -64,7 +64,7 @@ class DBUtil {
 	 */
 	public static function rename_table($table, $new_table_name)
 	{
-		return \DB::query('DROP TABLE IF EXISTS '.\DB::escape($table), \Database::UPDATE);
+		return DB::query('DROP TABLE IF EXISTS '.DB::escape($table), Database::UPDATE);
 	}
 
 	public static function create_table($table, $fields, $primary_keys = array(), $if_not_exists = true)
@@ -73,17 +73,17 @@ class DBUtil {
 
 		$sql .= $if_not_exists ? ' IF NOT EXISTS ' : ' ';
 
-		$sql .= \DB::quote_identifier($table).' (';
+		$sql .= DB::quote_identifier($table).' (';
 		$sql .= static::process_fields($fields);
 		if ( ! empty($primary_keys))
 		{
-			$key_name = \DB::quote_identifier(implode('_', $primary_keys));
-			$primary_keys = \DB::quote_identifier($primary_keys);
+			$key_name = DB::quote_identifier(implode('_', $primary_keys));
+			$primary_keys = DB::quote_identifier($primary_keys);
 			$sql .= ",\n\tPRIMARY KEY ".$key_name." (" . implode(', ', $primary_keys) . ")";
 		}
 		$sql .= "\n);";
 
-		return \DB::query($sql, \Database::UPDATE)->execute();
+		return DB::query($sql, Database::UPDATE)->execute();
 	}
 
 	protected static function process_fields($fields)
@@ -95,8 +95,8 @@ class DBUtil {
 			$sql = "\n\t";
 			$attr = array_change_key_case($attr, CASE_UPPER);
 
-			$sql .= \DB::quote_identifier($field);
-			$sql .= array_key_exists('NAME', $attr) ? ' '.\DB::quote_identifier($attr['NAME']).' ' : '';
+			$sql .= DB::quote_identifier($field);
+			$sql .= array_key_exists('NAME', $attr) ? ' '.DB::quote_identifier($attr['NAME']).' ' : '';
 			$sql .= array_key_exists('TYPE', $attr) ? ' '.$attr['TYPE'] : '';
 			$sql .= array_key_exists('CONSTRAINT', $attr) ? '('.$attr['CONSTRAINT'].')' : '';
 
@@ -105,7 +105,7 @@ class DBUtil {
 				$sql .= ' UNSIGNED';
 			}
 
-			$sql .= array_key_exists('DEFAULT', $attr) ? ' DEFAULT '.\DB::escape($attr['DEFAULT']) : '';
+			$sql .= array_key_exists('DEFAULT', $attr) ? ' DEFAULT '.DB::escape($attr['DEFAULT']) : '';
 			$sql .= array_key_exists('NULL', $attr) ? (($attr['NULL'] === true) ? ' NULL' : ' NOT NULL') : '';
 
 			if (array_key_exists('AUTO_INCREMENT', $attr) && $attr['AUTO_INCREMENT'] === true)

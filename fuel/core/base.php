@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -33,20 +33,14 @@ if ( ! function_exists('import'))
 	}
 }
 
+
 if ( ! function_exists('logger'))
 {
 	function logger($level, $msg, $method = null)
 	{
 		if (Config::get('profiling'))
 		{
-			if ($level == \Fuel::L_ERROR)
-			{
-				\Console::logError($method.' - '.$msg);
-			}
-			else
-			{
-				\Console::log($method.' - '.$msg);
-			}
+			\Console::log($method.' - '.$msg);
 		}
 		if ($level > \Config::get('log_threshold'))
 		{

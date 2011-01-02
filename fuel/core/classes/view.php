@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Fuel
  *
@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -207,10 +207,10 @@ class View {
 			// Load the view within the current scope
 			include $view_filename;
 		}
-		catch (Exception $e)
+		catch (\Exception $e)
 		{
-			die('Error');
-			
+			die('Error in view: '.$view_filename);
+
 			// Delete the output buffer
 			ob_end_clean();
 

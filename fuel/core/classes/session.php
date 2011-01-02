@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Harro "WanWizard" Verton
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -182,7 +182,7 @@ class Session {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function set($name, $value = false)
+	public static function set($name, $value = null)
 	{
 		return static::instance()->set($name, $value);
 	}
@@ -241,7 +241,7 @@ class Session {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function set_flash($name, $value = false)
+	public static function set_flash($name, $value = null)
 	{
 		return static::instance()->set_flash($name, $value);
 	}

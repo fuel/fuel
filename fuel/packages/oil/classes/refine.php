@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -18,7 +18,7 @@ namespace Oil;
 
 class Refine
 {
-	public function run($task, $args)
+	public static function run($task, $args)
 	{
 		// Just call and run() or did they have a specific method in mind?
 		list($task, $method)=array_pad(explode(':', $task), 2, 'run');
@@ -45,9 +45,27 @@ class Refine
 
 		if ($return = call_user_func_array(array($new_task, $method), $args))
 		{
-			echo $return.PHP_EOL;
+			\Cli::write($return);
 		}
+	}
+
+	public static function help()
+	{
+		echo <<<HELP
+   
+Usage:
+  php oil refine <taskname>
+
+Description:
+    Tasks are classes that can be run through the the command line or set up as a cron job.
+
+Examples:
+    php oil refine robots [<message>]
+    php oil refine robots:protect
+
+HELP;
+
 	}
 }
 
-/* End of file model.php */
+/* End of file refine.php */

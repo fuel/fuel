@@ -18,7 +18,10 @@ var nav = {
 			"Download":		"installation/download.html"
 		},
 		"General": {
-			"Controllers":		"general/controllers.html",
+			"Controllers": {
+				"Base" :		"general/controllers/base.html",
+				"Template":		"general/controllers/template.html"
+			},
 			"Routing":			"general/routing.html",
 			"Views":			"general/views.html",
 			"Tasks":			"general/tasks.html",
@@ -38,7 +41,6 @@ var nav = {
 				"Usage":			"classes/upload/usage.html"
 			},
 			"Migrate":	"classes/migrate.html",
-			"Session":	"classes/session.html",
 			"Html":		"classes/html.html"
 		}
 };

@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Harro "WanWizard" Verton
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -117,7 +117,7 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 		}
 
 		$this->created			= $props['created'];
-		$this->expiration		= is_null($this->expiration) ? null : (int) ($props['expiration'] - time()) / 60;
+		$this->expiration		= is_null($this->expiration) ? null : (int) ($props['expiration'] - time());
 		$this->dependencies		= $props['dependencies'];
 		$this->content_handler	= $props['content_handler'];
 	}

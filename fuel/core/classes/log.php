@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -78,12 +78,14 @@ class Log {
 
 		if ( ! is_dir($filepath))
 		{
+			$old = umask(0);
 			mkdir($filepath, 0777, true);
 			chmod($filepath, 0777);
+			umask($old);
 		}
 
 		$filename = $filepath.date('d').'.php';
-		
+
 		$message  = '';
 
 		if ( ! file_exists($filename))

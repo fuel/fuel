@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -18,7 +18,7 @@ namespace Oil;
 
 class Cli
 {
-	public function init($args)
+	public static function init($args)
 	{
 		if ( ! isset($args[1]))
 		{
@@ -58,6 +58,13 @@ class Cli
 
 			case 'r':
 			case 'refine':
+
+				if ( ! isset($args[2]))
+				{
+					Refine::help();
+					return;
+				}
+
 				call_user_func('Oil\Refine::run', $args[2], array_slice($args, 3));
 			break;
 
@@ -68,22 +75,22 @@ class Cli
 
 			case '-v':
 			case '--version':
-				echo 'Fuel: ' . \Fuel::VERSION;
+				\Cli::write('Fuel: ' . \Fuel::VERSION);
 
 			case 'test':
 				\Fuel::add_package('octane');
 				call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
-				break;
-			
+			break;
+
 			default:
 				static::help();
 		}
-		echo "Complete";
 	}
 
-	public function help()
+	public static function help()
 	{
 		echo <<<HELP
+   
 Usage:
   php oil generate [controller|model|migration|view|views] [options]
 
@@ -103,11 +110,10 @@ Description:
 Examples:
     php oil g controller <controllername> [<action1> |<action2> |..]
     php oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
-	
+
 HELP;
 
 	}
 }
-
 
 /* End of file cli.php */

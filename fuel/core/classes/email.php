@@ -11,7 +11,7 @@
  * @version		1.0
  * @author		DudeAmI aka Kris <dudeami0@gmail.com>
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -39,6 +39,13 @@ class Email {
 	 */
 	public static function factory($config = array())
 	{
+		$initconfig = Config::load('email');
+
+		if (is_array($config) && is_array($initconfig))
+		{
+			$config = array_merge($initconfig, $config);
+		}
+
 		$protocol = ucfirst( ! empty($config['protocol']) ? $config['protocol'] : 'mail');
 		$class = 'Email_' . $protocol;
 		if ($protocol == 'Driver' || ! class_exists($class))

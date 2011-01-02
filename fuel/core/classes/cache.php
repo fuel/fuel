@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -75,7 +75,7 @@ class Cache {
 	 * @access	public
 	 * @param	mixed			The identifier of the cache, can be anything but empty
 	 * @param	mixed			The content to be cached
-	 * @param	int				The time in minutes until the cache will expire, =< 0 or null means no expiration
+	 * @param	int				The time in seconds until the cache will expire, =< 0 or null means no expiration
 	 * @param	array			Contains the identifiers of caches this one will depend on (not supported by all drivers!)
 	 * @return	object			The new request
 	 */

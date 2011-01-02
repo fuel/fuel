@@ -3,7 +3,7 @@
 namespace Fuel\Core;
 
 class Autoloader {
-	
+
 	/**
 	 * @var	array	$classes	holds all the classes and paths
 	 */
@@ -193,10 +193,10 @@ class Autoloader {
 			$namespace = (array) $namespace;
 			static::add_namespace_alias($alias, $namespace, $prepend);
 		}
-	}	
+	}
 	/**
 	 * Adds a class path
-	 * 
+	 *
 	 * @param	string	$class	the class name
 	 * @param	string	$path	the path to the class file
 	 */
@@ -207,7 +207,7 @@ class Autoloader {
 
 	/**
 	 * Adds multiple class paths
-	 * 
+	 *
 	 * @param	array	$classes	the class names and paths
 	 */
 	public static function add_classes($classes)
@@ -220,7 +220,7 @@ class Autoloader {
 
 	/**
 	 * Aliases a class to a namespace, the root by default
-	 * 
+	 *
 	 * @param	string	$class		the class name
 	 * @param	string	$namespace	the namespace to alias to
 	 */
@@ -276,7 +276,14 @@ class Autoloader {
 		}
 		else
 		{
-			// TODO: Implement the Namespace path autoload.
+			$file_path = str_replace('_', DS, ltrim(strrchr(strtolower($class), '\\'), '\\'));
+			$file_path = \Fuel::find_file('', $file_path);
+			if ($file_path !== false)
+			{
+				require $file_path;
+				static::_init_class($class);
+				return true;
+			}
 		}
 		return false;
 	}

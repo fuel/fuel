@@ -10,7 +10,7 @@
  * @author		Eric Barnes
  * @author		Harro "WanWizard" Verton
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 

@@ -8,7 +8,7 @@
  * @version		1.0
  * @author		Fuel Development Team
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
@@ -114,7 +114,7 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		}
 
 		$this->created			= $props['created'];
-		$this->expiration		= is_null($this->expiration) ? null : (int) ($props['expiration'] - time()) / 60;
+		$this->expiration		= is_null($this->expiration) ? null : (int) ($props['expiration'] - time());
 		$this->dependencies		= $props['dependencies'];
 		$this->content_handler	= $props['content_handler'];
 	}
@@ -267,6 +267,38 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		}
 
 		return true;
+	}
+
+	// ---------------------------------------------------------------------
+
+	/**
+	 * validate a driver config value
+	 *
+	 * @param	string	name of the config variable to validate
+	 * @param	mixed	value
+	 * @access	private
+	 * @return  mixed
+	 */
+	private function _validate_config($name, $value)
+	{
+		switch ($name)
+		{
+			case 'cache_id':
+				if ( empty($value) OR ! is_string($value))
+				{
+					$value = 'fuel';
+				}
+			break;
+
+			case 'expiration':
+				if ( empty($value) OR ! is_numeric($value))
+				{
+					$value = null;
+				}
+			break;
+		}
+
+		return $value;
 	}
 
 }

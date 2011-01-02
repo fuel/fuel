@@ -8,7 +8,7 @@
 	<script type="text/javascript" src="../../assets/js/nav.js"></script>
 	<script type="text/javascript" src="../../assets/js/highlight.pack.js"></script>
 	<script type="text/javascript">
-		$(document).ready(function() {
+		$(function() {
 			show_nav('classes', '../../');
 		});
 		hljs.tabReplace = '    ';
@@ -257,7 +257,7 @@
 							<th>cookie_name</th>
 							<td>string</td>
 							<td><pre class="php"><code>'fuelcid'</code></pre></td>
-							<td>Name of the cookie used to store the session. If not default, it defaults to 'fuelcid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
+							<td>Name of the cookie used to store the session. If not set, it defaults to 'fuelcid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
 						</tr>
 					</tbody>
 				</table>
@@ -279,7 +279,7 @@
 							<th>cookie_name</th>
 							<td>string</td>
 							<td><pre class="php"><code>'fuelfid'</code></pre></td>
-							<td>Name of the cookie used to store the session. If not default, it defaults to 'fuelfid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
+							<td>Name of the cookie used to store the session. If not set, it defaults to 'fuelfid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
 						</tr>
 						<tr>
 							<th>path</th>
@@ -313,7 +313,7 @@
 							<th>cookie_name</th>
 							<td>string</td>
 							<td><pre class="php"><code>'fueldid'</code></pre></td>
-							<td>Name of the cookie used to store the session. If not default, it defaults to 'fueldid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
+							<td>Name of the cookie used to store the session. If not set, it defaults to 'fueldid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
 						</tr>
 						<tr>
 							<th>database</th>
@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 							<th>cookie_name</th>
 							<td>string</td>
 							<td><pre class="php"><code>'fuelmid'</code></pre></td>
-							<td>Name of the cookie used to store the session. If not default, it defaults to 'fuelmid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
+							<td>Name of the cookie used to store the session. If not set, it defaults to 'fuelmid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
 						</tr>
 						<tr>
 							<th>servers</th>
@@ -410,7 +410,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 							<th>cookie_name</th>
 							<td>string</td>
 							<td><pre class="php"><code>'fuelrid'</code></pre></td>
-							<td>Name of the cookie used to store the session. If not default, it defaults to 'fuelrid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
+							<td>Name of the cookie used to store the session. If not set, it defaults to 'fuelrid'. If you use multiple session drivers in your application, make sure the cookie name for each of the drivers is unique!</td>
 						</tr>
 						<tr>
 							<th>database</th>
@@ -429,7 +429,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 	<section id="footer">
 		<p>
 			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
-			&copy; 2010 Dan Horrigan
+			&copy; 2010 - 2011 Fuel Development Team
 		</p>
 	</section>
 

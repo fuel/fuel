@@ -1,10 +1,6 @@
 <?php echo '<?php' ?>
 
-namespace \Model;
-
-use ActiveRecord;
-
-class <?php echo ucfirst($name); ?> extends ActiveRecord\Model {
+class Model_<?php echo ucfirst($name); ?> extends ActiveRecord\Model {
 <?php if (isset($table)): ?>
 	protected $table = '<?php echo $table; ?>';
 <?php endif; ?>

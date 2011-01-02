@@ -148,7 +148,7 @@ class DB {
 			}
 			return $string;
 		}
-		return \Database::instance($db)->quote_identifier($string);
+		return Database::instance($db)->quote_identifier($string);
 	}
 
 	/**
@@ -160,7 +160,7 @@ class DB {
 	 */
 	public static function escape($string, $db = null)
 	{
-		return \Database::instance($db)->escape($string);
+		return Database::instance($db)->escape($string);
 	}
 
 } // End DB
