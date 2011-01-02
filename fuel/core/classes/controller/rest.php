@@ -2,27 +2,23 @@
 
 namespace Fuel\Core;
 
+abstract class Controller_Rest extends \Controller {
 
-
-abstract class Controller_Rest extends \Controller
-{
 	protected $rest_format = NULL; // Set this in a controller to use a default format
-
 	protected $methods = array(); // contains a list of method properties such as limit, log and level
 
 	// List all supported methods, the first will be the default format
 	protected $_supported_formats = array(
-		'xml' 		=> 'application/xml',
-		'rawxml' 	=> 'application/xml',
-		'json' 		=> 'application/json',
+		'xml' => 'application/xml',
+		'rawxml' => 'application/xml',
+		'json' => 'application/json',
 		'serialize' => 'application/vnd.php.serialized',
-		'php' 		=> 'text/plain',
-		'html' 		=> 'text/html',
-		'csv' 		=> 'application/csv'
+		'php' => 'text/plain',
+		'html' => 'text/html',
+		'csv' => 'application/csv'
 	);
 
-	// Constructor function
-	function before()
+	public function before()
 	{
 		parent::before();
 
@@ -32,7 +28,6 @@ abstract class Controller_Rest extends \Controller
 		{
 			$this->_prepare_basic_auth();
 		}
-
 		elseif (\Config::get('rest.auth') == 'digest')
 		{
 			$this->_prepare_digest_auth();
@@ -40,9 +35,6 @@ abstract class Controller_Rest extends \Controller
 
 		// Some Methods cant have a body
 		$this->request->body = NULL;
-
-		// Which format should the data be returned in?
-		$this->request->format = $this->_detect_format();
 
 		// Which format should the data be returned in?
 		$this->request->lang = $this->_detect_lang();
@@ -54,11 +46,29 @@ abstract class Controller_Rest extends \Controller
 	 * Requests are not made to methods directly The request will be for an "object".
 	 * this simply maps the object and method to the correct Controller method.
 	 */
-	function _remap($object_called)
-	{
-		$controller_method = $object_called.'_'.\Input::method();
 
-		$this->$controller_method();
+	public function router($resource, $arguments)
+	{
+		$pattern = '/\.(' . implode('|', array_keys($this->_supported_formats)) . ')$/';
+
+		// Check if a file extension is used
+		if (preg_match($pattern, $resource, $matches))
+		{
+			// Remove the extension from arguments too
+			$resource = preg_replace($pattern, '', $resource);
+
+			$this->request->format = $matches[1];
+		}
+		else
+		{
+			// Which format should the data be returned in?
+			$this->request->format = $this->_detect_format();
+		}
+
+		// If they call user, go to $this->post_user();
+		$controller_method = strtolower(\Input::method()) . '_' . $resource;
+
+		call_user_func(array($this, $controller_method));
 	}
 
 	/*
@@ -66,9 +76,10 @@ abstract class Controller_Rest extends \Controller
 	 *
 	 * Takes pure data and optionally a status code, then creates the response
 	 */
+
 	protected function response($data = array(), $http_code = 200)
 	{
-   		if (empty($data))
+		if (empty($data))
 		{
 			\Output::$status = 404;
 			return;
@@ -77,12 +88,12 @@ abstract class Controller_Rest extends \Controller
 		\Output::$status = $http_code;
 
 		// If the format method exists, call and return the output in that format
-		if (method_exists('Controller_Rest', '_format_'.$this->request->format))
+		if (method_exists('Controller_Rest', '_format_' . $this->request->format))
 		{
 			// Set the correct format header
 			\Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
 
-			$this->output = $this->{'_format_'.$this->request->format}($data);
+			$this->output = $this->{'_format_' . $this->request->format}($data);
 		}
 
 		// Format not supported, output directly
@@ -97,22 +108,9 @@ abstract class Controller_Rest extends \Controller
 	 *
 	 * Detect which format should be used to output the data
 	 */
+
 	private function _detect_format()
 	{
-		$pattern = '/\.(' . implode( '|', array_keys($this->_supported_formats) ) . ')$/';
-
-		// Check if a file extension is used
-		if (preg_match($pattern, end($_GET), $matches))
-		{
-			// The key of the last argument
-			$last_key = end(array_keys($_GET));
-
-			// Remove the extension from arguments too
-			$_GET[$last_key] = preg_replace($pattern, '', \Input::get($last_key));
-
-			return $matches[1];
-		}
-
 		// A format has been passed as an argument in the URL and it is supported
 		if (\Input::get_post('format') and $this->_supported_formats[\Input::get_post('format')])
 		{
@@ -123,7 +121,7 @@ abstract class Controller_Rest extends \Controller
 		if (\Config::get('rest.ignore_http_accept') === false and \Input::server('HTTP_ACCEPT'))
 		{
 			// Check all formats against the HTTP_ACCEPT header
-			foreach(array_keys($this->_supported_formats) as $format)
+			foreach (array_keys($this->_supported_formats) as $format)
 			{
 				// Has this format been requested?
 				if (strpos(\Input::server('HTTP_ACCEPT'), $format) !== false)
@@ -151,11 +149,9 @@ abstract class Controller_Rest extends \Controller
 					}
 				}
 			}
-
 		} // End HTTP_ACCEPT checking
-
 		// Well, none of that has worked! Let's see if the controller has a default
-		if ( ! empty($this->rest_format))
+		if (!empty($this->rest_format))
 		{
 			return $this->rest_format;
 		}
@@ -164,15 +160,15 @@ abstract class Controller_Rest extends \Controller
 		return \Config::get('rest.default_format');
 	}
 
-
 	/*
 	 * Detect language(s)
 	 *
 	 * What language do they want it in?
 	 */
+
 	private function _detect_lang()
 	{
-		if ( ! $lang = \Input::server('HTTP_ACCEPT_LANGUAGE'))
+		if (!$lang = \Input::server('HTTP_ACCEPT_LANGUAGE'))
 		{
 			return NULL;
 		}
@@ -207,9 +203,9 @@ abstract class Controller_Rest extends \Controller
 			return false;
 		}
 
-		$valid_logins =& \Config::get('rest.valid_logins');
+		$valid_logins = & \Config::get('rest.valid_logins');
 
-		if ( ! array_key_exists($username, $valid_logins))
+		if (!array_key_exists($username, $valid_logins))
 		{
 			return false;
 		}
@@ -240,42 +236,38 @@ abstract class Controller_Rest extends \Controller
 		{
 			if (strpos(strtolower(\Input::server('HTTP_AUTHENTICATION')), 'basic') === 0)
 			{
-				list($username,$password) = explode(':',base64_decode(substr(\Input::server('HTTP_AUTHORIZATION'), 6)));
+				list($username, $password) = explode(':', base64_decode(substr(\Input::server('HTTP_AUTHORIZATION'), 6)));
 			}
 		}
 
-		if ( ! self::_check_login($username, $password) )
+		if (!self::_check_login($username, $password))
 		{
 			self::_force_login();
 		}
-
 	}
 
 	private function _prepare_digest_auth()
 	{
 		$uniqid = uniqid(""); // Empty argument for backward compatibility
-
 		// We need to test which server authentication variable to use
 		// because the PHP ISAPI module in IIS acts different from CGI
 		if (\Input::server('PHP_AUTH_DIGEST'))
 		{
 			$digest_string = \Input::server('PHP_AUTH_DIGEST');
 		}
-
 		elseif (\Input::server('HTTP_AUTHORIZATION'))
 		{
 			$digest_string = \Input::server('HTTP_AUTHORIZATION');
 		}
-
 		else
 		{
 			$digest_string = "";
 		}
 
 		/* The $_SESSION['error_prompted'] variabile is used to ask
-		   the password again if none given or if the user enters
-		   a wrong auth. informations. */
-		if ( empty($digest_string) )
+		  the password again if none given or if the user enters
+		  a wrong auth. informations. */
+		if (empty($digest_string))
 		{
 			self::_force_login($uniqid);
 		}
@@ -284,18 +276,18 @@ abstract class Controller_Rest extends \Controller
 		preg_match_all('@(username|nonce|uri|nc|cnonce|qop|response)=[\'"]?([^\'",]+)@', $digest_string, $matches);
 		$digest = array_combine($matches[1], $matches[2]);
 
-		if ( ! array_key_exists('username', $digest) or !self::_check_login($digest['username']) )
+		if (!array_key_exists('username', $digest) or !self::_check_login($digest['username']))
 		{
 			self::_force_login($uniqid);
 		}
 
-		$valid_logins =& \Config::get('rest.valid_logins');
+		$valid_logins = & \Config::get('rest.valid_logins');
 		$valid_pass = $valid_logins[$digest['username']];
 
 		// This is the valid response expected
 		$A1 = md5($digest['username'] . ':' . \Config::get('rest.realm') . ':' . $valid_pass);
-		$A2 = md5(strtoupper(\Input::method()).':'.$digest['uri']);
-		$valid_response = md5($A1.':'.$digest['nonce'].':'.$digest['nc'].':'.$digest['cnonce'].':'.$digest['qop'].':'.$A2);
+		$A2 = md5(strtoupper(\Input::method()) . ':' . $digest['uri']);
+		$valid_response = md5($A1 . ':' . $digest['nonce'] . ':' . $digest['nc'] . ':' . $digest['cnonce'] . ':' . $digest['qop'] . ':' . $A2);
 
 		if ($digest['response'] != $valid_response)
 		{
@@ -303,9 +295,7 @@ abstract class Controller_Rest extends \Controller
 			header('HTTP/1.1 401 Unauthorized');
 			exit;
 		}
-
 	}
-
 
 	private function _force_login($nonce = '')
 	{
@@ -314,12 +304,11 @@ abstract class Controller_Rest extends \Controller
 
 		if (\Config::get('rest.auth') == 'basic')
 		{
-			header('WWW-Authenticate: Basic realm="'.\Config::get('rest.realm').'"');
+			header('WWW-Authenticate: Basic realm="' . \Config::get('rest.realm') . '"');
 		}
-
 		elseif (\Config::get('rest.auth') == 'digest')
 		{
-			header('WWW-Authenticate: Digest realm="'.\Config::get('rest.realm'). '" qop="auth" nonce="'.$nonce.'" opaque="'.md5(\Config::get('rest.realm')).'"');
+			header('WWW-Authenticate: Digest realm="' . \Config::get('rest.realm') . '" qop="auth" nonce="' . $nonce . '" opaque="' . md5(\Config::get('rest.realm')) . '"');
 		}
 
 		exit('Not authorized.');
@@ -329,15 +318,15 @@ abstract class Controller_Rest extends \Controller
 	private function _force_loopable($data)
 	{
 		// Force it to be something useful
-		if ( ! is_array($data) and ! is_object($data))
+		if (!is_array($data) and !is_object($data))
 		{
 			$data = (array) $data;
 		}
 
 		return $data;
 	}
-	// FORMATING FUNCTIONS ---------------------------------------------------------
 
+	// FORMATING FUNCTIONS ---------------------------------------------------------
 	// Format XML for output
 	private function _format_xml($data = array(), $structure = NULL, $basenode = 'xml')
 	{
@@ -354,7 +343,7 @@ abstract class Controller_Rest extends \Controller
 
 		// loop through the data passed in.
 		$data = self::_force_loopable($data);
-		foreach($data as $key => $value)
+		foreach ($data as $key => $value)
 		{
 			// no numeric keys in our xml please!
 			if (is_numeric($key))
@@ -374,7 +363,6 @@ abstract class Controller_Rest extends \Controller
 				// recrusive call.
 				self:: _format_xml($value, $node, $basenode);
 			}
-
 			else
 			{
 				// Actual boolean values need to be converted to numbers
@@ -393,7 +381,6 @@ abstract class Controller_Rest extends \Controller
 		return $structure->asXML();
 	}
 
-
 	// Format Raw XML for output
 	private function _format_rawxml($data = array(), $structure = NULL, $basenode = 'xml')
 	{
@@ -410,7 +397,7 @@ abstract class Controller_Rest extends \Controller
 
 		// loop through the data passed in.
 		$data = self::_force_loopable($data);
-		foreach( $data as $key => $value)
+		foreach ($data as $key => $value)
 		{
 			// no numeric keys in our xml please!
 			if (is_numeric($key))
@@ -430,7 +417,6 @@ abstract class Controller_Rest extends \Controller
 				// recrusive call.
 				self::_format_rawxml($value, $node, $basenode);
 			}
-
 			else
 			{
 				// Actual boolean values need to be converted to numbers
@@ -443,7 +429,6 @@ abstract class Controller_Rest extends \Controller
 
 				$structure->addChild($key, $value);
 			}
-
 		}
 
 		// pass back as string. or simple xml object if you want!
@@ -477,7 +462,6 @@ abstract class Controller_Rest extends \Controller
 //
 //		return self::table->generate();
 //	}
-
 	// Format HTML for output
 	private function _format_csv($data = array())
 	{
@@ -494,10 +478,10 @@ abstract class Controller_Rest extends \Controller
 			$data = array($data);
 		}
 
-		$output = implode(',', $headings)."\r\n";
-		foreach($data as &$row)
+		$output = implode(',', $headings) . "\r\n";
+		foreach ($data as &$row)
 		{
-			$output .= '"'.implode('","', $row)."\"\r\n";
+			$output .= '"' . implode('","', $row) . "\"\r\n";
 		}
 
 		return $output;
@@ -520,6 +504,7 @@ abstract class Controller_Rest extends \Controller
 	{
 		return var_export($data, true);
 	}
+
 }
 
 /* End of file rest.php */

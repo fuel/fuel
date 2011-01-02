@@ -20,7 +20,8 @@ var nav = {
 		"General": {
 			"Controllers": {
 				"Base" :		"general/controllers/base.html",
-				"Template":		"general/controllers/template.html"
+				"Template":		"general/controllers/template.html",
+				"Rest":			"general/controllers/rest.html"
 			},
 			"Routing":			"general/routing.html",
 			"Views":			"general/views.html",
