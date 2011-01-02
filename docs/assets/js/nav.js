@@ -18,7 +18,10 @@ var nav = {
 			"Download":		"installation/download.html"
 		},
 		"General": {
-			"Controllers":		"general/controllers.html",
+			"Controllers": {
+				"Base" :		"general/controllers/base.html",
+				"Template":		"general/controllers/template.html"
+			},
 			"Routing":			"general/routing.html",
 			"Views":			"general/views.html",
 			"Tasks":			"general/tasks.html",
