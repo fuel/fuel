@@ -269,6 +269,38 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		return true;
 	}
 
+	// ---------------------------------------------------------------------
+
+	/**
+	 * validate a driver config value
+	 *
+	 * @param	string	name of the config variable to validate
+	 * @param	mixed	value
+	 * @access	private
+	 * @return  mixed
+	 */
+	private function _validate_config($name, $value)
+	{
+		switch ($name)
+		{
+			case 'cache_id':
+				if ( empty($value) OR ! is_string($value))
+				{
+					$value = 'fuel';
+				}
+			break;
+
+			case 'expiration':
+				if ( empty($value) OR ! is_numeric($value))
+				{
+					$value = null;
+				}
+			break;
+		}
+
+		return $value;
+	}
+
 }
 
 /* End of file file.php */
