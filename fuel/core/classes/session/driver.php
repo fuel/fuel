@@ -361,8 +361,15 @@ abstract class Session_Driver {
 		elseif (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
 			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = 'old';
-			return $this->flash[$this->config['flash_id'].'::'.$name]['value'];
+			$default = $this->flash[$this->config['flash_id'].'::'.$name]['value'];
+
+			// need to auto-update the session?
+			if ($this->config['write_on_set'] === true)
+			{
+				$this->write();
+			}
 		}
+
 		return $default;
 	}
 
@@ -475,6 +482,7 @@ abstract class Session_Driver {
 	 */
 	protected function _cleanup_flash()
 	{
+var_dump($this->flash);
 		foreach($this->flash as $key => $value)
 		{
 			if ($value['state'] === 'old')
