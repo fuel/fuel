@@ -64,6 +64,12 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Crypt'						=> COREPATH.'classes/crypt.php',
 	'Fuel\\Core\\Event'						=> COREPATH.'classes/event.php',
 	'Fuel\\Core\\Error'						=> COREPATH.'classes/error.php',
+
+	'Fuel\\Core\\File'						=> COREPATH.'classes/file.php',
+	'Fuel\\Core\\File_Area'					=> COREPATH.'classes/file/area.php',
+	'Fuel\\Core\\File_Driver\\File'			=> COREPATH.'classes/file/driver/file.php',
+	'Fuel\\Core\\File_Driver\\Directory'	=> COREPATH.'classes/file/driver/directory.php',
+
 	'Fuel\\Core\\Form'						=> COREPATH.'classes/form.php',
 	'Fuel\\Core\\Ftp'						=> COREPATH.'classes/ftp.php',
 	'Fuel\\Core\\Html'						=> COREPATH.'classes/html.php',
