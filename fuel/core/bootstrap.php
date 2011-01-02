@@ -17,6 +17,7 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Asset'						=> COREPATH.'classes/asset.php',
 
 	'Fuel\\Core\\Cache'						=> COREPATH.'classes/cache.php',
+	'Fuel\\Core\\Cache_Exception'			=> COREPATH.'classes/cache/exception.php',
 	'Fuel\\Core\\Cache_Handler_Driver'		=> COREPATH.'classes/cache/handler/driver.php',
 	'Fuel\\Core\\Cache_Handler_Json'		=> COREPATH.'classes/cache/handler/json.php',
 	'Fuel\\Core\\Cache_Handler_Serialized'	=> COREPATH.'classes/cache/handler/serialized.php',
