@@ -522,7 +522,7 @@ abstract class Email_Driver {
 		$from = str_replace(">", "", $from);
 		$from = str_replace("<", "", $from);
 
-		return "<".uniqid('').strstr($from, '@').">";
+		return "<".uniqid('').strrchr($from, '@').">";
 	}
 
 	// Following functions are called to create the email

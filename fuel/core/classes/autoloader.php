@@ -5,32 +5,32 @@ namespace Fuel\Core;
 class Autoloader {
 
 	/**
-	 * @var	array	$classes	holds all the classes and paths
+	 * @var array	$classes	holds all the classes and paths
 	 */
 	protected static $classes = array();
 
 	/**
-	 * @var	array	Holds all the class aliases
+	 * @var array	Holds all the class aliases
 	 */
 	protected static $aliases = array();
 
 	/**
-	 * @var	array	Holds all the namespace paths
+	 * @var array	Holds all the namespace paths
 	 */
 	protected static $namespaces = array();
 
 	/**
-	 * @var	array	Holds all the namespace aliases
+	 * @var array	Holds all the namespace aliases
 	 */
 	protected static $namespace_aliases = array();
 
 	/**
-	 * @var	array	The default path to look in if the class is not in a package
+	 * @var array	The default path to look in if the class is not in a package
 	 */
 	protected static $default_path = null;
 
 	/**
-	 * @var	bool	whether to initialize a loaded class
+	 * @var bool	whether to initialize a loaded class
 	 */
 	protected static $auto_initialize = null;
 
@@ -244,7 +244,7 @@ class Autoloader {
 	public static function load($class)
 	{
 		$class = ltrim($class, '\\');
-		$namespaced = strpos($class, '\\') !== false;
+		$namespaced = ($pos = strripos($class, '\\')) !== false;
 
 		if (empty(static::$auto_initialize))
 		{
@@ -267,15 +267,47 @@ class Autoloader {
 		{
 			$file_path = str_replace('_', DS, $class);
 			$file_path = \Fuel::find_file('classes', $file_path);
+
 			if ($file_path !== false)
 			{
 				require $file_path;
+				if ( ! class_exists($class, false) && class_exists($class_name = 'Fuel\\Core\\'.$class, false))
+				{
+					static::alias_to_namespace($class_name);
+				}
 				static::_init_class($class);
 				return true;
 			}
 		}
+		
+		// This handles a namespaces class that a path does not exist for
 		else
 		{
+			$namespace = substr($class, 0, $pos);
+
+			foreach (static::$namespaces as $ns => $path)
+			{
+				if (strncmp($ns, $namespace, $ns_len = strlen($ns)) === 0)
+				{
+					$class_no_ns = substr($class, $pos + 1);
+
+					$file_path = strtolower($path.substr($namespace, strlen($ns) + 1).DS.str_replace('_', DS, $class_no_ns).'.php');
+					if (is_file($file_path))
+					{
+						// Fuel::$path_cache[$class] = $file_path;
+						// Fuel::$paths_changed = true;
+						require $file_path;
+						static::_init_class($class);
+						return true;
+					}
+				}
+			}
+			if (static::namespace_alias($class))
+			{
+				static::_init_class($class);
+				return true;
+			}
+
 			$file_path = str_replace('_', DS, ltrim(strrchr(strtolower($class), '\\'), '\\'));
 			$file_path = \Fuel::find_file('', $file_path);
 			if ($file_path !== false)

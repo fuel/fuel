@@ -12,6 +12,36 @@
  * @link		http://fuelphp.com
  */
 
+// Get the start time and memory for use later
+defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
+defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
+
+define('DS', DIRECTORY_SEPARATOR);
+define('CRLF', sprintf('%s%s', chr(13), chr(10)));
+
+// save a bit of memory by unsetting the path array
+unset($app_path, $package_path);
+
+// If the user has added a base.php to their app load it
+
+is_file(APPPATH.'base.php') and require APPPATH.'base.php';
+require COREPATH.'base.php';
+
+import('fuel');
+
+( ! class_exists('Fuel')) and class_alias('Fuel\\Core\\Fuel', 'Fuel');
+
+/**
+ * Do we have access to mbstring?
+ * We need this in order to work with UTF-8 strings
+ */
+define('MBSTRING', function_exists('mb_get_info'));
+
+// Load in the Autoloader
+require COREPATH.'classes'.DS.'autoloader.php';
+
+Fuel\Core\Autoloader::add_namespace('Fuel\\Core', COREPATH.'classes/');
+
 Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Arr'						=> COREPATH.'classes/arr.php',
 	'Fuel\\Core\\Asset'						=> COREPATH.'classes/asset.php',
