@@ -58,26 +58,6 @@ abstract class Session_Driver {
 	// --------------------------------------------------------------------
 
 	/**
-	 * read the session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	abstract function read();
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * write the session
-	 *
-	 * @access	public
-	 * @return	void
-	 */
-	abstract function write();
-
-	// --------------------------------------------------------------------
-
-	/**
 	 * destroy the current session
 	 *
 	 * @access	public
@@ -87,6 +67,39 @@ abstract class Session_Driver {
 
 	// --------------------------------------------------------------------
 	// generic driver methods
+	// --------------------------------------------------------------------
+
+	/**
+	 * read the session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function read()
+	{
+		// auto expire flash variables if needed
+		if ($this->config['flash_auto_expire'] === true)
+		{
+			foreach($this->flash as $key => $value)
+			{
+				$this->flash[$key]['state'] = 'old';
+			}
+		}
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * write the session
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function write()
+	{
+		$this->_cleanup_flash();
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -347,7 +360,7 @@ abstract class Session_Driver {
 		}
 		elseif (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
-			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = '';
+			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = 'old';
 			return $this->flash[$this->config['flash_id'].'::'.$name]['value'];
 		}
 		return $default;
@@ -464,32 +477,10 @@ abstract class Session_Driver {
 	{
 		foreach($this->flash as $key => $value)
 		{
-			if ($value['state'] === '')
+			if ($value['state'] === 'old')
 			{
 				unset($this->flash[$key]);
 			}
-		}
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * mark all flash as used so they will be expired
-	 *
-	 * @access	private
-	 * @return  void
-	 */
-	protected function _mark_flash()
-	{
-		foreach($this->flash as $key => $value)
-		{
-			$this->flash[$key]['state'] = '';
-		}
-
-		// need to auto-update the session?
-		if ($this->config['write_on_set'] === true)
-		{
-			$this->write();
 		}
 	}
 
