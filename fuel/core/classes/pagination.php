@@ -7,7 +7,7 @@
  * @package		Fuel
  * @version		1.0
  * @author		Dan Horrigan <http://dhorrigan.com>
- * @license		Apache License v2.0
+ * @license		MIT License
  * @copyright	2010 - 2011 Fuel Development Team
  */
 
