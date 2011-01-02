@@ -118,7 +118,7 @@ class Request {
 
 			$action or $action = 'index';
 
-			$class = '\\Controller\\'.ucfirst($controller);
+			$class = '\\Controller_'.ucfirst($controller);
 			$method = 'action_'.$action;
 
 			if (class_exists($class))
@@ -139,8 +139,9 @@ class Request {
 					{
 						$controller->after();
 					}
+
 					// Get the controller's output
-					static::active()->output =& $controller->output;
+					exit($controller->output);
 				}
 				else
 				{
@@ -354,7 +355,7 @@ class Request {
 	 */
 	public function __toString()
 	{
-		return $this->output;
+		return (string) $this->output;
 	}
 }
 
