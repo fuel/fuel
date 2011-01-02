@@ -13,7 +13,7 @@
  * @version		1.0
  * @author		DudeAmI aka Kris <dudeami0@gmail.com>
  * @license		MIT License
- * @copyright	2010 Dan Horrigan
+ * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
 
