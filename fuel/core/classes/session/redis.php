@@ -150,6 +150,8 @@ class Session_Redis extends Session_Driver {
 
 		if (isset($payload[0])) $this->data = $payload[0];
 		if (isset($payload[1])) $this->flash = $payload[1];
+
+		parent::read();
 	}
 
 	// --------------------------------------------------------------------
@@ -165,6 +167,8 @@ class Session_Redis extends Session_Driver {
 		// do we have something to write?
 		if ( ! empty($this->keys))
 		{
+			parent::write();
+
 			// rotate the session id if needed
 			$this->rotate(false);
 
