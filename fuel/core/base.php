@@ -83,14 +83,7 @@ if ( ! function_exists('logger'))
 	{
 		if (Config::get('profiling'))
 		{
-			if ($level == \Fuel::L_ERROR)
-			{
-				\Console::logError($method.' - '.$msg);
-			}
-			else
-			{
-				\Console::log($method.' - '.$msg);
-			}
+			\Console::log($method.' - '.$msg);
 		}
 		if ($level > \Config::get('log_threshold'))
 		{
