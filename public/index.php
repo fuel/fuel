@@ -24,14 +24,18 @@ define('INTERNAL_ENC', 'ISO-8859-1');
  */
 define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
 
-// Load in the base, which initializes the framework and sets up some global functions.
-is_file($app_path.'base.php') and require $app_path.'base.php';
-require $core_path.'base.php';
+( ! is_dir($app_path) and is_dir(DOCROOT.$app_path)) and $app_path = DOCROOT.$app_path;
+( ! is_dir($core_path) and is_dir(DOCROOT.$core_path)) and $core_path = DOCROOT.$core_path;
+( ! is_dir($package_path) and is_dir(DOCROOT.$package_path)) and $package_path = DOCROOT.$package_path;
 
-// Initialize the framework
-\Fuel::init();
-\Request::factory()->execute()->send_headers()->output();
-\Event::shutdown();
-\Fuel::finish();
+define('APPPATH', realpath($app_path).DIRECTORY_SEPARATOR);
+define('PKGPATH', realpath($package_path).DIRECTORY_SEPARATOR);
+define('COREPATH', realpath($core_path).DIRECTORY_SEPARATOR);
+
+// Bootup the core
+require_once COREPATH.'bootstrap.php';
+
+// Boot the app
+require_once APPPATH.'bootstrap.php';
 
 /* End of file index.php */

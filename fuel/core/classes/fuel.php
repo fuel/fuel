@@ -14,13 +14,6 @@
 
 namespace Fuel\Core;
 
-
-
-// Load in the Autoloader
-require COREPATH.'classes'.DS.'autoloader.php';
-require COREPATH.'bootstrap.php';
-require APPPATH.'bootstrap.php';
-
 /**
  * The core of the framework.
  *
