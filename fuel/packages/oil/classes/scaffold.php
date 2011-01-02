@@ -53,7 +53,7 @@ class Scaffold
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			echo "Created controller".PHP_EOL;
+			\Cli::write('Created controller');
 		}
 	}
 

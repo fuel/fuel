@@ -18,7 +18,7 @@ namespace Oil;
 
 class Cli
 {
-	public function init($args)
+	public static function init($args)
 	{
 		if ( ! isset($args[1]))
 		{
@@ -74,14 +74,14 @@ class Cli
 				\Fuel::add_package('octane');
 				call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
 				break;
-			
+
 			default:
 				static::help();
 		}
 		echo "Complete";
 	}
 
-	public function help()
+	public static function help()
 	{
 		echo <<<HELP
 Usage:
@@ -103,7 +103,7 @@ Description:
 Examples:
     php oil g controller <controllername> [<action1> |<action2> |..]
     php oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
-	
+
 HELP;
 
 	}

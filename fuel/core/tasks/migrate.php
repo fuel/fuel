@@ -1,12 +1,33 @@
 <?php
+/**
+ * Fuel
+ *
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Fuel Development Team
+ * @license		MIT License
+ * @copyright	2010 Dan Horrigan
+ * @link		http://fuelphp.com
+ */
 
 namespace Fuel\Tasks;
 
-
+/**
+ * Migrate task
+ *
+ * Use this command line task to deploy and rollback changes.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Phil Sturgeon
+ * @link		http://fuelphp.com/docs/general/migrations.html
+ */
 
 class Migrate {
 
-	public function run()
+	public static function run()
 	{
 		$version = \Cli::option('v', \Cli::option('version'));
 
@@ -21,7 +42,7 @@ class Migrate {
 		}
 	}
 
-	public function up()
+	public static function up()
 	{
 		\Config::load('migration', true);
 		$version = \Config::get('migration.version') + 1;
@@ -30,7 +51,7 @@ class Migrate {
 		static::_update_version($version);
 	}
 
-	public function down()
+	public static function down()
 	{
 		\Config::load('migration', true);
 		$version = \Config::get('migration.version') - 1;
@@ -39,7 +60,7 @@ class Migrate {
 		static::_update_version($version);
 	}
 
-	private function _update_version($version)
+	private static function _update_version($version)
 	{
 		$contents = '';
 		$path = '';
@@ -57,12 +78,12 @@ class Migrate {
 		file_put_contents($path, $contents);
 	}
 
-	public function install()
+	public static function install()
 	{
 		\Migrate::install();
 	}
 
-	public function help()
+	public static function help()
 	{
 		echo <<<HELP
 Usage:

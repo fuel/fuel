@@ -26,7 +26,7 @@ class Generate
 		$args = self::_clear_args($args);
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
-		
+
 		$filepath = APPPATH . 'classes/controller/' . $singular .'.php';
 
 		$class_name = ucfirst($singular);
@@ -66,7 +66,7 @@ CONTROLLER;
 		}
 	}
 
-	
+
 	public function model($args)
 	{
 		$singular = strtolower(array_shift($args));
@@ -80,8 +80,6 @@ CONTROLLER;
 		$model = <<<MODEL
 <?php
 
-use ActiveRecord;
-
 class Model_{$class_name} extends ActiveRecord\Model { }
 
 /* End of file $singular.php */
@@ -89,7 +87,7 @@ MODEL;
 
 		if (self::write($filepath, $model))
 		{
-			echo "Created model: " . \Fuel::clean_path($filepath).PHP_EOL;
+			\Cli::write('Created model: ' . \Fuel::clean_path($filepath));
 		}
 
 		if ( ! empty($args))
@@ -137,7 +135,7 @@ VIEW;
 
 			if (self::write($view_file, $view))
 			{
-				echo "\tCreated view: {$view_file}".PHP_EOL;
+				\Cli::write("\tCreated view: " . $view_file);
 			}
 		}
 	}
@@ -160,7 +158,7 @@ VIEW;
 			$mode = 'add_fields';
 
 			preg_match('/add_[a-z0-9_]+_to_([a-z0-9_]+)/i', $migration_name, $matches);
-			
+
 			$table = $matches[1];
 		}
 
@@ -382,9 +380,9 @@ MIGRATION;
 		if (substr($action, 0, 1) === '-')
 			unset($actions[$key]);
         }
-        
+
 		return $actions;
-	}		
+	}
 }
 
 /* End of file model.php */

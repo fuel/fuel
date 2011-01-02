@@ -65,6 +65,18 @@ import('fuel');
  */
 define('MBSTRING', function_exists('mb_get_info'));
 
+/**
+ * Is the request being made via AJAX?
+ */
+define('IS_AJAX', isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+
+/**
+ * Is Fuel being run in the command line?
+ */
+define('IS_CLI', defined('STDIN'));
+
+
+
 if ( ! function_exists('logger'))
 {
 	function logger($level, $msg, $method = null)
