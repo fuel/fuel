@@ -33,12 +33,17 @@ var nav = {
 			"Cli":		"classes/cli.html",
 			"Config":	"classes/config.html",
 			"Cookie":	"classes/cookie.html",
+			"Crypt":	{
+				"Configuration":	"classes/crypt/config.html",
+				"Usage":			"classes/crypt/usage.html"
+			},
 			"Event":	"classes/event.html",
 			"Ftp":	{
 				"Configuration":	"classes/ftp/config.html",
 				"Usage":			"classes/ftp/usage.html"
 			},
 			"Input":	"classes/input.html",
+			"Log":	    "classes/log.html",
 			"Session":	{
 				"Configuration":	"classes/session/config.html",
 				"Usage":			"classes/session/usage.html",
