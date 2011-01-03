@@ -14,10 +14,6 @@
 
 namespace Fuel\Core;
 
-
-
-// ------------------------------------------------------------------------
-
 /**
  * Cookie class
  *
@@ -43,7 +39,7 @@ class Cookie {
 	/**
 	 * @var  string  Restrict the domain that the cookie is available to
 	 */
-	public static $domain = NULL;
+	public static $domain = null;
 
 	/**
 	 * @var  boolean  Only transmit cookies over secure connections
@@ -61,15 +57,15 @@ class Cookie {
 	 * will be deleted.
 	 *
 	 *     // Get the "theme" cookie, or use "blue" if the cookie does not exist
-	 *     $theme = static::get('theme', 'blue');
+	 *     $theme = Cookie::get('theme', 'blue');
 	 *
 	 * @param   string  cookie name
 	 * @param   mixed   default value to return
 	 * @return  string
 	 */
-	public static function get($index, $default = NULL)
+	public static function get($name, $default = null)
 	{
-		return \Input::cookie($index, $default);
+		return \Input::cookie($name, $default);
 	}
 
 	/**
@@ -77,17 +73,17 @@ class Cookie {
 	 * automatic serialization will be performed!
 	 *
 	 *     // Set the "theme" cookie
-	 *     static::set('theme', 'red');
+	 *     Cookie::set('theme', 'red');
 	 *
 	 * @param   string   name of cookie
 	 * @param   string   value of cookie
 	 * @param   integer  lifetime in seconds
 	 * @return  boolean
 	 */
-	public static function set($name, $value, $expiration = NULL)
+	public static function set($name, $value, $expiration = null)
 	{
 		// If nothing is provided, use the standard amount of time
-		if ($expiration === NULL)
+		if ($expiration === null)
 		{
 			$expiration = time() + 86500;
 		}
@@ -102,9 +98,9 @@ class Cookie {
 	}
 
 	/**
-	 * Deletes a cookie by making the value NULL and expiring it.
+	 * Deletes a cookie by making the value null and expiring it.
 	 *
-	 *     static::delete('theme');
+	 *     Cookie::delete('theme');
 	 *
 	 * @param   string   cookie name
 	 * @return  boolean
@@ -116,9 +112,8 @@ class Cookie {
 		unset($_COOKIE[$name]);
 
 		// Nullify the cookie and make it expire
-		return static::set($name, NULL, -86400);
+		return static::set($name, null, -86400);
 	}
-
 }
 
-/* End of file controller.php */
+/* End of file cookie.php */

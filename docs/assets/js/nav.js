@@ -32,6 +32,7 @@ var nav = {
 		"Classes": {
 			"Cli":		"classes/cli.html",
 			"Config":	"classes/config.html",
+			"Cookie":	"classes/cookie.html",
 			"Event":	"classes/event.html",
 			"Ftp":	{
 				"Configuration":	"classes/ftp/config.html",
