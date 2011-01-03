@@ -302,20 +302,6 @@ class Autoloader {
 					}
 				}
 			}
-			if (static::namespace_alias($class))
-			{
-				static::_init_class($class);
-				return true;
-			}
-
-			$file_path = str_replace('_', DS, ltrim(strrchr(strtolower($class), '\\'), '\\'));
-			$file_path = \Fuel::find_file('', $file_path);
-			if ($file_path !== false)
-			{
-				require $file_path;
-				static::_init_class($class);
-				return true;
-			}
 		}
 		return false;
 	}
