@@ -315,7 +315,7 @@ abstract class Cache_Storage_Driver {
 
 		if ($use_expiration)
 		{
-			if (! is_null($this->expiration) and $this->expiration < 0)
+			if ( ! is_null($this->expiration) and $this->expiration < 0)
 			{
 				$this->delete();
 				throw new \Cache_Exception('expired');
