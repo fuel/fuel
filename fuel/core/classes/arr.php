@@ -14,8 +14,6 @@
 
 namespace Fuel\Core;
 
-
-
 class Arr {
 
 	/**
