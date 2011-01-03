@@ -35,7 +35,9 @@
 				<ul>
 					<li>Note the public directory in the source equals your web server's public document directory i.e. public_html, public, htdocs, etc.</li>
 					<li>Placing the fuel directory outside of the public document directory is encouraged.
-<pre><code>/
+					</li>
+				</ul>
+<pre>/
   fuel/
     app/
     core/
@@ -44,9 +46,16 @@
     .htaccess
     assets/
     index.php
-</code></pre>
-					</li>
-				</ul>
+    oil
+</pre>
+			</li>
+			<li>
+				Set permissions on write-able folders manually, or run:
+<pre>$ php oil refine install
+	Made writable: APPPATH/cache
+	Made writable: APPPATH/logs
+	Made writable: APPPATH/tmp
+</pre>
 			</li>
 		</ol>
 

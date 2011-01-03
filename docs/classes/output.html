@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Event Class - Fuel Documentation</title>
+	<title>Output Class - Fuel Documentation</title>
 	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
 	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="../assets/js/nav.js"></script>
@@ -24,13 +24,13 @@
 	<div id="main-nav"></div>
 
 	<section id="content">
-		<h2>Event Class</h2>
+		<h2>Output Class</h2>
 
-		<p>The event class allows you to interact with the Fuel Core without having to alter any core files.</p>
+		<p>The output class contains the methods to deal with HTTP header information.</p>
 
 		<article>
-			<h4>register($event, $callback)</h4>
-			<p>The <strong>register</strong> method allows files to register an object that will be ran when the <kbd>trigger</kbd> method is called.</p>
+			<h4>set_header($name, $value)</h4>
+			<p>The <strong>set_header</strong> method allows set custom HTTP headers.</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -47,26 +47,31 @@
 								<th class="description">Description</th>
 							</tr>
 							<tr>
-								<th><kbd>$event</kbd></th>
-								<td><i>required</i></td>
-								<td>The event you are registering your code to.</td>
+								<th><kbd>$name</kbd></th>
+								<td><i>Required</i></td>
+								<td>Name of the header to add</td>
 							</tr>
 							<tr>
-								<th><kbd>$callback</kbd></th>
-								<td><i>required</i></td>
-								<td>The callback method. </td>
+								<th><kbd>$value</kbd></th>
+								<td><i>Required</i></td>
+								<td>The string that needs to be added to the HTTP header. It needs to be in the form "name: value", where 'name' needs to be identical to <kbd>$name</kbd>.</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
 					<th>Returns</th>
-					<td>boolean</td>
+					<td>void</td>
 				</tr>
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre><code>Event::register('user_login', 'Class::method')</code></pre>
+						<pre class="php"><code>// We'll be outputting a PDF
+Output::set_header('Content-type', 'Content-type: application/pdf');
+
+// It will be called downloaded.pdf
+Output::set_header('Content-Disposition', 'Content-Disposition: attachment; filename="downloaded.pdf"');
+</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -74,8 +79,36 @@
 		</article>
 
 		<article>
-			<h4>trigger($event, $data = '', $return_type = 'string')</h4>
-			<p>The <strong>trigger</strong> method is used to trigger or activate callbacks that are associated through the register method.</p>
+			<h4>send_headers()</h4>
+			<p>The <strong>send_headers</strong> method sents the set headers out to the browser, including the HTTP status of the request.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td><i>None</i></td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>Output::send_headers();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<p>Note that you normally don't have to call this method manually. FuelPHP will take care of this as part of processing the request.</p>
+		</article>
+
+		<article>
+			<h4>redirect($url = '', $method = 'location', $redirect_code = 302)</h4>
+			<p>The <strong>redirect</strong> method offers different methods of redirecting to a new URL.</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -92,77 +125,36 @@
 								<th class="description">Description</th>
 							</tr>
 							<tr>
-								<th><kbd>$event</kbd></th>
-								<td><i>required</i></td>
-								<td>The event you are triggering.</td>
-							</tr>
-							<tr>
-								<th><kbd>$data</kbd></th>
+								<th><kbd>$url</kbd></th>
 								<td><pre class="php"><code>''</code></pre></td>
-								<td>Any data you want to send to the method registered.</td>
+								<td>URL to redirect to.</td>
 							</tr>
 							<tr>
-								<th><kbd>$return_type</kbd></th>
-								<td><pre class="php"><code>'string'</code></pre></td>
-								<td>What type of return data you expect. (string, array, json, none, serialized) - <strong>Default is string</strong></td>
+								<th><kbd>$method</kbd></th>
+								<td><pre class="php"><code>'location'</code></pre></td>
+								<td>Redirection method to use. Supported are 'location' and 'refresh'.</td>
+							</tr>
+							<tr>
+								<th><kbd>$redirect_code</kbd></th>
+								<td><pre class="php"><code>302</code></pre></td>
+								<td>HTTP status code to send back as part of the redirect.</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
 					<th>Returns</th>
-					<td>mixed - Dependent on the <var>$return_type</var>.</td>
+					<td>This method terminates the current script, it does not return.</td>
 				</tr>
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>Event::trigger('user_login', $data)</code></pre>
+						<pre class="php"><code>Output::redirect('http://example.com/home', 'refresh');</code></pre>
 					</td>
 				</tr>
 				</tbody>
 			</table>
 		</article>
-
-		<article>
-			<h4>has_events($event)</h4>
-			<p>The <strong>has_events</strong> method is available so you can check if a particular registered event has triggers.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th class="legend">Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>
-						<table class="parameters">
-							<tr>
-								<th>Param</th>
-								<th>Default</th>
-								<th class="description">Description</th>
-							</tr>
-							<tr>
-								<th><kbd>$event</kbd></th>
-								<td><i>required</i></td>
-								<td>The event you are checking.</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td>boolean</td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>Event::has_events('user_login')</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
-
 
 	</section>
 

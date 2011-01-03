@@ -41,7 +41,7 @@
 		</p>
 
 		<article>
-			<h4>instance()</h4>
+			<h4>instance($instance = null)</h4>
 			<p>The <strong>instance</strong> method returns the default session instance, or a specific instance, identified by name.</p>
 			<table class="method">
 				<tbody>
@@ -59,7 +59,7 @@
 								<th class="description">Description</th>
 							</tr>
 							<tr>
-								<th><kbd>$cookiename</kbd></th>
+								<th><kbd>$instance</kbd></th>
 								<td><i>optional</i></td>
 								<td>Cookiename (as defined in config/session.php) that identifies the required session instance.</td>
 							</tr>
@@ -87,7 +87,7 @@ $session = Session::instance('myappcookie');
 		</article>
 
 		<article>
-			<h4>set()</h4>
+			<h4>set($variable, $value = null)</h4>
 			<p>The <strong>set</strong> method allows you to set a session variable.</p>
 			<table class="method">
 				<tbody>
@@ -141,7 +141,7 @@ Session::set('array', array('varA', 'varB', 'varC' => array('val1', 'val2'));
 		</article>
 
 		<article>
-			<h4>get()</h4>
+			<h4>get($variable = null, $default = null)</h4>
 			<p>The <strong>get</strong> method allows you to retrieve stored variables from the session.</p>
 			<table class="method">
 				<tbody>
@@ -199,7 +199,7 @@ $arr = Session::get('array.varC');
 		</article>
 
 		<article>
-			<h4>delete()</h4>
+			<h4>delete($variable)</h4>
 			<p>The <strong>delete</strong> method allows you to delete a stored session variable.</p>
 			<table class="method">
 				<tbody>
@@ -245,7 +245,7 @@ Session::delete('array.varC');
 		</article>
 
 		<article>
-			<h4>set_flash()</h4>
+			<h4>set_flash($variable, $value = null)</h4>
 			<p>The <strong>set_flash</strong> method allows you to set a session flash variable. Flash variables have a limited lifespan. Depending on the configuration, they will be deleted after the next page request, or after they are retrieved.</p>
 			<table class="method">
 				<tbody>
@@ -299,7 +299,7 @@ Session::set_flash('array', array('varA', 'varB', 'varC' => array('val1', 'val2'
 		</article>
 
 		<article>
-			<h4>get_flash()</h4>
+			<h4>get_flash($variable, $default = null)</h4>
 			<p>The <strong>get_flash</strong> method allows you to get a session flash variable. Flash variables have a limited lifespan. Depending on the configuration, they will be deleted after the next page request, or after they are retrieved.</p>
 			<table class="method">
 				<tbody>
@@ -347,7 +347,7 @@ $step = Session::get_flash('step');
 		</article>
 
 		<article>
-			<h4>keep_flash()</h4>
+			<h4>keep_flash($variable)</h4>
 			<p>The <strong>keep_flash</strong> method resets a flash variable stored in the session to a 'unrequested' state. This allows you to get a flash variable, and still pass it on to the next page request.</p>
 			<table class="method">
 				<tbody>
@@ -390,7 +390,7 @@ Session::keep_flash('step');
 		</article>
 
 		<article>
-			<h4>delete_flash()</h4>
+			<h4>delete_flash($variable)</h4>
 			<p>The <strong>delete_flash</strong> method allows you to delete a stored flash variable.</p>
 			<table class="method">
 				<tbody>

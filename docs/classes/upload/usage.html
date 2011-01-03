@@ -316,7 +316,7 @@ if ( Upload::is_valid() )
 		</article>
 
 		<article>
-			<h4>get_files()</h4>
+			<h4>get_files($index = null)</h4>
 			<p>The <strong>get_files</strong> method returns a multi-dimensional array with all files uploaded that have an error status = Upload::UPLOAD_ERR_OK.</p>
 			<table class="method">
 				<tbody>
@@ -363,7 +363,7 @@ foreach( Upload::get_files() as $file )
 		</article>
 
 		<article>
-			<h4>get_errors()</h4>
+			<h4>get_errors($index = null)</h4>
 			<p>The <strong>get_files</strong> method returns a multi-dimensional array with all files uploaded that have an error status != Upload::UPLOAD_ERR_OK.</p>
 			<table class="method">
 				<tbody>
@@ -410,7 +410,7 @@ foreach( Upload::get_errors() as $file )
 		</article>
 
 		<article>
-			<h4>register()</h4>
+			<h4>register($event, $callback)</h4>
 			<p>
 				The <strong>register</strong> method allows you to register callbacks for specific upload events,
 				and allow you to add your own code to the <strong>process()</strong> and <strong>save()</strong> methods.
@@ -499,7 +499,7 @@ Upload::register('before', function (&amp;$file) {
 		</article>
 
 		<article>
-			<h4>process()</h4>
+			<h4>process($config = array())</h4>
 			<p>
 				The <strong>process</strong> method processes the information about all uploaded files,
 				normalizes the different permutations of form field names that can be used,
@@ -548,7 +548,7 @@ Upload::process( array('max_size' => 10240, 'auto_rename' => false, 'overwrite' 
 		</article>
 
 		<article>
-			<h4>save()</h4>
+			<h4>save( ... )</h4>
 			<p>The <strong>save</strong> method saves all validated files uploaded to the path specified.</p>
 			<table class="method">
 				<tbody>
