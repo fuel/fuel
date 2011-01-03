@@ -102,7 +102,7 @@ class Request {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function show_404()
+	public static function show_404($return = false)
 	{
 		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
@@ -141,6 +141,10 @@ class Request {
 					}
 
 					// Get the controller's output
+					if ($return)
+					{
+						return $controller->output;
+					}
 					exit($controller->output);
 				}
 				else
@@ -280,7 +284,7 @@ class Request {
 			// 404 if it's still not found
 			if ( ! class_exists($class))
 			{
-				static::show_404();
+				$this->output =& static::show_404(true);
 				return $this;
 			}
 		}
@@ -322,7 +326,7 @@ class Request {
 		}
 		else
 		{
-			static::show_404();
+			$this->output =& static::show_404(true);
 		}
 
 		return $this;
