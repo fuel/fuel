@@ -39,12 +39,12 @@ class Install {
 		{
 			if (@chmod($path, 0777))
 			{
-				\Cli::write("\t" . \Cli::color('Made writable: ' . $path, 'green'));
+				\Cli::write("\t" . \Cli::color('Made writable: ' . \Fuel::clean_path($path), 'green'));
 			}
 
 			else
 			{
-				\Cli::write("\t" . \Cli::color('Failed to make writable: ' . $path, 'red'));
+				\Cli::write("\t" . \Cli::color('Failed to make writable: ' . \Fuel::clean_path($path), 'red'));
 			}
 		}
 	}
