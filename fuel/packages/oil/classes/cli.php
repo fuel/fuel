@@ -59,7 +59,7 @@ class Cli
 			case 'r':
 			case 'refine':
 
-				if ( ! isset($args[2]))
+				if ( ! isset($args[2]) OR $args[2] == 'help')
 				{
 					Refine::help();
 					return;
