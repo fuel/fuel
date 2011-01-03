@@ -25,7 +25,7 @@ class Ftp
 {
 	public static $initialized = false;
 
-	protected $_hostname		= '';
+	protected $_hostname		= 'localhost';
 	protected $_username		= '';
 	protected $_password		= '';
 	protected $_port			= 21;
@@ -42,9 +42,14 @@ class Ftp
 	 * @param   array   array of values
 	 * @return  Ftp
 	 */
-	public static function factory($config = 'default')
+	public static function factory($config = 'default', $connect = true)
 	{
-		return new Ftp($config);
+		$ftp = new Ftp($config);
+
+		// Unless told not to, connect automatically
+		$connect === true and $ftp->connect();
+
+		return $ftp;
 	}
 
 	/**
@@ -93,14 +98,14 @@ class Ftp
 	 * @param	array	 the connection values
 	 * @return	bool
 	 */
-	function connect()
+	public function connect()
 	{
 		if($this->_ssl_mode === true)
 		{
-//			if( ! function_exists('ftp_ssl_connect'))
-//			{
-//				throw new Exception('ftp_ssl_connect() is missing.');
-//			}
+			if( ! function_exists('ftp_ssl_connect'))
+			{
+				throw new Exception('ftp_ssl_connect() is missing.');
+			}
 
 			$this->_conn_id = @ftp_ssl_connect($this->_hostname, $this->_port);
 		}
@@ -144,7 +149,7 @@ class Ftp
 	 * @access	private
 	 * @return	bool
 	 */
-	function _login()
+	private function _login()
 	{
 		return @ftp_login($this->_conn_id, $this->_username, $this->_password);
 	}
@@ -157,7 +162,7 @@ class Ftp
 	 * @access	private
 	 * @return	bool
 	 */
-	function _is_conn()
+	private function _is_conn()
 	{
 		if ( ! is_resource($this->_conn_id))
 		{
@@ -187,7 +192,7 @@ class Ftp
 	 * @param	bool
 	 * @return	bool
 	 */
-	function change_dir($path = '', $supress_debug = false)
+	public function change_dir($path = '')
 	{
 		if ($path == '' or ! $this->_is_conn())
 		{
@@ -198,7 +203,7 @@ class Ftp
 
 		if ($result === false)
 		{
-			if ($this->_debug == true and $supress_debug == false)
+			if ($this->_debug == true)
 			{
 				throw new \Exception('ftp_unable_to_change_dir');
 			}
@@ -217,9 +222,9 @@ class Ftp
 	 * @param	string
 	 * @return	bool
 	 */
-	function mkdir($path = '', $permissions = NULL)
+	public function mkdir($path, $permissions = null)
 	{
-		if ($path == '' or ! $this->_is_conn())
+		if ( ! $this->_is_conn())
 		{
 			return false;
 		}
@@ -236,9 +241,9 @@ class Ftp
 		}
 
 		// Set file permissions if needed
-		if ( ! is_null($permissions))
+		if ($permissions !== null)
 		{
-			$this->chmod($path, (int)$permissions);
+			$this->chmod($path, (int) $permissions);
 		}
 
 		return true;
@@ -255,14 +260,14 @@ class Ftp
 	 * @param	string
 	 * @return	bool
 	 */
-	function upload($locpath, $rempath, $mode = 'auto', $permissions = NULL)
+	public function upload($local_path, $remote_path, $mode = 'auto', $permissions = null)
 	{
 		if ( ! $this->_is_conn())
 		{
 			return false;
 		}
 
-		if ( ! file_exists($locpath))
+		if ( ! file_exists($local_path))
 		{
 			throw new \Exception('ftp_no_source_file');
 			return false;
@@ -272,13 +277,13 @@ class Ftp
 		if ($mode == 'auto')
 		{
 			// Get the file extension so we can set the upload type
-			$ext = pathinfo($locpath, PATHINFO_EXTENSION);
+			$ext = pathinfo($local_path, PATHINFO_EXTENSION);
 			$mode = $this->_settype($ext);
 		}
 
 		$mode = ($mode == 'ascii') ? FTP_ASCII : FTP_BINARY;
 
-		$result = @ftp_put($this->_conn_id, $rempath, $locpath, $mode);
+		$result = @ftp_put($this->_conn_id, $remote_path, $local_path, $mode);
 
 		if ($result === false)
 		{
@@ -290,9 +295,9 @@ class Ftp
 		}
 
 		// Set file permissions if needed
-		if ( ! is_null($permissions))
+		if ($permissions !== null)
 		{
-			$this->chmod($rempath, (int)$permissions);
+			$this->chmod($remote_path, (int) $permissions);
 		}
 
 		return true;
@@ -309,7 +314,7 @@ class Ftp
 	 * @param	string
 	 * @return	bool
 	 */
-	function download($rempath, $locpath, $mode = 'auto')
+	public function download($remote_path, $local_path, $mode = 'auto')
 	{
 		if ( ! $this->_is_conn())
 		{
@@ -320,13 +325,13 @@ class Ftp
 		if ($mode == 'auto')
 		{
 			// Get the file extension so we can set the upload type
-			$ext = pathinfo($rempath, PATHINFO_BASENAME);
+			$ext = pathinfo($remote_path, PATHINFO_BASENAME);
 			$mode = $this->_settype($ext);
 		}
 
 		$mode = ($mode == 'ascii') ? FTP_ASCII : FTP_BINARY;
 
-		$result = @ftp_get($this->_conn_id, $locpath, $rempath, $mode);
+		$result = @ftp_get($this->_conn_id, $local_path, $remote_path, $mode);
 
 		if ($result === false)
 		{
@@ -351,7 +356,7 @@ class Ftp
 	 * @param	bool
 	 * @return	bool
 	 */
-	function rename($old_file, $new_file, $move = false)
+	public function rename($old_file, $new_file, $move = false)
 	{
 		if ( ! $this->_is_conn())
 		{
@@ -384,7 +389,7 @@ class Ftp
 	 * @param	string
 	 * @return	bool
 	 */
-	function move($old_file, $new_file)
+	public function move($old_file, $new_file)
 	{
 		return $this->rename($old_file, $new_file, true);
 	}
@@ -478,7 +483,7 @@ class Ftp
 	 * @param	string	the permissions
 	 * @return	bool
 	 */
-	function chmod($path, $perm)
+	public function chmod($path, $perm)
 	{
 		if ( ! $this->_is_conn())
 		{
@@ -517,7 +522,7 @@ class Ftp
 	 * @access	public
 	 * @return	array
 	 */
-	function list_files($path = '.')
+	public function list_files($path = '.')
 	{
 		if ( ! $this->_is_conn())
 		{
@@ -541,7 +546,7 @@ class Ftp
 	 * @param	string	path to destination - include the base folder with trailing slash
 	 * @return	bool
 	 */
-	function mirror($locpath, $rempath)
+	public function mirror($local_path, $remote_path)
 	{
 		if ( ! $this->_is_conn())
 		{
@@ -549,13 +554,13 @@ class Ftp
 		}
 
 		// Open the local file path
-		if ($fp = @opendir($locpath))
+		if ($fp = @opendir($local_path))
 		{
 			// Attempt to open the remote file path.
-			if ( ! $this->change_dir($rempath, true))
+			if ( ! $this->change_dir($remote_path, true))
 			{
 				// If it doesn't exist we'll attempt to create the direcotory
-				if ( ! $this->mkdir($rempath) or ! $this->change_dir($rempath))
+				if ( ! $this->mkdir($remote_path) or ! $this->change_dir($remote_path))
 				{
 					return false;
 				}
@@ -564,9 +569,9 @@ class Ftp
 			// Recursively read the local directory
 			while (false !== ($file = readdir($fp)))
 			{
-				if (@is_dir($locpath.$file) && substr($file, 0, 1) != '.')
+				if (@is_dir($local_path.$file) && substr($file, 0, 1) != '.')
 				{
-					$this->mirror($locpath.$file."/", $rempath.$file."/");
+					$this->mirror($local_path.$file."/", $remote_path.$file."/");
 				}
 				elseif (substr($file, 0, 1) != ".")
 				{
@@ -574,7 +579,7 @@ class Ftp
 					$ext = $this->_getext($file);
 					$mode = $this->_settype($ext);
 
-					$this->upload($locpath.$file, $rempath.$file, $mode);
+					$this->upload($local_path.$file, $remote_path.$file, $mode);
 				}
 			}
 			return true;
@@ -592,7 +597,7 @@ class Ftp
 	 * @param	string
 	 * @return	string
 	 */
-	function _settype($ext)
+	private function _settype($ext)
 	{
 		$text_types = array(
 			'txt',
@@ -610,7 +615,6 @@ class Ftp
 			'xml'
 		);
 
-
 		return in_array($ext, $text_types) ? 'ascii' : 'binary';
 	}
 
@@ -620,11 +624,9 @@ class Ftp
 	 * Close the connection
 	 *
 	 * @access	public
-	 * @param	string	path to source
-	 * @param	string	path to destination
-	 * @return	bool
+	 * @return	void
 	 */
-	function close()
+	public function close()
 	{
 		if ( ! $this->_is_conn())
 		{
@@ -634,7 +636,15 @@ class Ftp
 		@ftp_close($this->_conn_id);
 	}
 
-	function  __destruct()
+	// ------------------------------------------------------------------------
+
+	/**
+	 * Close the connection when the class is unset
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	public function  __destruct()
 	{
 		$this->close();
 	}
