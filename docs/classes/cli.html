@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cli Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Cli Class</h2>
+
+		<p>Interact with the command line by accepting input options, parameters and output text.</p>
+
+		<article>
+			<h4>beep($num = 1)</h4>
+			<p>The <strong>beep</strong> method fires a system beep on the computer running the command.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$num</kbd></th>
+								<td><i>1</i></td>
+								<td>Number of beeps.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Cli::beep(25);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
+			<h4>color($text, $foreground, $background = null)</h4>
+			<p>The <strong>color</strong> method changes the color of a piece of text.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$text</kbd></th>
+								<td><i>Required</i></td>
+								<td>String to be colored.</td>
+							</tr>
+							<tr>
+								<th><kbd>$foreground</kbd></th>
+								<td><i>Required</i></td>
+								<td>Foreground color of the string.</td>
+							</tr>
+							<tr>
+								<th><kbd>$background</kbd></th>
+								<td><i>null</i></td>
+								<td>Background color of the string.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre><code>if (TRUE === FALSE)
+{
+	$message = Cli::color('Error: The universe is broken.', 'red');
+}
+
+else
+{
+	$message = Cli::color('All is well with the world.', 'green');
+}
+
+Cli::write($message);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
+			<h4>read($question = null, $options = array())</h4>
+			<p>The <strong>read</strong> method prompts the user for input.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$question</kbd></th>
+								<td><i>null</i></td>
+								<td>Ask the user a question and wait for input.</td>
+							</tr>
+							<tr>
+								<th><kbd>$options</kbd></th>
+								<td><i>array()</i></td>
+								<td>An array of options for the user to select from.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre><code>// Waits for any key press
+Cli::read();
+
+// Takes any input
+$color = Cli::read('What is your favorite color?');
+
+// Will only accept the options in the array
+$ready = Cli::read('Are you ready?', array('y','n'));</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
+			<h4>option($name, $default = array())</h4>
+			<p>The <strong>option</strong> accepts an option from the initial command.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$name</kbd></th>
+								<td><i>Required</i></td>
+								<td>Name of the option.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>null</i></td>
+								<td>A default value in case the option is not provided.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre>$ php index.php user -v --v -name=John --name=John</pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
+			<h4>wait($seconds = 0, $countdown = false)</h4>
+			<p>The <strong>wait</strong> method will make the cli output wait for a given number of seconds and optionally show a countdown.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$seconds</kbd></th>
+								<td><i>0</i></td>
+								<td>Number of seconds to wait.</td>
+							</tr>
+							<tr>
+								<th><kbd>$countdown</kbd></th>
+								<td><i>false</i></td>
+								<td>Show the countdown in the output.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre><code>\Cli::write('Loading...');
+\Cli::wait(5, true);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
+			<h4>write($text)</h4>
+			<p>The <strong>write</strong> method will write a line of text to the command line.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$text</kbd></th>
+								<td><i>empty string</i></td>
+								<td>Text to output to the command line.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre><code>Cli::write('Hello World!');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

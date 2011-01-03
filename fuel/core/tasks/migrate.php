@@ -93,7 +93,7 @@ Fuel options:
     -v, [--version]  # Migrate to a specific version
 
 Description:
-    The migrate task can run migrations. You can go up, down or by default go to the current migration marked in the ocnfig file.
+    The migrate task can run migrations. You can go up, down or by default go to the current migration marked in the config file.
 
 Examples:
     php oil r migrate

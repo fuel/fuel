@@ -139,7 +139,7 @@
 							<tr>
 								<th><kbd>$index</kbd></th>
 								<td><i>required</i></td>
-								<td>The key in the $_GET array.</td>
+								<td>The key in the $_GET array, or <kbd>null</kbd> for the entire array.</td>
 							</tr>
 							<tr>
 								<th><kbd>$default</kbd></th>
@@ -184,7 +184,7 @@
 							<tr>
 								<th><kbd>$index</kbd></th>
 								<td><i>required</i></td>
-								<td>The key in the $_POST array.</td>
+								<td>The key in the $_POST array, or <kbd>null</kbd> for the entire array.</td>
 							</tr>
 							<tr>
 								<th><kbd>$default</kbd></th>
@@ -399,7 +399,7 @@
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre><code>Input::delete('foo', 'bar');</code></pre>
+						<pre><code>echo Input::real_ip(); // 73.194.37.104</code></pre>
 					</td>
 				</tr>
 				</tbody>

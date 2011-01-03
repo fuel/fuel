@@ -14,11 +14,17 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Input class
+ *
+ * The input class allows you to access HTTP parameters, load server variables
+ * and user agent details.
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Phil Sturgeon
+ */
 class Input {
-
-	protected static $inspekt = null;
 
 	/**
 	 * Get the real ip address of the user.  Even if they are using a proxy.
