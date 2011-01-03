@@ -14,13 +14,11 @@
 
 namespace Fuel\Core;
 
-
-
 class Arr {
 
 	/**
 	 * Flattens a multi-dimensional associative array down into a 1 dimensional
-	 * assoc. array.
+	 * associative array.
 	 *
 	 * @access	public
 	 * @param	array	The array to flatten

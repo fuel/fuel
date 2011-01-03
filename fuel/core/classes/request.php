@@ -298,15 +298,15 @@ class Request {
 			$this->method_params = array($this->action, $this->method_params);
 		}
 
-		// Call the before method if it exists
-		if (method_exists($controller, 'before'))
-		{
-			logger(Fuel::L_INFO, 'Calling '.$class.'::before', __METHOD__);
-			$controller->before();
-		}
-
 		if (method_exists($controller, $method))
 		{
+			// Call the before method if it exists
+			if (method_exists($controller, 'before'))
+			{
+				logger(Fuel::L_INFO, 'Calling '.$class.'::before', __METHOD__);
+				$controller->before();
+			}
+
 			logger(Fuel::L_INFO, 'Calling '.$class.'::'.$method, __METHOD__);
 			call_user_func_array(array($controller, $method), $this->method_params);
 
