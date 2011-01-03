@@ -14,8 +14,14 @@
 
 namespace Oil;
 
-
-
+/**
+ * Oil\Package Class
+ *
+ * @package		Fuel
+ * @subpackage	Oil
+ * @category	Core
+ * @author		Phil Sturgeon
+ */
 class Package
 {
 	public function install($package, $version = null)

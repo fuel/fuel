@@ -14,8 +14,14 @@
 
 namespace Oil;
 
-
-
+/**
+ * Oil\Cli Class
+ *
+ * @package		Fuel
+ * @subpackage	Oil
+ * @category	Core
+ * @author		Phil Sturgeon
+ */
 class Cli
 {
 	public static function init($args)
@@ -76,6 +82,7 @@ class Cli
 			case '-v':
 			case '--version':
 				\Cli::write('Fuel: ' . \Fuel::VERSION);
+			break;
 
 			case 'test':
 				\Fuel::add_package('octane');

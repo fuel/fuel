@@ -14,8 +14,14 @@
 
 namespace Oil;
 
-
-
+/**
+ * Oil\Scaffold Class
+ *
+ * @package		Fuel
+ * @subpackage	Oil
+ * @category	Core
+ * @author		Dan Horrigan
+ */
 class Scaffold
 {
 	public function generate($args)

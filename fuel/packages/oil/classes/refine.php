@@ -14,8 +14,14 @@
 
 namespace Oil;
 
-
-
+/**
+ * Oil\Refine Class
+ *
+ * @package		Fuel
+ * @subpackage	Oil
+ * @category	Core
+ * @author		Phil Sturgeon
+ */
 class Refine
 {
 	public static function run($task, $args)

@@ -14,6 +14,14 @@
 
 namespace Oil;
 
+/**
+ * Oil\Generate Class
+ *
+ * @package		Fuel
+ * @subpackage	Oil
+ * @category	Core
+ * @author		Phil Sturgeon
+ */
 class Generate
 {
 	private static $_default_constraints = array(

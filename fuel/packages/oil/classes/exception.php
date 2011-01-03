@@ -14,6 +14,14 @@
 
 namespace Oil;
 
+/**
+ * Oil\Exception Class
+ *
+ * @package		Fuel
+ * @subpackage	Oil
+ * @category	Core
+ * @author		Phil Sturgeon
+ */
 class Exception extends \Exception {
 
 	public function __toString()
