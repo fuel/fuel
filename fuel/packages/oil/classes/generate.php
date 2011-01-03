@@ -37,6 +37,11 @@ class Generate
 		// Create views folder and each view file
 		static::views($args);
 
+        if (empty($actions))
+		{
+			$actions = array('index');
+		}
+        
 		$action_str = '';
 		foreach ($actions as $action)
 		{
