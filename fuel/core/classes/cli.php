@@ -1,9 +1,28 @@
 <?php
+/**
+ * Fuel
+ *
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Fuel Development Team
+ * @license		MIT License
+ * @copyright	2010 - 2011 Fuel Development Team
+ * @link		http://fuelphp.com
+ */
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Cli class
+ *
+ * Interact with the command line by accepting input options, parameters and output text
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Phil Sturgeon
+ */
 class Cli {
 
 	public static $wait_msg = 'Press any key to continue...';
@@ -185,7 +204,20 @@ class Cli {
 	 */
 	public static function wait($seconds = 0, $countdown = false)
 	{
-		if ( ! $countdown)
+		if ($countdown === true)
+		{
+			$time = $seconds;
+
+			while ($time > 0)
+			{
+				fwrite(STDOUT, $time.'... ');
+				sleep(1);
+				$time--;
+			}
+			static::write();
+		}
+
+		else
 		{
 			if ($seconds > 0)
 			{
@@ -196,18 +228,6 @@ class Cli {
 				static::write(static::$wait_msg);
 				static::read();
 			}
-		}
-		else
-		{
-			$time = $seconds;
-
-			while ($time > 0)
-			{
-				fwrite(STDOUT, $time.'...');
-				sleep(1);
-				$time--;
-			}
-			static::write();
 		}
 	}
 

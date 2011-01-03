@@ -14,16 +14,12 @@
 
 namespace Fuel\Core;
 
-
-
-// ------------------------------------------------------------------------
-
 /**
  * FTP Class
  *
  * @package		Fuel
  * @category	Core
- * @author		Philip Sturgeon
+ * @author		Phil Sturgeon
  */
 class Ftp
 {
