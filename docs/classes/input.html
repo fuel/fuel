@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Input Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Input Class</h2>
+
+		<p>The input class allows you to access HTTP parameters, load server variables and user agent details.</p>
+
+		<article>
+			<h4>cookie($index, $default = null)</h4>
+			<p>The <strong>cookie</strong> method allows you to read $_COOKIE variables.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$index</kbd></th>
+								<td><i>required</i></td>
+								<td>The key in the $_COOKIE array.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>optional</i></td>
+								<td>What value should be returned if the array item is not found?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::cookie('foo', 'bar');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>delete($index, $default = null)</h4>
+			<p>The <strong>delete</strong> method allows you to read parameters from php://input stream when called via PUT.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$index</kbd></th>
+								<td><i>required</i></td>
+								<td>The key in the php://input stream.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>optional</i></td>
+								<td>What value should be returned if the array item is not found?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::delete('foo', 'bar');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>get($index, $default = null)</h4>
+			<p>The <strong>get</strong> method allows you to read $_GET variables.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$index</kbd></th>
+								<td><i>required</i></td>
+								<td>The key in the $_GET array.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>optional</i></td>
+								<td>What value should be returned if the array item is not found?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::get('foo', 'bar');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>post($index, $default = null)</h4>
+			<p>The <strong>post</strong> method allows you to read $_POST variables.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$index</kbd></th>
+								<td><i>required</i></td>
+								<td>The key in the $_POST array.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>optional</i></td>
+								<td>What value should be returned if the array item is not found?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::post('foo', 'bar');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>get_post($index, $default = null)</h4>
+			<p>The <strong>cookie</strong> method allows you to read from $_GET and $_POST variables, checking $_GET first.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$index</kbd></th>
+								<td><i>required</i></td>
+								<td>The key in the $_GET or $_POST array.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>optional</i></td>
+								<td>What value should be returned if the array item is not found?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::get_post('foo', 'bar');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>is_ajax()</h4>
+			<p>The <strong>is_ajax</strong> method returns true if controller is called via AJAX.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>None</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::is_ajax(); // false</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>method()</h4>
+			<p>The <strong>method</strong> method returns the HTTP method used to call the controller.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>None</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::method(); // "GET"</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>protocol()</h4>
+			<p>The <strong>protocol</strong> method returns the HTTP protocol used to call the controller.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>None</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::protocol(); // "HTTP"</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>put($index, $default = null)</h4>
+			<p>The <strong>put</strong> method allows you to read parameters from php://input stream when called via PUT.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$index</kbd></th>
+								<td><i>required</i></td>
+								<td>The key in the php://input stream.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>optional</i></td>
+								<td>What value should be returned if the array item is not found?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::put('foo', 'bar');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>real_ip()</h4>
+			<p>The <strong>real_ip</strong> method returns the IP address of the user.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>None</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::delete('foo', 'bar');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>server($index, $default = null)</h4>
+			<p>The <strong>server</strong> method allows you to read parameters from $_SERVER array with default values.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$index</kbd></th>
+								<td><i>required</i></td>
+								<td>The key in the $_SERVER array.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>optional</i></td>
+								<td>What value should be returned if the array item is not found?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Input::server('HTTP_HOST'); // "localhost:8080"</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

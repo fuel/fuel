@@ -20,7 +20,8 @@ var nav = {
 		"General": {
 			"Controllers": {
 				"Base" :		"general/controllers/base.html",
-				"Template":		"general/controllers/template.html"
+				"Template":		"general/controllers/template.html",
+				"Rest":			"general/controllers/rest.html"
 			},
 			"Routing":			"general/routing.html",
 			"Views":			"general/views.html",
@@ -31,6 +32,7 @@ var nav = {
 		"Classes": {
 			"Config":	"classes/config.html",
 			"Event":	"classes/event.html",
+			"Input":	"classes/input.html",
 			"Session":	{
 				"Configuration":	"classes/session/config.html",
 				"Usage":			"classes/session/usage.html",

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Rest Controller - Fuel Documentation</title>
+	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('general', '../../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Rest Controller</h2>
+
+		<h3>What is a Rest controller?</h3>
+
+		<p>A Rest Controller is an extension of the Base Controller which has RESTful support built in. This will allow you to build API's with ease.</p>
+
+		<h3>Using the Rest controller</h3>
+
+		<p>Like all Controllers you create a class in the <kbd>fuel/app/classes/controller</kbd> directory. They need to extend the <kbd>Controller_Rest</kbd> class and are prefixed by default by "Controller_". Below is an example of the controller "test": </p>
+
+<pre><code>class Controller_Test extends Controller_Rest {
+
+	public function get_list()
+	{
+		$this->response(array(
+			'foo' => Input::get('foo'),
+			'baz' => array(
+				1, 50, 219
+			),
+			'empty' => NULL
+		));
+	}
+}</code></pre>
+
+		<p>This controller method "list" is called by the following URL:</p>
+
+		<pre>http://localhost/test/list.json?foo=bar</pre>
+
+		<p>You'll notice that instead of the usual "action_" prefix the Rest Controller uses the HTTP method as a prefix. The HTTP methods that Rest Controller supports are the following:</p>
+
+		<h4>GET</h4>
+		<p>Used to fetch information about an existing resource. This is used by browsers when you enter a URL and hit go, or when you click on a link, so it perfect for fetching information on one of your REST resources (like user).</p>
+
+		<h4>POST</h4>
+		<p>Used to update an existing resource with information. Browsers use this to submit most types of forms on the Internet, although some use GET as well by submitting the form action with a query string containing the field data.</p>
+
+		<h4>PUT</h4>
+		<p>Less commonly used and not supported by most browsers, PUT is used to create a new resource.</p>
+
+		<h4>DELETE</h4>
+		<p>Also not used by many browsers, this HTTP verb rather obviously is used to delete a resource.</p>
+
+		<h3>Output</h3>
+
+<pre><code>{
+	"foo":"bar",
+	"baz":[1,50,219],
+	"empty":null
+}</code></pre>
+
+		<p>This is output as json because a file extension was defined in the URL. By default responces will be formated as XML or whichever format is set in <kbd>fuel/core/config/rest.php</kbd>.</p>
+
+		<h3>Supported Formats</h3>
+		
+		<ul>
+			<li><strong>xml</strong> – almost any programming language can read XML</li>
+			<li><strong>json</strong> – useful for JavaScript and increasingly PHP apps.</li>
+			<li><strong>csv</strong> – open with spreadsheet programs</li>
+			<li><strong>html</strong> – a simple HTML table</li>
+
+			<li><strong>php</strong> – Representation of PHP code that can be eval()’ed</li>
+			<li><strong>serialize</strong> – Serialized data that can be unserialized in PHP</li>
+		</ul>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

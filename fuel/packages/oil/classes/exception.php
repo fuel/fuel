@@ -14,14 +14,12 @@
 
 namespace Oil;
 
-class Exception extends \\Exception {
+class Exception extends \Exception {
 
-	public function  __toString()
+	public function __toString()
 	{
 		echo get_class($this) . " '{$this->message}' in {$this->file}({$this->line}";
 	}
-
 }
-
 
 /* End of file exception.php */
