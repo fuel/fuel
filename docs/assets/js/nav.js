@@ -30,6 +30,7 @@ var nav = {
 			"Coding Standards":	"general/coding_standards.html"
 		},
 		"Classes": {
+			"Cli":		"classes/cli.html",
 			"Config":	"classes/config.html",
 			"Event":	"classes/event.html",
 			"Input":	"classes/input.html",
