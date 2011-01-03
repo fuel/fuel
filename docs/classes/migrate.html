@@ -70,7 +70,7 @@
 				</tr>
 				<tr>
 					<th>Returns</th>
-					<td>bool</td>
+					<td>boolean</td>
 				</tr>
 				<tr>
 					<th>Example</th>
@@ -83,8 +83,8 @@
 		</article>
 
 		<article>
-			<h4>trigger()</h4>
-			<p>The <strong>trigger</strong> method is used to trigger or activate callbacks that are associated through the register method.</p>
+			<h4>version($version)</h4>
+			<p>The <strong>version</strong> method will move the migrations up or down to set the schema at a specific migration.</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -101,19 +101,9 @@
 								<th>Description</th>
 							</tr>
 							<tr>
-								<th><kbd>$event</kbd></th>
+								<th><kbd>$version</kbd></th>
 								<td><i>required</i></td>
-								<td>The event you are triggering.</td>
-							</tr>
-							<tr>
-								<th><kbd>$data</kbd></th>
-								<td><i>optional</i></td>
-								<td>Any data you want to send to the method registered.</td>
-							</tr>
-							<tr>
-								<th><kbd>$return_type</kbd></th>
-								<td><i>optional</i></td>
-								<td>What type of return data you expect. (string, array, json, none, serialized) - <strong>Default is string</strong></td>
+								<td>The version you are migrating to.</td>
 							</tr>
 						</table>
 					</td>
@@ -131,47 +121,6 @@
 				</tbody>
 			</table>
 		</article>
-
-		<article>
-			<h4>has_events()</h4>
-			<p>The <strong>has_events</strong> method is available so you can check if a particular registered event has triggers.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th>Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>
-						<table class="parameters">
-							<tr>
-								<th>Param</th>
-								<th>Default</th>
-								<th>Description</th>
-							</tr>
-							<tr>
-								<th><kbd>$event</kbd></th>
-								<td><i>required</i></td>
-								<td>The event you are checking.</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td>bool.</td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>Event::has_events('user_login')</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
-
 
 	</section>
 

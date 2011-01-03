@@ -6,9 +6,7 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Dan Horrigan
- * @author		Eric Barnes
- * @author		Harro "WanWizard" Verton
+ * @author		Fuel Development Team
  * @license		MIT License
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
@@ -16,8 +14,14 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Event Class
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Eric Barnes
+ * @author		Harro "WanWizard" Verton
+ */
 class Event {
 
 	/**
