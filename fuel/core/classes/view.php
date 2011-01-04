@@ -15,21 +15,18 @@
 namespace Fuel\Core;
 
 
-
 /**
  * View class
  *
- * NOTE: This class has been taken from the Kohana framework and slightly modified,
- * but on the whole all credit goes to them. Over time this will be worked on.
- */
-
-/**
  * Acts as an object wrapper for HTML pages with embedded PHP, called "views".
  * Variables can be assigned with the view object and referenced locally within
  * the view.
  *
+ * NOTE: This class has been taken from the Kohana framework and slightly modified,
+ * but on the whole all credit goes to them. Over time this will be worked on.
+ *
  * @package    Kohana
- * @category   Base
+ * @category   Basex
  * @author     Kohana Team
  * @copyright  (c) 2008-2010 Kohana Team
  * @license    http://kohanaframework.org/license
@@ -50,13 +47,13 @@ class View {
 	 * Returns a new View object. If you do not define the "file" parameter,
 	 * you must call [static::set_filename].
 	 *
-	 *     $view = static::factory($file);
+	 *     $view = View::factory($file);
 	 *
 	 * @param   string  view filename
 	 * @param   array   array of values
 	 * @return  View
 	 */
-	public static function factory($file = NULL, array $data = NULL)
+	public static function factory($file = null, array $data = null)
 	{
 		return new static($file, $data);
 	}
@@ -69,16 +66,16 @@ class View {
 	 * @param   string  view filename
 	 * @param   array   array of values
 	 * @return  void
-	 * @uses    static::set_filename
+	 * @uses    View::set_filename
 	 */
-	public function __construct($file = NULL, array $data = NULL)
+	public function __construct($file = null, array $data = null)
 	{
-		if ($file !== NULL)
+		if ($file !== null)
 		{
 			$this->set_filename($file);
 		}
 
-		if ($data !== NULL)
+		if ($data !== null)
 		{
 			// Add the values to the current data
 			$this->_data = $data + $this->_data;
@@ -133,7 +130,7 @@ class View {
 	 *
 	 *     isset($view->foo);
 	 *
-	 * [!!] `NULL` variables are not considered to be set by [isset](http://php.net/isset).
+	 * [!!] `null` variables are not considered to be set by [isset](http://php.net/isset).
 	 *
 	 * @param   string  variable name
 	 * @return  boolean
@@ -160,7 +157,7 @@ class View {
 	 * Magic method, returns the output of [static::render].
 	 *
 	 * @return  string
-	 * @uses    static::render
+	 * @uses    View::render
 	 */
 	public function __toString()
 	{
@@ -182,7 +179,7 @@ class View {
 	 * The view data will be extracted to make local variables. This method
 	 * is static to prevent object scope resolution.
 	 *
-	 *     $output = static::capture($file, $data);
+	 *     $output = View::capture($file, $data);
 	 *
 	 * @param   string  filename
 	 * @param   array   variables
@@ -226,13 +223,13 @@ class View {
 	 * Sets a global variable, similar to [static::set], except that the
 	 * variable will be accessible to all views.
 	 *
-	 *     static::set_global($name, $value);
+	 *     View::set_global($name, $value);
 	 *
 	 * @param   string  variable name or an array of variables
 	 * @param   mixed   value
 	 * @return  void
 	 */
-	public static function set_global($key, $value = NULL)
+	public static function set_global($key, $value = null)
 	{
 		if (is_array($key))
 		{
@@ -251,7 +248,7 @@ class View {
 	 * Assigns a global variable by reference, similar to [static::bind], except
 	 * that the variable will be accessible to all views.
 	 *
-	 *     static::bind_global($key, $value);
+	 *     View::bind_global($key, $value);
 	 *
 	 * @param   string  variable name
 	 * @param   mixed   referenced variable
@@ -300,7 +297,7 @@ class View {
 	 * @param   mixed    value
 	 * @return  $this
 	 */
-	public function set($key, $value = NULL)
+	public function set($key, $value = null)
 	{
 		if (is_array($key))
 		{
@@ -351,9 +348,9 @@ class View {
 	 * @throws   Fuel_View_Exception
 	 * @uses     static::capture
 	 */
-	public function render($file = NULL)
+	public function render($file = null)
 	{
-		if ($file !== NULL)
+		if ($file !== null)
 		{
 			$this->set_filename($file);
 		}
@@ -367,4 +364,6 @@ class View {
 		return static::capture($this->_file, $this->_data);
 	}
 
-} // End View
+}
+
+/* End of file view.php */

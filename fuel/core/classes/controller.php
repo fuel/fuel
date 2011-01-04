@@ -96,4 +96,4 @@ class Controller {
 	}
 }
 
-/* End of file fuel_controller.php */
+/* End of file controller.php */
