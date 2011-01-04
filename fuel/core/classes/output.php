@@ -128,6 +128,8 @@ class Output {
 			return;
 		}
 
+		Event::shutdown();
+
 		static::send_headers();
 		exit;
 	}
