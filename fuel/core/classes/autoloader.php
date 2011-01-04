@@ -279,11 +279,12 @@ class Autoloader {
 				return true;
 			}
 		}
-		
+
 		// This handles a namespaces class that a path does not exist for
 		else
 		{
-			$namespace = substr($class, 0, $pos);
+			// need to stick the trimed \ back on...
+			$namespace = '\\'.substr($class, 0, $pos);
 
 			foreach (static::$namespaces as $ns => $path)
 			{
