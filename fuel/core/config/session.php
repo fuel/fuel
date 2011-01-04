@@ -53,9 +53,6 @@ return array(
 	// if false, expire flash values only after it's used  (optional, default = true)
 	'flash_auto_expire'	=> true,
 
-	// if true, writes are only done when you set a variable. if false, only at the end of a page request (optional, default = false)
-	'write_on_set'		=> false,
-
 	// for requests that don't support cookies (i.e. flash), use this POST variable to pass the cookie to the session driver
 	'post_cookie_name'	=> '',
 
@@ -66,7 +63,6 @@ return array(
 	// special configuration settings for cookie based sessions
 	'cookie'			=> array(
 		'cookie_name'		=> 'fuelcid',				// name of the session cookie for cookie based sessions
-		'write_on_set'		=> true,					// write the session cookie as soon as it's set
 						),
 
 	// specific configuration settings for file based sessions

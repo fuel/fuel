@@ -41,7 +41,6 @@ class Session {
 		'rotation_time'		=> 300,
 		'flash_id'			=> 'flash',
 		'flash_auto_expire'	=> true,
-		'write_on_set'		=> false,
 		'post_cookie_name'	=> ''
 	);
 
@@ -114,12 +113,8 @@ class Session {
 		}
 		else
 		{
-			// do we need to set a shutdown event for this driver?
-			if ($driver->get_config('write_on_set') === false)
-			{
-				// register a shutdown event to update the session
-				\Event::register('shutdown', array($driver, 'write'));
-			}
+			// register a shutdown event to update the session
+			\Event::register('shutdown', array($driver, 'write'));
 
 			// init the session
 			$driver->init();

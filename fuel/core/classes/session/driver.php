@@ -127,12 +127,6 @@ abstract class Session_Driver {
 	public function set($name, $value)
 	{
 		$this->data[$name] = $value;
-
-		// need to auto-update the session?
-		if ($this->config['write_on_set'] === true)
-		{
-			$this->write();
-		}
 	}
 
 	// --------------------------------------------------------------------
@@ -283,12 +277,6 @@ abstract class Session_Driver {
 				break;
 			}
 		}
-
-		// need to auto-update the session?
-		if ($this->config['write_on_set'] === true)
-		{
-			$this->write();
-		}
 	}
 
 	// --------------------------------------------------------------------
@@ -329,12 +317,6 @@ abstract class Session_Driver {
 	public function set_flash($name, $value)
 	{
 		$this->flash[$this->config['flash_id'].'::'.$name] = array('state' => 'new', 'value' => $value);
-
-		// need to auto-update the session?
-		if ($this->config['write_on_set'] === true)
-		{
-			$this->write();
-		}
 	}
 
 	// --------------------------------------------------------------------
@@ -362,12 +344,6 @@ abstract class Session_Driver {
 		{
 			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = 'old';
 			$default = $this->flash[$this->config['flash_id'].'::'.$name]['value'];
-
-			// need to auto-update the session?
-			if ($this->config['write_on_set'] === true)
-			{
-				$this->write();
-			}
 		}
 
 		return $default;
@@ -395,12 +371,6 @@ abstract class Session_Driver {
 		{
 			$this->flash[$this->config['flash_id'].'::'.$name]['state'] = 'new';
 		}
-
-		// need to auto-update the session?
-		if ($this->config['write_on_set'] === true)
-		{
-			$this->write();
-		}
 	}
 
 	// --------------------------------------------------------------------
@@ -422,12 +392,6 @@ abstract class Session_Driver {
 		elseif (isset($this->flash[$this->config['flash_id'].'::'.$name]))
 		{
 			unset($this->flash[$this->config['flash_id'].'::'.$name]);
-		}
-
-		// need to auto-update the session?
-		if ($this->config['write_on_set'] === true)
-		{
-			$this->write();
 		}
 	}
 
@@ -751,11 +715,6 @@ abstract class Session_Driver {
 				break;
 
 				case 'flash_auto_expire':
-					// make sure it's a boolean
-					$item = (bool) $item;
-				break;
-
-				case 'write_on_set':
 					// make sure it's a boolean
 					$item = (bool) $item;
 				break;
