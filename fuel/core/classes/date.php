@@ -14,10 +14,6 @@
 
 namespace Fuel\Core;
 
-
-
-// ------------------------------------------------------------------------
-
 /**
  * Date Class
  *
@@ -28,6 +24,7 @@ namespace Fuel\Core;
  * @subpackage	Core
  * @category	Core
  * @author		Jelmer Schreuder
+ * @link		http://fuelphp.com/docs/classes/date.html
  *
  * Notes:
  * - Always returns Date objects, will accept both Date objects and UNIX timestamps

@@ -38,6 +38,7 @@ abstract class Migration
  * @package		Fuel
  * @category	Migrations
  * @author		Phil Sturgeon
+ * @link		http://fuelphp.com/docs/classes/migrate.html
  */
 class Migrate
 {

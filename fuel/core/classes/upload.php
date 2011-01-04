@@ -6,7 +6,7 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Harro "WanWizard" Verton
+ * @author		Fuel Development Team
  * @license		MIT License
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
@@ -14,8 +14,14 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Upload Class
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Harro "WanWizard" Verton
+ * @link		http://fuelphp.com/docs/classes/upload.html
+ */
 class Upload {
 
 	/* ---------------------------------------------------------------------------

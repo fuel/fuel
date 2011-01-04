@@ -14,8 +14,14 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Uri Class
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Dan Horrigan
+ * @link		http://fuelphp.com/docs/classes/uri.html
+ */
 class Uri {
 
 	protected static $detected_uri = null;

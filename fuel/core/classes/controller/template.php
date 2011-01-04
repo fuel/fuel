@@ -17,7 +17,7 @@ namespace Fuel\Core;
 /**
  * Template Controller class
  *
- * A base controller for easily creating templates.
+ * A base controller for easily creating templated output.
  *
  * @package		Fuel
  * @category	Core

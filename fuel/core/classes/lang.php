@@ -14,8 +14,14 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Lang Class
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Phil Sturgeon
+ * @link		http://fuelphp.com/docs/classes/lang.html
+ */
 class Lang {
 
 	public static $lines = array();
@@ -24,7 +30,7 @@ class Lang {
 
 	public static $fallback = 'en';
 
-	public static function load($file, $group = NULL)
+	public static function load($file, $group = null)
 	{
 		$lang = array();
 
@@ -42,7 +48,7 @@ class Lang {
 			}
 		}
 
-		if ($group === NULL)
+		if ($group === null)
 		{
 			static::$lines = static::$lines + $lang;
 		}
@@ -78,30 +84,17 @@ class Lang {
 					return false;
 				}
 			}
-			return  static::parse_params($return, $params);
+			return  static::_parse_params($return, $params);
 		}
 
 		isset(static::$lines[$line]) and $line = static::$lines[$line];
 
-		return static::parse_params($line, $params);
+		return static::_parse_params($line, $params);
 	}
 
-	public function parse_params($string, $array = array())
+	public static function set($line, $value, $group = null)
 	{
-		$tr_arr = array();
-
-		foreach ($array as $from => $to)
-		{
-			$tr_arr[':'.$from] = $to;
-		}
-		unset($array);
-
-		return strtr($string, $tr_arr);
-	}
-
-	public static function set($line, $value, $group = NULL)
-	{
-		if ($group === NULL)
+		if ($group === null)
 		{
 			static::$lines[$line] = $value;
 			return true;
@@ -112,6 +105,19 @@ class Lang {
 			return true;
 		}
 		return false;
+	}
+
+	protected function _parse_params($string, $array = array())
+	{
+		$tr_arr = array();
+
+		foreach ($array as $from => $to)
+		{
+			$tr_arr[':'.$from] = $to;
+		}
+		unset($array);
+
+		return strtr($string, $tr_arr);
 	}
 }
 

@@ -13,12 +13,13 @@
 
 namespace Fuel\Core;
 
-
-
 /**
  * Some of this code was written by Flinn Mueller.
  *
- * @copyright Flinn Mueller
+ * @package		Fuel
+ * @category	Core
+ * @copyright	Flinn Mueller
+ * @link		http://fuelphp.com/docs/classes/inlector.html
  */
 class Inflector {
 
