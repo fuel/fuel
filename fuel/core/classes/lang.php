@@ -14,8 +14,13 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Lang Class
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Phil Sturgeon
+ */
 class Lang {
 
 	public static $lines = array();
