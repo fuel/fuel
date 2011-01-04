@@ -43,7 +43,7 @@ var nav = {
 			// "Database":		"todo.html",
 			// "Date":			"todo.html",
 			// "DButil":		"todo.html",
-			// "Debug":		"todo.html",
+			"Debug":		"classes/debug.html",
 			// "Email":		"todo.html",
 			"Event":		"classes/event.html",
 			// "Error":		"todo.html",
