@@ -14,18 +14,14 @@
 
 namespace Fuel\Core;
 
-
-
-// --------------------------------------------------------------------
-
 /**
  * Log Class
  *
  * @package		Fuel
  * @category	Logging
  * @author		Phil Sturgeon
+ * @link		http://fuelphp.com/docs/classes/log.html
  */
-
 class Log {
 
 	public static function info($msg, $method = null)

@@ -16,7 +16,6 @@ namespace Fuel\Core;
 
 class Model {
 
-
 	protected function _pre_find($query) { }
 	protected function _post_find($result) { }
 
@@ -34,4 +33,4 @@ class Model {
 
 }
 
-/* End of file fuel_model.php */
+/* End of file model.php */

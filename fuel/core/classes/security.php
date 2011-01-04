@@ -14,8 +14,14 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Security Class
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Dan Horrigan
+ * @link		http://fuelphp.com/docs/classes/security.html
+ */
 class Security {
 
 	protected static $csrf_token_key = false;

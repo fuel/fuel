@@ -14,7 +14,6 @@
 
 namespace Fuel\Core;
 
-
 /**
  * View class
  *
@@ -25,11 +24,13 @@ namespace Fuel\Core;
  * NOTE: This class has been taken from the Kohana framework and slightly modified,
  * but on the whole all credit goes to them. Over time this will be worked on.
  *
- * @package    Kohana
- * @category   Basex
- * @author     Kohana Team
- * @copyright  (c) 2008-2010 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @package		Fuel
+ * @category	Core
+ * @author		Kohana Team
+ * @modified	Phil Sturgeon - Fuel Development Team
+ * @copyright	(c) 2008-2010 Kohana Team
+ * @license		http://kohanaframework.org/license
+ * @link		http://fuelphp.com/docs/classes/view.html
  */
 
 class View {

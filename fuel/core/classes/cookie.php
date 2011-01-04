@@ -23,6 +23,7 @@ namespace Fuel\Core;
  * @modified   Phil Sturgeon - Fuel Development Team
  * @copyright  (c) 2008-2010 Kohana Team
  * @license    http://kohanaframework.org/license
+ * @link		http://fuelphp.com/docs/classes/cookie.html
  */
 class Cookie {
 

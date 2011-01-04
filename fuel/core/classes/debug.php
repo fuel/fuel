@@ -14,7 +14,16 @@
 
 namespace Fuel\Core;
 
-
+/**
+ * Debug class
+ *
+ * The Debug class is a simple utility for debugging variables, objects, arrays, etc by outputting information to the display.
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Phil Sturgeon
+ * @link		http://fuelphp.com/docs/classes/debug.html
+ */
 class Debug {
 
 	protected static $js_displayed = false;

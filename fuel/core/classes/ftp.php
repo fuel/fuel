@@ -20,6 +20,7 @@ namespace Fuel\Core;
  * @package		Fuel
  * @category	Core
  * @author		Phil Sturgeon
+ * @link		http://fuelphp.com/docs/classes/ftp.html
  */
 class Ftp
 {

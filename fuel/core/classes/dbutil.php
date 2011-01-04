@@ -14,8 +14,13 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * FTP Class
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Dan Horrigan
+ */
 class DBUtil {
 
 	/**
