@@ -36,12 +36,12 @@ class Crypt {
 	/**
 	 * @var	int	default mcrypt cipher to use
 	 */
-	protected static $mcrypt_cipher = MCRYPT_RIJNDAEL_256;
+	protected static $mcrypt_cipher = 'rijndael-256';
 
 	/**
 	 * @var	int	default mcrypt mode  to use
 	 */
-	protected static $mcrypt_mode = MCRYPT_MODE_CBC;
+	protected static $mcrypt_mode = 'cbc';
 
 	// --------------------------------------------------------------------
 

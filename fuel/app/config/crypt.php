@@ -12,8 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-
-
 return array(
 
 	/**
@@ -36,14 +34,14 @@ return array(
 	 *
 	 * See http://www.php.net/manual/en/mcrypt.ciphers.php for available ciphers
 	 */
-	'mcrypt_cipher' => MCRYPT_RIJNDAEL_256,
+	'mcrypt_cipher' => 'rijndael-256',
 
 	/**
 	 * MCRYPT cipher mode to use
 	 *
 	 * See http://www.php.net/manual/en/mcrypt.constants.php for available cipher modes
 	 */
-	'mcrypt_mode'	=> MCRYPT_MODE_CBC
+	'mcrypt_mode'	=> 'cbc'
 
 );
 
