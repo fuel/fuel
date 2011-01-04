@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Pagination Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Pagination Class</h2>
+
+		<p>The pagination class allows you to easily setup pagination for records you display.</p>
+ 		
+		<section>
+			<h2>How To</h2>
+			<p>A simple example on how to use the Pagination class, the <strong>set_config</strong> method is used in this example. You can put this inside your action methods in your controller.
+			<pre class="php"><code>$config = array(
+	'pagination_url' => 'http://awesomehost/fuel/welcome/index/',
+	'total_items' => 10,
+	'per_page' => 5,
+	'uri_segment' => 3,
+);
+
+// Config::set('pagination', $config); // you can use this too!
+Pagination::set_config($config);
+
+$data['example_data] = DB::select('id', 'value')->from('pagination')
+												->limit(Pagination::$per_page)
+												->offset(Pagination::$offset)
+												->execute()
+												->as_array();
+
+$data['pagination'] = Pagination::create_links();
+$this->render('welcome/index', $data);</code></pre>
+		</section>
+		
+		<section>
+			<h2>Configuration</h2>
+
+			<p>You can configure the pagination using two methods either by using the <strong>set_config</strong> method or by setting a global config array.</p>
+			<p>The following configuration settings can be defined:</p>
+			<table class="config">
+				<tbody>
+					<tr class="header">
+						<th>Param</th>
+						<th>Type</th>
+						<th>Default</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<th>pagination_url</th>
+						<td>string</td>
+						<td>None</td>
+						<td>
+							The URL of page where you have pagination.
+						</td>
+					</tr>
+					<tr>
+						<th>uri_segment</th>
+						<td>integer</td>
+						<td><pre class="php"><code>3</code></pre></td>
+						<td>
+							The URI segment containing the page number.
+						</td>
+					</tr>
+					<tr>
+						<th>num_links</th>
+						<td>integer</td>
+						<td><pre class="php"><code>5</code></pre></td>
+						<td>
+							The total number of links to show.
+						</td>
+					</tr>
+					<tr>
+						<th>total_items</th>
+						<td>integer</td>
+						<td><pre class="php"><code>0</code></pre></td>
+						<td>
+							The total number of items.
+						</td>
+					</tr>
+					<tr>
+						<th>total_pages</th>
+						<td>integer</td>
+						<td><pre class="php"><code>0</code></pre></td>
+						<td>
+							The total number of pages.
+						</td>
+					</tr>
+					<tr>
+						<th>per_page</th>
+						<td>integer</td>
+						<td><pre class="php"><code>10</code></pre></td>
+						<td>
+							The number of items per page.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+		
+		<section>
+			<article>
+				<h4>Global Config Array</h4>
+				<p>This method allows you to set the pagination configuration by setting a global config array.
+				<pre class="php"><code>Config::set('pagination', array(
+	'pagination_url' => 'http://fuelphp.com/docs/',
+	'uri_segment' => 2,
+	'total_items' => 10,
+	'per_page' => 20,
+));</code></pre>
+			</article>
+
+			<article>
+				<h4>set_config(array $config)</h4>
+				<p>The <strong>set_config</strong> method allows you to set the pagination configuration by passing an array.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>config</kbd></th>
+									<td><i>Required</i></td>
+									<td>The configuration array.</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>void</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>Pagination::set_config(array(
+    'pagination_url' => 'http://fuelphp.com/docs/',
+	'uri_segment' => 2,
+	'total_items' => 10,
+	'per_page' => 20,
+));</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>create_links()</h4>
+				<p>The <strong>create_links</strong> method generates the pagination links in the view.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>None</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>mixed</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>echo Pagination::create_links();</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>next_link($value)</h4>
+				<p>The <strong>next_link</strong> method displays a "Next" link for pagination.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$value</kbd></th>
+									<td><i>Required</i></td>
+									<td>The text displayed in the link.</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>mixed</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>echo Pagination::next_link('Next Page');</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>prev_link($value)</h4>
+				<p>The <strong>prev_link</strong> method displays a "Previous" link for pagination.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$value</kbd></th>
+									<td><i>Required</i></td>
+									<td>The text displayed in the link.</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>mixed</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>echo Pagination::prev_link('Previous Page');</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+		</section>
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

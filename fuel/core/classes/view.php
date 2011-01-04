@@ -32,7 +32,6 @@ namespace Fuel\Core;
  * @license		http://kohanaframework.org/license
  * @link		http://fuelphp.com/docs/classes/view.html
  */
-
 class View {
 
 	// Array of global view data
