@@ -6,7 +6,7 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Harro "WanWizard" Verton
+ * @author		Fuel Development Team
  * @license		MIT License
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
@@ -14,8 +14,14 @@
 
 namespace Fuel\Core;
 
-
-
+/**
+ * Crypt Class
+ *
+ * @package		Fuel
+ * @category	Core
+ * @author		Harro "WanWizard" Verton
+ * @link		http://fuelphp.com/docs/classes/crypt.html
+ */
 class Crypt {
 
 	/**
@@ -51,7 +57,7 @@ class Crypt {
 	public static function _init()
 	{
 		// check we we have the mcrypt library available
-		static::$have_mcrypt = function_exists('mcrypt_encrypt') ? true : false;
+		static::$have_mcrypt = function_exists('mcrypt_encrypt');
 
 		// load the config
 		$config = \Config::load('crypt', true);

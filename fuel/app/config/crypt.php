@@ -12,8 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-
-
 return array(
 
 	/**
