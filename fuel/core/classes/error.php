@@ -40,7 +40,7 @@ class Error {
 	/**
 	 * Native PHP shutdown handler
 	 *
-	 * @access	private
+	 * @access	public
 	 * @param	object	the exception object
 	 * @return	string
 	 */
