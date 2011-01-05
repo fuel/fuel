@@ -31,7 +31,7 @@ var nav = {
 		},
 		"Classes": {
 			 "Arr":			"classes/arr.html",
-			// "Asset":		"todo.html",
+			"Asset":		"classes/asset.html",
 			// "Cache":		"todo.html",
 			"Cli":			"classes/cli.html",
 			"Config":		"classes/config.html",
