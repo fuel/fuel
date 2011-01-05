@@ -144,7 +144,9 @@ class Model {
 			$options['or_where'] = $options['or_where'] + $or_where;
 		}
 
-		return static::find('all', $options);
+		$results = static::find('all', $options);
+		
+		return count($results) === 1 ? $results[0] : (count($results) === 0 ? null : $results);
 	}
 
 	/**
