@@ -48,7 +48,7 @@
 							</tr>
 							<tr>
 								<th><kbd>$path</kbd></th>
-								<td><i>Required</i></td>
+								<td><i>required</i></td>
 								<td>The path to add to the front of the assets path array (RELATIVE to base url WITH trailing slash).</td>
 							</tr>
 						</table>
@@ -61,18 +61,14 @@
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php">
-<code>
-Asset::add_path('resources/template_1/');
+<pre class="php"><code>Asset::add_path('resources/template_1/');
 
 Asset::add_path('resources/template_2/');
 
 /* 
 NOTE: The paths referenced above would need to have subfolders of js, css, and/or img
 depending on the type of content you were trying to use.
-*/
-</code>
-</pre>
+*/</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -99,22 +95,22 @@ depending on the type of content you were trying to use.
 							</tr>
 							<tr>
 								<th><kbd>$stylesheets</kbd></th>
-								<td><i>Required</i></td>
+								<td><i>required</i></td>
 								<td>An array/string of stylesheet filename(s) to be added to the group or be returned as tags.</td>
 							</tr>
 							<tr>
 								<th><kbd>$attr</kbd></th>
-								<td><i>array()</i></td>
+								<td><pre class="php"><code>array()</code></pre></td>
 								<td>An array of attributes to be applied to the css file(s).</td>
 							</tr>
 							<tr>
 								<th><kbd>$group</kbd></th>
-								<td><i>null</i></td>
+								<td><pre class="php"><code>null</code></pre></td>
 								<td>A group name to categorize the css. If left null the method will return the css tag.</td>
 							</tr>
 							<tr>
 								<th><kbd>$raw</kbd></th>
-								<td><i>false</i></td>
+								<td><pre class="php"><code>false</code></pre></td>
 								<td>If set to true the result css tags will include the file contents directly instead of via a link tag.</td>
 							</tr>
 						</table>
@@ -127,9 +123,7 @@ depending on the type of content you were trying to use.
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php">
-<code>
-// adds file to group and returns '' if group is not null
+<pre class="php"><code>// adds file to group and returns '' if group is not null
 Asset::css(array('header.css', 'footer.css'), array(), 'layout', false);
 
 /* returns
@@ -143,9 +137,7 @@ echo Asset::css('inline.css');
 #header {height: 50px}
 &lt;/style&gt;
 */
-echo Asset::css('inline.css', array(), null, true);
-</code>
-</pre>
+echo Asset::css('inline.css', array(), null, true);</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -172,12 +164,12 @@ echo Asset::css('inline.css', array(), null, true);
 							</tr>
 							<tr>
 								<th><kbd>$file</kbd></th>
-								<td><i>Required</i></td>
+								<td><i>required</i></td>
 								<td>The name of the file you are searching for.</td>
 							</tr>
 							<tr>
 								<th><kbd>$folder</kbd></th>
-								<td><i>Required</i></td>
+								<td><i>required</i></td>
 								<td>The name of the folder which contains the file you are looking for (css, js, img).</td>
 							</tr>
 						</table>
@@ -190,11 +182,7 @@ echo Asset::css('inline.css', array(), null, true);
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php">
-<code>
-$path = Asset::find_file('layout.css', 'css');
-</code>
-</pre>
+<pre class="php"><code>$path = Asset::find_file('layout.css', 'css');</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -221,17 +209,17 @@ $path = Asset::find_file('layout.css', 'css');
 							</tr>
 							<tr>
 								<th><kbd>$images</kbd></th>
-								<td><i>Required</i></td>
+								<td><i>required</i></td>
 								<td>An array/string of image filename(s) to be applied to the group or returned as tags.</td>
 							</tr>
 							<tr>
 								<th><kbd>$attr</kbd></th>
-								<td><i>array()</i></td>
+								<td><pre class="php"><code>array()</code></pre></td>
 								<td>An array of attributes to apply to the image tag(s).</td>
 							</tr>
 							<tr>
 								<th><kbd>$group</kbd></th>
-								<td><i>null</i></td>
+								<td><pre class="php"><code>null</code></pre></td>
 								<td>The group to apply the images to.</td>
 							</tr>
 						</table>
@@ -244,14 +232,10 @@ $path = Asset::find_file('layout.css', 'css');
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php">
-<code>
-// returns &lt;img src="../assets/img/logo.png" id="logo"&gt;
+<pre class="php"><code>// returns &lt;img src="../assets/img/logo.png" id="logo"&gt;
 echo Asset::img('logo.png', array('id' => 'logo'));
 
-Asset::img(array('bob.jpg', 'joe.jpg', 'sally.jpg'), array('class' => 'thumbnail'), 'team_avatars');
-</code>
-</pre>
+Asset::img(array('bob.jpg', 'joe.jpg', 'sally.jpg'), array('class' => 'thumbnail'), 'team_avatars');</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -278,22 +262,22 @@ Asset::img(array('bob.jpg', 'joe.jpg', 'sally.jpg'), array('class' => 'thumbnail
 							</tr>
 							<tr>
 								<th><kbd>$scripts</kbd></th>
-								<td><i>Required</i></td>
+								<td><i>required</i></td>
 								<td>An array/string of stylesheet filename(s) to be added to the group or be returned as tags.</td>
 							</tr>
 							<tr>
 								<th><kbd>$attr</kbd></th>
-								<td><i>array()</i></td>
+								<td><pre class="php"><code>array()</code></pre></td>
 								<td>An array of attributes to be applied to the js file(s).</td>
 							</tr>
 							<tr>
 								<th><kbd>$group</kbd></th>
-								<td><i>null</i></td>
+								<td><pre class="php"><code>null</code></pre></td>
 								<td>A group name to categorize the js. If left null the method will return the js tag.</td>
 							</tr>
 							<tr>
 								<th><kbd>$raw</kbd></th>
-								<td><i>false</i></td>
+								<td><pre class="php"><code>false</code></pre></td>
 								<td>If set to true the result js tags will include the file contents directly instead of via a script src tag.</td>
 							</tr>
 						</table>
@@ -306,9 +290,7 @@ Asset::img(array('bob.jpg', 'joe.jpg', 'sally.jpg'), array('class' => 'thumbnail
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php">
-<code>
-// returns '' if $raw is set to false
+<pre class="php"><code>// returns '' if $raw is set to false
 Asset::js(array('jquery.js', 'jqueryui.js'), array(), 'jquery', false);
 
 /* returns
@@ -320,9 +302,7 @@ menu.initialize_menu();
 echo Asset::css('menu_init.js', array(), null, true);
 
 // returns &lt;script type="text/javascript" src="../assets/js/jquery.js"&gt;&lt;/script&gt;
-echo Asset::js('jquery.js');
-</code>
-</pre>
+echo Asset::js('jquery.js');</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -349,7 +329,7 @@ echo Asset::js('jquery.js');
 							</tr>
 							<tr>
 								<th><kbd>$path</kbd></th>
-								<td><i>Required</i></td>
+								<td><i>required</i></td>
 								<td>The path to from the assets path array.</td>
 							</tr>
 						</table>
@@ -362,13 +342,9 @@ echo Asset::js('jquery.js');
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php">
-<code>
-Asset::remove_path('resources/template_1/');
+<pre class="php"><code>Asset::remove_path('resources/template_1/');
 
-Asset::remove_path('resources/template_2/');
-</code>
-</pre>
+Asset::remove_path('resources/template_2/');</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -395,12 +371,12 @@ Asset::remove_path('resources/template_2/');
 							</tr>
 							<tr>
 								<th><kbd>$group</kbd></th>
-								<td><i>Required</i></td>
+								<td><i>required</i></td>
 								<td>The name of the group to render.</td>
 							</tr>
 							<tr>
 								<th><kbd>$raw</kbd></th>
-								<td><i>false</i></td>
+								<td><pre class="php"><code>false</code></pre></td>
 								<td>If true this method will return an internal css/js tags.</td>
 							</tr>
 						</table>
@@ -413,15 +389,11 @@ Asset::remove_path('resources/template_2/');
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php">
-<code>
-/* returns
+<pre class="php"><code>/* returns
 &lt;link href="../assets/css/header.css" rel="stylesheet" /&gt;
 &lt;link href="../assets/css/footer.css" rel="stylesheet" /&gt;
 */
-echo Asset::render('layout');
-</code>
-</pre>
+echo Asset::render('layout');</code></pre>
 					</td>
 				</tr>
 				</tbody>
