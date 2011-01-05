@@ -392,10 +392,11 @@ class File {
 	 *
 	 * @param	string					path to directory to delete
 	 * @param	bool					whether to also delete contents of subdirectories
+	 * @param	bool					whether to delete the parent dir itself when empty
 	 * @param	string|File_Area|null	file area name, object or null for non-specific
 	 * @return	bool
 	 */
-	public static function delete_dir($path, $recursive = true, $area = null)
+	public static function delete_dir($path, $recursive = true, $delete_top = true, $area = null)
 	{
 		$path = rtrim(static::instance($area)->get_path($path, $area), '\\/').DS;
 		if ( ! is_dir($path))
@@ -431,7 +432,7 @@ class File {
 			}
 		}
 
-		if ( ! $not_empty)
+		if ( ! $not_empty && $delete_top)
 		{
 			return rmdir($path);
 		}

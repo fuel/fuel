@@ -122,10 +122,10 @@ class File_Driver_Directory {
 	 *
 	 * @return	bool
 	 */
-	public function delete($recursive = false)
+	public function delete($recursive = true, $delete_top = true)
 	{
 		// should also destroy object but not possible in PHP right?
-		return $this->area->delete_dir($this->path);
+		return $this->area->delete_dir($this->path, $recursive, $delete_top);
 	}
 }
 
