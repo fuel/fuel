@@ -13,6 +13,7 @@
  */
 
 
+Fuel\Core\Autoloader::add_core_namespace('Auth');
 
 Fuel\Core\Autoloader::add_classes(array(
 	'Auth\\Auth'					=> __DIR__.'/classes/auth.php',
