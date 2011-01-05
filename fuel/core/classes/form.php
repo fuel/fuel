@@ -251,6 +251,30 @@ class Form {
 	}
 
 	/**
+	 * Create a password input field
+	 *
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
+	 * @return
+	 */
+	public static function password($field, $value = null, Array $attributes = array())
+	{
+		if (is_array($field))
+		{
+			$attributes = $field;
+		}
+		else
+		{
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
+		}
+		$attributes['type'] = 'password';
+
+		return static::input($attributes);
+	}
+
+	/**
 	 * Create a radio button
 	 *
 	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
@@ -294,6 +318,78 @@ class Form {
 			$attributes['value'] = (string) $value;
 		}
 		$attributes['type'] = 'checkbox';
+
+		return static::input($attributes);
+	}
+
+	/**
+	 * Create a button
+	 *
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
+	 * @return
+	 */
+	public static function button($field, $value = null, Array $attributes = array())
+	{
+		if (is_array($field))
+		{
+			$attributes = $field;
+		}
+		else
+		{
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
+		}
+		$attributes['type'] = 'button';
+
+		return static::input($attributes);
+	}
+
+	/**
+	 * Create a reset button
+	 *
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
+	 * @return
+	 */
+	public static function reset($field = 'reset', $value = 'Reset', Array $attributes = array())
+	{
+		if (is_array($field))
+		{
+			$attributes = $field;
+		}
+		else
+		{
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
+		}
+		$attributes['type'] = 'reset';
+
+		return static::input($attributes);
+	}
+
+	/**
+	 * Create a submit button
+	 *
+	 * @param	string|array	either fieldname or full attributes array (when array other params are ignored)
+	 * @param	string
+	 * @param	array
+	 * @return
+	 */
+	public static function submit($field = 'submit', $value = 'Submit', Array $attributes = array())
+	{
+		if (is_array($field))
+		{
+			$attributes = $field;
+		}
+		else
+		{
+			$attributes['name'] = (string) $field;
+			$attributes['value'] = (string) $value;
+		}
+		$attributes['type'] = 'submit';
 
 		return static::input($attributes);
 	}
