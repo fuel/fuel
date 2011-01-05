@@ -34,7 +34,7 @@
 
 		<p>In Fuel Controllers are put in the <kbd>fuel/app/classes/controller</kbd> directory. They should (but don't have to) extend the <kbd>Controller</kbd> class and are prefixed by default by "Controller_". Below is an example of the controller "example": </p>
 
-<pre><code>class Controller_Example extends Controller {
+<pre class="php"><code>class Controller_Example extends Controller {
 
 	public function action_index()
 	{
@@ -49,7 +49,7 @@
 
 		<p>Let say we also have the following method in our Controller_Example: </p>
 
-<pre><code>public function action_name_to_upper($name, $name_2)
+<pre class="php"><code>public function action_name_to_upper($name, $name_2)
 {
 	$data['name'] = strtoupper($name);
 	$data['name_2'] = strtoupper($name_2);
@@ -97,6 +97,61 @@
 			<h4>$output</h4>
 			<p>This property holds the output that will be given to the browser, if you want to output anything don't echo it just add it to the $this->output property.</p>
 		</article>
+
+		<h3>Extending other controllers</h3>
+
+		<p>Thanks to the autoloader you can extend other controllers without writing anything more than its name in the class definition:
+
+<pre class="php"><code>class Controller_Example extends Controller_Welcome {
+
+	// your methods
+
+}</code></pre>
+		
+		<p>This may sound strange at first, but extending controllers allows you to share methods and create base controllers really easily.</p>
+
+		<h3>Creating Base Controllers</h3>
+
+		<p>
+			A base controller is a shared controller, like <kbd>Controller_Public</kbd> or <kbd>Controller_Admin</kbd> and are used to share logic between groups of controllers.
+			For example, the <kbd>Controller_Admin</kbd> controller could contain your login/logout actions and maybe a dashboard, but it could also contain a <kbd>before()</kbd> method
+			that checks to see if the user is logged in as an admin. Then all other controllers in your admin panel will extend this an automatically be secured.
+		</p>
+
+<pre class="php"><code>class Controller_Admin extends Controller {
+
+	public function before()
+	{
+		// check for admin
+	}
+
+	// your methods
+
+	public function action_index()
+	{
+		// load the dashboard
+	}
+
+	public function action_login()
+	{
+		// log in the user
+	}
+}</code></pre>
+
+		<p>That code will go in <kbd>fuel/app/classes/controller/admin.php</kbd> and all of your other controllers should go in <kbd>fuel/app/classes/controller/admin/users.php</kbd>:</p>
+
+<pre class="php"><code>class Controller_Admin_User extends Controller_Admin {
+
+	public function action_index()
+	{
+		// overrides the dashboard with the user index listing
+	}
+
+	public function action_edit($id)
+	{
+		// edit users
+	}
+}</code></pre>
 
 	</section>
 
