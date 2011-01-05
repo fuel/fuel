@@ -146,7 +146,7 @@ class Form {
 	 * @param	string|array	action string or array with more tag attribute settings
 	 * @return	string
 	 */
-	public static function open($attributes, Array $hidden = array())
+	public static function open($attributes = array(), Array $hidden = array())
 	{
 		$attributes = ! is_array($attributes) ? array('action' => (string) $attributes) : $attributes;
 
