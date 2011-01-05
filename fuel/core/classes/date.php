@@ -130,7 +130,7 @@ class Date {
 	 * @param	string			key name of pattern in config file
 	 * @return	Date
 	 */
-	public static function create_from_string($input, $pattern_key = 'human')
+	public static function create_from_string($input, $pattern_key = 'local')
 	{
 		\Config::load('date', 'date');
 
@@ -144,7 +144,7 @@ class Date {
 			return false;
 		}
 		$timestamp = mktime($time['tm_hour'], $time['tm_min'], $time['tm_sec'],
-						$time['tm_mon'], $time['tm_mday'], $time['tm_year']+1900);
+						$time['tm_mon'], $time['tm_mday'], $time['tm_year']+1901 );
 
 		return static::factory($timestamp + static::$server_gmt_offset);
 	}
@@ -161,7 +161,7 @@ class Date {
 	{
 		$start		= ( ! $start instanceof Date) ? static::factory($start) : $start;
 		$end		= ( ! $end instanceof Date) ? static::factory($end) : $end;
-		$interval	= (is_int($interval)) ? $interval : strtotime($interval);
+		$interval	= (is_int($interval)) ? $interval : strtotime($interval, $start->get_timestamp()) - $start->get_timestamp();
 
 		if ($interval <= 0)
 		{
@@ -207,7 +207,7 @@ class Date {
 		}
 
 		$days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-		return $days_in_month[$month];
+		return $days_in_month[$month-1];
 	}
 
 	/* ---------------------------------------------------------------------------
