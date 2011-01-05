@@ -138,7 +138,9 @@ class Asset {
 			$group = isset(static::$_groups[$group]) ? static::$_groups[$group] : array();
 		}
 
-		$return = '';
+		$css = '';
+		$js = '';
+		$img = '';
 		foreach ($group as $key => $item)
 		{
 			$type = $item['type'];
@@ -170,7 +172,7 @@ class Asset {
 					$attr['type'] = 'text/css';
 					$attr['href'] = $file;
 
-					$return .= html_tag('link', $attr).PHP_EOL;
+					$css .= html_tag('link', $attr).PHP_EOL;
 					break;
 				case 'js':
 					if ($raw)
@@ -180,19 +182,20 @@ class Asset {
 					$attr['type'] = 'text/javascript';
 					$attr['src'] = $file;
 
-					$return .= html_tag('script', $attr, '').PHP_EOL;
+					$js .= html_tag('script', $attr, '').PHP_EOL;
 					break;
 				case 'img':
 					$attr['src'] = $file;
 					$attr['alt'] = isset($attr['alt']) ? $attr['alt'] : '';
 
-					$return .= html_tag('img', $attr );
+					$img .= html_tag('img', $attr );
 					break;
 			}
 
 		}
 
-		return $return;
+		// return them in the correct order
+		return $css.$js.$img;
 	}
 
 	// --------------------------------------------------------------------
