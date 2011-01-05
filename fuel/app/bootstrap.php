@@ -12,9 +12,18 @@
  * @link		http://fuelphp.com
  */
 
+if (DEBUG)
+{
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
+}
 
-// Initialize the framework
-Fuel::init();
+
+// Register the autoloader
+Fuel\Core\Autoloader::register();
+
+// Initialize the framework with the config file.
+Fuel::init(include(APPPATH.'config/config.php'));
 
 // Generate the request, execute it and send the output.
 Request::factory()->execute()->send_headers()->output();
