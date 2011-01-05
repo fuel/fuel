@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Security Class - Fuel Documentation</title>
+	<title>Uri Class - Fuel Documentation</title>
 	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
 	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="../assets/js/nav.js"></script>
@@ -24,13 +24,13 @@
 	<div id="main-nav"></div>
 
 	<section id="content">
-		<h2>Security Class</h2>
+		<h2>Uri Class</h2>
 
-		<p>The security class allows you to have CSRF protection in your application.</p>
+		<p>The Uri class allows you to interact with the URI.</p>
 
 		<article>
-			<h4>check_token($value = null)</h4>
-			<p>The <strong>check_token</strong> method allows you to check the CSRF token.</p>
+			<h4>create($uri = null, $variables = array())</h4>
+			<p>The <strong>create</strong> method allows you to create a URL with the given URI, including the base URL.</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -47,21 +47,27 @@
 								<th class="description">Description</th>
 							</tr>
 							<tr>
-								<th><kbd>$value</kbd></th>
+								<th><kbd>$uri</kbd></th>
 								<td><pre class="php"><code>null</code></pre></td>
-								<td>CSRF token to be checked, checks value from POST when empty.</td>
+								<td>The URL.</td>
+							</tr>
+							<tr>
+								<th><kbd>$variables</kbd></th>
+								<td><pre class="php"><code>array()</code></pre></td>
+								<td>The variables for the URL.</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
 					<th>Returns</th>
-					<td>boolean</td>
+					<td>string</td>
 				</tr>
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>Security::check_token();</code></pre>
+						<pre class="php"><code>// Example URL: http://localhost/controller/method/param1/param2
+echo Uri::segment(3); // returns param1</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -69,8 +75,8 @@
 		</article>
 		
 		<article>
-			<h4>fetch_token()</h4>
-			<p>The <strong>fetch_token</strong> method allows you to fetch the CSRF token from the cookie.</p>
+			<h4>current()</h4>
+			<p>The <strong>current</strong> method allows you to fetch the current URL, including the base URL inside HMVC pattern.</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -88,7 +94,8 @@
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>$csrf_token = Security::fetch_token();</code></pre>
+						<pre class="php"><code>// Example URL: http://localhost/module/controller/method
+echo Uri::current(); // returns http://localhost/module/controller/method</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -96,8 +103,8 @@
 		</article>
 		
 		<article>
-			<h4>js_fetch_token()</h4>
-			<p>The <strong>js_fetch_token</strong> method allows you to produce JavaScript fuel_csrf_token() function that will return the current CSRF token when called. Use to fill right field on form submit for AJAX operations.</p>
+			<h4>detect()</h4>
+			<p>The <strong>detect</strong> method detects the current URI to build the correct string.</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -115,7 +122,8 @@
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>echo Security::js_fetch_token();</code></pre>
+						<pre class="php"><code>// Example URL: http://localhost/controller/method
+echo Uri::detect(); // returns controller/method</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -123,8 +131,8 @@
 		</article>
 		
 		<article>
-			<h4>regenerate_token()</h4>
-			<p>The <strong>regenerate_token</strong> method allows you to generate a new token if the old one expired or was checked.</p>
+			<h4>main()</h4>
+			<p>The <strong>main</strong> method allows you to fetch the current URL, including the base URL.</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -137,12 +145,13 @@
 				</tr>
 				<tr>
 					<th>Returns</th>
-					<td>void</td>
+					<td>string</td>
 				</tr>
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>Security::regenerate_token();</code></pre>
+						<pre class="php"><code>// Example URL: http://localhost/controller/method
+echo Uri::main(); // returns http://localhost/controller/method</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -150,8 +159,8 @@
 		</article>
 		
 		<article>
-			<h4>strip_tags($value)</h4>
-			<p>The <strong>strip_tags</strong> method allows you to strip HTML and PHP tags from a string.</p>
+			<h4>segment($segment, $default = null)</h4>
+			<p>The <strong>segment</strong> method allows you to return the desired segment, or false if it does not exist.</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -168,9 +177,14 @@
 								<th class="description">Description</th>
 							</tr>
 							<tr>
-								<th><kbd>$value</kbd></th>
+								<th><kbd>$segment</kbd></th>
 								<td><i>Required</i></td>
-								<td>The input string.</td>
+								<td>The segment number.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The default?</td>
 							</tr>
 						</table>
 					</td>
@@ -182,8 +196,36 @@
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>$text = '&lt;p&gt;Test paragraph.&lt;/p&gt;';
-$text = Security::strip_tags($text);</code></pre>
+						<pre class="php"><code>// Example URL: http://localhost/controller/method/param1/param2
+echo Uri::segment(3); // returns param1</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>string()</h4>
+			<p>The <strong>string</strong> method allows you to fetch the current URI.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>None</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// Example URL: http://localhost/controller/method
+echo Uri::string(); // returns controller/method</code></pre>
 					</td>
 				</tr>
 				</tbody>

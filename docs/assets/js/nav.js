@@ -63,9 +63,9 @@ var nav = {
 			"Migrate":		"classes/migrate.html",
 			"Output":		"classes/output.html",
 			"Pagination":	"classes/pagination.html",
-			// "Profiler":		"todo.html",
+			// "Profiler":	"todo.html",
 			// "Redis":		"todo.html",
-			// "Request":		"todo.html",
+			// "Request":	"todo.html",
 			// "Route":		"todo.html",
 			"Security":		"classes/security.html",
 			"Session": {
@@ -78,7 +78,7 @@ var nav = {
 				"Configuration":	"classes/upload/config.html",
 				"Usage":			"classes/upload/usage.html"
 			},
-			// "Url":			"todo.html",
+			"Uri":			"classes/uri.html",
 			// "Validation":	"todo.html",
 			// "View":			"todo.html"
 		}

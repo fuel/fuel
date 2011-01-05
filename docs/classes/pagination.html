@@ -32,7 +32,7 @@
 			<h2>How To</h2>
 			<p>A simple example on how to use the Pagination class, the <strong>set_config</strong> method is used in this example. You can put this inside your action methods in your controller.
 			<pre class="php"><code>$config = array(
-	'pagination_url' => 'http://awesomehost/fuel/welcome/index/',
+	'pagination_url' => 'http://localhost/fuel/welcome/index/',
 	'total_items' => 10,
 	'per_page' => 5,
 	'uri_segment' => 3,
@@ -147,7 +147,7 @@ $this->render('welcome/index', $data);</code></pre>
 									<th class="description">Description</th>
 								</tr>
 								<tr>
-									<th><kbd>config</kbd></th>
+									<th><kbd>$config</kbd></th>
 									<td><i>Required</i></td>
 									<td>The configuration array.</td>
 								</tr>
