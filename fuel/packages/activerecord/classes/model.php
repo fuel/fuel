@@ -88,12 +88,13 @@ class Model {
 		{
 			return;
 		}
-		if (strncmp($name, 'find_by_', 8) !== 0 && $name != '_init')
+		$find_type = strncmp($name, 'find_all_by_', 12) === 0 ? 'all' : (strncmp($name, 'find_by_', 8) === 0 ? 'first' : false);
+		if ( ! $find_type && $name != '_init')
 		{
 			throw new \Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
 		}
 
-		$name = substr($name, 8);
+		$name = $find_type === 'first' ? substr($name, 8) : substr($name, 12);
 
 		$and_parts = explode('_and_', $name);
 
@@ -144,9 +145,7 @@ class Model {
 			$options['or_where'] = $options['or_where'] + $or_where;
 		}
 
-		$results = static::find('all', $options);
-		
-		return count($results) === 1 ? $results[0] : (count($results) === 0 ? null : $results);
+		return static::find($find_type, $options);
 	}
 
 	/**
