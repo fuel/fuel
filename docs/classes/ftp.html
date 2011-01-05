@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>FTP Class - Usage - Fuel Documentation</title>
+	<title>FTP Class - Fuel Documentation</title>
 	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
 	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="../../assets/js/nav.js"></script>
@@ -26,7 +26,81 @@
 	<section id="content">
 		<h2>FTP Class</h2>
 
-		<p>The FTP class allows you to upload, download, move and mirror files with remote servers over the FTP protocol.</p>
+		<p>The FTP class allows you to upload, download, movve and mirror files with remote servers over the FTP protocol.</p>
+
+		<section>
+			<h2>Configuration</h2>
+
+			<p>The FTP class is configured through the <kbd>fuel/core/config/ftp.php</kbd> configuration file. It is already populated with a default configuration group. You can override this configuration and add new groups by copying this config file to your application config directory, and modify that file as needed.</p>
+			<p>The following configuration settings can be defined:</p>
+			<table class="config">
+				<tbody>
+					<tr class="header">
+						<th>Param</th>
+						<th>Type</th>
+						<th>Default</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<th>hostname</th>
+						<td>string</td>
+						<td><pre class="php"><code>'localhost'</code></pre></td>
+						<td>
+							IP or domain name of the FTP server to connect with.
+						</td>
+					</tr>
+					<tr>
+						<th>username</th>
+						<td>string</td>
+						<td><pre class="php"><code>''</code></pre></td>
+						<td>
+							Optional: Name of the user to connect with, if login is required.
+						</td>
+					</tr>
+					<tr>
+						<th>password</th>
+						<td>string</td>
+						<td><pre class="php"><code>''</code></pre></td>
+						<td>
+							Optional: Name of the password to connect with, if login is required.
+						</td>
+					</tr>
+					<tr>
+						<th>port</th>
+						<td>integer</td>
+						<td><pre class="php"><code>21</code></pre></td>
+						<td>
+							The port number your FTP server responds to. Most servers use 21.
+						</td>
+					</tr>
+					<tr>
+						<th>passive</th>
+						<td>boolean</td>
+						<td><pre class="php"><code>true</code></pre></td>
+						<td>
+							Whether to use passive mode. Passive is set automatically by default.
+						</td>
+					</tr>
+					<tr>
+						<th>ssl_mode</th>
+						<td>boolean</td>
+						<td><pre class="php"><code>false</code></pre></td>
+						<td>
+							Use FTPS mode which is slightly more secure than usual FTP. (Note: this is not SFTP).
+						</td>
+					</tr>
+					<tr>
+						<th>debug</th>
+						<td>boolean</td>
+						<td><pre class="php"><code>false</code></pre></td>
+						<td>
+							Whether to enable debugging to display error messages.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
 
 		<article>
 			<h4>factory()</h4>
@@ -299,8 +373,11 @@ $ftp->download('/public_html/myfile.html', '/local/path/to/myfile.html', 'ascii'
 		</article>
 
 		<article>
-			<h4>download($remote_path, $local_path, $mode = 'auto')</h4>
-			<p>Download a file or directory from the remote server to the local server.</p>
+			<h4>mirror($local_path, $remote_path)</h4>
+			<p>
+				Recursively reads a local folder and everything it contains (including sub-folders) and creates a mirror via FTP based on it. Whatever the
+				directory structure of the original file path will be recreated on the server.
+			</p>
 			<table class="method">
 				<tbody>
 				<tr>
@@ -317,22 +394,14 @@ $ftp->download('/public_html/myfile.html', '/local/path/to/myfile.html', 'ascii'
 								<th class="description">Description</th>
 							</tr>
 							<tr>
-								<th><kbd>$remote_path</kbd></th>
-								<td><pre class="php"><code>true</code></pre></td>
-								<td>Remote server path.</td>
-							</tr>
-							<tr>
 								<th><kbd>$local_path</kbd></th>
 								<td><pre class="php"><code>'default'</code></pre></td>
 								<td>Local server path.</td>
 							</tr>
 							<tr>
-								<th><kbd>$mode</kbd></th>
-								<td><pre class="php"><code>'auto'</code></pre></td>
-								<td>
-									Options are <kbd>ascii</kbd>, <kbd>binary</kbd>, and <kbd>auto</kbd> (the default).
-									If <kbd>auto</kbd> is used it will base the mode on the file extension of the source file.
-								</td>
+								<th><kbd>$remote_path</kbd></th>
+								<td><pre class="php"><code>true</code></pre></td>
+								<td>Remote server path.</td>
 							</tr>
 						</table>
 					</td>
@@ -344,14 +413,18 @@ $ftp->download('/public_html/myfile.html', '/local/path/to/myfile.html', 'ascii'
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php"><code>// Download myotherfile.html
-$ftp->download('/public_html/myfile.html', '/local/path/to/myfile.html', 'ascii')</code></pre>
+<pre class="php"><code>$ftp = Ftp::factory();
+
+$ftp->connect($config);
+
+$ftp->mirror('/path/to/myfolder/', '/public_html/myfolder/');
+
+$ftp->close();</code></pre>
 					</td>
 				</tr>
 				</tbody>
 			</table>
 		</article>
-
 
 	</section>
 

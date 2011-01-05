@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Crypt Class - Usage - Fuel Documentation</title>
+	<title>Crypt Class - Fuel Documentation</title>
 	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
 	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="../../assets/js/nav.js"></script>
@@ -30,6 +30,56 @@
 			The Crypt class allows encrypt or decrypt a string. The Crypt class is also used internally by for example the Fuel Sessions class.
 			It is <strong>very important</strong> that you configure a truely random salt for your application, even if you don't use the Crypt class directly.
 		</p>
+
+		<section>
+			<h2>Configuration</h2>
+
+			<p>
+				The Crypt class is configured through the <kbd>app/config/crypt.php</kbd> configuration file. It is already populated with default configuration values.</p>
+			<p>The following configuration settings can be defined:</p>
+			<table class="config">
+				<tbody>
+					<tr class="header">
+						<th>Param</th>
+						<th>Type</th>
+						<th>Default</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<th>salt</th>
+						<td>string</td>
+						<td><pre class="php"><code>'sup3rs3Cr3tk3y564'</code></pre></td>
+						<td>
+							Random salt value, used in the encryption routines for extra entropy. Make sure you set this to something unique and random!
+						</td>
+					</tr>
+					<tr>
+						<th>use_mcrypt</th>
+						<td>boolean</td>
+						<td><pre class="php"><code>true</code></pre></td>
+						<td>
+							Optional: Indicates if you want to use PHP's Mcrypt library if available. It is a lot faster, but might cause your data not to be portable anymore (all target platforms need to have Mcrypt installed as well).
+						</td>
+					</tr>
+					<tr>
+						<th>mcrypt_cipher</th>
+						<td>integer</td>
+						<td><pre class="php"><code>MCRYPT_RIJNDAEL_256</code></pre></td>
+						<td>
+							Optional: http://www.php.net/manual/en/mcrypt.ciphers.php for available ciphers.
+						</td>
+					</tr>
+					<tr>
+						<th>mcrypt_mode</th>
+						<td>integer</td>
+						<td><pre class="php"><code>MCRYPT_MODE_CBC</code></pre></td>
+						<td>
+							Optional: http://www.php.net/manual/en/mcrypt.constants.php for available cipher modes.
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
 
 		<article>
 			<h4>encode($value, $salt = false)</h4>
