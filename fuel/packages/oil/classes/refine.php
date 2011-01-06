@@ -33,7 +33,7 @@ class Refine
 
 		if ( ! $file = \Fuel::find_file('tasks', $task))
 		{
-			throw new \Exception('Well that didnt work...');
+			throw new Exception('Well that didnt work...');
 			return;
 		}
 
@@ -58,7 +58,7 @@ class Refine
 	public static function help()
 	{
 		echo <<<HELP
-   
+
 Usage:
   php oil refine <taskname>
 

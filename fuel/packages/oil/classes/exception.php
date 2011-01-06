@@ -24,10 +24,11 @@ namespace Oil;
  */
 class Exception extends \Exception {
 
-	public function __toString()
-	{
-		echo get_class($this) . " '{$this->message}' in {$this->file}({$this->line}";
-	}
+//	public function __toString()
+//	{
+//		\Cli::write('Error: ' . $this->message);
+//	}
+	
 }
 
 /* End of file exception.php */

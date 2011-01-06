@@ -26,71 +26,85 @@ class Cli
 {
 	public static function init($args)
 	{
-		if ( ! isset($args[1]))
+		try
 		{
-			static::help();
-			return;
+			if ( ! isset($args[1]))
+			{
+				static::help();
+				return;
+			}
+
+			switch ($args[1])
+			{
+				case 'g':
+				case 'generate':
+
+					switch ($args[2])
+					{
+						case 'controller':
+						case 'model':
+						case 'view':
+						case 'views':
+						case 'migration':
+
+							call_user_func('Oil\Generate::'.$args[2], array_slice($args, 3));
+
+						break;
+
+						case 'scaffold':
+							call_user_func('Oil\Scaffold::generate', array_slice($args, 3));
+						break;
+
+						default:
+							Generate::help();
+					}
+				break;
+
+				case 'c':
+				case 'console':
+					new Console;
+
+				case 'r':
+				case 'refine':
+
+					if ( ! isset($args[2]) OR $args[2] == 'help')
+					{
+						Refine::help();
+						return;
+					}
+
+					if ( ! is_callable($args[2]))
+					{
+						throw new Exception(sprintf('Task "%s" does not exist.', $args[2]));
+						return;
+					}
+
+					call_user_func('Oil\Refine::run', $args[2], array_slice($args, 3));
+				break;
+
+				case 'install':
+				case 'uninstall':
+					call_user_func('Oil\Package::'.$args[1], $args[2]);
+				break;
+
+				case '-v':
+				case '--version':
+					\Cli::write('Fuel: ' . \Fuel::VERSION);
+				break;
+
+				case 'test':
+					\Fuel::add_package('octane');
+					call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
+				break;
+
+				default:
+					static::help();
+			}
 		}
 
-		switch ($args[1])
+		catch (Exception $e)
 		{
-			case 'g':
-			case 'generate':
-
-				switch ($args[2])
-				{
-					case 'controller':
-					case 'model':
-					case 'view':
-					case 'views':
-					case 'migration':
-
-						call_user_func('Oil\Generate::'.$args[2], array_slice($args, 3));
-
-					break;
-
-					case 'scaffold':
-						call_user_func('Oil\Scaffold::generate', array_slice($args, 3));
-					break;
-
-					default:
-						Generate::help();
-				}
-			break;
-
-			case 'c':
-			case 'console':
-				new Console;
-
-			case 'r':
-			case 'refine':
-
-				if ( ! isset($args[2]) OR $args[2] == 'help')
-				{
-					Refine::help();
-					return;
-				}
-
-				call_user_func('Oil\Refine::run', $args[2], array_slice($args, 3));
-			break;
-
-			case 'install':
-			case 'uninstall':
-				call_user_func('Oil\Package::'.$args[1], $args[2]);
-			break;
-
-			case '-v':
-			case '--version':
-				\Cli::write('Fuel: ' . \Fuel::VERSION);
-			break;
-
-			case 'test':
-				\Fuel::add_package('octane');
-				call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
-			break;
-
-			default:
-				static::help();
+			\Cli::write(\Cli::color('Error: ' . $e->getMessage(), 'light_red'));
 		}
 	}
 
