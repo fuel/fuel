@@ -82,8 +82,6 @@ class Fuel {
 			throw new \Exception("You can't initialize Fuel more than once.");
 		}
 
-		static::$_paths = array(APPPATH, COREPATH);
-
 		register_shutdown_function('fuel_shutdown_handler');
 		set_exception_handler('fuel_exception_handler');
 		set_error_handler('fuel_error_handler');
@@ -109,6 +107,8 @@ class Fuel {
 		}
 
 		\Config::load($config);
+
+		static::$_paths = array_merge(\Config::get('module_paths', array()), array(APPPATH, COREPATH));
 
 		static::$is_cli = (bool) (php_sapi_name() == 'cli');
 
@@ -212,8 +212,15 @@ class Fuel {
 			return static::$path_cache[$path];
 		}
 
+		$paths = static::$_paths;
+		// get the paths of the active request, and search them first
+		if ($active = \Request::active())
+		{
+			$paths = array_merge($active->paths, $paths);
+		}
+
 		$found = $multiple ? array() : false;
-		foreach (static::$_paths as $dir)
+		foreach ($paths as $dir)
 		{
 			$file_path = $dir.$path;
 			if (is_file($file_path))
@@ -346,24 +353,22 @@ class Fuel {
 	 * module. Won't register twice, will just return the path on a second call.
 	 *
 	 * @param	string	module name (lowercase prefix without underscore)
-	 * @param	bool	whether it is an active package
+	 * @param	bool	whether it is an loaded package
 	 */
-	public static function add_module($name, $active = false)
+	public static function add_module($name, $loaded = false)
 	{
-		$paths = \Config::get('module_paths', array());
-
-		if (empty($paths))
+		if ( ! $path = Autoloader::namespace_path('\\'.ucfirst($name)))
 		{
-			return false;
-		}
+			$paths = \Config::get('module_paths', array());
 
-		$path = Autoloader::namespace_path('\\'.ucfirst($name));
-
-		if ( ! $path)
-		{
-			foreach ($paths as $path)
+			if (empty($paths))
 			{
-				if (is_dir($mod_check_path = $path.strtolower($name).DS))
+				return false;
+			}
+
+			foreach ($paths as $modpath)
+			{
+				if (is_dir($mod_check_path = $modpath.strtolower($name).DS))
 				{
 					$path = $mod_check_path;
 					$ns = '\\'.ucfirst($name);
@@ -381,30 +386,25 @@ class Fuel {
 				}
 			}
 		}
-
-		// not found
-		if ( ! $path)
+		else
 		{
-			return false;
+			// strip the classes directory, we need the module root
+			$path = substr($path,0, -8);
 		}
 
-		// add the module path
-		static::add_path($path);
-
-		// get the path for this modules namespace
-		$path = Autoloader::namespace_path('\\'.ucfirst($name));
-
-		// Active modules get their path prefixed and routes loaded
-		if ($active)
+		if ($loaded)
 		{
-			static::add_path($path, true);
+			// add the module path
+			static::add_path($path);
 
-			// We want active modules to be able to have their own routes, so we reload routes.
-			\Route::load_routes(true);
-			return $path;
+			// get the path for this modules namespace
+			if ( $path = Autoloader::namespace_path('\\'.ucfirst($name)))
+			{
+				// add the namespace path too
+				static::add_path($path);
+			}
 		}
 
-		static::add_path($path);
 		return $path;
 	}
 
@@ -505,7 +505,7 @@ class Fuel {
 		{
 			foreach ($array['modules'] as $module)
 			{
-				static::add_module($module);
+				static::add_module($module, true);
 			}
 		}
 
