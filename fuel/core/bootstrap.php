@@ -95,10 +95,13 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Event'						=> COREPATH.'classes/event.php',
 	'Fuel\\Core\\Error'						=> COREPATH.'classes/error.php',
 
+	'Fuel\\Core\\Fieldset'					=> COREPATH.'classes/fieldset.php',
+	'Fuel\\Core\\Fieldset_Field'			=> COREPATH.'classes/fieldset/field.php',
+
 	'Fuel\\Core\\File'						=> COREPATH.'classes/file.php',
 	'Fuel\\Core\\File_Area'					=> COREPATH.'classes/file/area.php',
-	'Fuel\\Core\\File_Driver\\File'			=> COREPATH.'classes/file/driver/file.php',
-	'Fuel\\Core\\File_Driver\\Directory'	=> COREPATH.'classes/file/driver/directory.php',
+	'Fuel\\Core\\File_Driver_File'			=> COREPATH.'classes/file/driver/file.php',
+	'Fuel\\Core\\File_Driver_Directory'		=> COREPATH.'classes/file/driver/directory.php',
 
 	'Fuel\\Core\\Form'						=> COREPATH.'classes/form.php',
 	'Fuel\\Core\\Ftp'						=> COREPATH.'classes/ftp.php',
@@ -129,8 +132,6 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Upload'					=> COREPATH.'classes/upload.php',
 
 	'Fuel\\Core\\Validation'				=> COREPATH.'classes/validation.php',
-	'Fuel\\Core\\Validation_Set'			=> COREPATH.'classes/validation/set.php',
-	'Fuel\\Core\\Validation_Field'			=> COREPATH.'classes/validation/field.php',
 	'Fuel\\Core\\Validation_Error'			=> COREPATH.'classes/validation/error.php',
 
 	'Fuel\\Core\\View'						=> COREPATH.'classes/view.php',

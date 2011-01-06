@@ -78,10 +78,8 @@ class Auth {
 	}
 
 	/**
-	 * Load driver $class to loaded drivers of $type
+	 * Load a login driver to the array of loaded drivers
 	 *
-	 * @param	string			type of driver
-	 * @param	string			driver name
 	 * @param	array			settings for the new driver
 	 * @throws	Auth_Exception	on driver load failure
 	 */
