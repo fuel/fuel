@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Inflector Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Inflector Class</h2>
+
+		<p>The Inflector class allows you to transforms words from singular to plural, class names to table names, modularized class names to ones without, and class names to foreign keys.</p>
+		
+		<article>
+			<h4>ascii($str)</h4>
+			<p>The <strong>ascii</strong> method allows you to translate a string to a 7-bit ASCII string. This method only works with UTF-8.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$str</kbd></th>
+								<td><i>Required</i></td>
+								<td>The string to translate.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::ascii('Inglés'); // returns Ingles</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>camelize($underscored_word)</h4>
+			<p>The <strong>camelize</strong> method allows you to convert a string with words separated by underscores into a CamelCased string.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$underscored_word</kbd></th>
+								<td><i>Required</i></td>
+								<td>The underscored word.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::camelize('apples_and_oranges'); // returns ApplesAndOranges</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>classify($table_name)</h4>
+			<p>The <strong>classify</strong> method allows you to convert a table name to a class name.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$table_name</kbd></th>
+								<td><i>Required</i></td>
+								<td>The table name.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::classify('fuel_users'); // returns FuelUser</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>demodulize($class_name_in_module)</h4>
+			<p>The <strong>demodulize</strong> method allows you to take the class name out of a modulized string..</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$class_name_in_module</kbd></th>
+								<td><i>Required</i></td>
+								<td>The modulized class.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::demodulize('Uri::main()'); // returns main()</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>denamespace($class_name)</h4>
+			<p>The <strong>denamespace</strong> method allows you to take the namespace off the given class name.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$class_name</kbd></th>
+								<td><i>Required</i></td>
+								<td>The class name.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::denamespace('Fuel\Core\Config'); // returns Config</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>foreign_key($class_name, $use_underscore = true)</h4>
+			<p>The <strong>foreign_key</strong> method allows you to get the foreign key for a given class.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$class_name</kbd></th>
+								<td><i>Required</i></td>
+								<td>The class name.</td>
+							</tr>
+							<tr>
+								<th><kbd>$use_underscore</kbd></th>
+								<td><pre class="php"><code>true</code></pre></td>
+								<td>Whether to use an underscore or not.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::foreign_key('Inflector'); // returns inflector_id
+echo Inflector::foreign_key('Inflector', false); // returns inflectorid</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>friendly_title($str, $sep = '-', $lowercase = false)</h4>
+			<p>The <strong>friendly_title</strong> method allows you to convert your text to a URL-friendly title so that it can be used in the URL. It only works with UTF-8 input and outputs 7 bit ASCII characters.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$str</kbd></th>
+								<td><i>Required</i></td>
+								<td>The text to convert.</td>
+							</tr>
+							<tr>
+								<th><kbd>$sep</kbd></th>
+								<td><pre class="php"><code>-</code></pre></td>
+								<td>The separator (either - or _)</td>
+							</tr>
+							<tr>
+								<th><kbd>$lowercase</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>Whether to use lowercase or not.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::friendly_title('Fuel is a community driven PHP 5 web framework.', '-', true);
+// returns fuel-is-a-community-driven-php-5-web-framework</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>humanize($lower_case_and_underscored_word)</h4>
+			<p>The <strong>humanize</strong> method allows you to turn an underscore separated word and turns it into a human looking string.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$lower_case_and_underscored_word</kbd></th>
+								<td><i>Required</i></td>
+								<td>The word to convert.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::humanize('apples_and_oranges'); // returns Apples and oranges</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>is_countable($word)</h4>
+			<p>The <strong>is_countable</strong> method allows you check if the given word has a plural version.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$word</kbd></th>
+								<td><i>Required</i></td>
+								<td>The word to check.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>boolean</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::is_countable('fish'); // returns false
+echo Inflector::is_countable('apple'); // returns true</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>pluralize($word)</h4>
+			<p>The <strong>pluralize</strong> method allows you get the plural version of the given word.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$word</kbd></th>
+								<td><i>Required</i></td>
+								<td>The word you want to pluralize.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::pluralize('apple'); // returns apples</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>singularize($word)</h4>
+			<p>The <strong>singularize</strong> method allows you get the singular version of the given word.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$word</kbd></th>
+								<td><i>Required</i></td>
+								<td>The word you want to singularize.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::singularize('apples'); // returns apple</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>tableize($class_name)</h4>
+			<p>The <strong>tableize</strong> method allows you to convert a class name to a table name.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$class_name</kbd></th>
+								<td><i>Required</i></td>
+								<td>The class name.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::tableize('FuelUser'); // returns fuel_users</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+				
+		<article>
+			<h4>underscore($camel_cased_word)</h4>
+			<p>The <strong>underscore</strong> method allows you to convert a CamelCased string into an underscore separated string.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$camel_cased_word</kbd></th>
+								<td><i>Required</i></td>
+								<td>The CamelCased word.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Inflector::underscore('ApplesAndOranges'); // returns apples_and_oranges</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

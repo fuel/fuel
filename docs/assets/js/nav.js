@@ -50,7 +50,7 @@ var nav = {
 			// "Form":			"todo.html",
 			"Ftp":			"classes/ftp.html",
 			"Html":			"classes/html.html",
-			"Inflector":	"todo.html",
+			"Inflector":	"classes/inflector.html",
 			"Input":		"classes/input.html",
 			"Lang":			"classes/lang.html",
 			"Log":	    	"classes/log.html",
