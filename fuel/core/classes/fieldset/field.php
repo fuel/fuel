@@ -295,6 +295,16 @@ class Fieldset_Field
 	}
 
 	/**
+	 * Return the parent Fieldset object
+	 *
+	 * @return	Fieldset
+	 */
+	public function fieldset()
+	{
+		return $this->fieldset;
+	}
+
+	/**
 	 * Alias for $this->fieldset->add() to allow chaining
 	 */
 	public function add($name, $label = '', array $attributes = array(), array $rules = array())

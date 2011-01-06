@@ -26,7 +26,15 @@ namespace Fuel\Core;
  * @category	Core
  * @author		Jelmer Schreuder
  */
-class Validation_Error extends Exception {
+class Validation_Error extends \Exception {
+	/**
+	 * Load validation Language file when errors are thrown
+	 */
+	public static function _init()
+	{
+		\Lang::load('validation', true);
+	}
+
 	public $field = '';
 	public $value = '';
 	public $callback = '';
@@ -49,7 +57,19 @@ class Validation_Error extends Exception {
 		/**
 		 * Simplify callback for rule, class/object and method are seperated by 1 colon
 		 * and objects become their classname without the namespace.
+		 * Rules called on a callable are considered without classname & method prefix
 		 */
+		if (is_array($callback))
+		{
+			foreach ($field->fieldset()->validation()->callables() as $c)
+			{
+				if ($c == $callback[0] && substr($callback[1], 0, 12) == '_validation_')
+				{
+					$callback = substr($callback[1], 12);
+					break;
+				}
+			}
+		}
 		$this->callback = is_string($callback)
 				? str_replace('::', ':', $callback)
 				: preg_replace('#^([a-z_]*\\\\)*#i', '', get_class($callback[0])).':'.$callback[1];
@@ -82,10 +102,10 @@ class Validation_Error extends Exception {
 		}
 
 		$find			= array(':field', ':label', ':value', ':rule');
-		$replace		= array($this->field->key, $this->field->label, $this->value, $this->callback);
+		$replace		= array($this->field->name, $this->field->label, $this->value, $this->callback);
 		foreach($this->params as $key => $val)
 		{
-			$find[]		= ':param:'.$key;
+			$find[]		= ':param:'.($key + 1);
 			$replace[]	= $val;
 		}
 

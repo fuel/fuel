@@ -187,12 +187,12 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 	 *
 	 * @return	bool	whether login succeeded
 	 */
-	abstract protected function login();
+	abstract public function login();
 
 	/**
 	 * Logout method
 	 */
-	abstract protected function logout();
+	abstract public function logout();
 
 	/**
 	 * Get User Identifier of the current logged in user
