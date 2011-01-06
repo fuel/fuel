@@ -210,9 +210,9 @@ class File_Area {
 		return \File::delete($path, $this);
 	}
 
-	public function delete_dir($path, $recursive = false)
+	public function delete_dir($path, $recursive = true, $delete_top = true)
 	{
-		return \File::delete($path, $recursive, $this);
+		return \File::delete($path, $recursive, $delete_top, $this);
 	}
 }
 

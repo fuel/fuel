@@ -20,6 +20,11 @@ class Autoloader {
 	protected static $namespaces = array();
 
 	/**
+	 * @var	array	List off namespaces of which classes will be aliased to global namespace
+	 */
+	protected static $core_namespaces = array('Fuel\\Core');
+
+	/**
 	 * @var array	Holds all the namespace aliases
 	 */
 	protected static $namespace_aliases = array();
@@ -241,6 +246,46 @@ class Autoloader {
 		spl_autoload_register('\\Fuel\\Core\\Autoloader::load', true, true);
 	}
 
+	/**
+	 * Returns the class with namespace prefix when available
+	 *
+	 * @param	string
+	 * @return	bool|string
+	 */
+	protected static function is_core_class($class)
+	{
+		foreach (static::$core_namespaces as $ns)
+		{
+			if (array_key_exists($ns_class = $ns.'\\'.$class, static::$classes))
+			{
+				return $ns_class;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Add a namespace for which classes may be used without the namespace prefix and
+	 * will be auto-aliased to the global namespace.
+	 * Prefixing the classes will overwrite core classes and previously added namespaces.
+	 *
+	 * @param	string
+	 * @param	bool
+	 * @return	void
+	 */
+	public static function add_core_namespace($namespace, $prefix = true)
+	{
+		if ($prefix)
+		{
+			array_unshift(static::$core_namespaces, $namespace);
+		}
+		else
+		{
+			array_push(static::$core_namespaces, $namespace);
+		}
+	}
+
 	public static function load($class)
 	{
 		$class = ltrim($class, '\\');
@@ -256,7 +301,7 @@ class Autoloader {
 			static::_init_class($class);
 			return true;
 		}
-		elseif ( ! $namespaced and array_key_exists($class_name = 'Fuel\\Core\\'.$class, static::$classes))
+		elseif ( ! $namespaced and $class_name = static::is_core_class($class))
 		{
 			include str_replace('/', DS, static::$classes[$class_name]);
 			static::alias_to_namespace($class_name);
@@ -317,11 +362,13 @@ class Autoloader {
 	{
 		if (static::$auto_initialize === $class)
 		{
-			static::$auto_initialize = null;
 			if (is_callable($class.'::_init'))
 			{
 				call_user_func($class.'::_init');
 			}
 		}
+		static::$auto_initialize = null;
 	}
 }
+
+/* End of file autoloader.php */

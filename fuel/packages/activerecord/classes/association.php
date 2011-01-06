@@ -48,12 +48,12 @@ class Association {
 
 		if ( ! class_exists($this->dest_class))
 		{
-			$this->dest_class = '\\Model\\'.$this->dest_class;
+			$this->dest_class = 'Model_'.$this->dest_class;
 		}
 
 		if ( ! class_exists($this->source_class))
 		{
-			$this->source_class = '\\Model\\'.$this->source_class;
+			$this->source_class = 'Model_'.$this->source_class;
 		}
 
 		$this->options = $options;

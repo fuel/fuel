@@ -339,12 +339,12 @@ class Inflector {
 	 */
 	public static function tableize($class_name)
 	{
-		$class_name = static::denamespace(strtolower($class_name));
+		$class_name = static::denamespace($class_name);
 		if (strncasecmp($class_name, 'Model_', 6) === 0)
 		{
 			$class_name = substr($class_name, 6);
 		}
-		return static::pluralize(static::underscore($class_name));
+		return strtolower(static::pluralize(static::underscore($class_name)));
 	}
 
 	/**

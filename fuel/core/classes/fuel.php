@@ -75,13 +75,12 @@ class Fuel {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function init()
+	public static function init($config)
 	{
 		if (static::$initialized)
 		{
 			throw new \Exception("You can't initialize Fuel more than once.");
 		}
-		Autoloader::register();
 
 		static::$_paths = array(APPPATH, COREPATH);
 
@@ -91,8 +90,6 @@ class Fuel {
 
 		// Start up output buffering
 		ob_start();
-
-		$config = static::load(APPPATH.'config/config.php');
 
 		static::$profiling = isset($config['profiling']) ? $config['profiling'] : false;
 

@@ -177,7 +177,7 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		$path = rtrim(static::$path, '\\/').DS;
 		$section = static::identifier_to_path($section);
 
-		return \File::delete_dir($path.$section);
+		return \File::delete_dir($path.$section, true, false);
 	}
 
 	// ---------------------------------------------------------------------
