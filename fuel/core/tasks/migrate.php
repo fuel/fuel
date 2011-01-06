@@ -29,16 +29,20 @@ class Migrate {
 
 	public static function run()
 	{
+		// -v or --version
 		$version = \Cli::option('v', \Cli::option('version'));
 
-		if ($version > 0)
+		$result = $version > 0 ? \Migrate::version($version) : \Migrate::latest();
+
+		if ($result > 0)
 		{
-			\Migrate::version($version);
+			static::_update_version($result);
+			\Cli::write(\Cli::color('Migrated to version: ' . $result, 'green'));
 		}
 
 		else
 		{
-			\Migrate::current();
+			\Cli::write(\Cli::color('Migration failed...'));
 		}
 	}
 
@@ -78,9 +82,9 @@ class Migrate {
 		file_put_contents($path, $contents);
 	}
 
-	public static function install()
+	public static function current()
 	{
-		\Migrate::install();
+		\Migrate::current();
 	}
 
 	public static function help()

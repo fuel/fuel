@@ -68,17 +68,17 @@ class Migrate
 	}
 
 	/**
-	 * Installs the schema up to the last version
+	 * Set's the schema to the latest migration
 	 *
 	 * @access	public
-	 * @return	void	Outputs a report of the installation
+	 * @return	mixed	true if already latest, false if failed, int if upgraded
 	 */
-	public static function install()
+	public static function latest()
 	{
 		if ( ! $migrations = static::find_migrations())
 		{
-			logger(Fuel::L_ERROR, 'no_migrations_found');
-			return FALSE;
+			throw new Exception('no_migrations_found');
+			return false;
 		}
 
 		$last_migration = basename(end($migrations));
@@ -92,6 +92,19 @@ class Migrate
 	// --------------------------------------------------------------------
 
 	/**
+	 * Set's the schema to the migration version set in config
+	 *
+	 * @access	public
+	 * @return	mixed	true if already current, false if failed, int if upgraded
+	 */
+	public static function current()
+	{
+		return static::version(\Config::get('migration.version'));
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
 	 * Migrate to a schema version
 	 *
 	 * Calls each migration step required to get to the schema version of
@@ -99,7 +112,7 @@ class Migrate
 	 *
 	 * @access	public
 	 * @param $version integer	Target schema version
-	 * @return	mixed	TRUE if already latest, FALSE if failed, int if upgraded
+	 * @return	mixed	true if already latest, false if failed, int if upgraded
 	 */
 	public static function version($version)
 	{
@@ -132,8 +145,8 @@ class Migrate
 			// Only one migration per step is permitted
 			if (count($f) > 1)
 			{
-				logger(Fuel::L_ERROR, 'multiple_migrations_version');
-				return FALSE;
+				throw new Exception('multiple_migrations_version');
+				return false;
 			}
 
 			// Migration step not found
@@ -145,8 +158,8 @@ class Migrate
 
 				// If trying to migrate down but we're missing a step,
 				// something must definitely be wrong.
-				logger(Fuel::L_ERROR, 'migration_not_found');
-				return FALSE;
+				throw new Exception('migration_not_found');
+				return false;
 			}
 
 			$file = basename($f[0]);
@@ -160,8 +173,8 @@ class Migrate
 				// Cannot repeat a migration at different steps
 				if (in_array($match[1], $migrations))
 				{
-					logger(Fuel::L_ERROR, 'multiple_migrations_name');
-					return FALSE;
+					throw new Exception('multiple_migrations_name');
+					return false;
 				}
 
 				include $f[0];
@@ -169,22 +182,22 @@ class Migrate
 
 				if ( ! class_exists($class))
 				{
-					logger(Fuel::L_ERROR, 'migration_class_doesnt_exist');
-					return FALSE;
+					throw new Exception('migration_class_doesnt_exist');
+					return false;
 				}
 
 				if ( ! is_callable(array($class, 'up')) || !is_callable(array($class, 'down')))
 				{
-					logger(Fuel::L_ERROR, 'wrong_migration_interface');
-					return FALSE;
+					throw new Exception('wrong_migration_interface');
+					return false;
 				}
 
 				$migrations[] = $match[1];
 			}
 			else
 			{
-				logger(Fuel::L_ERROR, 'invalid_migration_filename');
-				return FALSE;
+				throw new Exception('invalid_migration_filename');
+				return false;
 			}
 		}
 
@@ -193,7 +206,7 @@ class Migrate
 		// If there is nothing to do, bitch and quit
 		if ($migrations === array())
 		{
-			return TRUE;
+			return true;
 		}
 
 		// Loop through the migrations
@@ -219,20 +232,7 @@ class Migrate
 	 * Set's the schema to the latest migration
 	 *
 	 * @access	public
-	 * @return	mixed	TRUE if already latest, FALSE if failed, int if upgraded
-	 */
-	public static function current()
-	{
-		return static::version(\Config::get('migration.version'));
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set's the schema to the latest migration
-	 *
-	 * @access	public
-	 * @return	mixed	TRUE if already latest, FALSE if failed, int if upgraded
+	 * @return	mixed	true if already latest, false if failed, int if upgraded
 	 */
 
 	protected static function find_migrations()
@@ -243,11 +243,11 @@ class Migrate
 
 		for ($i = 0; $i < $file_count; $i++)
 		{
-			// Mark wrongly formatted files as FALSE for later filtering
+			// Mark wrongly formatted files as false for later filtering
 			$name = basename($files[$i], '.php');
 			if ( ! preg_match('/^\d{3}_(\w+)$/', $name))
 			{
-				$files[$i] = FALSE;
+				$files[$i] = false;
 			}
 		}
 
