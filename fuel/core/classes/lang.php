@@ -54,6 +54,7 @@ class Lang {
 		}
 		else
 		{
+			$group = ($group === true) ? $file : $group;
 			if ( ! isset(static::$lines[$group]))
 			{
 				static::$lines[$group] = array();
