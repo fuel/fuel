@@ -72,9 +72,21 @@ var nav = {
 				"Configuration":	"classes/upload/config.html",
 				"Usage":			"classes/upload/usage.html"
 			},
-			"Uri":			"classes/uri.html",
+			"Uri":			"classes/uri.html"
 			// "Validation":	"todo.html",
 			// "View":			"todo.html"
+		},
+		"Packages": {
+			// "ActiveRecord":		"todo.html",
+			"Auth": {
+				"Introduction":		"packages/auth/intro.html",
+				"Usage":			"packages/auth/usage.html",
+				"Driver types":		"packages/auth/driver_types.html",
+				"SimpleAuth, Group &amp; Acl":		"packages/auth/simpleauth.html",
+				"Writing drivers":	"packages/auth/drivers.html"
+			}
+			// "Octane":			"todo.html",
+			// "Oil":				"todo.html",
 		}
 };
 
