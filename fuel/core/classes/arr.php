@@ -64,12 +64,24 @@ class Arr {
 	 */
 	public static function element($array, $key, $default = false)
 	{
-		if ( ! is_array($array) || ! array_key_exists($key, $array))
+		$key = explode('.', $key);
+		if(count($key) > 1)
 		{
-			return $default;
+			$array = $array[$key[0]];
+			unset($key[0]);
+			$key = implode('.', $key);
+			$array = static::element($array, $key, $default);
+			return $array;
 		}
-
-		return $array[$key];
+		else
+		{
+			$key = $key[0];
+			if ( ! is_array($array) || ! array_key_exists($key, $array))
+			{
+				return $default;
+			}
+			return $array[$key];
+		}
 	}
 
 	/**
@@ -166,6 +178,51 @@ class Arr {
 		}
 
 		return static::insert_after_key($original, $value, $key);
+	}
+	
+	/**
+	 * Sorts a multi-dimensional array by it's values.
+	 *
+	 * @access	public
+	 * @param	array	The array to fetch from
+	 * @param	string	The key to sort by
+	 * @param	string	The order (asc or desc)
+	 * @param	int		The php sort type flag
+	 * @return	array
+	 */
+	public static function sort($array, $key, $order = 'asc', $sort_flags = SORT_REGULAR)
+	{
+		if( ! is_array($array))
+		{
+			throw new \Exception('Arr::sort() - $array must be an array.');
+		}
+		
+		foreach($array as $k=>$v) 
+		{
+			$b[$k] = static::element($v, $key);
+		}
+		
+		switch($order)
+		{
+			case 'asc':
+				asort($b, $sort_flags);
+			break;
+			
+			case 'desc': 
+				arsort($b, $sort_flags);
+			break;
+			
+			default:
+				throw new \Exception('Arr::sort() - $order must be asc or desc.');
+			break;
+		}
+		
+		foreach($b as $key=>$val) 
+		{
+			$c[$key] = $array[$key];
+		}
+		
+		return $c;
 	}
 }
 
