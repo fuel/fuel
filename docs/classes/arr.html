@@ -160,14 +160,23 @@ Array
 					<td>
 						<pre class="php"><code>$person = array(
 	"name" => "Jack",
-	"age" => "21"		
+	"age" => "21",
+	"location" => array(
+		"city" => "Pittsburgh",
+		"state" => "PA",
+		"country" => "US"
+	)		
 );
 
 echo arr::element($person, "name", "Unknown Name");
 // Returns "Jack"
 
 echo arr::element($person, "job", "Unknown job");
-// Returns "Unknown job"</code></pre>
+// Returns "Unknown job"
+
+// This method can also dive into arrays by using a dot to separate between keys
+echo arr::element($person, "location.city", "Unknown City");
+// Returns "Pittsburgh"</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -391,6 +400,109 @@ Array
     [2] => Jill
 )
 </code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>sort($array, $key, $order = 'asc', $sort_flags = SORT_REGULAR)</h4>
+			<p>The <strong>sort</strong> method sorts a multi-dimensional array by it's values.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$array</kbd></th>
+								<td><i>Required</i></td>
+								<td>The array to sort</td>
+							</tr>
+							<tr>
+								<th><kbd>$key</kbd></th>
+								<td><i>Required</i></td>
+								<td>The key requested to sort by in $array.</td>
+							</tr>
+							<tr>
+								<th><kbd>$order</kbd></th>
+								<td><pre class="php"><code>'asc'</code></pre></td>
+								<td>The value to be returned if the requested key does not exist</td>
+							</tr>
+							<tr>
+								<th><kbd>$sort_flags</kbd></th>
+								<td><pre class="php"><code>SORT_REGULAR</code></pre></td>
+								<td>The php sort type flags (<a href="http://php.net/manual/en/function.sort.php">http://php.net/manual/en/function.sort.php</a>)</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>mixed</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>$data = array(
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'dog'
+			)
+		),
+	),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'fish'
+			)
+		),
+	),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'cat'
+			)
+		),
+	),
+);
+
+$data = arr::sort($data, 'info.pet.type');
+// Returns
+array(
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'cat'
+			)
+		),
+	),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'dog'
+			)
+		),
+	),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'fish'
+			)
+		),
+	),
+);</code></pre>
 					</td>
 				</tr>
 				</tbody>
