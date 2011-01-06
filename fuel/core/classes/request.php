@@ -29,6 +29,11 @@ class Request {
 	protected static $active = false;
 
 	/**
+	 * @var	array	search paths for the current active request
+	 */
+	public $paths = array();
+
+	/**
 	 * Generates a new request.  The request is then set to be the active
 	 * request.  If this is the first request, then save that as the main
 	 * request for the app.
@@ -214,11 +219,12 @@ class Request {
 		$route = $route === true ? \Route::parse($this->uri) : \Route::parse_match($uri);
 
 		// Attempts to register the first segment as a module
-		$mod_path = \Fuel::add_module($route['segments'][0], true);
+		$mod_path = \Fuel::add_module($route['segments'][0]);
 
 		if ($mod_path !== false)
 		{
 			$this->module = array_shift($route['segments']);
+			$this->paths = array($mod_path, $mod_path.'classes'.DS);
 		}
 
 		// Check for directory
