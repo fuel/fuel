@@ -177,12 +177,18 @@ class Cli {
 	 *
 	 * @param	string|array	$text	the text to output, or array of lines
 	 */
-	public static function write($text = '')
+	public static function write($text = '', $foreground = null, $background = null)
 	{
 		if (is_array($text))
 		{
 			$text = implode(PHP_EOL, $text);
 		}
+
+		if ($foreground OR $background)
+		{
+			$text = static::color($text, $foreground, $background);
+		}
+
 		fwrite(STDOUT, $text.PHP_EOL);
 	}
 
