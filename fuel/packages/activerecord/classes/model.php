@@ -54,7 +54,7 @@ class Model {
 	 * @param	srray		$options	the find options
 	 * @return	object		the result
 	 */
-	public static function find($id, $options = array())
+	public static function find($id = 'all', $options = array())
 	{
 		$instance = new static;
 		$results = $instance->run_find($id, $options);
