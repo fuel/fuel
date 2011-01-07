@@ -128,7 +128,6 @@ class Cache {
 	 *
 	 * @access	public
 	 * @param	mixed			The identifier of the cache, can be anything but empty
-	 * @return	mixed
 	 */
 	public static function delete($identifier)
 	{
