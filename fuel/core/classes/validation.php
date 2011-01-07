@@ -91,6 +91,36 @@ class Validation {
 	}
 
 	/**
+	 * Simpler alias for Validation->add()
+	 *
+	 * @param	string		Field name
+	 * @param	string		Field label
+	 * @param	string		Rules as a piped string
+	 * @return	Validation	$this to allow chaining
+	 */
+	public function add_field($name, $label, $rules = array())
+	{
+		$field = $this->add($name, $label);
+
+		$rules = explode('|', $rules);
+		foreach ($rules as $rule)
+		{
+			if (($pos = strpos($rule, '[')) !== false)
+			{
+				preg_match('#\[(.*)\]#', $rule, $param);
+				$rule = substr($rule, 0, $pos);
+				call_user_func_array(array($field, 'add_rule'), array_merge(array($rule), explode(',', $param[1])));
+			}
+			else
+			{
+				$field->add_rule($rule);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Add Callable
 	 *
 	 * Adds an object for which you don't need to write a full callback, just
