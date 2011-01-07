@@ -191,3 +191,5 @@ class Console {
 	}
 
 }
+
+/* End of file oil/classes/console.php */

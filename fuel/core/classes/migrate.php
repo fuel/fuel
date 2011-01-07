@@ -15,24 +15,6 @@
 namespace Fuel\Core;
 
 /**
- * Migration Interface
- *
- * All migrations should implement this, forces up() and down() and gives
- * access to the CI super-global.
- *
- * @package		Migrations
- * @author		Phil Sturgeon
- */
-abstract class Migration
-{
-	public abstract function up();
-
-	public abstract function down();
-}
-
-// ------------------------------------------------------------------------
-
-/**
  * Migrate Class
  *
  * @package		Fuel
@@ -44,11 +26,13 @@ class Migrate
 {
 	public static $version = 0;
 
+	protected static $prefix = '\\Fuel\Migrations\\';
+
 	public static function _init()
 	{
 		logger(Fuel::L_DEBUG, 'Migrate class initialized');
 
-		\Config::load('migration', true);
+		\Config::load('migrate', true);
 
 		\DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
 
@@ -85,8 +69,8 @@ class Migrate
 
 		// Calculate the last migration step from existing migration
 		// filenames and procceed to the standard version migration
-		$last_version = substr($last_migration, 0, 3);
-		return static::version(intval($last_version, 10));
+		$last_version = intval(substr($last_migration, 0, 3));
+		return static::version($last_version, 10);
 	}
 
 	// --------------------------------------------------------------------
@@ -99,7 +83,7 @@ class Migrate
 	 */
 	public static function current()
 	{
-		return static::version(\Config::get('migration.version'));
+		return static::version(\Config::get('migrate.version'));
 	}
 
 	// --------------------------------------------------------------------
@@ -116,6 +100,11 @@ class Migrate
 	 */
 	public static function version($version)
 	{
+		if (static::$version === $version)
+		{
+			return false;
+		}
+
 		$start = static::$version;
 		$stop = $version;
 
@@ -140,7 +129,7 @@ class Migrate
 		// But first let's make sure that everything is the way it should be
 		for ($i = $start; $i != $stop; $i += $step)
 		{
-			$f = glob(sprintf(\Config::get('migration.path') . '%03d_*.php', $i));
+			$f = glob(sprintf(\Config::get('migrate.path') . '%03d_*.php', $i));
 
 			// Only one migration per step is permitted
 			if (count($f) > 1)
@@ -178,7 +167,7 @@ class Migrate
 				}
 
 				include $f[0];
-				$class = '\\Migration_' . ucfirst($match[1]);
+				$class = static::$prefix . ucfirst($match[1]);
 
 				if ( ! class_exists($class))
 				{
@@ -214,14 +203,14 @@ class Migrate
 		{
 			logger(Fuel::L_INFO, 'Migrating to: ' . static::$version + $step);
 
-			$class = '\\Migration_' . ucfirst($migration);
+			$class = static::$prefix . ucfirst($migration);
 			call_user_func(array(new $class, $method));
 
 			static::$version += $step;
 			static::_update_schema_version(static::$version - $step, static::$version);
 		}
 
-		logger(Fuel::L_INFO, 'Migrated to '.static::$version.' successfully.');
+		logger(Fuel::L_INFO, 'Migrated to ' . static::$version.' successfully.');
 
 		return static::$version;
 	}
@@ -238,7 +227,7 @@ class Migrate
 	protected static function find_migrations()
 	{
 		// Load all *_*.php files in the migrations path
-		$files = glob(\Config::get('migration.path') . '*_*.php');
+		$files = glob(\Config::get('migrate.path') . '*_*.php');
 		$file_count = count($files);
 
 		for ($i = 0; $i < $file_count; $i++)
