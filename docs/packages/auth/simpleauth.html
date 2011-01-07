@@ -45,6 +45,62 @@
 
 		</section>
 
+		<section>
+			<h2>Usage example</h2>
+			<p>This is a small example to illustrate how to use Auth with the simpleauth driver</p>
+
+<p>This assumes that you have the following table created at your database.</p>
+			    <pre class="php"><code>
+CREATE TABLE `simpleusers` (
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	`username` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+	`password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+	`group` INT NOT NULL DEFAULT 1 ,
+	`email` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+	`last_login` VARCHAR( 25 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+	`login_hash` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+	`profile_fields` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ,
+	UNIQUE (
+		`username` ,
+		`email`
+	)
+)
+</code></pre>
+<p>This is a sample login action</p>
+			    <pre class="php"><code>
+public function action_login()
+{
+	$data = array();
+	if($_POST)
+	{
+	
+		// Ok, you pressed the submit button. let's go over
+
+		// first of all, let's get a auth object
+		$auth = Auth::instance();
+		
+		// check the credentials. This assumes that you have the previous table created
+		if($auth->login($_POST['username'],$_POST['password']))
+		{
+			// credentials ok, go right in
+			Output::redirect('success_page');
+		}
+		else
+		{
+			// Oops, no soup for you. try to login again.
+			// Set some values to repopulate the username field and give some error text back to the view
+
+			$data['username']    = $_POST['username'];
+			$data['login_error'] = 'Wrong username/password combo. Try again';
+		}
+	}
+
+	// Show the login form
+	echo View::factory('owl/login',$data);
+}
+				</code></pre>
+		</section>
+
 	</section>
 
 	<section id="footer">

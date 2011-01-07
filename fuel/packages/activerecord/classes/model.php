@@ -219,7 +219,7 @@ class Model {
 
 	/**
 	 * Holds the frozen state of the model object.  An object is frozen once
-	 * it has been destroyed.
+	 * it has been deleteed.
 	 *
 	 * @var	bool	the state
 	 */
@@ -482,7 +482,7 @@ class Model {
 	 *
 	 * <code>
 	 * $user = User::find(3);
-	 * $user->destroy();
+	 * $user->delete();
 	 * $user->is_frozen(); // Returns true
 	 * </code>
 	 *
@@ -746,46 +746,58 @@ class Model {
 	}
 
 	/**
-	 * Destroys (deletes) the current record and any associations, then freezes
+	 * deletes (deletes) the current record and any associations, then freezes
 	 * the record so it cannot be modified again.  This method will call 2
 	 * "hook" methods that you can use to doanything else you want.  They are as
 	 * follows:
 	 *
 	 * <ul>
-	 * <li>before_destroy() - runs before the record is destroyed</li>
-	 * <li>after_destroy() - runs after the record is destroyed</li>
+	 * <li>before_delete() - runs before the record is deleteed</li>
+	 * <li>after_delete() - runs after the record is deleteed</li>
 	 * </ul>
 	 *
 	 * Usage:
 	 *
 	 * <code>
 	 * $user = User::find(3);
-	 * $user->destroy();
+	 * $user->delete();
 	 * </code>
 	 *
 	 * @return	bool	the status of the operation
 	 */
-	public function destroy()
+	public function delete($id = null)
 	{
-		if (method_exists($this, 'before_destroy'))
+		// Not running statically, AND
+		if ( ! isset($this) AND empty($id))
 		{
-			$this->before_destroy();
+			throw new Exception('Which record should be deleted?', Exception::AttributeNotFound);
+			return false;
+		}
+
+		else
+		{
+			$obj = $id ? static::run_find($id) : $this;
+		}
+
+		if (method_exists($obj, 'before_delete'))
+		{
+			$obj->before_delete();
 		}
 		foreach ($this->associations as $name => $assoc)
 		{
-			$assoc->destroy($this);
+			$assoc->delete($obj);
 		}
 
 		DB::delete($this->table_name)
-				->where($this->primary_key, '=', $this->{$this->primary_key})
-				->limit(1)
-				->execute();
+			->where($this->primary_key, '=', $obj->{$this->primary_key})
+			->limit(1)
+			->execute();
 
 		$this->frozen = true;
 
-		if (method_exists($this, 'after_destroy'))
+		if (method_exists($obj, 'after_delete'))
 		{
-			$this->after_destroy();
+			$this->after_delete();
 		}
 		return true;
 	}
