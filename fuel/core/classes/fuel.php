@@ -372,13 +372,6 @@ class Fuel {
 					$ns = '\\'.ucfirst($name);
 					Autoloader::add_namespaces(array(
 						$ns					=> $path.'classes'.DS,
-						$ns.'\\Model'		=> $path.'classes'.DS.'model'.DS,
-						$ns.'\\Controller'	=> $path.'classes'.DS.'controller'.DS,
-					), true);
-					Autoloader::add_namespace_aliases(array(
-						$ns.'\\Controller'	=> 'Fuel\\App',
-						$ns.'\\Model'		=> 'Fuel\\App',
-						$ns					=> 'Fuel\\App',
 					), true);
 					break;
 				}
