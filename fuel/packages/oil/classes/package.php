@@ -168,8 +168,11 @@ class Package
 		\Cli::write('Downloading package: ' . $repo_url);
 
 		$package_folder = PKGPATH . $package;
-		
-		passthru('git clone ' . $repo_url . ' ' . $package_folder);
+
+		// Clone to the package path
+		passthru(static::$git . ' clone ' . $repo_url . ' ' . $package_folder);
+
+		passthru(static::$git .' add ' . $package_folder . '/');
 
 		\Cli::write('');
 	}
