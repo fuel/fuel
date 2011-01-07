@@ -32,7 +32,7 @@ namespace Auth;
 	)
 */
 
-class Auth_Login_SimpleAuth extends Auth_Login_Driver {
+class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 
 	public static function _init()
 	{
@@ -176,19 +176,19 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			->from('simpleusers')->execute();
 		if (empty($current_values))
 		{
-			throw new Auth_Exception('not_found');
+			throw new \Auth_Exception('not_found');
 		}
 
 		$update = array();
 		if (array_key_exists('username', $values))
 		{
-			throw new Auth_Exception('username_change_not_allowed');
+			throw new \Auth_Exception('username_change_not_allowed');
 		}
 		if (array_key_exists('password', $values))
 		{
 			if ($current_values->get('password') != $this->hash_password(@$values['old_password']))
 			{
-				throw new Auth_Exception('invalid_old_password');
+				throw new \Auth_Exception('invalid_old_password');
 			}
 
 			if ( ! empty($values['password']))
@@ -202,7 +202,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			$email = filter_var(trim($values['email']), FILTER_VALIDATE_EMAIL);
 			if ( ! $email)
 			{
-				throw new Auth_Exception('invalid_email');
+				throw new \Auth_Exception('invalid_email');
 			}
 			$update['email'] = $email;
 			unset($values['email']);
@@ -263,7 +263,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 	{
 		if (empty($username))
 		{
-			throw new Auth_Exception('cannot_delete_empty_username');
+			throw new \Auth_Exception('cannot_delete_empty_username');
 		}
 
 		$affected_rows = \DB::delete('simpleusers')
@@ -281,7 +281,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 			->from('simpleusers')->execute();
 		if (empty($user))
 		{
-			throw new Auth_Exception('not_found');
+			throw new \Auth_Exception('not_found');
 		}
 
 		// MUST GET CODE TO RESET THE PASSWORD TO SOMETHING RANDOM AND EMAIL IT
@@ -297,7 +297,7 @@ class Auth_Login_SimpleAuth extends Auth_Login_Driver {
 	{
 		if (empty($this->user))
 		{
-			throw new Auth_Exception('User not logged in, can\'t create login hash.');
+			throw new \Auth_Exception('User not logged in, can\'t create login hash.');
 		}
 
 		$last_login = \Date::factory()->get_timestamp();

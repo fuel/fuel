@@ -15,7 +15,7 @@
 namespace Auth;
 
 
-abstract class Auth_Group_Driver extends Auth_Driver {
+abstract class Auth_Group_Driver extends \Auth_Driver {
 
 	/**
 	 * @var	Auth_Driver
@@ -32,7 +32,7 @@ abstract class Auth_Group_Driver extends Auth_Driver {
 		// default driver id to driver name when not given
 		! array_key_exists('id', $config) && $config['id'] = $config['driver'];
 
-		$class = 'Auth\\Auth_Group_'.ucfirst($config['driver']);
+		$class = 'Auth_Group_'.ucfirst($config['driver']);
 		$driver = new $class($config);
 		static::$_instances[$driver->get_id()] = $driver;
 
@@ -43,7 +43,7 @@ abstract class Auth_Group_Driver extends Auth_Driver {
 				$custom = is_int($d)
 					? array('driver' => $custom)
 					: array_merge($custom, array('driver' => $d));
-				$class = 'Auth\\Auth_'.ucfirst($type).'_Driver';
+				$class = 'Auth_'.ucfirst($type).'_Driver';
 				$class::factory($custom);
 			}
 		}
@@ -68,7 +68,7 @@ abstract class Auth_Group_Driver extends Auth_Driver {
 		{
 			if ($driver === null)
 			{
-				foreach (Auth::acl(true) as $acl)
+				foreach (\Auth::acl(true) as $acl)
 				{
 					if ($acl->has_access($condition, $group))
 					{
@@ -79,11 +79,11 @@ abstract class Auth_Group_Driver extends Auth_Driver {
 				return false;
 			}
 
-			return Auth::acl($driver)->has_access($condition, $group);
+			return \Auth::acl($driver)->has_access($condition, $group);
 		}
 
 		// When no group was given check all logged in users
-		foreach (Auth::verified() as $v)
+		foreach (\Auth::verified() as $v)
 		{
 			// ... and check all those their groups
 			$gs = $v->get_user_groups();

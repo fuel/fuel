@@ -15,7 +15,7 @@
 namespace Auth;
 
 
-abstract class Auth_Login_Driver extends Auth_Driver {
+abstract class Auth_Login_Driver extends \Auth_Driver {
 
 	/**
 	 * @var	Auth_Driver
@@ -32,7 +32,7 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 		// default driver id to driver name when not given
 		! array_key_exists('id', $config) && $config['id'] = $config['driver'];
 
-		$class = 'Auth\\Auth_Login_'.ucfirst($config['driver']);
+		$class = 'Auth_Login_'.ucfirst($config['driver']);
 		$driver = new $class($config);
 		static::$_instances[$driver->get_id()] = $driver;
 
@@ -43,7 +43,7 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 				$custom = is_int($d)
 					? array('driver' => $custom)
 					: array_merge($custom, array('driver' => $d));
-				$class = 'Auth\\Auth_'.ucfirst($type).'_Driver';
+				$class = 'Auth_'.ucfirst($type).'_Driver';
 				$class::factory($custom);
 			}
 		}
@@ -71,11 +71,11 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 	{
 		if ( ! $this->perform_check())
 		{
-			Auth::_unregister_verified($this);
+			\Auth::_unregister_verified($this);
 			return false;
 		}
 
-		Auth::_register_verified($this);
+		\Auth::_register_verified($this);
 		return true;
 	}
 
@@ -120,7 +120,7 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 
 		if ($driver === null)
 		{
-			foreach (Auth::group(true) as $group)
+			foreach (\Auth::group(true) as $group)
 			{
 				if ($group->group($group, $user))
 				{
@@ -131,7 +131,7 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 			return false;
 		}
 
-		return Auth::group($driver)->member($group, $user);
+		return \Auth::group($driver)->member($group, $user);
 	}
 
 	/**
@@ -148,7 +148,7 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 
 		if ($driver === null)
 		{
-			foreach (Auth::acl(true) as $acl)
+			foreach (\Auth::acl(true) as $acl)
 			{
 				if ($acl->has_access($condition, $entity))
 				{
@@ -159,7 +159,7 @@ abstract class Auth_Login_Driver extends Auth_Driver {
 			return false;
 		}
 
-		return Auth::acl($driver)->has_access($condition, $entity);
+		return \Auth::acl($driver)->has_access($condition, $entity);
 	}
 
 	/**

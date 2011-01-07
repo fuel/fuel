@@ -93,11 +93,11 @@ class Auth {
 		// Driver must be set
 		if (empty($config['driver']) || ! is_string($config['driver']))
 		{
-			throw new Auth_Exception('No auth driver given.');
+			throw new \Auth_Exception('No auth driver given.');
 		}
 
 		// determine the driver to load
-		$driver = Auth_Login_Driver::factory($config);
+		$driver = \Auth_Login_Driver::factory($config);
 
 		// get the driver's cookie name
 		$id = $driver->get_id();
@@ -109,7 +109,7 @@ class Auth {
 			$class = get_class($driver);
 			if ( ! static::$_instances[$id] instanceof $class)
 			{
-				throw new Auth_Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
+				throw new \Auth_Exception('You can not instantiate two different login drivers using the same id "'.$id.'"');
 			}
 		}
 		else
@@ -238,6 +238,19 @@ class Auth {
 	}
 
 	/**
+	 * Logs out all current logged in drivers
+	 */
+	public static function logout()
+	{
+		foreach (static::$_verified as $v)
+		{
+			$v->logout();
+		}
+
+		static::$_verified = array();
+	}
+
+	/**
 	 * Register verified Login driver
 	 *
 	 * @param	Auth_Login_Driver
@@ -326,7 +339,7 @@ class Auth {
 			return static::_driver_check($type, $args[0], @$args[1], @$args[2]);
 		}
 
-		throw new Auth_Exception('Invalid method.');
+		throw new \Auth_Exception('Invalid method.');
 	}
 
 	/**
