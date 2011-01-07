@@ -259,6 +259,9 @@ HELP;
 
 		if ($mode == 'create_table' or $mode == 'add_fields')
 		{
+			// Store an aray of what fields are being added
+			$fields = array();
+			
 			$field_str = '';
 
 			foreach ($args as $arg)
@@ -266,13 +269,18 @@ HELP;
 				// Parse the argument for each field in a pattern of name:type[constraint]
 				preg_match('/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i', $arg, $matches);
 
-				$name = $matches[1];
+				$name = $fields[] = $matches[1];
 				$type = $matches[2];
 				$constraint = isset($matches[4]) ? $matches[4] : null;
 
 				if ($type === 'string')
 				{
 					$type = 'varchar';
+				}
+				
+				else if ($type === 'integer')
+				{
+					$type = 'int';
 				}
 
 				if (in_array($type, array('text', 'blob', 'datetime')))
@@ -297,6 +305,10 @@ HELP;
 		switch ($mode)
 		{
 			case 'create_table':
+
+				// Shove an id field at the start
+				$field_str = "\t\t\t'id' => array('type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
+
 				$up = <<<UP
 		\DBUtil::create_table('{$table}', array(
 $field_str

@@ -67,7 +67,7 @@ class Scaffold
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
-			throw new \Exception('Cannot open file: '. $filepath);
+			throw new Exception('Cannot open file: '. $filepath);
 		}
 
 		$result = @fwrite($handle, $data);
