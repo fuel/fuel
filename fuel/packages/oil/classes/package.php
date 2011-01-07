@@ -24,8 +24,17 @@ namespace Oil;
  */
 class Package
 {
-	public function install($package, $version = null)
+	protected static $protected = array('auth', 'activerecord', 'octane', 'oil');
+
+	public static function install($package = null)
 	{
+		// Make sure something is set
+		if ($package === null)
+		{
+			static::help();
+			return;
+		}
+
 		$config = \Config::load('package');
 
 		$version = \Cli::option('version', 'master');
@@ -33,7 +42,7 @@ class Package
 		// Check to see if this package is already installed
 		if (is_dir(PKGPATH . $package))
 		{
-			\Cli::write(\Cli::color('Package "' . $package . '" is already installed.', 'red'));
+			throw new Exception('Package "' . $package . '" is already installed.');
 			return;
 		}
 
@@ -74,8 +83,8 @@ class Package
 
 		else
 		{
-			\Cli::write('Package "' . $package . '" could not be found.');
-			return;
+			throw new Exception('Package "' . $package . '" could not be found.');
+			return false;
 		}
 
 		// Make the folder so we can extract the ZIP to it
@@ -104,21 +113,34 @@ class Package
 	}
 
 
-	public function uninstall($package)
+	public static function uninstall($package)
 	{
 		$package_folder = PKGPATH . $package;
 
 		// Check to see if this package is already installed
-		if ( ! is_dir($package_folder))
+		if (in_array($package, static::$protected))
 		{
-			\Cli::write(\Cli::color('Package "' . $package . '" is not installed.', 'red'));
-			return;
+			throw new Exception('Package "' . $package . '" cannot be uninstalled.');
+			return false;
 		}
 
-		\Cli::write('Uninstalling package "' . $package . '"');
+		// Check to see if this package is already installed
+		if ( ! is_dir($package_folder))
+		{
+			throw new Exception('Package "' . $package . '" is not installed.');
+			return false;
+		}
+
+		\Cli::write('Uninstalling package "' . $package . '"', 'green');
 
 		\File::delete_dir($package_folder);
 	}
+
+
+	public static function help()
+	{
+		\Cli::write('Help coming soon!', 'blue');
+	}
 }
 
-/* End of file model.php */
+/* End of file package.php */
