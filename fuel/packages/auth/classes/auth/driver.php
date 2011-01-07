@@ -31,7 +31,7 @@ abstract class Auth_Driver {
 
 	public static function factory(Array $config = array())
 	{
-		throw new Auth\Auth_Exception('Driver must have a factory method extension.');
+		throw new \Auth_Exception('Driver must have a factory method extension.');
 	}
 
 	/**
