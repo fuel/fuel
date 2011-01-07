@@ -66,20 +66,9 @@ class Cli
 
 				case 'r':
 				case 'refine':
+					$task = isset($args[2]) ? $args[2] : null;
 
-					if ( ! isset($args[2]) OR $args[2] == 'help')
-					{
-						Refine::help();
-						return;
-					}
-
-					if ( ! is_callable($args[2]))
-					{
-						throw new Exception(sprintf('Task "%s" does not exist.', $args[2]));
-						return;
-					}
-
-					call_user_func('Oil\Refine::run', $args[2], array_slice($args, 3));
+					call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
 				break;
 
 				case 'install':
@@ -137,4 +126,4 @@ HELP;
 	}
 }
 
-/* End of file cli.php */
+/* End of file oil/classes/cli.php */

@@ -29,48 +29,76 @@ class Migrate {
 
 	public static function run()
 	{
+		// -v or --version
 		$version = \Cli::option('v', \Cli::option('version'));
 
+		$run = false;
+
+		// Spoecific version
 		if ($version > 0)
 		{
-			\Migrate::version($version);
+			if (\Migrate::version($version) === false)
+			{
+				\Cli::write(\Cli::color('Already on migration: ' . $version .'.', 'light_red'));
+			}
+
+			else
+			{
+				static::_update_version($result);
+				\Cli::write(\Cli::color('Migrated to version: ' . $version .'.', 'green'));
+			}
 		}
 
+		// Just go to the latest
 		else
 		{
-			\Migrate::current();
+			if (($result = \Migrate::latest()) === false)
+			{
+				\Cli::write(\Cli::color('Already on latest migration.', 'light_red'));
+			}
+
+			else
+			{
+				static::_update_version($result);
+				\Cli::write(\Cli::color('Migrated to latest version: ' . $result .'.', 'green'));
+			}
 		}
+		
 	}
 
 	public static function up()
 	{
-		\Config::load('migration', true);
-		$version = \Config::get('migration.version') + 1;
+		\Config::load('migrate', true);
+		$version = \Config::get('migrate.version') + 1;
 
-		\Migrate::version($version);
-		static::_update_version($version);
+		if (\Migrate::version($version))
+		{
+			static::_update_version($version);
+		}
 	}
 
 	public static function down()
 	{
-		\Config::load('migration', true);
-		$version = \Config::get('migration.version') - 1;
+		\Config::load('migrate', true);
+		$version = \Config::get('migrate.version') - 1;
 
-		\Migrate::version($version);
-		static::_update_version($version);
+		if (\Migrate::version($version))
+		{
+			static::_update_version($version);
+		}
 	}
 
 	private static function _update_version($version)
 	{
 		$contents = '';
 		$path = '';
-		if (file_exists($path = APPPATH.'config'.DS.'migration.php'))
+		if (file_exists($path = APPPATH.'config'.DS.'migrate.php'))
 		{
 			$contents = file_get_contents($path);
 		}
-		elseif (file_exists($path = COREPATH.'config'.DS.'migration.php'))
+		elseif (file_exists($core_path = COREPATH.'config'.DS.'migrate.php'))
 		{
-			$contents = file_get_contents($path );
+			$contents = file_get_contents($core_path);
 		}
 
 		$contents = preg_replace("#('version'[ \t]+=>)[ \t]+([0-9]+),#i", "$1 $version,", $contents);
@@ -78,9 +106,9 @@ class Migrate {
 		file_put_contents($path, $contents);
 	}
 
-	public static function install()
+	public static function current()
 	{
-		\Migrate::install();
+		\Migrate::current();
 	}
 
 	public static function help()
@@ -97,7 +125,7 @@ Description:
 
 Examples:
     php oil r migrate
-    php oil r migrate:install
+    php oil r migrate:current
     php oil r migrate:up
     php oil r migrate:down
     php oil r migrate --version=10

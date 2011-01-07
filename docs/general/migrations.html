@@ -33,20 +33,22 @@
 		<h3>Creating a Migration</h3>
 
 		<p>Create a file in the app/migrations folder. The prefix should be an incremental count starting at 001, do not skip numbers and do not have two numbers that match. The first would be something like <kbd>app/migrations/001_example.php</kbd>.
-		<pre><code>&lt;?php
+		<pre><code>namespace Fuel\Migrations;
 
-
-
-class Migration_Example extends Migration {
+class Example {
 
     function up()
     {
-        DB::query('CREATE TABLE `articles` (`id` INT(11), `title` VARCHAR(100), `body` TEXT);')-&gt;execute();
+        \DBUtil::create_table('posts', array(
+			'id' => array('type' => 'int', 'constraint' => 5),
+			'title' => array('type' => 'varchar', 'constraint' => 100),
+			'body' => array('type' => 'text'),
+		), array('id'));
     }
 
     function down()
     {
-        DB::query('DROP TABLE `articles`')-&gt;execute();
+       \DBUtil::drop_table('posts');
     }
 }
 </code></pre>
@@ -63,7 +65,7 @@ class Migration_Example extends Migration {
 	<p>The oil command there uses refine to call the migrate task.</p>
 
 	<pre>$ php oil r migrate
-$ php oil r migrate:install
+$ php oil r migrate:current
 $ php oil r migrate:up
 $ php oil r migrate:down
 $ php oil r migrate --version=10</pre>

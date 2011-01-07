@@ -75,7 +75,7 @@ class Scaffold
 		// Write $somecontent to our opened file.
 		if ($result === FALSE)
 		{
-			throw new \Exception('Cannot write to file: '. $filepath);
+			throw new Exception('Cannot write to file: '. $filepath);
 		}
 
 		@fclose($handle);
@@ -87,4 +87,4 @@ class Scaffold
 
 }
 
-/* End of file scaffold.php */
+/* End of file oil/classes/scaffold.php */

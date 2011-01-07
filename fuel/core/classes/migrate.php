@@ -15,24 +15,6 @@
 namespace Fuel\Core;
 
 /**
- * Migration Interface
- *
- * All migrations should implement this, forces up() and down() and gives
- * access to the CI super-global.
- *
- * @package		Migrations
- * @author		Phil Sturgeon
- */
-abstract class Migration
-{
-	public abstract function up();
-
-	public abstract function down();
-}
-
-// ------------------------------------------------------------------------
-
-/**
  * Migrate Class
  *
  * @package		Fuel
@@ -44,11 +26,13 @@ class Migrate
 {
 	public static $version = 0;
 
+	protected static $prefix = '\\Fuel\Migrations\\';
+
 	public static function _init()
 	{
 		logger(Fuel::L_DEBUG, 'Migrate class initialized');
 
-		\Config::load('migration', true);
+		\Config::load('migrate', true);
 
 		\DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
 
@@ -68,25 +52,38 @@ class Migrate
 	}
 
 	/**
-	 * Installs the schema up to the last version
+	 * Set's the schema to the latest migration
 	 *
 	 * @access	public
-	 * @return	void	Outputs a report of the installation
+	 * @return	mixed	true if already latest, false if failed, int if upgraded
 	 */
-	public static function install()
+	public static function latest()
 	{
 		if ( ! $migrations = static::find_migrations())
 		{
-			logger(Fuel::L_ERROR, 'no_migrations_found');
-			return FALSE;
+			throw new Exception('no_migrations_found');
+			return false;
 		}
 
 		$last_migration = basename(end($migrations));
 
 		// Calculate the last migration step from existing migration
 		// filenames and procceed to the standard version migration
-		$last_version = substr($last_migration, 0, 3);
-		return static::version(intval($last_version, 10));
+		$last_version = intval(substr($last_migration, 0, 3));
+		return static::version($last_version, 10);
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set's the schema to the migration version set in config
+	 *
+	 * @access	public
+	 * @return	mixed	true if already current, false if failed, int if upgraded
+	 */
+	public static function current()
+	{
+		return static::version(\Config::get('migrate.version'));
 	}
 
 	// --------------------------------------------------------------------
@@ -99,10 +96,15 @@ class Migrate
 	 *
 	 * @access	public
 	 * @param $version integer	Target schema version
-	 * @return	mixed	TRUE if already latest, FALSE if failed, int if upgraded
+	 * @return	mixed	true if already latest, false if failed, int if upgraded
 	 */
 	public static function version($version)
 	{
+		if (static::$version === $version)
+		{
+			return false;
+		}
+
 		$start = static::$version;
 		$stop = $version;
 
@@ -127,13 +129,13 @@ class Migrate
 		// But first let's make sure that everything is the way it should be
 		for ($i = $start; $i != $stop; $i += $step)
 		{
-			$f = glob(sprintf(\Config::get('migration.path') . '%03d_*.php', $i));
+			$f = glob(sprintf(\Config::get('migrate.path') . '%03d_*.php', $i));
 
 			// Only one migration per step is permitted
 			if (count($f) > 1)
 			{
-				logger(Fuel::L_ERROR, 'multiple_migrations_version');
-				return FALSE;
+				throw new Exception('multiple_migrations_version');
+				return false;
 			}
 
 			// Migration step not found
@@ -145,8 +147,8 @@ class Migrate
 
 				// If trying to migrate down but we're missing a step,
 				// something must definitely be wrong.
-				logger(Fuel::L_ERROR, 'migration_not_found');
-				return FALSE;
+				throw new Exception('migration_not_found');
+				return false;
 			}
 
 			$file = basename($f[0]);
@@ -160,31 +162,31 @@ class Migrate
 				// Cannot repeat a migration at different steps
 				if (in_array($match[1], $migrations))
 				{
-					logger(Fuel::L_ERROR, 'multiple_migrations_name');
-					return FALSE;
+					throw new Exception('multiple_migrations_name');
+					return false;
 				}
 
 				include $f[0];
-				$class = '\\Migration_' . ucfirst($match[1]);
+				$class = static::$prefix . ucfirst($match[1]);
 
 				if ( ! class_exists($class))
 				{
-					logger(Fuel::L_ERROR, 'migration_class_doesnt_exist');
-					return FALSE;
+					throw new Exception('migration_class_doesnt_exist');
+					return false;
 				}
 
 				if ( ! is_callable(array($class, 'up')) || !is_callable(array($class, 'down')))
 				{
-					logger(Fuel::L_ERROR, 'wrong_migration_interface');
-					return FALSE;
+					throw new Exception('wrong_migration_interface');
+					return false;
 				}
 
 				$migrations[] = $match[1];
 			}
 			else
 			{
-				logger(Fuel::L_ERROR, 'invalid_migration_filename');
-				return FALSE;
+				throw new Exception('invalid_migration_filename');
+				return false;
 			}
 		}
 
@@ -193,7 +195,7 @@ class Migrate
 		// If there is nothing to do, bitch and quit
 		if ($migrations === array())
 		{
-			return TRUE;
+			return true;
 		}
 
 		// Loop through the migrations
@@ -201,14 +203,14 @@ class Migrate
 		{
 			logger(Fuel::L_INFO, 'Migrating to: ' . static::$version + $step);
 
-			$class = '\\Migration_' . ucfirst($migration);
+			$class = static::$prefix . ucfirst($migration);
 			call_user_func(array(new $class, $method));
 
 			static::$version += $step;
 			static::_update_schema_version(static::$version - $step, static::$version);
 		}
 
-		logger(Fuel::L_INFO, 'Migrated to '.static::$version.' successfully.');
+		logger(Fuel::L_INFO, 'Migrated to ' . static::$version.' successfully.');
 
 		return static::$version;
 	}
@@ -219,35 +221,22 @@ class Migrate
 	 * Set's the schema to the latest migration
 	 *
 	 * @access	public
-	 * @return	mixed	TRUE if already latest, FALSE if failed, int if upgraded
-	 */
-	public static function current()
-	{
-		return static::version(\Config::get('migration.version'));
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set's the schema to the latest migration
-	 *
-	 * @access	public
-	 * @return	mixed	TRUE if already latest, FALSE if failed, int if upgraded
+	 * @return	mixed	true if already latest, false if failed, int if upgraded
 	 */
 
 	protected static function find_migrations()
 	{
 		// Load all *_*.php files in the migrations path
-		$files = glob(\Config::get('migration.path') . '*_*.php');
+		$files = glob(\Config::get('migrate.path') . '*_*.php');
 		$file_count = count($files);
 
 		for ($i = 0; $i < $file_count; $i++)
 		{
-			// Mark wrongly formatted files as FALSE for later filtering
+			// Mark wrongly formatted files as false for later filtering
 			$name = basename($files[$i], '.php');
 			if ( ! preg_match('/^\d{3}_(\w+)$/', $name))
 			{
-				$files[$i] = FALSE;
+				$files[$i] = false;
 			}
 		}
 

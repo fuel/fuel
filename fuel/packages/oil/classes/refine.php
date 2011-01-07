@@ -26,14 +26,22 @@ class Refine
 {
 	public static function run($task, $args)
 	{
+		// Make sure something is set
+		if ($task === null OR $task === 'help')
+		{
+			static::help();
+			return;
+		}
+
 		// Just call and run() or did they have a specific method in mind?
 		list($task, $method)=array_pad(explode(':', $task), 2, 'run');
 
 		$task = ucfirst(strtolower($task));
 
+		// Find the task
 		if ( ! $file = \Fuel::find_file('tasks', $task))
 		{
-			throw new Exception('Well that didnt work...');
+			throw new Exception(sprintf('Task "%s" does not exist.', $task));
 			return;
 		}
 
@@ -74,4 +82,4 @@ HELP;
 	}
 }
 
-/* End of file refine.php */
+/* End of file oil/classes/refine.php */
