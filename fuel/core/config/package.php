@@ -20,8 +20,8 @@ return array(
 	 * Set this to false or remove if you using mod_rewrite.
 	 */
 	'sources' => array(
-		'http://github.com/fuel',
-		'http://github.com/philsturgeon',
+		'github.com/fuel',
+		'github.com/philsturgeon',
 	),
 
 );
