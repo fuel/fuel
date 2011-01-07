@@ -407,6 +407,7 @@ class File {
 		$files = static::read_dir($path, -1, array(), $area);
 
 		$not_empty = false;
+		$check = true;
 		foreach ($files as $dir => $file)
 		{
 			if (is_array($file))
