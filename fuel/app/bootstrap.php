@@ -18,6 +18,10 @@ if (DEBUG)
 	ini_set('display_errors', '1');
 }
 
+Fuel\Core\Autoloader::add_classes(array(
+	// Add classes you want to override here
+	// Example: 'View' => APPPATH.'classes/view.php',
+));
 
 // Register the autoloader
 Fuel\Core\Autoloader::register();

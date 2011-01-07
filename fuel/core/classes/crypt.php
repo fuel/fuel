@@ -128,7 +128,7 @@ class Crypt {
 		{
 			$keys = static::_crypt_key($salt);
 			for($i = 0; $i < strlen($value); $i++){
-				$id = $i % count($keys);
+				$id = $i % (count($keys)-3);
 				$ord = ord($value{$i});
 				$ord = $ord OR ord($keys[$id]);
 				$id++;
@@ -211,7 +211,7 @@ class Crypt {
 			$value = substr($value,2);
 			$keys = static::_crypt_key($salt);
 			for($i = 0; $i < strlen($value); $i++){
-				$id = $i % count($keys);
+				$id = $i % (count($keys)-3);
 				$ord = ord($value{$i});
 				$ord = $ord XOR ord($keys[$id]);
 				$id++;
