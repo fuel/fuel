@@ -68,6 +68,7 @@ Fuel\Core\Autoloader::add_classes(array(
 
 	'Fuel\\Core\\Database'						=> COREPATH.'classes/database.php',
 	'Fuel\\Core\\Database_Exception'			=> COREPATH.'classes/database/exception.php',
+	'Fuel\\Core\\Database_Expression'			=> COREPATH.'classes/database/expression.php',
 	'Fuel\\Core\\Database_Query'				=> COREPATH.'classes/database/query.php',
 	'Fuel\\Core\\Database_Query_Builder'		=> COREPATH.'classes/database/query/builder.php',
 	'Fuel\\Core\\Database_Query_Builder_Insert'	=> COREPATH.'classes/database/query/builder/insert.php',

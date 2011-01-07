@@ -12,8 +12,7 @@ class Controller_Welcome extends Controller {
 	public function action_404()
 	{
 		// Set a HTTP 404 output header
-		Output::set_header('Status', '404 Not Found');
-
+		Output::$status = 404;
 		$this->render('welcome/404');
 	}
 

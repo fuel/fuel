@@ -1,12 +1,6 @@
 <?php echo '<?php' ?>
 
-
-<?php if (isset($model)): ?>
-
-use \Model\<?php echo ucfirst($model); ?>;
-<?php endif; ?>
-
-class Controller_<?php echo ucfirst($name); ?> extends Controller\Template {
+class Controller_<?php echo ucfirst($name); ?> extends Controller_Template {
 	
 <?php foreach ($actions as $action): ?>
 	public function action_<?php echo $action['name']; ?>(<?php echo $action['params']; ?>)
