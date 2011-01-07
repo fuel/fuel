@@ -14,7 +14,7 @@
 
 
 Fuel\Core\Autoloader::add_classes(array(
-	'Fuel\\Octane\\Tests'		=> __DIR__.'/classes/tests',
+	'Fuel\\Octane\\Tests'		=> __DIR__.'/classes/tests.php',
 	'Fuel\\Octane\\TestCase'	=> __DIR__.'/classes/testcase.php',
 ));
 
