@@ -58,6 +58,7 @@ class Cli
 						default:
 							Generate::help();
 					}
+
 				break;
 
 				case 'c':
@@ -71,10 +72,24 @@ class Cli
 					call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
 				break;
 
-				case 'install':
-				case 'uninstall':
-					call_user_func('Oil\Package::'.$args[1], $args[2]);
+				case 'p':
+				case 'package':
+
+					switch ($args[2])
+					{
+						case 'install':
+						case 'uninstall':
+							call_user_func_array('Oil\Package::'.$args[2], array_slice($args, 3));
+						break;
+
+
+						default:
+							Package::help();
+					}
+
 				break;
+			
+				
 
 				case '-v':
 				case '--version':
