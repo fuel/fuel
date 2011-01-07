@@ -35,10 +35,7 @@ class Validation {
 		if ( ! $fieldset instanceof Fieldset)
 		{
 			$fieldset = (string) $fieldset;
-			if ( ! ($fieldset = \Fieldset::instance($fieldset)))
-			{
-				$fieldset = \Fieldset::factory($fieldset);
-			}
+			($set = \Fieldset::instance($fieldset)) && $fieldset = $set;
 		}
 		return new Validation($fieldset);
 	}
@@ -74,8 +71,18 @@ class Validation {
 	 */
 	protected $callables = array();
 
-	protected function __construct(Fieldset $fieldset)
+	/**
+	 * @var	array	contains validation error messages, will overwrite those from lang files
+	 */
+	protected $error_messages = array();
+
+	protected function __construct($fieldset)
 	{
+		if ( ! $fieldset instanceof Fieldset)
+		{
+			$fieldset = Fieldset::factory($fieldset, array('validation_instance' => $this));
+		}
+
 		$this->fieldset = $fieldset;
 		$this->callables = array($this);
 	}
@@ -88,6 +95,70 @@ class Validation {
 	public function fieldset()
 	{
 		return $this->fieldset;
+	}
+
+	/**
+	 * Simpler alias for Validation->add()
+	 *
+	 * @param	string		Field name
+	 * @param	string		Field label
+	 * @param	string		Rules as a piped string
+	 * @return	Validation	$this to allow chaining
+	 */
+	public function add_field($name, $label, $rules = array())
+	{
+		$field = $this->add($name, $label);
+
+		$rules = explode('|', $rules);
+		foreach ($rules as $rule)
+		{
+			if (($pos = strpos($rule, '[')) !== false)
+			{
+				preg_match('#\[(.*)\]#', $rule, $param);
+				$rule = substr($rule, 0, $pos);
+				call_user_func_array(array($field, 'add_rule'), array_merge(array($rule), explode(',', $param[1])));
+			}
+			else
+			{
+				$field->add_rule($rule);
+			}
+		}
+
+		return $this;
+	}
+
+	/**
+	 * This will overwrite lang file messages for this validation instance
+	 *
+	 * @param	string
+	 * @param	string
+	 */
+	public function set_message($rule, $message)
+	{
+		if ($message !== null)
+		{
+			$this->error_messages[$rule] = $message;
+		}
+		else
+		{
+			unset($this->error_messages[$rule]);
+		}
+	}
+
+	/**
+	 * Fetches a specific error message for this validation instance
+	 *
+	 * @param	string
+	 * @return	string
+	 */
+	public function get_message($rule)
+	{
+		if ( ! array_key_exists($rule, $this->error_messages))
+		{
+			return false;
+		}
+
+		return $this->error_messages[$rule];
 	}
 
 	/**

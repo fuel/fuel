@@ -115,6 +115,15 @@ class Fieldset
 	{
 		$this->name = (string) $name;
 		$this->config = $config;
+
+		if (isset($config['validation_instance']) && $config['validation_instance'] instanceof Validation)
+		{
+			$this->validation = $config['validation_instance'];
+		}
+		if (isset($config['form_instance']) && $config['form_instance'] instanceof Form)
+		{
+			$this->validation = $config['form_instance'];
+		}
 	}
 
 	/**
