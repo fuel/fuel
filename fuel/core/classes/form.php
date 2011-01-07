@@ -38,10 +38,7 @@ class Form {
 		if ( ! $fieldset instanceof Fieldset)
 		{
 			$fieldset = (string) $fieldset;
-			if ( ! ($fieldset = \Fieldset::instance($fieldset)))
-			{
-				$fieldset = \Fieldset::factory($fieldset, $config);
-			}
+			($set = \Fieldset::instance($fieldset)) && $fieldset = $set;
 		}
 		return new Form($fieldset);
 	}
@@ -563,8 +560,13 @@ class Form {
 	 */
 	protected $fieldset;
 
-	protected function __construct(Fieldset $fieldset)
+	protected function __construct($fieldset)
 	{
+		if ( ! $fieldset instanceof Fieldset)
+		{
+			$fieldset = Fieldset::factory($fieldset, array('validation_instance' => $this));
+		}
+
 		$this->fieldset = $fieldset;
 	}
 

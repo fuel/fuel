@@ -35,10 +35,7 @@ class Validation {
 		if ( ! $fieldset instanceof Fieldset)
 		{
 			$fieldset = (string) $fieldset;
-			if ( ! ($fieldset = \Fieldset::instance($fieldset)))
-			{
-				$fieldset = \Fieldset::factory($fieldset);
-			}
+			($set = \Fieldset::instance($fieldset)) && $fieldset = $set;
 		}
 		return new Validation($fieldset);
 	}
@@ -74,8 +71,18 @@ class Validation {
 	 */
 	protected $callables = array();
 
-	protected function __construct(Fieldset $fieldset)
+	/**
+	 * @var	array	contains validation error messages, will overwrite those from lang files
+	 */
+	protected $error_messages = array();
+
+	protected function __construct($fieldset)
 	{
+		if ( ! $fieldset instanceof Fieldset)
+		{
+			$fieldset = Fieldset::factory($fieldset, array('validation_instance' => $this));
+		}
+
 		$this->fieldset = $fieldset;
 		$this->callables = array($this);
 	}
@@ -118,6 +125,40 @@ class Validation {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * This will overwrite lang file messages for this validation instance
+	 *
+	 * @param	string
+	 * @param	string
+	 */
+	public function set_message($rule, $message)
+	{
+		if ($message !== null)
+		{
+			$this->error_messages[$rule] = $message;
+		}
+		else
+		{
+			unset($this->error_messages[$rule]);
+		}
+	}
+
+	/**
+	 * Fetches a specific error message for this validation instance
+	 *
+	 * @param	string
+	 * @return	string
+	 */
+	public function get_message($rule)
+	{
+		if ( ! array_key_exists($rule, $this->error_messages))
+		{
+			return false;
+		}
+
+		return $this->error_messages[$rule];
 	}
 
 	/**

@@ -87,9 +87,13 @@ class Validation_Error extends \Exception {
 	 */
 	public function get_message($msg = false)
 	{
-		$msg = $msg === false
+		if ($msg === false)
+		{
+			$msg = $this->field->fieldset()->validation()->get_message($this->callback);
+			$msg = $msg === false
 				? __('validation.'.$this->callback) ?: __('validation.'.Arr::element(explode(':', $this->callback), 0))
 				: $msg;
+		}
 		if ($msg == false)
 		{
 			return 'Validation rule '.$this->callback.' failed for '.$this->field->label;
