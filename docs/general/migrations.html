@@ -39,12 +39,16 @@ class Example {
 
     function up()
     {
-        DB::query('CREATE TABLE `articles` (`id` INT(11), `title` VARCHAR(100), `body` TEXT);')-&gt;execute();
+        \DBUtil::create_table('posts', array(
+			'id' => array('type' => 'int', 'constraint' => 5),
+			'title' => array('type' => 'varchar', 'constraint' => 100),
+			'body' => array('type' => 'text'),
+		), array('id'));
     }
 
     function down()
     {
-        DB::query('DROP TABLE `articles`')-&gt;execute();
+       \DBUtil::drop_table('posts');
     }
 }
 </code></pre>

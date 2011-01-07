@@ -298,19 +298,19 @@ HELP;
 		{
 			case 'create_table':
 				$up = <<<UP
-		DBUtil::create_table('{$table}', array(
+		\DBUtil::create_table('{$table}', array(
 $field_str
 		), array('id'));
 UP;
 
 				$down = <<<DOWN
-		DBUtil::drop_table('{$table}');
+		\DBUtil::drop_table('{$table}');
 DOWN;
 			break;
 
 			case 'drop_table':
 				$up = <<<UP
-		DBUtil::drop_table('{$table}');
+		\DBUtil::drop_table('{$table}');
 UP;
 				$down = '';
 			break;
