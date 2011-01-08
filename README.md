@@ -2,6 +2,7 @@
 
 * [Website](http://fuelphp.com/)
 * [Documentation](http://fuelphp.com/docs)
+* [Bugtracker & feature requests](http://dev.fuelphp.com)
 * Version: 1.0.0-beta1
 
 ## Description
