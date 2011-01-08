@@ -187,7 +187,7 @@ class Fieldset_Field
 		{
 			if (is_callable($callback))
 			{
-				$this->rules = array($callback, $args);
+				$this->rules[] = array($callback, $args);
 			}
 			else
 			{
