@@ -1,18 +1,20 @@
 #Fuel
 
-Fuel is a fast, lightweight PHP5.3 framework.  In an age where frameworks are a dime a dozen, We believe that Fuel will stand out in the crowd.  It will do this by combining all the things you love about the great frameworks out there, while getting rid of the bad.
+* [Website](http://fuelphp.com/)
+* [Documentation](http://fuelphp.com/docs)
+* Version: 1.0.0-beta1
 
-Fuel is very early in its development.  We have big plans for Fuel, but I want your input.  We want Fuel to be all about the community.  After all, you are the people that use it.  Let us know what you would like to see in Fuel at [http://community.fuelphp.com/fuelphp](http://community.fuelphp.com/fuelphp).
+## Description
+
+Fuel is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a dime a dozen, We believe that Fuel will stand out in the crowd.  It will do this by combining all the things you love about the great frameworks out there, while getting rid of the bad.
+
+Let us know what you would like to see in Fuel at [http://community.fuelphp.com/fuelphp](http://community.fuelphp.com/fuelphp).
 
 ##Development Team
 
 * Dan Horrigan - Lead Developer ([http://dhorrigan.com](http://dhorrigan.com))
 * Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
 * Jelmer Schreuder - Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
-
-##Development Branch
-
-This is the development branch.  The code contained in this branch may not be stable, and should not be used in a production environment.
 
 ##Requirements
 
