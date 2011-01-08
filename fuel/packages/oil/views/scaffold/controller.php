@@ -7,6 +7,7 @@ class Controller_<?php echo ucfirst($plural); ?> extends Controller_Template {
 	{
 <?php echo $action['code'].PHP_EOL; ?>
 	}
+	
 <?php endforeach; ?>
 	
 }

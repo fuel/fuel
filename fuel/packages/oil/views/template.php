@@ -17,6 +17,11 @@
 		<h1><?php echo $title; ?></h1>
 
 		<div id="content">
+
+			<?php if (Session::get_flash('notice')): ?>
+				<p><?php echo Session::get_flash('notice'); ?>
+			<?php endif; ?>
+
 			<?php echo $content; ?>
 		</div>
 	</div>

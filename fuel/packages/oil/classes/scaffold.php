@@ -59,8 +59,13 @@ class Scaffold
 			),
 			array(
 				'name'		=> 'view',
-				'params'	=> '$id = 0',
+				'params'	=> '$id = null',
 				'code'		=> \View::factory('scaffold/actions/view', $data),
+			),
+			array(
+				'name'		=> 'delete',
+				'params'	=> '$id = null',
+				'code'		=> \View::factory('scaffold/actions/delete', $data),
 			),
 		);
 
@@ -70,6 +75,13 @@ class Scaffold
 			\Cli::write('Created controller: ' . \Fuel::clean_path($filepath));
 		}
 
+		// Add the default template if it doesnt exist
+		if ( ! file_exists($app_template = APPPATH . 'views/template.php'))
+		{
+			copy(PKGPATH . 'oil/views/template.php', $app_template);
+			chmod($app_template, 0666);
+		}
+		
 		// Create view folder if not already there
 		if ( ! is_dir($view_folder = APPPATH . 'views/' . $plural . '/'))
 		{
@@ -77,7 +89,7 @@ class Scaffold
 		}
 
 		// Create each of the views
-		foreach (array('index', 'view', 'create', 'edit', 'delete') as $view)
+		foreach (array('index', 'view', 'create', 'edit') as $view)
 		{
 			static::write($view_file = $view_folder . $view . '.php', \View::factory('scaffold/views/'.$view, $data));
 
