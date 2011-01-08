@@ -75,7 +75,7 @@ CONTROLLER;
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			\Cli::write('Created controller '.$singular);
+			\Cli::write('Created controller: ' . $filepath);
 		}
 	}
 
@@ -234,7 +234,7 @@ HELP;
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
-			throw new \Exception('Cannot open file: '. $filepath);
+			throw new Exception('Cannot open file: '. $filepath);
 		}
 
 		$result = @fwrite($handle, $data);
@@ -242,7 +242,7 @@ HELP;
 		// Write $somecontent to our opened file.
 		if ($result === FALSE)
 		{
-			throw new \Exception('Cannot write to file: '. $filepath);
+			throw new Exception('Cannot write to file: '. $filepath);
 		}
 
 		@fclose($handle);

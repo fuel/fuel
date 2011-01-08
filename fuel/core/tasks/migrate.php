@@ -39,13 +39,13 @@ class Migrate {
 		{
 			if (\Migrate::version($version) === false)
 			{
-				\Cli::write(\Cli::color('Already on migration: ' . $version .'.', 'light_red'));
+				throw new \Oil\Exception('Already on migration: ' . $version .'.');
 			}
 
 			else
 			{
 				static::_update_version($result);
-				\Cli::write(\Cli::color('Migrated to version: ' . $version .'.', 'green'));
+				\Cli::write('Migrated to version: ' . $version .'.', 'green');
 			}
 		}
 
@@ -54,13 +54,13 @@ class Migrate {
 		{
 			if (($result = \Migrate::latest()) === false)
 			{
-				\Cli::write(\Cli::color('Already on latest migration.', 'light_red'));
+				throw new \Oil\Exception('Already on latest migration.');
 			}
 
 			else
 			{
 				static::_update_version($result);
-				\Cli::write(\Cli::color('Migrated to latest version: ' . $result .'.', 'green'));
+				\Cli::write('Migrated to latest version: ' . $result .'.', 'green');
 			}
 		}
 		
@@ -74,6 +74,7 @@ class Migrate {
 		if (\Migrate::version($version))
 		{
 			static::_update_version($version);
+			\Cli::write('Migrated to version: ' . $version .'.', 'green');
 		}
 	}
 
@@ -85,6 +86,7 @@ class Migrate {
 		if (\Migrate::version($version))
 		{
 			static::_update_version($version);
+			\Cli::write('Migrated to version: ' . $version .'.', 'green');
 		}
 	}
 

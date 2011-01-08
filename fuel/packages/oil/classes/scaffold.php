@@ -26,48 +26,70 @@ class Scaffold
 {
 	public function generate($args)
 	{
-		$g = new Generate;
+		// Do this first as there is the largest chance of error here
+//		Generate::model($args);
+		
+		// Go through all arguments after the first and make them into field arrays
+		$fields = array();
+		foreach (array_slice($args, 1) as $arg)
+		{
+			// Parse the argument for each field in a pattern of name:type[constraint]
+			preg_match('/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i', $arg, $matches);
 
-		$g->model($args);
+			$fields[] = array(
+				'name' => strtolower($matches[1]),
+				'type' => $matches[2],
+				'constraint' => isset($matches[4]) ? $matches[4] : null
+			);
+		}
 
-		$singular = strtolower(array_shift($args));
-		$model_name = ucfirst($singular);
-		$plural = \Inflector::pluralize($singular);
+		$data['singular'] = $singular = strtolower(array_shift($args));
+		$data['model'] = $model_name = 'Model_' . ucfirst($singular);
+		$data['plural'] = $plural = \Inflector::pluralize($singular);
+		$data['fields'] = $fields;
 
-		$filepath = APPPATH.'classes/controller/'.$plural.'.php';
-		$controller = new \View('scaffold/controller');
-
-		$controller->name = $plural;
-
-		$controller->model = $model_name;
+		$filepath = APPPATH . 'classes/controller/' . $plural . '.php';
+		$controller = \View::factory('scaffold/controller', $data);
 
 		$controller->actions = array(
 			array(
 				'name'		=> 'index',
 				'params'	=> '',
-				'code'		=> '		$this->template->title = "'.ucfirst($plural).'";
-		$this->template->'.strtolower($plural).' = '.$model_name.'::find(\'all\');',
+				'code'		=> \View::factory('scaffold/actions/index', $data),
 			),
 			array(
 				'name'		=> 'view',
 				'params'	=> '$id = 0',
-				'code'		=> '		$this->template->title = "'.ucfirst($plural).'";
-		$this->template->'.strtolower($singular).' = '.$model_name.'::find($id);',
+				'code'		=> \View::factory('scaffold/actions/view', $data),
 			),
 		);
 
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			\Cli::write('Created controller');
+			\Cli::write('Created controller: ' . \Fuel::clean_path($filepath));
+		}
+
+		// Create view folder if not already there
+		if ( ! is_dir($view_folder = APPPATH . 'views/' . $plural . '/'))
+		{
+			mkdir(APPPATH . 'views/' . $plural, 0755);
+		}
+
+		// Create each of the views
+		foreach (array('index', 'view', 'create', 'edit', 'delete') as $view)
+		{
+			static::write($view_file = $view_folder . $view . '.php', \View::factory('scaffold/views/'.$view, $data));
+
+			\Cli::write('Created view: ' . \Fuel::clean_path($view_file));
 		}
 	}
 
 	private function write($filepath, $data)
 	{
-		if ( ! $handle = @fopen($filepath, 'w+'))
+		if ( ! $handle = fopen($filepath, 'w+'))
 		{
-			throw new Exception('Cannot open file: '. $filepath);
+			throw new Exception('Cannot open file: '. \Fuel::clean_path($filepath));
 		}
 
 		$result = @fwrite($handle, $data);
@@ -75,7 +97,7 @@ class Scaffold
 		// Write $somecontent to our opened file.
 		if ($result === FALSE)
 		{
-			throw new Exception('Cannot write to file: '. $filepath);
+			throw new Exception('Cannot write to file: '. \Fuel::clean_path($filepath));
 		}
 
 		@fclose($handle);
