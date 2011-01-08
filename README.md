@@ -15,6 +15,7 @@ Let us know what you would like to see in Fuel at [http://community.fuelphp.com/
 * Dan Horrigan - Lead Developer ([http://dhorrigan.com](http://dhorrigan.com))
 * Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
 * Jelmer Schreuder - Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
+* Harro Verton - Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
 
 ##Requirements
 

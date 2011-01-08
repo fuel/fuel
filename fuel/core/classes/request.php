@@ -228,7 +228,7 @@ class Request {
 		}
 
 		// Check for directory
-		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'controller'.DS;
+		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
 		if ( ! empty($route['segments']) && is_dir($dirpath = $path.strtolower($route['segments'][0])))
 		{
 			$this->directory = array_shift($route['segments']);
