@@ -417,7 +417,7 @@ abstract class Session_Driver {
 	 * @access	public
 	 * @return	string	name of the flash id
 	 */
-	public function get_flash_id($name)
+	public function get_flash_id()
 	{
 		return $this->config['flash_id'];
 	}
