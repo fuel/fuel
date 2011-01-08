@@ -67,6 +67,7 @@ var nav = {
 				"Usage":			"classes/session/usage.html",
 				"Advanced":			"classes/session/advanced.html"
 			},
+			"Str":			"classes/str.html",
 			// "Unzip":		"todo.html", // dont do this, needs to be cleaned up. forget it exists.
 			"Upload": {
 				"Configuration":	"classes/upload/config.html",
