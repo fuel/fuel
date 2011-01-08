@@ -50,48 +50,37 @@
 			the next section to understand which methods are part of the generic interface and which will be driver
 			specific: <a href="usage.html">Basic Usage</a></p>
 
-			<section>
-				<h3>Installation</h3>
+			<h3>Configuration</h3>
 
-				<p>The Auth package is included in the Fuel download. All you need to do is enable it in your config.</p>
-				<pre class="php"><code>'packages' => array(
-    'auth',
-),</code></pre>
-			</section>
+			<p>Auth can be configured in a config/auth.php file and takes the following keys:</p>
 
-			<section>
-				<h3>Configuration</h3>
-
-				<p>Auth can be configured in a config/auth.php file and takes the following keys:</p>
-
-				<table class="config">
-					<tbody>
-						<tr class="header">
-							<th>Param</th>
-							<th>Type</th>
-							<th>Default</th>
-							<th>Description</th>
-						</tr>
-						<tr>
-							<th>driver</th>
-							<td>string|array</td>
-							<td><pre class="php"><code>array('simpleauth')</code></pre></td>
-							<td>
-								Login drivers to load, the first will also be the default returned by Auth::instance().
-							</td>
-						</tr>
-						<tr>
-							<th>verify_multiple_logins</th>
-							<td>bool</td>
-							<td><pre class="php"><code>false</code></pre></td>
-							<td>
-								Whether checking for login continues after one driver has validated a login succesfully,
-								this makes it possible to login in multiple ways at the same time.
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</section>
+			<table class="config">
+				<tbody>
+					<tr class="header">
+						<th>Param</th>
+						<th>Type</th>
+						<th>Default</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<th>driver</th>
+						<td>string|array</td>
+						<td><pre class="php"><code>array('simpleauth')</code></pre></td>
+						<td>
+							Login drivers to load, the first will also be the default returned by Auth::instance().
+						</td>
+					</tr>
+					<tr>
+						<th>verify_multiple_logins</th>
+						<td>bool</td>
+						<td><pre class="php"><code>false</code></pre></td>
+						<td>
+							Whether checking for login continues after one driver has validated a login succesfully,
+							this makes it possible to login in multiple ways at the same time.
+						</td>
+					</tr>
+				</tbody>
+			</table>
 
 		</section>
 

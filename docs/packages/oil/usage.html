@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Auth package - Introduction - Fuel Documentation</title>
+	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('packages', '../../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Auth package</h2>
+
+		<p>The Auth package provides a standardized interface for authentication in Fuel. This allows our users to
+		write their own drivers and easily integrate a new driver to work with old code by keeping the basic methods
+		consistent.</p>
+
+		<ul>
+			<li><a href="#login_drivers">Basic Usage of Login drivers</a></li>
+			<li><a href="#group_drivers">Basic Usage of Group drivers</a></li>
+			<li><a href="#acl_drivers">Basic Usage of Acl drivers</a></li>
+		</ul>
+
+		<section>
+			<h2><a name="login_drivers">Basic Usage of Login drivers</a></h2>
+
+			<p>The Auth class works mainly with one or more login drivers and offers a set of 2 methods for all other
+			drivers. One getting a driver instance and a second answering whether a loaded driver of that type
+			validates. Below are first the methods for checking and getting the drivers.</p>
+
+			<article>
+				<h4>check($specific = null)</h4>
+				<p>Checks either all loaded Login drivers or just those specified as the parameter.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$specific</kbd></th>
+									<td><i>null</i></td>
+									<td>null to check all or one ore more driver id's (single string or array of strings)</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>bool, whether one of the (given) drivers succesfully validated the login</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+	<pre class="php"><code>if ( ! Auth::check())
+{
+	Output::redirect('login');
+}
+
+// specific driver
+Auth::check('simpleauth');
+
+// Multiple drivers
+Auth::check(array('simpleauth', 'twitter'));</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>instance($instance = null)</h4>
+				<p>Retrieves a loaded driver, when drivers are set in config the first driver will also be the default.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$instance</kbd></th>
+									<td><i>null</i></td>
+									<td>null to fetch the default driver, or a driver id to get a specific one</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>Auth_Login_Driver</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+	<pre class="php"><code>// Logout the default driver
+Auth::instance()->logout();
+
+// Login the SimpleAuth driver
+Auth::instance('simpleauth')->login(Input::post('username'), Input::post('password'));</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<h3>Driver methods</h3>
+
+			<p>The methods below should be available on all Auth drivers in at least the way described here, but will
+			often have specific parameters added for their implementation.</p>
+
+			<article>
+				<h4>get_user_array(Array $additional_fields = array())</h4>
+				<p>Returns an array describing the current logged in user, always includes at least a screenname and
+				an emailaddress. Additional fields can be configured in the driver config or requested through the
+				$additional_fields array, but they must have a get_user_<em>fieldname</em>() method within the driver
+				to be gettable.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>No</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$additional_fields</kbd></th>
+									<td><i>array()</i></td>
+									<td>an array with fieldnames to fetch</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>array</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+	<pre class="php"><code>$user = Auth::instance()->get_user_array();</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>login()</h4>
+				<p>Must be implemented specific to the driver to login the user.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>No</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td><em>None by default</em></td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>bool</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+	<pre class="php"><code>Auth::instance('simpleauth')->login($username, $password);</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>logout()</h4>
+				<p>Must be implemented specific to the driver to logout the user, and work without parameters.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>No</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td><em>None</em></td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>void</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+	<pre class="php"><code>Auth::instance('simpleauth')->logout();</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>get_user_email()</h4>
+				<p>Fetches the current logged in user's emailaddress.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>No</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td><em>None</em></td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>string</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+	<pre class="php"><code>$email = Auth::instance('simpleauth')->get_user_email();</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>get_user_screen_name()</h4>
+				<p>Fetches the current logged in user's screen name.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>No</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td><em>None</em></td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>string</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+	<pre class="php"><code>$name = Auth::instance('simpleauth')->get_user_screen_name();</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+		</section>
+
+		<section>
+			<h2><a name="group_drivers">Basic Usage of Group drivers</a></h2>
+
+			<p>(to be written)</p>
+
+		</section>
+
+		<section>
+			<h2><a name="acl_drivers">Basic Usage of ACL drivers</a></h2>
+
+			<p>(to be written)</p>
+
+		</section>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

@@ -32,7 +32,11 @@ var nav = {
 		"Classes": {
 			 "Arr":			"classes/arr.html",
 			"Asset":		"classes/asset.html",
-			// "Cache":		"todo.html",
+			"Cache": {
+				"Configuration":	"classes/cache/config.html",
+				"Usage":			"classes/cache/usage.html",
+				"Advanced":			"classes/cache/advanced.html"
+			},
 			"Cli":			"classes/cli.html",
 			"Config":		"classes/config.html",
 			"Cookie":		"classes/cookie.html",
@@ -46,7 +50,11 @@ var nav = {
 			// "Error":		"todo.html",
 			// "Exception":	"todo.html",
 			// "Fieldset":		"todo.html",
-			// "File":			"todo.html",
+			"File": {
+				"Introduction":	"classes/file/intro.html",
+				"Usage":		"classes/file/usage.html",
+				"Advanced":		"classes/file/advanced.html"
+			},
 			// "Form":			"todo.html",
 			"Ftp":			"classes/ftp.html",
 			"Html":			"classes/html.html",
@@ -72,12 +80,15 @@ var nav = {
 				"Configuration":	"classes/upload/config.html",
 				"Usage":			"classes/upload/usage.html"
 			},
-			"Uri":			"classes/uri.html"
-			// "Validation":	"todo.html",
+			"Uri":			"classes/uri.html",
+			"Validation":	"classes/validation.html"
 			// "View":			"todo.html"
 		},
 		"Packages": {
-			// "ActiveRecord":		"todo.html",
+			"ActiveRecord": {
+				"Introduction":		"packages/activerecord/intro.html",
+				"Conventions":		"packages/activerecord/conventions.html"
+			},
 			"Auth": {
 				"Introduction":		"packages/auth/intro.html",
 				"Usage":			"packages/auth/usage.html",
