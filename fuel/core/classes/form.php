@@ -148,10 +148,16 @@ class Form {
 		$attributes = ! is_array($attributes) ? array('action' => (string) $attributes) : $attributes;
 
 		// If there is still no action set, Form-post
-		empty($attributes['action']) && $attributes['action'] = \Uri::current();
+		if(empty($attributes['action']))
+		{
+			$attributes['action'] = '';
+		}
 
 		// If not a full URL, create one
-		! strpos($attributes['action'], '://') && $attributes['action'] = \Uri::create($attributes['action']);
+		elseif ( ! strpos($attributes['action'], '://'))
+		{
+			$attributes['action'] = \Uri::create($attributes['action']);
+		}
 
 		// If method is empty, use POST
 		! empty($attributes['method']) || $attributes['method'] = static::get_class_config('form_method', 'post');
