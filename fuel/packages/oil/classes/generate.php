@@ -75,7 +75,7 @@ CONTROLLER;
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			\Cli::write('Created controller: ' . $filepath);
+			\Cli::write("\t".'Created controller: ' . \Fuel::clean_path($filepath));
 		}
 	}
 
@@ -105,7 +105,7 @@ MODEL;
 
 		if (self::write($filepath, $model))
 		{
-			\Cli::write('Created model: ' . \Fuel::clean_path($filepath));
+			\Cli::write("\t".'Created model: ' . \Fuel::clean_path($filepath));
 		}
 
 		if ( ! empty($args))
@@ -150,7 +150,7 @@ VIEW;
 
 			if (self::write($view_file, $view))
 			{
-				\Cli::write("\tCreated view: " . $view_file);
+				\Cli::write("\t".'Created view: ' . \Fuel::clean_path($view_file));
 			}
 		}
 	}
