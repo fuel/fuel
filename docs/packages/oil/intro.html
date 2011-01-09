@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Auth package - Introduction - Fuel Documentation</title>
+	<title>Oil utility - Introduction - Fuel Documentation</title>
 	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
 	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="../../assets/js/nav.js"></script>
@@ -24,27 +24,23 @@
 	<div id="main-nav"></div>
 
 	<section id="content">
-		<h2>Auth package</h2>
+		<h2>Oil utility</h2>
 
-		<p>The Auth package provides a standardized interface for authentication in Fuel. This allows our users to
-		write their own drivers and easily integrate a new driver to work with old code by keeping the basic methods
-		consistent.</p>
+		<p>The Oil utility is a special package command can be used in several ways to facilitate quick development, help with
+		testing your application and for running <a href="../../general/tasks.html">Tasks</a>.</p>
 
 		<section>
-			<h2>Introduction</h2>
 
-			<p>Creating an Auth package that will suit everyone or every implementation is impossible. As a framework
-			we don't want to force how you do Auth, but we do want to facilitate you creating your own or using the
-			work of others. This is where the Auth package comes in, which of course includes a simple implementation to
-			get you going.</p>
+			<p>Oil is an optional command line utility designed to help speed up development by providing several functions:</p>
 
-			<p>The interface contains 3 types of drivers (which can be extended to more types): login, groups &amp; ACL.
-			The login drivers handle a user login and can handle multiple login drivers at the same time. For example
-			one could make it possible for users to login through Twitter and their own native users at the same time
-			using 2 login drivers.<br />
-			As a next step you could group those 2 types of logins using a group driver that doesn't care about the
-			type of login you're using. And last but not least you can use an Acl driver to give specific rights to
-			those groups.</p>
+			<ul>
+				<li><a class="active" href="../../packages/oil/intro.html">Introduction</a></li>
+				<li><a href="../../packages/oil/generate.html">Generate</a></li>
+				<li><a href="../../packages/oil/refine.html">Refine</a></li>
+				<li><a href="../../packages/oil/package.html">Package</a> - Install, update and remove packages.</li>
+				<li><a href="../../packages/oil/test.html">Test</a> - Run Octane test files and see results.</li>
+				<li><a href="../../packages/oil/console.html">Console</a> - Test your code in real time using an interactive shell.</li>
+			</ul>
 
 			<p>The above is just an example of how you might use it, not how you <em>have</em> to use it. Read on in
 			the next section to understand which methods are part of the generic interface and which will be driver
@@ -52,7 +48,7 @@
 
 			<h3>Configuration</h3>
 
-			<p>Auth can be configured in a config/auth.php file and takes the following keys:</p>
+			<p>Oil can be configured in a config/Oil.php file and takes the following keys:</p>
 
 			<table class="config">
 				<tbody>
@@ -65,9 +61,9 @@
 					<tr>
 						<th>driver</th>
 						<td>string|array</td>
-						<td><pre class="php"><code>array('simpleauth')</code></pre></td>
+						<td><pre class="php"><code>array('simpleOil')</code></pre></td>
 						<td>
-							Login drivers to load, the first will also be the default returned by Auth::instance().
+							Login drivers to load, the first will also be the default returned by Oil::instance().
 						</td>
 					</tr>
 					<tr>

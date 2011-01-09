@@ -95,9 +95,16 @@ var nav = {
 				"Driver types":		"packages/auth/driver_types.html",
 				"SimpleAuth, Group &amp; Acl":		"packages/auth/simpleauth.html",
 				"Writing drivers":	"packages/auth/drivers.html"
-			}
+			},
 			// "Octane":			"todo.html",
-			// "Oil":				"todo.html",
+			"Oil": {
+				"Introduction":		"packages/oil/intro.html",
+				"Generate":			"packages/oil/generate.html",
+				"Refine":			"packages/oil/refine.html",
+				"Package":			"packages/oil/package.html",
+				"Test":				"packages/oil/test.html",
+				"Console":			"packages/oil/console.html"
+			}
 		}
 };
 
