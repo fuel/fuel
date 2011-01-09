@@ -11,7 +11,7 @@
 
 			else
 			{
-				Session::set_flash('notice', 'Could not delete ' . $<?php echo $singular; ?> . ' #' . $id);
+				Session::set_flash('notice', 'Could not save ' . $<?php echo $singular; ?> . ' #' . $id);
 			}
 
 		}
