@@ -2,7 +2,11 @@
 
 		if ($_POST)
 		{
-			if ($<?php echo $singular; ?>->update($_POST))
+<?php foreach ($fields as $field): ?>
+			$<?php echo $singular; ?>-><?php echo $field['name']; ?> = Input::post('<?php echo $field['name']; ?>');
+<?php endforeach; ?>
+
+			if ($<?php echo $singular; ?>->save())
 			{
 				Session::set_flash('notice', 'Updated ' . $<?php echo $singular; ?> . ' #' . $<?php echo $singular; ?>->id);
 

@@ -193,7 +193,10 @@ Migrated to latest version: 3.
 	{
 		if ($_POST)
 		{
-			$monkey = Model_Monkey::factory($_POST);
+			$monkey = Model_Monkey::factory(array(
+				'name' => Input::post('name'),
+				'description' => Input::post('description'),
+			));
 
 			if ($monkey and $monkey->save())
 			{
@@ -219,7 +222,10 @@ Migrated to latest version: 3.
 
 		if ($_POST)
 		{
-			if ($monkey->update($_POST))
+			$monkey->name = Input::post('name');
+			$monkey->description = Input::post('description');
+
+			if ($monkey->save())
 			{
 				Session::set_flash('notice', 'Updated ' . $monkey . ' #' . $monkey->id);
 
