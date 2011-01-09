@@ -409,10 +409,6 @@ class Model {
 			/* allow for $p->comment_ids type sets on HasMany associations */
 			$this->associations[$assoc_name]->set_ids($value, $this);
 		}
-		else
-		{
-			throw new \Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
-		}
 	}
 
 	/**
@@ -670,7 +666,7 @@ class Model {
 			$columns = array();
 			foreach ($this->columns as $column)
 			{
-				if ($column == $this->primary_key)
+				if ($column == $this->primary_key OR ! in_array($column, $this->columns))
 				{
 					continue;
 				}
