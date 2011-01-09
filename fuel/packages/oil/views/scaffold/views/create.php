@@ -1,3 +1,5 @@
-		$this->template->title = "<?php echo ucfirst($plural); ?>";
-		$this->template-><?php echo strtolower($plural);?> = <?php echo $model; ?>::find('all');
-		$this->template->content = View::factory('<?php echo strtolower($plural);?>/index');
+<h2>New <?php echo $singular; ?></h2>
+
+<?php echo '<?php'; ?> echo render('<?php echo $plural; ?>/_form'); ?>
+
+<?php echo '<?php'; ?> echo HTML::anchor('<?php echo $plural; ?>', 'Back'); <?php echo '?>'; ?>

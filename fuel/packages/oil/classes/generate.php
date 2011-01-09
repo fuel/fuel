@@ -84,6 +84,11 @@ CONTROLLER;
 	{
 		$singular = strtolower(array_shift($args));
 
+		if (empty($args))
+		{
+			throw new Exception('No fields have been provided, the model will not know how to build the table.');
+		}
+
 		$plural = \Inflector::pluralize($singular);
 
 		$filepath = APPPATH . 'classes/model/' . $singular .'.php';

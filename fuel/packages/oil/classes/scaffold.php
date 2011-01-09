@@ -63,6 +63,16 @@ class Scaffold
 				'code'		=> \View::factory('scaffold/actions/view', $data),
 			),
 			array(
+				'name'		=> 'create',
+				'params'	=> '$id = null',
+				'code'		=> \View::factory('scaffold/actions/create', $data),
+			),
+			array(
+				'name'		=> 'edit',
+				'params'	=> '$id = null',
+				'code'		=> \View::factory('scaffold/actions/edit', $data),
+			),
+			array(
 				'name'		=> 'delete',
 				'params'	=> '$id = null',
 				'code'		=> \View::factory('scaffold/actions/delete', $data),
@@ -89,7 +99,7 @@ class Scaffold
 		}
 
 		// Create each of the views
-		foreach (array('index', 'view', 'create', 'edit') as $view)
+		foreach (array('index', 'view', 'create', 'edit', '_form') as $view)
 		{
 			static::write($view_file = $view_folder . $view . '.php', \View::factory('scaffold/views/'.$view, $data));
 
