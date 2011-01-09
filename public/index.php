@@ -22,7 +22,7 @@ define('DEBUG', false);
  *
  * @todo Re-evaluate how to handle this.
  */
-define('INTERNAL_ENC', 'ISO-8859-1');
+define('INTERNAL_ENC', 'UTF-8');
 
 /**
  * Website docroot
