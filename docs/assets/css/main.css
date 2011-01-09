@@ -126,6 +126,10 @@ pre {
 	border: 3px solid #CCC;
 	margin: 0 0 1.5em 0;
 }
+pre.cli {
+    background-color: #121212;
+    color: #CCCCCC;
+}
 a {
 	color: #000;
 }

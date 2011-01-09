@@ -34,49 +34,50 @@
 			<p>Oil is an optional command line utility designed to help speed up development by providing several functions:</p>
 
 			<ul>
-				<li><a class="active" href="../../packages/oil/intro.html">Introduction</a></li>
-				<li><a href="../../packages/oil/generate.html">Generate</a></li>
-				<li><a href="../../packages/oil/refine.html">Refine</a></li>
+				<li><a href="../../packages/oil/generate.html">Generate</a> - Build MVC components, migrations and entire scaffolding.</li>
+				<li><a href="../../packages/oil/refine.html">Refine</a> - Run tasks such as migrate and your own custom ones.</li>
 				<li><a href="../../packages/oil/package.html">Package</a> - Install, update and remove packages.</li>
 				<li><a href="../../packages/oil/test.html">Test</a> - Run Octane test files and see results.</li>
 				<li><a href="../../packages/oil/console.html">Console</a> - Test your code in real time using an interactive shell.</li>
 			</ul>
 
-			<p>The above is just an example of how you might use it, not how you <em>have</em> to use it. Read on in
-			the next section to understand which methods are part of the generic interface and which will be driver
-			specific: <a href="usage.html">Basic Usage</a></p>
+			<p>
+				Each of these commands works in a different way to achieve different things, but before getting into them it's best to make sure
+				you are in the correct folder and oil is available and running.
+			</p>
 
-			<h3>Configuration</h3>
+			<pre class="cli">$ cd Sites/fuel
+$ php oil -v
+Fuel: 1.0.0-beta1</pre>
 
-			<p>Oil can be configured in a config/Oil.php file and takes the following keys:</p>
+			<h3>In-line help</h3>
 
-			<table class="config">
-				<tbody>
-					<tr class="header">
-						<th>Param</th>
-						<th>Type</th>
-						<th>Default</th>
-						<th>Description</th>
-					</tr>
-					<tr>
-						<th>driver</th>
-						<td>string|array</td>
-						<td><pre class="php"><code>array('simpleOil')</code></pre></td>
-						<td>
-							Login drivers to load, the first will also be the default returned by Oil::instance().
-						</td>
-					</tr>
-					<tr>
-						<th>verify_multiple_logins</th>
-						<td>bool</td>
-						<td><pre class="php"><code>false</code></pre></td>
-						<td>
-							Whether checking for login continues after one driver has validated a login succesfully,
-							this makes it possible to login in multiple ways at the same time.
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<p>Oil contains it's own basic documentation which can be found by typing the command:</p>
+
+			<pre class="cli">$ php oil help
+
+Usage:
+  php oil [console|generate|help|test|package]
+
+Runtime options:
+  -f, [--force]    # Overwrite files that already exist
+  -s, [--skip]     # Skip files that already exist
+  -q, [--quiet]    # Supress status output
+
+Fuel options:
+  -v, [--version]  # Show Fuel version number and quit
+
+Description:
+  The 'oil' command can be used in serveral ways to facilitate quick development, help with
+  testing your application and for running Tasks.
+
+Documentation:
+  http://fuelphp.com/docs/packages/oil/intro.html
+</pre>
+
+			<p>Each of these commands has its own help section which can be found by typing:</p>
+
+			<pre class="cli">$ php oil generate help</pre>
 
 		</section>
 
