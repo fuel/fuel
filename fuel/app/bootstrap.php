@@ -12,11 +12,8 @@
  * @link		http://fuelphp.com
  */
 
-if (DEBUG)
-{
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');
-}
+error_reporting(DEBUG ? E_ALL : 0);
+ini_set('display_errors', DEBUG ? '1' : '0');
 
 Fuel\Core\Autoloader::add_classes(array(
 	// Add classes you want to override here

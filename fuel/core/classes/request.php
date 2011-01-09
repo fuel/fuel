@@ -150,6 +150,8 @@ class Request {
 					{
 						return $controller->output;
 					}
+
+					\Output::send_headers();
 					exit($controller->output);
 				}
 				else

@@ -380,7 +380,6 @@ class File {
 
 		if ( ! is_file($path))
 		{
-			echo $path.PHP_EOL;
 			throw new \Exception('Cannot delete file: given path "'.$path.'" is not a file.');
 		}
 
