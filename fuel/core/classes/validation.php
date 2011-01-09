@@ -604,8 +604,7 @@ class Validation {
 			}
 		}
 
-		$pattern  = '/^([';
-		$pattern .= ! in_array('uppercase', $flags) && in_array('alpha', $flags) ? 'a-z' : '';
+		$pattern = ! in_array('uppercase', $flags) && in_array('alpha', $flags) ? 'a-z' : '';
 		$pattern .= ! in_array('lowercase', $flags) && in_array('alpha', $flags) ? 'A-Z' : '';
 		$pattern .= in_array('numeric', $flags) ? '0-9' : '';
 		$pattern .= in_array('spaces', $flags) ? ' ' : '';
@@ -614,7 +613,7 @@ class Validation {
 		$pattern .= in_array('dots', $flags) && ! in_array('punctuation', $flags) ? '\.' : '';
 		$pattern .= in_array('punctuation', $flags) ? "\.,\!\?:;" : '';
 		$pattern .= in_array('dashes', $flags) ? '_\-' : '';
-		$pattern .= '])+$/';
+		$pattern = empty($pattern) ? '/^(.*)$/' : ('/^(['.$pattern.'])+$/');
 		$pattern .= in_array('utf8', $flags) ? 'u' : '';
 
 		return preg_match($pattern, $val) > 0;
