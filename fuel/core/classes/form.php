@@ -14,10 +14,6 @@
 
 namespace Fuel\Core;
 
-
-
-// ------------------------------------------------------------------------
-
 /**
  * Form Class
  *
@@ -25,7 +21,7 @@ namespace Fuel\Core;
  *
  * @package		Fuel
  * @category	Core
- * @author		Philip Sturgeon, Jelmer Schreuder
+ * @author		Dan Horrigan & Jelmer Schreuder
  */
 class Form {
 
@@ -157,6 +153,11 @@ class Form {
 		elseif ( ! strpos($attributes['action'], '://'))
 		{
 			$attributes['action'] = \Uri::create($attributes['action']);
+		}
+
+		if (empty($attributes['accept-charset']))
+		{
+			$attributes['accept-charset'] = strtolower(INTERNAL_ENC);
 		}
 
 		// If method is empty, use POST
