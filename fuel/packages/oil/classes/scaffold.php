@@ -27,7 +27,7 @@ class Scaffold
 	public function generate($args)
 	{
 		// Do this first as there is the largest chance of error here
-//		Generate::model($args);
+		Generate::model($args);
 		
 		// Go through all arguments after the first and make them into field arrays
 		$fields = array();
