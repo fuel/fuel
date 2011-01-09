@@ -46,7 +46,7 @@ if ( ! function_exists('logger'))
 		{
 			return false;
 		}
-		return \Log::write($level, $msg, $method = null);
+		return \Log::write($level, $msg, $method);
 	}
 }
 
