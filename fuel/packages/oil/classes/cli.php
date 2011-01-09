@@ -39,16 +39,15 @@ class Cli
 				case 'g':
 				case 'generate':
 
-					switch ($args[2])
+					$action = isset($args[2]) ? $args[2]: 'help';
+
+					switch ($action)
 					{
 						case 'controller':
 						case 'model':
-						case 'view':
 						case 'views':
 						case 'migration':
-
-							call_user_func('Oil\Generate::'.$args[2], array_slice($args, 3));
-
+							call_user_func('Oil\Generate::'.$action, array_slice($args, 3));
 						break;
 
 						case 'scaffold':
@@ -75,30 +74,29 @@ class Cli
 				case 'p':
 				case 'package':
 
-					switch ($args[2])
+					$action = isset($args[2]) ? $args[2]: 'help';
+					
+					switch ($action)
 					{
 						case 'install':
 						case 'uninstall':
-							call_user_func_array('Oil\Package::'.$args[2], array_slice($args, 3));
+							call_user_func_array('Oil\Package::'.$action, array_slice($args, 3));
 						break;
-
 
 						default:
 							Package::help();
 					}
 
 				break;
-			
-				
-
-				case '-v':
-				case '--version':
-					\Cli::write('Fuel: ' . \Fuel::VERSION);
-				break;
 
 				case 'test':
 					\Fuel::add_package('octane');
 					call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
+				break;
+
+				case '-v':
+				case '--version':
+					\Cli::write('Fuel: ' . \Fuel::VERSION);
 				break;
 
 				default:
@@ -118,24 +116,22 @@ class Cli
 		echo <<<HELP
    
 Usage:
-  php oil generate [controller|model|migration|view|views] [options]
+  php oil [console|generate|help|test|package]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
   -s, [--skip]     # Skip files that already exist
-  -p, [--pretend]  # Run but do not make any changes
   -q, [--quiet]    # Supress status output
 
 Fuel options:
   -v, [--version]  # Show Fuel version number and quit
 
 Description:
-    The 'oil' command can be used to generate MVC components, database migrations
-    and run specific tasks.
+  The 'oil' command can be used in serveral ways to facilitate quick development, help with
+  testing your application and for running Tasks.
 
-Examples:
-    php oil g controller <controllername> [<action1> |<action2> |..]
-    php oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
+Documentation:
+  http://fuelphp.com/docs/packages/oil/intro.html
 
 HELP;
 

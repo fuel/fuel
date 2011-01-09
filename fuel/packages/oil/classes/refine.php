@@ -65,10 +65,10 @@ class Refine
 
 	public static function help()
 	{
-		echo <<<HELP
+		$output = <<<HELP
 
 Usage:
-  php oil refine <taskname>
+  php oil [r|refine] <taskname>
 
 Description:
     Tasks are classes that can be run through the the command line or set up as a cron job.
@@ -77,7 +77,10 @@ Examples:
     php oil refine robots [<message>]
     php oil refine robots:protect
 
+Documentation:
+	http://fuelphp.com/docs/packages/oil/refine.html
 HELP;
+		\Cli::write($output);
 
 	}
 }
