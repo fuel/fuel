@@ -418,7 +418,7 @@ class Validation {
 	public function _validation_match_value($val, $compare, $strict = false)
 	{
 		// first try direct match
-		if ($val === $compare || ( ! $strict && $val == $compare))
+		if (empty($val) || $val === $compare || ( ! $strict && $val == $compare))
 		{
 			return true;
 		}
@@ -448,7 +448,7 @@ class Validation {
 	 */
 	public function _validation_match_pattern($val, $pattern)
 	{
-		return preg_match($pattern, $val) > 0;
+		return empty($val) || preg_match($pattern, $val) > 0;
 	}
 
 	/**
@@ -461,7 +461,7 @@ class Validation {
 	 */
 	public function _validation_match_field($val, $field)
 	{
-		return $this->input($field) === $val;
+		return empty($val) || $this->input($field) === $val;
 	}
 
 	/**
@@ -473,7 +473,7 @@ class Validation {
 	 */
 	public function _validation_min_length($val, $length)
 	{
-		return (MBSTRING ? mb_strlen($val) : strlen($val)) >= $length;
+		return empty($val) || (MBSTRING ? mb_strlen($val) : strlen($val)) >= $length;
 	}
 
 	/**
@@ -485,7 +485,7 @@ class Validation {
 	 */
 	public function _validation_max_length($val, $length)
 	{
-		return (MBSTRING ? mb_strlen($val) : strlen($val)) <= $length;
+		return empty($val) || (MBSTRING ? mb_strlen($val) : strlen($val)) <= $length;
 	}
 
 	/**
@@ -497,7 +497,7 @@ class Validation {
 	 */
 	public function _validation_exact_length($val, $length)
 	{
-		return (MBSTRING ? mb_strlen($val) : strlen($val)) == $length;
+		return empty($val) || (MBSTRING ? mb_strlen($val) : strlen($val)) == $length;
 	}
 
 	/**
@@ -567,6 +567,11 @@ class Validation {
 	 */
 	public function _validation_valid_string($val, $flags = array('alpha', 'utf8'))
 	{
+		if (empty($val))
+		{
+			return true;
+		}
+
 		if ( ! is_array($flags))
 		{
 			if ($flags == 'alpha')
@@ -624,7 +629,7 @@ class Validation {
 	 */
 	public function _validation_numeric_min($val, $min_val)
 	{
-		return floatval($val) >= floatval($min_val);
+		return empty($val) || floatval($val) >= floatval($min_val);
 	}
 
 	/**
@@ -636,7 +641,7 @@ class Validation {
 	 */
 	public function _validation_numeric_max($val, $max_val)
 	{
-		return floatval($val) <= floatval($max_val);
+		return empty($val) || floatval($val) <= floatval($max_val);
 	}
 }
 
