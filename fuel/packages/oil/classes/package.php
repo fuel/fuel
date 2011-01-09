@@ -97,7 +97,7 @@ class Package
 			return false;
 		}
 
-		\Cli::write('Uninstalling package "' . $package . '"', 'yellow');
+		\Cli::write('Package "' . $package . '" was uninstalled.', 'yellow');
 
 		\File::delete_dir($package_folder);
 	}

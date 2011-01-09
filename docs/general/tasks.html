@@ -34,9 +34,7 @@
 
 		<p>In Fuel Controllers are put in the <kbd>fuel/app/tasks</kbd> directory. Below is an example of the task "example": </p>
 
-<pre><code>namespace Fuel\Tasks;
-
-
+<pre class="php"><code>namespace Fuel\Tasks;
 
 class Example {
 
@@ -46,18 +44,24 @@ class Example {
 	}
 }</code></pre>
 
-		<p>That will be called via the refine utility within oil: <kbd>php oil refine example "Good morning"</kbd>. When just the name of the task is used in the command, the method <kbd>"run()"</kbd> is referenced.</p>
+		<p>That will be called via the refine utility within oil:</p>
+		
+		<pre class="cli">$ php oil refine example "Good morning"</pre>.
+
+		<p>When just the name of the task is used in the command, the method <kbd>"run()"</kbd> is referenced.</p>
 
 		<h4 id="more_methods">Splitting tasks into more methods</h4>
 
 		<p>You can add more methods to your task class to break a group of tasks down into more specific tasks which can be called separately.</p>
 
-<pre><code>public function current_date()
+<pre class="php"><code>public function current_date()
 {
 	echo date('Y-m-d');
 }</code></pre>
 
-		<p>We can then call this method using <kdb>php oil refine example:current_date</kbd>. </p>
+		<p>We can then call this method using:</p>
+		
+		<pre class="cli">$ php oil refine example:current_date</pre>
 
 	</section>
 
