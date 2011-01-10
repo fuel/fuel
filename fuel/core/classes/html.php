@@ -72,7 +72,7 @@ class Html
 	 */
 	public static function prep_url($url, $schema = 'http')
 	{
-		if ( ! preg_match('#^\w+://# i', $url))
+		if ( ! preg_match('#^(\w+://|javascript:)# i', $url))
 		{
 			$url = $schema.'://'.$url;
 		}
