@@ -214,7 +214,7 @@ class Fuel {
 
 		$paths = static::$_paths;
 		// get the paths of the active request, and search them first
-		if ($active = \Request::active())
+		if (class_exists('Request', false) and $active = \Request::active())
 		{
 			$paths = array_merge($active->paths, $paths);
 		}
