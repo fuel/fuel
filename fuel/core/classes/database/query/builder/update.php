@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-class Database_Query_Builder_Update extends Database_Query_Builder_Where {
+class Database_Query_Builder_Update extends \Database_Query_Builder_Where {
 
 	// UPDATE ...
 	protected $_table;
@@ -34,7 +34,7 @@ class Database_Query_Builder_Update extends Database_Query_Builder_Where {
 		}
 
 		// Start the query with no SQL
-		return parent::__construct('', Database::UPDATE);
+		return parent::__construct('', \Database::UPDATE);
 	}
 
 	/**

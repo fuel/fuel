@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-class Database_Result_Cached extends Database_Result {
+class Database_Result_Cached extends \Database_Result {
 
 	public function __construct(array $result, $sql, $as_object = NULL)
 	{

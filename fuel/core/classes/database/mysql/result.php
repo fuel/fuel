@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-class Database_MySQL_Result extends Database_Result {
+class Database_MySQL_Result extends \Database_Result {
 
 	protected $_internal_row = 0;
 

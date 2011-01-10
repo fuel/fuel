@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-class Database_Query_Builder_Select extends Database_Query_Builder_Where {
+class Database_Query_Builder_Select extends \Database_Query_Builder_Where {
 
 	// SELECT ...
 	protected $_select = array();
@@ -52,7 +52,7 @@ class Database_Query_Builder_Select extends Database_Query_Builder_Where {
 		}
 
 		// Start the query with no actual SQL statement
-		parent::__construct(Database::SELECT, '');
+		parent::__construct(\Database::SELECT, '');
 	}
 
 	/**
@@ -122,7 +122,7 @@ class Database_Query_Builder_Select extends Database_Query_Builder_Where {
 	 */
 	public function join($table, $type = NULL)
 	{
-		$this->_join[] = $this->_last_join = new Database_Query_Builder_Join($table, $type);
+		$this->_join[] = $this->_last_join = new \Database_Query_Builder_Join($table, $type);
 
 		return $this;
 	}

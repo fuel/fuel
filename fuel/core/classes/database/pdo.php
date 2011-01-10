@@ -12,7 +12,7 @@
 namespace Fuel\Core;
 
 
-class Database_PDO extends Database {
+class Database_PDO extends \Database {
 
 	// PDO uses no quoting for identifiers
 	protected $_identifier = '';
@@ -67,7 +67,7 @@ class Database_PDO extends Database {
 		}
 		catch (\PDOException $e)
 		{
-			throw new Database_Exception($e->getMessage(), $e->getCode(), $e);
+			throw new \Database_Exception($e->getMessage(), $e->getCode(), $e);
 		}
 
 		if ( ! empty($this->_config['charset']))
@@ -118,7 +118,7 @@ class Database_PDO extends Database {
 			}
 
 			// Convert the exception in a database exception
-			throw new Database_Exception($e->getMessage().' with query: "'.$sql.'"');
+			throw new \Database_Exception($e->getMessage().' with query: "'.$sql.'"');
 		}
 
 		if (isset($benchmark))
@@ -129,7 +129,7 @@ class Database_PDO extends Database {
 		// Set the last query
 		$this->last_query = $sql;
 
-		if ($type === Database::SELECT)
+		if ($type === \Database::SELECT)
 		{
 			// Convert the result into an array, as PDOStatement::rowCount is not reliable
 			if ($as_object === FALSE)
@@ -148,9 +148,9 @@ class Database_PDO extends Database {
 			$result = $result->fetchAll();
 
 			// Return an iterator of results
-			return new Database_Result_Cached($result, $sql, $as_object);
+			return new \Database_Result_Cached($result, $sql, $as_object);
 		}
-		elseif ($type === Database::INSERT)
+		elseif ($type === \Database::INSERT)
 		{
 			// Return a list of insert id and rows created
 			return array(
