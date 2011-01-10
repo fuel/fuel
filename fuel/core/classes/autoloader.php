@@ -349,6 +349,13 @@ class Autoloader {
 				}
 			}
 		}
+		
+		// Prevent failed load from keeping other classes from initializing
+		if (static::$auto_initialize == $class)
+		{
+			static::$auto_initialize = null;
+		}
+		
 		return false;
 	}
 
@@ -362,12 +369,12 @@ class Autoloader {
 	{
 		if (static::$auto_initialize === $class)
 		{
+			static::$auto_initialize = null;
 			if (is_callable($class.'::_init'))
 			{
 				call_user_func($class.'::_init');
 			}
 		}
-		static::$auto_initialize = null;
 	}
 }
 
