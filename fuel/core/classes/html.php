@@ -54,7 +54,7 @@ class Html
 	 */
 	public static function anchor($href, $text, $attributes = array())
 	{
-		if ( ! preg_match('#^\w+://# i', $href))
+		if ( ! preg_match('#^(\w+://|javascript:)# i', $href))
 		{
 			$href = \Uri::create($href);
 		}
@@ -72,7 +72,7 @@ class Html
 	 */
 	public static function prep_url($url, $schema = 'http')
 	{
-		if ( ! preg_match('#^(\w+://|javascript:)# i', $href))
+		if ( ! preg_match('#^\w+://# i', $url))
 		{
 			$url = $schema.'://'.$url;
 		}
