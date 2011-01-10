@@ -85,6 +85,23 @@ class Security {
 		return $value;
 	}
 
+	public static function htmlentities($value)
+	{
+		if ( ! is_array($value))
+		{
+			$value = htmlentities($value, ENT_COMPAT, INTERNAL_ENC);
+		}
+		else
+		{
+			foreach ($value as $k => $v)
+			{
+				$value[$k] = static::htmlentities($v, ENT_COMPAT, INTERNAL_ENC);
+			}
+		}
+
+		return $value;
+	}
+
 	/**
 	 * Check CSRF Token
 	 *
