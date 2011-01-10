@@ -306,6 +306,15 @@ class Autoloader {
 			$file_path = str_replace('_', DS, $class);
 			$file_path = \Fuel::find_file('classes', $file_path);
 
+
+            if ($class_name = static::is_core_class($class))
+			{
+				include str_replace('/', DS, static::$classes[$class_name]);
+				static::alias_to_namespace($class_name);
+				static::_init_class($class);
+				return true;
+			}
+            
 			if ($file_path !== false)
 			{
 				require $file_path;
@@ -316,13 +325,7 @@ class Autoloader {
 				static::_init_class($class);
 				return true;
 			}
-			elseif ($class_name = static::is_core_class($class))
-			{
-				include str_replace('/', DS, static::$classes[$class_name]);
-				static::alias_to_namespace($class_name);
-				static::_init_class($class);
-				return true;
-			}
+			
 		}
 
 		// This handles a namespaces class that a path does not exist for
