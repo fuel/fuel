@@ -133,9 +133,10 @@ class Uri {
 	 * Creates a url with the given uri, including the base url
 	 *
 	 * @param	string	the url
-	 * @param	array	some variables for the url
+	 * @param	array	some segment variables for the url
+	 * @param	array	some querystring variables for the url
 	 */
-	public static function create($uri = null, $variables = array())
+	public static function create($uri = null, $segment_variables = array(), $querystring_variables = array())
 	{
 		$url = \Config::get('base_url');
 
@@ -146,9 +147,16 @@ class Uri {
 
 		$url = $url.ltrim(is_null($uri) ? static::string() : $uri, '/');
 
-		foreach($variables as $key => $val)
+		foreach($segment_variables as $key => $val)
 		{
 			$url = str_replace(':'.$key, $val, $url);
+		}
+		
+		$char = false === strpos($url, '?') ? '?' : '&';
+		foreach($querystring_variables as $key => $val) 
+		{
+			$url .= $char.$key.'='.$val;
+			$char = '&';
 		}
 
 		return $url;
