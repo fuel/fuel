@@ -75,6 +75,7 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Database'						=> COREPATH.'classes/database.php',
 	'Fuel\\Core\\Database_Exception'			=> COREPATH.'classes/database/exception.php',
 	'Fuel\\Core\\Database_Expression'			=> COREPATH.'classes/database/expression.php',
+	'Fuel\\Core\\Database_Pdo'					=> COREPATH.'classes/database/pdo.php',
 	'Fuel\\Core\\Database_Query'				=> COREPATH.'classes/database/query.php',
 	'Fuel\\Core\\Database_Query_Builder'		=> COREPATH.'classes/database/query/builder.php',
 	'Fuel\\Core\\Database_Query_Builder_Insert'	=> COREPATH.'classes/database/query/builder/insert.php',
@@ -84,6 +85,7 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Database_Query_Builder_Where'	=> COREPATH.'classes/database/query/builder/where.php',
 	'Fuel\\Core\\Database_Query_Builder_Join'	=> COREPATH.'classes/database/query/builder/join.php',
 	'Fuel\\Core\\Database_Result'				=> COREPATH.'classes/database/result.php',
+	'Fuel\\Core\\Database_Result_Cached'		=> COREPATH.'classes/database/result/cached.php',
 	'Fuel\\Core\\Database_Mysql'				=> COREPATH.'classes/database/mysql.php',
 	'Fuel\\Core\\Database_MySQL_Result'			=> COREPATH.'classes/database/mysql/result.php',
 
