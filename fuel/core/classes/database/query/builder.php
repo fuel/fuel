@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-abstract class Database_Query_Builder extends Database_Query {
+abstract class Database_Query_Builder extends \Database_Query {
 
 	/**
 	 * Compiles an array of JOIN statements into an SQL partial.

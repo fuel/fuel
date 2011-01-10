@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-class Database_Query_Builder_Insert extends Database_Query_Builder {
+class Database_Query_Builder_Insert extends \Database_Query_Builder {
 
 	// INSERT INTO ...
 	protected $_table;
@@ -44,7 +44,7 @@ class Database_Query_Builder_Insert extends Database_Query_Builder {
 		}
 
 		// Start the query with no SQL
-		return parent::__construct('', Database::INSERT);
+		return parent::__construct('', \Database::INSERT);
 	}
 
 	/**
@@ -117,7 +117,7 @@ class Database_Query_Builder_Insert extends Database_Query_Builder {
 	 */
 	public function select(Database_Query $query)
 	{
-		if ($query->type() !== Database::SELECT)
+		if ($query->type() !== \Database::SELECT)
 		{
 			throw new \Exception('Only SELECT queries can be combined with INSERT queries');
 		}

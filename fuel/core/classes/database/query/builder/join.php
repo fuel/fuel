@@ -11,7 +11,7 @@
 
 namespace Fuel\Core;
 
-class Database_Query_Builder_Join extends Database_Query_Builder {
+class Database_Query_Builder_Join extends \Database_Query_Builder {
 
 	// Type of JOIN
 	protected $_type;

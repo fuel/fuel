@@ -11,4 +11,4 @@
 
 namespace Fuel\Core;
 
-class Database_Exception extends Exception {}
+class Database_Exception extends \Exception {}

@@ -70,7 +70,7 @@ abstract class Database_Result implements \Countable, \Iterator, \SeekableIterat
 	 */
 	public function cached()
 	{
-		return new Database_Result_Cached($this->as_array(), $this->_query, $this->_as_object);
+		return new \Database_Result_Cached($this->as_array(), $this->_query, $this->_as_object);
 	}
 
 	/**

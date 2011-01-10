@@ -53,7 +53,7 @@ class Database_Query {
 		try
 		{
 			// Return the SQL string
-			return $this->compile(Database::instance());
+			return $this->compile(\Database::instance());
 		}
 		catch (Exception $e)
 		{
@@ -190,7 +190,7 @@ class Database_Query {
 		if ( ! is_object($db))
 		{
 			// Get the database instance
-			$db = Database::instance($db);
+			$db = \Database::instance($db);
 		}
 
 		// Compile the SQL query
@@ -212,11 +212,11 @@ class Database_Query {
 		switch(strtoupper(substr($sql, 0, 6)))
 		{
 			case 'SELECT':
-				$this->_type = Database::SELECT;
+				$this->_type = \Database::SELECT;
 				break;
 			case 'INSERT':
 			case 'CREATE':
-				$this->_type = Database::INSERT;
+				$this->_type = \Database::INSERT;
 				break;
 		}
 

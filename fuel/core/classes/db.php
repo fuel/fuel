@@ -38,7 +38,7 @@ class DB {
 	 */
 	public static function query($sql, $type = null)
 	{
-		return new Database_Query($sql, $type);
+		return new \Database_Query($sql, $type);
 	}
 
 	/**
@@ -57,7 +57,7 @@ class DB {
 	 */
 	public static function select($columns = NULL)
 	{
-		return new Database_Query_Builder_Select(func_get_args());
+		return new \Database_Query_Builder_Select(func_get_args());
 	}
 
 	/**
@@ -71,7 +71,7 @@ class DB {
 	 */
 	public static function select_array(array $columns = NULL)
 	{
-		return new Database_Query_Builder_Select($columns);
+		return new \Database_Query_Builder_Select($columns);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class DB {
 	 */
 	public static function insert($table = NULL, array $columns = NULL)
 	{
-		return new Database_Query_Builder_Insert($table, $columns);
+		return new \Database_Query_Builder_Insert($table, $columns);
 	}
 
 	/**
@@ -100,7 +100,7 @@ class DB {
 	 */
 	public static function update($table = NULL)
 	{
-		return new Database_Query_Builder_Update($table);
+		return new \Database_Query_Builder_Update($table);
 	}
 
 	/**
@@ -114,7 +114,7 @@ class DB {
 	 */
 	public static function delete($table = NULL)
 	{
-		return new Database_Query_Builder_Delete($table);
+		return new \Database_Query_Builder_Delete($table);
 	}
 
 	/**
@@ -128,7 +128,7 @@ class DB {
 	 */
 	public static function expr($string)
 	{
-		return new Database_Expression($string);
+		return new \Database_Expression($string);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class DB {
 			}
 			return $string;
 		}
-		return Database::instance($db)->quote_identifier($string);
+		return \Database::instance($db)->quote_identifier($string);
 	}
 
 	/**
@@ -160,7 +160,7 @@ class DB {
 	 */
 	public static function escape($string, $db = null)
 	{
-		return Database::instance($db)->escape($string);
+		return \Database::instance($db)->escape($string);
 	}
 
 } // End DB
