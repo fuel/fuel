@@ -47,7 +47,7 @@ if ( ! function_exists('logger'))
 			return false;
 		}
 
-		return class_exists('\Log') && \Log::write($level, $msg, $method);
+		\Log::write($level, $msg, $method);
 	}
 }
 
