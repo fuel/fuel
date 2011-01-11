@@ -46,7 +46,8 @@ class Security {
 	 */
 	public static function clean_uri($uri)
 	{
-		$filters = \Config::get('security.uri_filter');
+		$filters = \Config::get('security.uri_filter', array());
+		$filters = is_array($filters) ? $filters : array($filters);
 
 		return static::clean($uri, $filters);
 	}
@@ -56,7 +57,8 @@ class Security {
 	 */
 	public static function clean_input()
 	{
-		$filters = \Config::get('security.input_filter');
+		$filters = \Config::get('security.input_filter', array());
+		$filters = is_array($filters) ? $filters : array($filters);
 
 		$_GET = static::clean($_GET, $filters);
 		$_POST = static::clean($_POST, $filters);
@@ -67,7 +69,7 @@ class Security {
 	 */
 	public static function clean($var, $filters)
 	{
-		foreach ((array) $filters as $filter)
+		foreach ($filters as $filter)
 		{
 			if (is_callable('static::'.$filter))
 			{
