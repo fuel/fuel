@@ -168,7 +168,7 @@ class Tests {
 				else
 				{
 					static::$classes[] = basename($file, '.php');
-					require_once $path.$file;
+					require_once $path.'/'.$file;
 				}
 			}
 	    }
