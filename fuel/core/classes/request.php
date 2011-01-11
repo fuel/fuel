@@ -91,7 +91,7 @@ class Request {
 	 */
 	public static function active()
 	{
-		logger(Fuel::L_INFO, 'Called', __METHOD__);
+		class_exists('Log', false) && logger(Fuel::L_INFO, 'Called', __METHOD__);
 
 		return static::$active;
 	}
