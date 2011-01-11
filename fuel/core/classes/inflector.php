@@ -80,6 +80,44 @@ class Inflector {
 		'/s$/'					=> '',
 	);
 
+
+	/**
+	 * Add order suffix to numbers ex. 1st 2nd 3rd 4th 5th
+	 *
+	 * @param	int		$number	the word to singularize
+	 * @return	string	the singular version of $word
+	 * @link	http://snipplr.com/view/4627/a-function-to-add-a-prefix-to-numbers-ex-1st-2nd-3rd-4th-5th/
+	 */
+	function ordinalize($number)
+	{
+		if ( ! is_numeric($number))
+		{
+			return $number;
+		}
+
+		if (in_array(($number % 100), range(11, 13)))
+		{
+			return $number . 'th';
+		}
+		else
+		{
+			switch (($number % 10))
+			{
+				case 1:
+					return $number . 'st';
+					break;
+				case 2:
+					return $number . 'nd';
+					break;
+				case 3:
+					return $number . 'rd';
+				default:
+					return $number . 'th';
+					break;
+			}
+		}
+	}
+
 	/**
 	 * Gets the plural version of the given word
 	 *
