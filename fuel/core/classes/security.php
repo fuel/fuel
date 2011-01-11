@@ -42,30 +42,67 @@ class Security {
 	}
 
 	/**
-	 * Doesn't do anything yet, just here because it will be and facilitates autoload ;-)
+	 * Cleans the request URI
+	 */
+	public static function clean_uri($uri)
+	{
+		$filters = \Config::get('security.uri_filter');
+
+		return static::clean($uri, $filters);
+	}
+
+	/**
+	 * Cleans the $_GET and $_POST arrays
 	 */
 	public static function clean_input()
 	{
 		$filters = \Config::get('security.input_filter');
-		foreach ($filters as $filter)
+
+		$_GET = static::clean($_GET, $filters);
+		$_POST = static::clean($_POST, $filters);
+	}
+
+	/**
+	 * Generic variable clean method
+	 */
+	public static function clean($var, $filters)
+	{
+		foreach ((array) $filters as $filter)
 		{
 			if (is_callable('static::'.$filter))
 			{
-				$_GET = static::$filter($_GET);
-				$_POST = static::$filter($_POST);
+				$var = static::$filter($var);
 			}
 			elseif (function_exists($filter))
 			{
-				foreach($_GET as $key => $value)
+				if (is_array($var))
 				{
-					$_GET[$key] = $filter($value);
+					foreach($var as $key => $value)
+					{
+						$var[$key] = $filter($value);
+					}
 				}
-				foreach($_POST as $key => $value)
+				else
 				{
-					$_POST[$key] = $filter($value);
+					$var = $filter($var);
+				}
+			}
+			else
+			{
+				if (is_array($var))
+				{
+					foreach($var as $key => $value)
+					{
+						$var[$key] = preg_replace('#['.$filter.']#ui', '', $value);
+					}
+				}
+				else
+				{
+					$var = preg_replace('#['.$filter.']#ui', '', $var);
 				}
 			}
 		}
+		return $var;
 	}
 
 	public static function strip_tags($value)
