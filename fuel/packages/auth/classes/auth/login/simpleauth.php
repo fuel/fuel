@@ -322,7 +322,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 			return false;
 		}
 
-		return array($this->id, (int) $this->user->id);
+		return array($this->id, (int) $this->user->get('id'));
 	}
 
 	/**

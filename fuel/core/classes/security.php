@@ -71,24 +71,29 @@ class Security {
 	{
 		foreach ($filters as $filter)
 		{
-			if (is_callable('static::'.$filter))
-			{
-				$var = static::$filter($var);
-			}
-			elseif (function_exists($filter))
+			// is this filter a callable function?
+			if (is_callable($filter))
 			{
 				if (is_array($var))
 				{
 					foreach($var as $key => $value)
 					{
-						$var[$key] = $filter($value);
+						$var[$key] = call_user_func($filter, $value);
 					}
 				}
 				else
 				{
-					$var = $filter($var);
+					$var = call_user_func($filter, $var);
 				}
 			}
+
+			// is this filter a callable local function?
+			elseif (is_callable('static::'.$filter))
+			{
+				$var = static::$filter($var);
+			}
+
+			// assume it's a regex of characters to filter
 			else
 			{
 				if (is_array($var))
