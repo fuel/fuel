@@ -27,7 +27,9 @@ class Tests {
 	);
 
 	public static $classes = array();
-
+	
+	public static $description;
+	
 	public static function run_all($args)
 	{
 		foreach (Fuel::get_paths() as $path)
@@ -95,14 +97,14 @@ class Tests {
 		{
 			foreach (Fuel::get_paths() as $path)
 			{
-				if (is_dir($path.'tests/classes/'.$name.'/'))
+				if (is_file($path.'tests/classes/'.$name.'.php'))
 				{
-					static::load_tests($path.'tests/classes/'.$name.'/');
+					static::load_tests($path.'tests/classes/', $name.'.php');
 				}
 			}
 		}
 
-		static::output_header(ucfirst($name).' Tests');
+		static::output_header();
 		static::_run_tests();
 		static::output_results();
 	}
@@ -136,11 +138,13 @@ class Tests {
 		}
 	}
 
-	public static function output_header($description = '')
+	public static function output_header()
 	{
+		$description = ucwords( implode(static::$classes, ', ') ) . ' Tests';
+		
 		Cli::write('-------------------------------------------------');
 		Cli::write(' Octane Unit Testing');
-		Cli::write(' Running Test: '.$description);
+		Cli::write(' Running Test: '. $description);
 		Cli::write('-------------------------------------------------');
 		Cli::write();
 	}
@@ -154,23 +158,32 @@ class Tests {
 		Cli::write($passes.' | '.$failures.' | '.$assertions);
 	}
 
-	public static function load_tests($path)
+	public static function load_tests($path, $name = NULL)
 	{
-		$dir = opendir($path);
-		while (false !== ($file = readdir($dir)))
+		if ( !is_file($path.$name) )
 		{
-			if ($file !== '.' && $file !== '..')
+			$dir = opendir($path);
+			while (false !== ($file = readdir($dir)))
 			{
-				if (strpos($file, '.php') === false)
+				if ($file !== '.' && $file !== '..')
 				{
-					static::load_tests($path.$file);
+					if (strpos($file, '.php') === false)
+					{
+						static::load_tests($path.$file);
+					}
+					else
+					{
+						static::$classes[] = basename($file, '.php');
+						require_once $path.'/'.$file;
+					}
 				}
-				else
-				{
-					static::$classes[] = basename($file, '.php');
-					require_once $path.'/'.$file;
-				}
-			}
-	    }
+			}	
+		}
+		else
+		{
+			static::$classes[] = basename($name, '.php');
+			require_once $path.'/'.$name;
+		}
+		
 	}
 }
