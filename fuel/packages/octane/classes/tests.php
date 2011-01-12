@@ -140,7 +140,14 @@ class Tests {
 
 	public static function output_header()
 	{
-		$description = ucwords( implode(static::$classes, ', ') ) . ' Tests';
+		if ( !empty(static::$classes) )
+		{
+			$description = ucwords( implode(static::$classes, ', ') ) . ' Tests';	
+		}
+		else
+		{
+			$description = 'None';	
+		}
 		
 		Cli::write('-------------------------------------------------');
 		Cli::write(' Octane Unit Testing');
