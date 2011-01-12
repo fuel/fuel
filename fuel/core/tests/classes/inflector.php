@@ -2,7 +2,10 @@
 
 namespace Fuel\Octane\Test;
 
-class InflectorTest extends Octane\TestCase {
+use \Fuel\Core\Inflector;
+use \Fuel\Octane\TestCase;
+
+class InflectorTest extends TestCase {
 	
 	public function test_denamespace()
 	{
@@ -19,7 +22,6 @@ class InflectorTest extends Octane\TestCase {
 		$this->assert_equal(Inflector::tableize('\\Model\\Mouse'), 'mice');
 		$this->assert_equal(Inflector::tableize('\\Model\\Ox'), 'oxen');
 		$this->assert_equal(Inflector::tableize('\\Model\\Matrix'), 'matrices');
-		// TODO: Write more tests
 	}
 	
 }
