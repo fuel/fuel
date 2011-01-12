@@ -27,6 +27,10 @@ class Scaffold
 	public function generate($args, $subfolder = 'default')
 	{
 		$subfolder = trim($subfolder, '/');
+		if( ! is_dir( PKGPATH.'oil/views/'.$subfolder))
+		{
+			throw new Exception('The subfolder for scaffolding templates doesn\'t exist or is spelled wrong: '.$subfolder.' ');
+		}
 	
 		// Do this first as there is the largest chance of error here
 		Generate::model($args);
