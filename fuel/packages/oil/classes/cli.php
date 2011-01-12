@@ -33,20 +33,20 @@ class Cli
 				static::help();
 				return;
 			}
-
-			$subfolder = 'default';
-			if (is_int(strpos($args[1], 'g/')) OR is_int(strpos($args[1], 'generate/')))
-			{
-				$subfolder = str_replace(array('g/', 'generate/'), '', $args[1]);
-				$args[1] = 'generate';
-			}
-
+			
 			switch ($args[1])
 			{
 				case 'g':
 				case 'generate':
 
 					$action = isset($args[2]) ? $args[2]: 'help';
+					
+					$subfolder = 'default';
+					if (is_int(strpos($action, 'scaffold/')))
+					{
+						$subfolder = str_replace('scaffold/', '', $action);
+						$action = 'scaffold';
+					}
 					
 					switch ($action)
 					{
