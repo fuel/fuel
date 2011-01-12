@@ -34,13 +34,20 @@ class Cli
 				return;
 			}
 
+			$subfolder = 'default';
+			if (is_int(strpos($args[1], 'g/')) OR is_int(strpos($args[1], 'generate/')))
+			{
+				$subfolder = str_replace(array('g/', 'generate/'), '', $args[1]);
+				$args[1] = 'generate';
+			}
+
 			switch ($args[1])
 			{
 				case 'g':
 				case 'generate':
 
 					$action = isset($args[2]) ? $args[2]: 'help';
-
+					
 					switch ($action)
 					{
 						case 'controller':
@@ -51,7 +58,7 @@ class Cli
 						break;
 
 						case 'scaffold':
-							call_user_func('Oil\Scaffold::generate', array_slice($args, 3));
+							call_user_func('Oil\Scaffold::generate', array_slice($args, 3), $subfolder);
 						break;
 
 						default:
