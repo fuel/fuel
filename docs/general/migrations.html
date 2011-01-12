@@ -59,17 +59,24 @@ class Example {
 
 	<ol>
 		<li><a href="../classes/migrate.html">Migrate class</a></li>
-		<li><kbd>$ php oil refine migrate</kbd></li>
+		<li><a href="../packages/oil/refine.html">Oil Refine Command</a></li>
 	</ol>
 
-	<p>The oil command there uses refine to call the migrate task.</p>
+	<p>The oil command there uses the Refine command to call the migrate <a href="tasks.html">task</a>.</p>
 
-	<pre>$ php oil r migrate
-$ php oil r migrate:current
-$ php oil r migrate:up
-$ php oil r migrate:down
-$ php oil r migrate --version=10</pre>
+	<pre class="cli">$ php oil refine migrate
+$ php oil refine migrate:current
+$ php oil refine migrate:up
+$ php oil refine migrate:down
+$ php oil refine migrate --version=10</pre>
 
+	<p class="note">
+		<strong>Note: </strong>
+		The migrate:current task is to match your schema to the version listed in <kbd>fuel/[app|core]/config/migrate.php</kbd> as if you have just got
+		a copy of the application, the very latest migration not be the one considered stable. Using oil for migrations will modify this migration
+		config number so the current command will not be relevant in many situations.
+	</p>
+	
 	</section>
 
 	<section id="footer">

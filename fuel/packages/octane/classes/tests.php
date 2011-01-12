@@ -200,6 +200,7 @@ HELP;
 						require_once $path.'/'.$file;
 					}
 				}
+<<<<<<< HEAD
 			}	
 		}
 		else
@@ -208,5 +209,14 @@ HELP;
 			require_once $path.'/'.$name;
 		}
 		
+=======
+				else
+				{
+					static::$classes[] = basename($file, '.php');
+					require_once $path.$file;
+				}
+			}
+	    }
+>>>>>>> upstream/develop
 	}
 }

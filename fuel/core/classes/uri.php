@@ -198,8 +198,7 @@ class Uri {
 		{
 			$uri = static::detect();
 		}
-		$this->uri = Security::clean_uri($uri);
-
+		$this->uri = trim($uri, '/');
 		$this->segments = explode('/', $this->uri);
 	}
 

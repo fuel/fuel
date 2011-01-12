@@ -4,7 +4,7 @@ namespace Fuel\Core;
 
 abstract class Controller_Rest extends \Controller {
 
-	protected $rest_format = NULL; // Set this in a controller to use a default format
+	protected $rest_format = null; // Set this in a controller to use a default format
 	protected $methods = array(); // contains a list of method properties such as limit, log and level
 
 	// List all supported methods, the first will be the default format
@@ -34,7 +34,7 @@ abstract class Controller_Rest extends \Controller {
 		}
 
 		// Some Methods cant have a body
-		$this->request->body = NULL;
+		$this->request->body = null;
 
 		// Which format should the data be returned in?
 		$this->request->lang = $this->_detect_lang();
@@ -170,7 +170,7 @@ abstract class Controller_Rest extends \Controller {
 	{
 		if (!$lang = \Input::server('HTTP_ACCEPT_LANGUAGE'))
 		{
-			return NULL;
+			return null;
 		}
 
 		// They might have sent a few, make it an array
@@ -196,7 +196,7 @@ abstract class Controller_Rest extends \Controller {
 
 	// SECURITY FUNCTIONS ---------------------------------------------------------
 
-	private function _check_login($username = '', $password = NULL)
+	private function _check_login($username = '', $password = null)
 	{
 		if (empty($username))
 		{
@@ -210,8 +210,8 @@ abstract class Controller_Rest extends \Controller {
 			return false;
 		}
 
-		// If actually NULL (not empty string) then do not check it
-		if ($password !== NULL and $valid_logins[$username] != $password)
+		// If actually null (not empty string) then do not check it
+		if ($password !== null and $valid_logins[$username] != $password)
 		{
 			return false;
 		}
@@ -221,8 +221,8 @@ abstract class Controller_Rest extends \Controller {
 
 	private function _prepare_basic_auth()
 	{
-		$username = NULL;
-		$password = NULL;
+		$username = null;
+		$password = null;
 
 		// mod_php
 		if (\Input::server('PHP_AUTH_USER'))
@@ -328,7 +328,7 @@ abstract class Controller_Rest extends \Controller {
 
 	// FORMATING FUNCTIONS ---------------------------------------------------------
 	// Format XML for output
-	private function _format_xml($data = array(), $structure = NULL, $basenode = 'xml')
+	private function _format_xml($data = array(), $structure = null, $basenode = 'xml')
 	{
 		// turn off compatibility mode as simple xml throws a wobbly if you don't.
 		if (ini_get('zend.ze1_compatibility_mode') == 1)
@@ -336,7 +336,7 @@ abstract class Controller_Rest extends \Controller {
 			ini_set('zend.ze1_compatibility_mode', 0);
 		}
 
-		if ($structure == NULL)
+		if ($structure == null)
 		{
 			$structure = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><$basenode />");
 		}
@@ -382,7 +382,7 @@ abstract class Controller_Rest extends \Controller {
 	}
 
 	// Format Raw XML for output
-	private function _format_rawxml($data = array(), $structure = NULL, $basenode = 'xml')
+	private function _format_rawxml($data = array(), $structure = null, $basenode = 'xml')
 	{
 		// turn off compatibility mode as simple xml throws a wobbly if you don't.
 		if (ini_get('zend.ze1_compatibility_mode') == 1)
@@ -390,7 +390,7 @@ abstract class Controller_Rest extends \Controller {
 			ini_set('zend.ze1_compatibility_mode', 0);
 		}
 
-		if ($structure == NULL)
+		if ($structure == null)
 		{
 			$structure = simplexml_load_string("<?xml version='1.0' encoding='utf-8'?><$basenode />");
 		}
