@@ -156,18 +156,21 @@ class Tests {
 
 	public static function load_tests($path)
 	{
-		foreach (glob($dir) as $file)
+		$dir = opendir($path);
+		while (false !== ($file = readdir($dir)))
 		{
-			if (strpos($file, '.php') === false)
+			if ($file !== '.' && $file !== '..')
 			{
-				static::load_tests($path . $file);
+				if (strpos($file, '.php') === false)
+				{
+					static::load_tests($path.$file);
+				}
+				else
+				{
+					static::$classes[] = basename($file, '.php');
+					require_once $path.$file;
+				}
 			}
-			else
-			{
-				static::$classes[] = basename($file, '.php');
-				require_once $path . $file;
-			}
-		}
+	    }
 	}
-
 }
