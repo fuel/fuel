@@ -88,10 +88,14 @@ class Cli
 					}
 
 				break;
-
+				
+				case 't':
 				case 'test':
 					\Fuel::add_package('octane');
-					call_user_func('\\Fuel\\Octane\\Tests::run_'.$args[2], array_slice($args, 3));
+					
+					$action = isset($args[2]) ? $args[2]: 'help';
+				
+					call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
 				break;
 
 				case '-v':
