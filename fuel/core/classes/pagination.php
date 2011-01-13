@@ -53,9 +53,45 @@ class Pagination {
 	protected static $uri_segment = 3;
 
 	/**
-	 * @var	mixed	The pagination URL
+	 * @var	string|array	The pagination URL @see $mode
 	 */
 	protected static $pagination_url;
+
+	/**
+	 * @var	mixed	The param name for uri::create
+	 */
+	protected static $uri_page = 'page';
+
+	/**
+	 * @var	string	classic | append_get | get_only
+	 * classic - how it was before
+	 * append_get - classic but also add get variables at the end of the url,
+	    via pagination_url as array (containing 3 parameters, named in the same way as the
+		parameters to uri::create() )
+		-the pagination nr will be appended at the end of the $pagination_url['uri'] in this case;
+		-segment nr is the way to get it back 
+		-NOTE: you dont have to use get_variables, leave it empty or set it to empty array,
+		this way you can still append the page nr at the end of url::create(); For example, 
+		set $pagination_nr to empty array, the class will auto load empty defaults for all 3 values
+	 * get_only - $pagination_url is same as above, but pagination nr is put in 
+		$pagination_url['get_variables'][$uri_page];
+			-segment nr is not needed, the pagination nr will be gotten via Input::get();
+			
+		-in order to change the order of the get variables for example to put page first
+			(eg: ?page=2&foo=bar instead of ?foo=bar&page=2 )
+			then do this: 
+				'pagination_url' => array(
+					'url' => ... , 
+					'get_variables' => array('page' => '','foo' => 'bar')
+				);
+			the GET vars will be rendered in the order they are in the array
+	 */
+	protected static $mode = 0; // static::CLASSIC
+	
+	const CLASSIC = 0;
+	const CLASSIC_PLUS = 1;
+	const GET = 2;
+	
 
 	/**
 	 * Init
@@ -107,7 +143,7 @@ class Pagination {
 
 		static::$total_pages = ceil(static::$total_items / static::$per_page) ?: 1;
 
-		static::$current_page = (int) \URI::segment(static::$uri_segment);
+		static::$current_page = static::current_page();
 
 		if (static::$current_page > static::$total_pages)
 		{
@@ -155,8 +191,7 @@ class Pagination {
 			}
 			else
 			{
-				$url = ($i == 1) ? '' : '/'.$i;
-				$pagination .= \Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
+				$pagination .= \Html::anchor(static::pagination_url($i), $i);
 			}
 		}
 
@@ -188,7 +223,7 @@ class Pagination {
 		else
 		{
 			$next_page = static::$current_page + 1;
-			return \Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
+			return \Html::anchor(static::pagination_url($next_page), $value);
 		}
 	}
 
@@ -215,8 +250,78 @@ class Pagination {
 		else
 		{
 			$previous_page = static::$current_page - 1;
-			$previous_page = ($previous_page == 1) ? '' : '/' . $previous_page;
-			return \Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
+			return \Html::anchor(static::pagination_url($previous_page), $value);
+		}
+	}
+		
+		
+
+	
+	
+	/**
+	 * Get current page from uri with the configured method
+	 *
+	 * @access public
+	 * @param string $page_nr The page nr for the url
+	 * @return string    The pagination_url
+	 */
+	public static function current_page()
+	{
+		switch (strtolower(static::$mode)) 
+		{
+		  	case static::CLASSIC:
+			case static::CLASSIC_PLUS:
+		  		return (int) \URI::segment(static::$uri_segment);
+		  	case static::GET:
+		  		return (int) \Input::get(static::$uri_page, 1);
+  		}
+	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Pagination url
+	 *
+	 * @access public
+	 * @param string $page_nr The page nr for the url
+	 * @return string    The pagination_url
+	 */
+	public static function pagination_url($page_nr)
+	{
+		switch (strtolower(static::$mode)) 
+		{
+		  	case static::CLASSIC:
+		  		$page_nr = ($page_nr == 1) ? '' : '/'.$page_nr;
+				return rtrim(static::$pagination_url, '/').$page_nr;
+			
+			//classic but add support for get variables at the end of the url
+			case static::CLASSIC_PLUS:	
+				//defaults for Uri::create()
+		  		$defaults = array('uri' => NULL,'segment_variables' => array(),	'get_variables' => array());
+				$params = array_merge($defaults, static::$pagination_url);
+				
+				//process the uri (create it), then append the $page_nr to it
+				$params['uri'] = \Uri::create($params['uri']);
+				$page_nr = ($page_nr == 1) ? '' : '/'.$page_nr;
+				$params['uri'] = rtrim($params['uri'], '/').$page_nr;
+				
+				// this time \Uri::create is for appending the get_variables
+				return \Uri::create($params['uri'],	$params['segment_variables'], $params['get_variables']);
+		  	
+		  	//put $page_nr in a get variable and append all get vars to the uri
+			case static::GET:
+			  	//defaults for Uri::create()
+		  		$defaults = array('uri' => NULL,'segment_variables' => array(),	'get_variables' => array());
+				$params = array_merge($defaults, static::$pagination_url);
+				
+		  		$params['get_variables'][static::$uri_page] = $page_nr;
+		  		
+				if ($page_nr == 1)
+				{
+					unset($params['get_variables'][static::$uri_page]);
+				}
+				
+				return \Uri::create($params['uri'],	$params['segment_variables'], $params['get_variables']);
 		}
 	}
 }
