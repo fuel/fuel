@@ -80,9 +80,9 @@ class Pagination {
 	 */
 	protected static $method = 0; // static::CLASSIC
 	
-	const CLASSIC = 0;
-	const SEGMENT_TAG = 1;
-	const GET_TAG = 2;
+	const CLASSIC = 'classic';
+	const SEGMENT_TAG = 'segment_tag';
+	const GET_TAG = 'get_tag';
 
 
 
@@ -258,7 +258,7 @@ class Pagination {
 	 */
 	public static function pagination_url($page_nr)
 	{
-		switch (static::$method) 
+		switch (strtolower(static::$method)) 
 		{
 			case static::CLASSIC:
 			
@@ -322,7 +322,7 @@ class Pagination {
 	 */
 	public static function current_page()
 	{
-		switch (static::$method) 
+		switch (strtolower(static::$method)) 
 		{
 			case static::CLASSIC:
 		  	case static::SEGMENT_TAG:
