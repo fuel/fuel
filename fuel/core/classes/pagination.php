@@ -65,17 +65,24 @@ class Pagination {
 	protected static $replacement_tag = '{p}';
 
 	/**
-	 * @var	mixed	The pagination URL
+	 * @var	mixed	The get_variable
 	 */
 	protected static $get_variable = 'page';
+	
+	/**
+	 * @var	mixed	Hide pagination nr whe it == 1 (not supported in static::CLASSIC)
+	 */
+	protected static $hide_1 = true;
+	
 
 	/**
-	 * @var	string	static::CLASSIC | static::CLASSIC_PLUS | static::GET
+	 * @var	string	static::CLASSIC | static::SEGMENT_TAG | static::GET_TAG
 	 */
-	protected static $method = 0; // static::SEGMENT
+	protected static $method = 0; // static::CLASSIC
 	
-	const SEGMENT = 0;
-	const GET = 1;
+	const CLASSIC = 0;
+	const SEGMENT_TAG = 1;
+	const GET_TAG = 2;
 
 
 
@@ -251,41 +258,59 @@ class Pagination {
 	 */
 	public static function pagination_url($page_nr)
 	{
-		if($page_nr == 1)
+		switch (static::$method) 
 		{
-			//if found remove'/{p}'
-			//else if found, remove'{p}&'
-			//else if found, remove '&{p}'
-			//else if found, remove'?{p}'
-			if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
-			{
-				return str_replace('/'.static::$replacement_tag, '', static::$pagination_url);
-			}
-			elseif(is_int(strpos(static::$pagination_url, static::$replacement_tag.'&')))
-			{
-				return str_replace(static::$replacement_tag.'&', '', static::$pagination_url);
-			}
-			elseif(is_int(strpos(static::$pagination_url, '&'.static::$replacement_tag)))
-			{
-				return str_replace('&'.static::$replacement_tag, '', static::$pagination_url);
-			}
-			elseif(is_int(strpos(static::$pagination_url, '?'.static::$replacement_tag)))
-			{
-				return str_replace('?'.static::$replacement_tag, '', static::$pagination_url);
-			}
-		}
-		else
-		{
-			//if found '/{p}'
-			if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
-			{
-				return str_replace(static::$replacement_tag, $page_nr, static::$pagination_url);
-			}
-			else
-			{
-				return str_replace(static::$replacement_tag, static::$get_variable.'='.$page_nr, static::$pagination_url);
-			}
-		}
+			case static::CLASSIC:
+			
+				$page_nr = ($page_nr == 1) ? '' : '/'.$page_nr;
+				return rtrim(static::$pagination_url, '/').$page_nr;
+	
+			case static::SEGMENT_TAG:
+		  	case static::GET_TAG:
+		  	
+		  		if($page_nr == 1 AND static::$hide_1 === true)
+				{
+					//if found remove'/{p}'
+					//else if found, remove'{p}&'
+					//else if found, remove '&{p}'
+					//else if found, remove'?{p}'
+					if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
+					{
+						return str_replace('/'.static::$replacement_tag, '', static::$pagination_url);
+					}
+					elseif(is_int(strpos(static::$pagination_url, static::$replacement_tag.'&')))
+					{
+						return str_replace(static::$replacement_tag.'&', '', static::$pagination_url);
+					}
+					elseif(is_int(strpos(static::$pagination_url, '&'.static::$replacement_tag)))
+					{
+						return str_replace('&'.static::$replacement_tag, '', static::$pagination_url);
+					}
+					elseif(is_int(strpos(static::$pagination_url, '?'.static::$replacement_tag)))
+					{
+						return str_replace('?'.static::$replacement_tag, '', static::$pagination_url);
+					}
+					else
+					{
+						//throw exception ?
+						// or:
+						return static::$pagination_url;
+					}
+				}
+				else
+				{
+					//if found '/{p}'
+					if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
+					{
+						return str_replace(static::$replacement_tag, $page_nr, static::$pagination_url);
+					}
+					else
+					{
+						return str_replace(static::$replacement_tag, static::$get_variable.'='.$page_nr, static::$pagination_url);
+					}
+				}
+			break;
+		}	
 	}
 	
 	/**
@@ -297,11 +322,12 @@ class Pagination {
 	 */
 	public static function current_page()
 	{
-		switch (strtolower(static::$method)) 
+		switch (static::$method) 
 		{
-		  	case static::SEGMENT:
+			case static::CLASSIC:
+		  	case static::SEGMENT_TAG:
 		  		return (int) \URI::segment(static::$uri_segment);
-		  	case static::GET:
+		  	case static::GET_TAG:
 		  		return (int) \Input::get(static::$get_variable, 1);
   		}
 	}
