@@ -28,7 +28,27 @@ class Tests {
 
 	public static $classes = array();
 
-	public static $description;
+	public static function help()
+	{
+		$output = <<<HELP
+
+Usage:
+  php oil [t|test] [all|package <packagename>|<classname>]
+
+Description:
+    Octane allows you to unit test classes and packages easily through Oil.
+
+Examples:
+    php oil test all
+    php oil test package oil
+    php oil test inflector
+
+Documentation:
+	http://fuelphp.com/docs/packages/octane/
+HELP;
+		\Cli::write($output);
+
+	}
 
 	public static function run_all($args)
 	{
@@ -138,9 +158,12 @@ class Tests {
 		}
 	}
 
-	public static function output_header()
+	public static function output_header($description = '')
 	{
-		$description = ucwords( implode(static::$classes, ', ') ) . ' Tests';
+		if ( !empty(static::$classes) && $description == '' )
+		{
+			$description = ucwords( implode(static::$classes, ', ') ) . ' Tests';
+		}
 
 		Cli::write('-------------------------------------------------');
 		Cli::write(' Octane Unit Testing');

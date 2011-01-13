@@ -15,5 +15,4 @@ class Controller_Welcome extends Controller {
 		Output::$status = 404;
 		$this->render('welcome/404');
 	}
-
 }
