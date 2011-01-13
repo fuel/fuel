@@ -224,7 +224,12 @@ Examples:
   php oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g migration <migrationname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
   php oil g scaffold <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
+  php oil g scaffold/template_subfolder <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
 
+Note that the next two lines are equivalent: 
+  php oil g scaffold <modelname> ...
+  php oil g scaffold/default <modelname> ...
+  
 Documentation:
   http://fuelphp.com/docs/packages/oil/generate.html
 HELP;

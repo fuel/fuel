@@ -33,14 +33,21 @@ class Cli
 				static::help();
 				return;
 			}
-
+			
 			switch ($args[1])
 			{
 				case 'g':
 				case 'generate':
 
 					$action = isset($args[2]) ? $args[2]: 'help';
-
+					
+					$subfolder = 'default';
+					if (is_int(strpos($action, 'scaffold/')))
+					{
+						$subfolder = str_replace('scaffold/', '', $action);
+						$action = 'scaffold';
+					}
+					
 					switch ($action)
 					{
 						case 'controller':
@@ -51,7 +58,7 @@ class Cli
 						break;
 
 						case 'scaffold':
-							call_user_func('Oil\Scaffold::generate', array_slice($args, 3));
+							call_user_func('Oil\Scaffold::generate', array_slice($args, 3), $subfolder);
 						break;
 
 						default:
@@ -88,7 +95,7 @@ class Cli
 					}
 
 				break;
-				
+
 				case 't':
 				case 'test':
 					\Fuel::add_package('octane');
@@ -106,7 +113,7 @@ class Cli
 					}
 
 				break;
-
+ 
 				case '-v':
 				case '--version':
 					\Cli::write('Fuel: ' . \Fuel::VERSION);

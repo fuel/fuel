@@ -24,8 +24,14 @@ namespace Oil;
  */
 class Scaffold
 {
-	public function generate($args)
+	public function generate($args, $subfolder = 'default')
 	{
+		$subfolder = trim($subfolder, '/');
+		if( ! is_dir( PKGPATH.'oil/views/'.$subfolder))
+		{
+			throw new Exception('The subfolder for scaffolding templates doesn\'t exist or is spelled wrong: '.$subfolder.' ');
+		}
+	
 		// Do this first as there is the largest chance of error here
 		Generate::model($args);
 		
@@ -49,33 +55,33 @@ class Scaffold
 		$data['fields'] = $fields;
 
 		$filepath = APPPATH . 'classes/controller/' . $plural . '.php';
-		$controller = \View::factory('scaffold/controller', $data);
+		$controller = \View::factory($subfolder.'/scaffold/controller', $data);
 
 		$controller->actions = array(
 			array(
 				'name'		=> 'index',
 				'params'	=> '',
-				'code'		=> \View::factory('scaffold/actions/index', $data),
+				'code'		=> \View::factory($subfolder.'/scaffold/actions/index', $data),
 			),
 			array(
 				'name'		=> 'view',
 				'params'	=> '$id = null',
-				'code'		=> \View::factory('scaffold/actions/view', $data),
+				'code'		=> \View::factory($subfolder.'/scaffold/actions/view', $data),
 			),
 			array(
 				'name'		=> 'create',
 				'params'	=> '$id = null',
-				'code'		=> \View::factory('scaffold/actions/create', $data),
+				'code'		=> \View::factory($subfolder.'/scaffold/actions/create', $data),
 			),
 			array(
 				'name'		=> 'edit',
 				'params'	=> '$id = null',
-				'code'		=> \View::factory('scaffold/actions/edit', $data),
+				'code'		=> \View::factory($subfolder.'/scaffold/actions/edit', $data),
 			),
 			array(
 				'name'		=> 'delete',
 				'params'	=> '$id = null',
-				'code'		=> \View::factory('scaffold/actions/delete', $data),
+				'code'		=> \View::factory($subfolder.'/scaffold/actions/delete', $data),
 			),
 		);
 
@@ -88,7 +94,7 @@ class Scaffold
 		// Add the default template if it doesnt exist
 		if ( ! file_exists($app_template = APPPATH . 'views/template.php'))
 		{
-			copy(PKGPATH . 'oil/views/template.php', $app_template);
+			copy(PKGPATH . 'oil/views/'.$subfolder.'/template.php', $app_template);
 			chmod($app_template, 0666);
 		}
 		
@@ -101,7 +107,7 @@ class Scaffold
 		// Create each of the views
 		foreach (array('index', 'view', 'create', 'edit', '_form') as $view)
 		{
-			static::write($view_file = $view_folder . $view . '.php', \View::factory('scaffold/views/'.$view, $data));
+			static::write($view_file = $view_folder . $view . '.php', \View::factory($subfolder.'/scaffold/views/'.$view, $data));
 
 			\Cli::write('Created view: ' . \Fuel::clean_path($view_file));
 		}
