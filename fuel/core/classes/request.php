@@ -292,7 +292,7 @@ class Request {
 			// 404 if it's still not found
 			if ( ! class_exists($class))
 			{
-				$this->output =& static::show_404(true);
+				$this->output = static::show_404(true);
 				return $this;
 			}
 		}
@@ -334,7 +334,7 @@ class Request {
 		}
 		else
 		{
-			$this->output =& static::show_404(true);
+			$this->output = static::show_404(true);
 		}
 
 		return $this;
