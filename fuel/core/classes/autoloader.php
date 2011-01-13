@@ -303,7 +303,7 @@ class Autoloader {
 		}
 		elseif ( ! $namespaced and $class_name = static::is_core_class($class))
 		{
-			include str_replace('/', DS, static::$classes[$class_name]);
+			! class_exists($class_name, false) and include str_replace('/', DS, static::$classes[$class_name]);
 			static::alias_to_namespace($class_name);
 			static::_init_class($class);
 			return true;
