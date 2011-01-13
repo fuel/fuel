@@ -126,7 +126,13 @@ class Uri {
 
 	public static function string()
 	{
-		return \Request::active()->uri->uri;
+		$ret = '';
+		$ret .= empty(\Request::active()->module) ?  '' : (\Request::active()->module.'/');
+		$ret .= empty(\Request::active()->directory) ? '' : (\Request::active()->directory.'/');
+		$ret .= \Request::active()->controller.'/';
+		$ret .= \Request::active()->action ?: 'index';
+		return $ret;
+		//return \Request::active()->uri->uri;
 	}
 
 	/**
@@ -138,15 +144,31 @@ class Uri {
 	 */
 	public static function create($uri = null, $segment_variables = array(), $querystring_variables = array())
 	{
-		$url = \Config::get('base_url');
-
+		$base_url = \Config::get('base_url');
 		if (\Config::get('index_file'))
 		{
-			$url .= \Config::get('index_file').'/';
+			$base_url .= \Config::get('index_file').'/';
 		}
-
-		$url = $url.ltrim(is_null($uri) ? static::string() : $uri, '/');
-
+		
+		if (is_string($uri))
+		{	
+			if (preg_match('#^\w+://# i', $uri))
+			{
+				//uri is of type 'http://...' dont touch it
+				$url = $uri;
+			}
+			else
+			{
+				//uri is of type 'controller/action' prepend base_url
+				$url = $base_url.ltrim($uri, '/');
+			}
+		}
+		else 
+		{
+			//uri is null
+			$url = $base_url.ltrim(static::string(), '/');
+		}
+		
 		foreach($segment_variables as $key => $val)
 		{
 			$url = str_replace(':'.$key, $val, $url);
