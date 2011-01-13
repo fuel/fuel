@@ -57,6 +57,28 @@ class Pagination {
 	 */
 	protected static $pagination_url;
 
+
+ 
+	/**
+	 * @var	mixed	The replacement tag
+	 */
+	protected static $replacement_tag = '{p}';
+
+	/**
+	 * @var	mixed	The pagination URL
+	 */
+	protected static $get_variable = 'page';
+
+	/**
+	 * @var	string	static::CLASSIC | static::CLASSIC_PLUS | static::GET
+	 */
+	protected static $method = 0; // static::SEGMENT
+	
+	const SEGMENT = 0;
+	const GET = 1;
+
+
+
 	/**
 	 * Init
 	 *
@@ -107,7 +129,7 @@ class Pagination {
 
 		static::$total_pages = ceil(static::$total_items / static::$per_page) ?: 1;
 
-		static::$current_page = (int) \URI::segment(static::$uri_segment);
+		static::$current_page = static::current_page();
 
 		if (static::$current_page > static::$total_pages)
 		{
@@ -155,8 +177,7 @@ class Pagination {
 			}
 			else
 			{
-				$url = ($i == 1) ? '' : '/'.$i;
-				$pagination .= \Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
+				$pagination .= \Html::anchor(static::pagination_url($i), $i);
 			}
 		}
 
@@ -188,7 +209,7 @@ class Pagination {
 		else
 		{
 			$next_page = static::$current_page + 1;
-			return \Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
+			return \Html::anchor(static::pagination_url($next_page), $value);
 		}
 	}
 
@@ -215,10 +236,76 @@ class Pagination {
 		else
 		{
 			$previous_page = static::$current_page - 1;
-			$previous_page = ($previous_page == 1) ? '' : '/' . $previous_page;
-			return \Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
+			return \Html::anchor(static::pagination_url($previous_page), $value);
 		}
 	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get the pagination url with the configured static::$mode
+	 *
+	 * @access public
+	 * @param string $page_nr The page nr for the url
+	 * @return string    The pagination_url
+	 */
+	public static function pagination_url($page_nr)
+	{
+		if($page_nr == 1)
+		{
+			//if found remove'/{p}'
+			//else if found, remove'{p}&'
+			//else if found, remove '&{p}'
+			//else if found, remove'?{p}'
+			if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
+			{
+				return str_replace('/'.static::$replacement_tag, '', static::$pagination_url);
+			}
+			elseif(is_int(strpos(static::$pagination_url, static::$replacement_tag.'&')))
+			{
+				return str_replace(static::$replacement_tag.'&', '', static::$pagination_url);
+			}
+			elseif(is_int(strpos(static::$pagination_url, '&'.static::$replacement_tag)))
+			{
+				return str_replace('&'.static::$replacement_tag, '', static::$pagination_url);
+			}
+			elseif(is_int(strpos(static::$pagination_url, '?'.static::$replacement_tag)))
+			{
+				return str_replace('?'.static::$replacement_tag, '', static::$pagination_url);
+			}
+		}
+		else
+		{
+			//if found '/{p}'
+			if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
+			{
+				return str_replace(static::$replacement_tag, $page_nr, static::$pagination_url);
+			}
+			else
+			{
+				return str_replace(static::$replacement_tag, static::$get_variable.'='.$page_nr, static::$pagination_url);
+			}
+		}
+	}
+	
+	/**
+	 * Get current page from uri with the configured static::$mode
+	 *
+	 * @access public
+	 * @param string $page_nr The page nr for the url
+	 * @return string    The pagination_url
+	 */
+	public static function current_page()
+	{
+		switch (strtolower(static::$method)) 
+		{
+		  	case static::SEGMENT:
+		  		return (int) \URI::segment(static::$uri_segment);
+		  	case static::GET:
+		  		return (int) \Input::get(static::$get_variable, 1);
+  		}
+	}
+	
 }
 
 /* End of file pagination.php */
