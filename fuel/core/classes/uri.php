@@ -135,7 +135,7 @@ class Uri {
 	 * @param	string	the url
 	 * @param	array	some variables for the url
 	 */
-	public static function create($uri = null, $variables = array())
+	public static function create($uri = null, $variables = array(), $get_variables = array())
 	{
 		$url = \Config::get('base_url');
 
@@ -145,6 +145,16 @@ class Uri {
 		}
 
 		$url = $url.ltrim(is_null($uri) ? static::string() : $uri, '/');
+
+		if ( ! empty($get_variables))
+		{
+			$char = strpos($url, '?') === false ? '?' : '&';
+			foreach ($get_variables as $key => $val)
+			{
+				$url .= $char.$key.'='.$val;
+				$char = '&';
+			}
+		}
 
 		foreach($variables as $key => $val)
 		{
