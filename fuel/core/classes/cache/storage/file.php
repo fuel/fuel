@@ -43,7 +43,7 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		$this->expiration = $this->_validate_config('expiration', isset($this->config['expiration']) ? $this->config['expiration'] : $this->expiration);
 
 		// determine the file cache path
-		static::$path = !empty($this->config['path']) ? $this->config['path'] : APPPATH.'cache'.DS;
+		static::$path = !empty($this->config['path']) ? $this->config['path'] : \Config::get('cache_dir', APPPATH.'cache'.DS);
 		if ( ! is_dir(static::$path) || ! is_writable(static::$path))
 		{
 			throw new \Cache_Exception('Cache directory does not exist or is not writable.');
