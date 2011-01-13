@@ -28,7 +28,7 @@ class Tests {
 
 	public static $classes = array();
 	
-	public static function run_help()
+	public static function help()
 	{
 		$output = <<<HELP
 
