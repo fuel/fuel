@@ -86,6 +86,7 @@ return array(
 		'csrf_autoload'			=> false,
 		'csrf_token_key'		=> 'fuel_csrf_token',
 		'csrf_expiration'		=> 0,
+		'uri_filter'			=> array('htmlentities'),
 		'input_filter'			=> array('htmlentities'),
 	),
 
