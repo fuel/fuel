@@ -239,6 +239,19 @@ class Model {
 	 */
 	private $assoc_types = array('belongs_to', 'has_many', 'has_one');
 
+	/**
+	 * The factory takes $params and returns a new instance.
+	 *
+	 *     $view = Model_User::factory(array('stuff' => 'junk'));
+	 *
+	 * @param   string  view filename
+	 * @param   array   array of values
+	 * @return  View
+	 */
+	public static function factory($params = null)
+	{
+		return new static($params, true);
+	}
 
 	/**
 	 * The constructor takes $params which can be data to set for the record.
@@ -246,8 +259,8 @@ class Model {
 	 * Usage:
 	 *
 	 * <code>
-	 * $user = new User;
-	 * $user = new User(array('name' => 'Dan'));
+	 * $user = new Model_User;
+	 * $user = new Model_User(array('name' => 'Dan'));
 	 * </code>
 	 *
 	 * @param	array	$params			any data to set
@@ -768,6 +781,7 @@ class Model {
 	public function delete($id = null)
 	{
 		// Not running statically, AND
+		/*
 		if ( ! isset($this) AND empty($id))
 		{
 			throw new Exception('Which record should be deleted?', Exception::AttributeNotFound);
@@ -778,24 +792,25 @@ class Model {
 		{
 			$obj = $id ? static::run_find($id) : $this;
 		}
+		*/
 
-		if (method_exists($obj, 'before_delete'))
+		if (method_exists($this, 'before_delete'))
 		{
-			$obj->before_delete();
+			$this->before_delete();
 		}
 		foreach ($this->associations as $name => $assoc)
 		{
-			$assoc->delete($obj);
+			$assoc->delete($this);
 		}
 
 		DB::delete($this->table_name)
-			->where($this->primary_key, '=', $obj->{$this->primary_key})
+			->where($this->primary_key, '=', $this->{$this->primary_key})
 			->limit(1)
 			->execute();
 
 		$this->frozen = true;
 
-		if (method_exists($obj, 'after_delete'))
+		if (method_exists($this, 'after_delete'))
 		{
 			$this->after_delete();
 		}

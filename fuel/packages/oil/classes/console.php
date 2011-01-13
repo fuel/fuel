@@ -61,7 +61,7 @@ class Console {
 		{
 			echo ">>> ";
 
-			if (!$__line = trim(fgets(STDIN), PHP_EOL))
+			if ( ! $__line = rtrim(trim(trim(fgets(STDIN)), PHP_EOL), ';'))
 			{
 				continue;
 			}
@@ -77,7 +77,16 @@ class Console {
 			}
 
 			ob_start();
+
+			// Unset the previous line and execute the new one
 			$ret = eval("unset(\$__line); $__line;");
+
+			// Error was returned
+			if ($ret === false)
+			{
+				\Cli::write(\Cli::color('Parse Error - ' . $__line, 'light_red'));
+				\Cli::beep();
+			}
 
 			if (ob_get_length() == 0)
 			{
@@ -89,7 +98,7 @@ class Console {
 				{
 					echo addcslashes($ret, "\0..\37\177..\377");
 				}
-				else if (!is_null($ret))
+				else if ( ! is_null($ret))
 				{
 					var_export($ret);
 				}

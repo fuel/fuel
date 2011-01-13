@@ -65,6 +65,10 @@ class Cli {
 	 */
 	public static function _init()
 	{
+		if ( ! IS_CLI)
+		{
+			throw new Exception('Cli class cannot be used outside of the command line.');
+		}
 		for ($i = 1; $i < $_SERVER['argc']; $i++)
 		{
 			$arg = explode('=', $_SERVER['argv'][$i]);

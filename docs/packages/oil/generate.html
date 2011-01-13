@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Oil utility - Generate - Fuel Documentation</title>
+	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('packages', '../../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Oil utility</h2>
+
+		<p>The Oil utility is a special package command can be used in several ways to facilitate quick development, help with
+		testing your application and for running <a href="../../general/tasks.html">Tasks</a>.</p>
+
+		<section>
+
+			<h2>Generate</h2>
+
+			<p>
+				Code Generation can be used to speed up development times by building much of the repetitive code for you. This
+				is entirely optionally - like all of oil - and all code can be edited however you like afterwards. You can generate the following items:
+			</p>
+
+			<ul>
+				<li><a href="#controllers">Controllers</a></li>
+				<li><a href="#models">Models</a></li>
+				<li><a href="#views">Views</a></li>
+				<li><a href="#migrations">Migrations</a></li>
+				<li><a href="#scaffolding">Scaffolding</a></li>
+			</ul>
+
+			<a name="controllers"></a>
+			<h3>Controllers</h3>
+
+			<p>
+				To generate a skeleton <a href="../../general/controllers/base.html">Controller</a> with actions and views
+				predefined, use the following command:
+			</p>
+
+			<pre class="cli">$ php oil g controller posts action1 action2 action3
+	Created view: APPPATH/views/posts/action1.php
+	Created view: APPPATH/views/posts/action2.php
+	Created view: APPPATH/views/posts/action3.php
+	Created controller: APPPATH/classes/controller/posts.php</pre>
+
+			<p>This will produce a controller that looks like this:</p>
+
+			<pre class="php"><code>class Controller_Posts extends Controller_Template {
+
+	public function action_action1()
+	{
+		$this->template->title = 'Posts &raquo Action1';
+		$this->template->content = View::factory('posts/action1');
+	}
+
+	public function action_action2()
+	{
+		$this->template->title = 'Posts &raquo Action2';
+		$this->template->content = View::factory('posts/action2');
+	}
+
+	public function action_action3()
+	{
+		$this->template->title = 'Posts &raquo Action3';
+		$this->template->content = View::factory('posts/action3');
+	}
+
+}
+
+/* End of file posts.php */</code></pre>
+
+			<a name="models"></a>
+			<h3>Models</h3>
+
+			<p>
+				Generate a simple <a href="../../general/controllers/base.html">Model</a> by listing fields and have
+				the <a href="../../general/controllers/migrations.html">Migration</a> automatically created for you to match:
+			</p>
+
+			<pre class="cli">$ php oil g model post title:varchar[50] body:text user_id:int
+	Created model: APPPATH/classes/model/post.php
+	Created migration: APPPATH/migrations/001_create_posts.php</pre>
+
+			<p>That will create a simple Model that uses ActiveRecord, so make sure the package is enabled in your config file. It will look like this:</p>
+
+			<pre class="php"><code>class Model_Post extends ActiveRecord\Model { }
+
+/* End of file post.php */
+</code></pre>
+
+			<p>Not very exciting, but the migration is the useful part here:</p>
+
+			<pre class="php"><code>namespace Fuel\Migrations;
+
+class Create_posts {
+
+	function up()
+	{
+		\DBUtil::create_table('posts', array(
+			'id' => array('type' => 'int', 'auto_increment' => true),
+			'title' => array('type' => 'varchar', 'constraint' => 50),
+			'body' => array('type' => 'text'),
+			'user_id' => array('type' => 'int', 'constraint' => 11),
+
+		), array('id'));
+	}
+
+	function down()
+	{
+		\DBUtil::drop_table('posts');
+	}
+}</code></pre>
+
+			<a name="migrations"></a>
+			<h3>Migrations</h3>
+
+			<p>
+				You can generate migrations without creating a model. This would be used to add new fields to your schema
+				in a way that is easy to deploy to other environments.
+			</p>
+
+			<pre class="cli">$ php oil g migration add_summary_to_posts summary:text
+	Created migration: APPPATH/migrations/002_add_summary_to_posts.php</pre>
+
+			<p>
+				Note: Adding fields like this needs some work. At the moment the up and down will be empty but soon Oil
+				will work this out based on the name and fields.
+			</p>
+
+			<a name="scaffolding"></a>
+			<h3>Scaffolding</h3>
+
+			<p>
+				Scaffolding is the really exciting part of Oil's code generation. This approach is heavily borrowed from Rails who have done
+				a great job with it. The idea is that you create not only the MVC skeletons and migrations, but populate them with default CRUD code
+				so the code will actually work after writing the command.
+			</p>
+
+			<pre class="cli">$ php oil g scaffold monkey name:string description:text
+	Created model: APPPATH/classes/model/monkey.php
+	Created migration: APPPATH/migrations/003_create_monkeys.php
+	Created controller: APPPATH/classes/controller/monkeys.php
+	Created view: APPPATH/views/monkeys/index.php
+	Created view: APPPATH/views/monkeys/view.php
+	Created view: APPPATH/views/monkeys/create.php
+	Created view: APPPATH/views/monkeys/edit.php
+	Created view: APPPATH/views/monkeys/_form.php
+
+$ php oil refine migrate
+Migrated to latest version: 3.
+</pre>
+
+			<p>
+				As you can see lots of code is generated by this command including a command that is executed in the second command.
+				The controller looks like this:
+			</p>
+
+			<pre class="php"><code>class Controller_Monkeys extends Controller_Template {
+
+	public function action_index()
+	{
+		$data['monkeys'] = Model_Monkey::find('all');
+		$this->template->title = "Monkeys";
+		$this->template->content = View::factory('monkeys/index', $data);
+	}
+
+	public function action_view($id = null)
+	{
+		$data['monkey'] = Model_Monkey::find($id);
+
+		$this->template->title = "Monkey";
+		$this->template->content = View::factory('monkeys/view', $data);
+	}
+
+	public function action_create($id = null)
+	{
+		if ($_POST)
+		{
+			$monkey = Model_Monkey::factory(array(
+				'name' => Input::post('name'),
+				'description' => Input::post('description'),
+			));
+
+			if ($monkey and $monkey->save())
+			{
+				Session::set_flash('notice', 'Added ' . $monkey . ' #' . $monkey->id);
+
+				Output::redirect('monkeys');
+			}
+
+			else
+			{
+				Session::set_flash('notice', 'Could not save ' . $monkey . ' #' . $id);
+			}
+
+		}
+
+		$this->template->title = "Monkeys";
+		$this->template->content = View::factory('monkeys/create');
+	}
+
+	public function action_edit($id = null)
+	{
+		$monkey = Model_Monkey::find($id);
+
+		if ($_POST)
+		{
+			$monkey->name = Input::post('name');
+			$monkey->description = Input::post('description');
+
+			if ($monkey->save())
+			{
+				Session::set_flash('notice', 'Updated ' . $monkey . ' #' . $monkey->id);
+
+				Output::redirect('monkeys');
+			}
+
+			else
+			{
+				Session::set_flash('notice', 'Could not update ' . $monkey . ' #' . $id);
+			}
+		}
+
+		else
+		{
+			$this->template->set_global('monkey', $monkey);
+		}
+
+		$this->template->title = "Monkeys";
+		$this->template->content = View::factory('monkeys/edit');
+	}
+
+	public function action_delete($id = null)
+	{
+		$monkey = Model_Monkey::find($id);
+
+		if ($monkey and $monkey->delete())
+		{
+			Session::set_flash('notice', 'Deleted ' . $monkey . ' #' . $id);
+		}
+
+		else
+		{
+			Session::set_flash('notice', 'Could not delete ' . $monkey . ' #' . $id);
+		}
+
+		Output::redirect('monkeys');
+	}
+
+
+}
+
+/* End of file monkeys.php */
+</code></pre>
+
+		</section>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

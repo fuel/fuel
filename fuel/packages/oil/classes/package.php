@@ -97,14 +97,34 @@ class Package
 			return false;
 		}
 
-		\Cli::write('Uninstalling package "' . $package . '"', 'yellow');
+		\Cli::write('Package "' . $package . '" was uninstalled.', 'yellow');
 
 		\File::delete_dir($package_folder);
 	}
 
 	public static function help()
 	{
-		\Cli::write('Help coming soon!', 'blue');
+		$output = <<<HELP
+
+Usage:
+  php oil [p|package] <packagename>
+
+Description:
+  Packages containing extra functionality can be downloaded (or git cloned) simply with
+  the following commands.
+
+Runtime options:
+  --direct       # Download direct from ZIP even if Git is installed
+
+Examples:
+  php oil package install <packagename>
+  php oil package uninstall <packagename>
+
+Documentation:
+  http://fuelphp.com/docs/packages/oil/package.html
+HELP;
+		\Cli::write($output);
+
 	}
 
 

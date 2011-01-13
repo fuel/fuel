@@ -79,23 +79,35 @@ class Cookie {
 	 * @param   string   name of cookie
 	 * @param   string   value of cookie
 	 * @param   integer  lifetime in seconds
+	 * @param   string   path of the cookie
+	 * @param   string   domain of the cookie
 	 * @return  boolean
 	 */
-	public static function set($name, $value, $expiration = null)
+	public static function set($name, $value, $expiration = null, $path = null, $domain = null)
 	{
 		// If nothing is provided, use the standard amount of time
 		if ($expiration === null)
 		{
 			$expiration = time() + 86500;
 		}
-
 		// If it's set, add the current time so we have an offset
 		else
 		{
 			$expiration = $expiration > 0 ? $expiration + time() : 0;
 		}
 
-		return setcookie($name, $value, $expiration, static::$path, static::$domain, static::$secure, static::$httponly);
+		// use the class defaults for path and domain if not provided
+		if (empty($path))
+		{
+			$path = static::$path;
+		}
+
+		if (empty($domain))
+		{
+			$domain = static::$domain;
+		}
+
+		return setcookie($name, $value, $expiration, $path, $domain, static::$secure, static::$httponly);
 	}
 
 	/**

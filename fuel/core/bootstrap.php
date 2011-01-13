@@ -37,6 +37,12 @@ import('fuel');
  */
 define('MBSTRING', function_exists('mb_get_info'));
 
+// Is Fuel being requested via an AJAX request?
+define('IS_AJAX', isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+
+// Is Fuel running on the command line?
+define('IS_CLI', defined('STDIN'));
+
 // Load in the Autoloader
 require COREPATH.'classes'.DS.'autoloader.php';
 

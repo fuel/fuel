@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Oil utility - Package - Fuel Documentation</title>
+	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('packages', '../../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Oil utility</h2>
+
+		<p>The Oil utility is a special package command can be used in several ways to facilitate quick development, help with
+		testing your application and for running <a href="../../general/tasks.html">Tasks</a>.</p>
+
+		<section>
+
+			<h2>Package</h2>
+
+			<p>
+				Packages can be installed and downloaded manually but with the help of the package command it can work much quicker. It does this
+				by looking for packages within a list of sources defined in <kbd>fuel/core/package.php</kbd> and like any other config file can
+				be edited there or copied to the <kbd>fuel/app/config</kbd> folder.
+			</p>
+			
+			<p>
+				Oil is smart, so it will check to see if you have Git installed on your computer before it does anything with the package command.
+				If you do have Git installed Oil will install a package as a Git repository instead of directly downloading the files, meaning
+				updates, new releases and tracking custom changes to packages could not be easier.
+			</p>
+
+			<h3>Install</h3>
+
+			<pre class="cli">$ php oil package install test-package
+Downloading package: git://github.com/philsturgeon/fuel-test-package.git
+remote: Counting objects: 13, done.
+remote: Compressing objects: 100% (11/11), done.
+remote: Total 13 (delta 3), reused 0 (delta 0)
+Receiving objects: 100% (13/13), 10.85 KiB, done.
+Resolving deltas: 100% (3/3), done.
+
+Cloning into /Users/phil/Sites/fuel/fuel/packages/test-package...</pre>
+
+			<p>
+				If Git is not installed, or the --direct flag is provided then a ZIP file of the package will be downloaded and unzipped
+				to <kbd>fuel/packages/packagename</kbd>.
+			</p>
+
+			<pre class="cli">$ php oil package install test-package --direct
+Downloading package: http://github.com/philsturgeon/fuel-test-package/zipball/master
+	DOCROOT/fuel/packages/test-package/LICENSE.txt
+	DOCROOT/fuel/packages/test-package/README
+	DOCROOT/fuel/packages/test-package/classes/association.php
+	DOCROOT/fuel/packages/test-package/classes/belongsto.php
+	DOCROOT/fuel/packages/test-package/classes/exception.php
+	DOCROOT/fuel/packages/test-package/classes/hasmany.php
+	DOCROOT/fuel/packages/test-package/classes/hasone.php
+	DOCROOT/fuel/packages/test-package/classes/model.php</pre>
+
+			<h3>Un-install</h3>
+
+			<pre class="cli">$ php oil package uninstall test-package
+Uninstalling package "test-package"</pre>
+
+			<p class="note"><strong>Note:</strong> Unlike install there is no difference here if Git is installed, it will delete all the same.</p>
+
+			<h3>Update</h3>
+
+			<p>Coming soon...</p>
+
+		</section>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

@@ -75,7 +75,7 @@ CONTROLLER;
 		// Write controller
 		if (self::write($filepath, $controller))
 		{
-			\Cli::write('Created controller '.$singular);
+			\Cli::write("\t".'Created controller: ' . \Fuel::clean_path($filepath));
 		}
 	}
 
@@ -83,6 +83,11 @@ CONTROLLER;
 	public function model($args)
 	{
 		$singular = strtolower(array_shift($args));
+
+		if (empty($args))
+		{
+			throw new Exception('No fields have been provided, the model will not know how to build the table.');
+		}
 
 		$plural = \Inflector::pluralize($singular);
 
@@ -100,7 +105,7 @@ MODEL;
 
 		if (self::write($filepath, $model))
 		{
-			\Cli::write('Created model: ' . \Fuel::clean_path($filepath));
+			\Cli::write("\t".'Created model: ' . \Fuel::clean_path($filepath));
 		}
 
 		if ( ! empty($args))
@@ -145,7 +150,7 @@ VIEW;
 
 			if (self::write($view_file, $view))
 			{
-				\Cli::write("\tCreated view: " . $view_file);
+				\Cli::write("\t".'Created view: ' . \Fuel::clean_path($view_file));
 			}
 		}
 	}
@@ -204,23 +209,24 @@ VIEW;
 	{
 		$output = <<<HELP
 Usage:
-  php oil generate [controller|model|migration|view|views] [options]
+  php oil [g|generate] [controller|model|migration|scaffold|views] [options]
 
 Runtime options:
   -f, [--force]    # Overwrite files that already exist
   -s, [--skip]     # Skip files that already exist
-  -q, [--quiet]    # Supress status output
-
-Fuel options:
-  -v, [--version]  # Show Fuel version number and quit
 
 Description:
-    The 'oil' command can be used to generate MVC components, database migrations
-    and run specific tasks.
+  The 'oil' command can be used to generate MVC components, database migrations
+  and run specific tasks.
 
 Examples:
-    php oil generate controller <controllername> [<action1> |<action2> |..]
-    php oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
+  php oil generate controller <controllername> [<action1> |<action2> |..]
+  php oil g model <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
+  php oil g migration <migrationname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
+  php oil g scaffold <modelname> [<fieldname1>:<type1> |<fieldname2>:<type2> |..]
+
+Documentation:
+  http://fuelphp.com/docs/packages/oil/generate.html
 HELP;
 
 		\Cli::write($output);
@@ -234,7 +240,7 @@ HELP;
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
-			throw new \Exception('Cannot open file: '. $filepath);
+			throw new Exception('Cannot open file: '. $filepath);
 		}
 
 		$result = @fwrite($handle, $data);
@@ -242,7 +248,7 @@ HELP;
 		// Write $somecontent to our opened file.
 		if ($result === FALSE)
 		{
-			throw new \Exception('Cannot write to file: '. $filepath);
+			throw new Exception('Cannot write to file: '. $filepath);
 		}
 
 		@fclose($handle);

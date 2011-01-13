@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cache Class - Usage - Fuel Documentation</title>
+	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('classes', '../../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Cache Class</h2>
+
+		<p>The cache class allows you to cache the result of a resource heavy operation.</p>
+
+		<section>
+			<h2>Usage</h2>
+
+			<p>Using caches can be done in 2 ways: through static usage of the Cache class and through cache objects
+			returned by the Cache::factory(). This section covers static usage which will always work with the same
+			driver as specified in the <a href="config.html">configuration</a>.</p>
+
+			<p>Using cache objects and Cache::factory() is explained in the <a href="advanced.html">advanced</a>
+			section.</p>
+
+			<article>
+				<h4>set($identifier, $contents = null, $expiration = null, $dependencies = array())</h4>
+				<p>Writes a cache.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$identifier</kbd></th>
+									<td><i>string</i></td>
+									<td>Name of the cache</td>
+								</tr>
+								<tr>
+									<th><kbd>$contents</kbd></th>
+									<td><i>mixed</i></td>
+									<td>Contents to be cached</td>
+								</tr>
+								<tr>
+									<th><kbd>$expiration</kbd></th>
+									<td><i>int</i></td>
+									<td>Amount of seconds until the cache expires. 0 will make it never expire, null
+									makes it use the default expiration set in config.</td>
+								</tr>
+								<tr>
+									<th><kbd>$dependencies</kbd></th>
+									<td><i>array</i></td>
+									<td>Array of identifiers this cache depends on, this cache expires if one of those
+									is newer or doesn't exist anymore.</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>void</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>// Cache 'String to be cached' for 3 hours with identifier "test"
+Cache::set('test', 'String to be cached.', 3600 * 3);</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>get($identifier, $use_expiration = true)</h4>
+				<p>Retrieves a cache.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$identifier</kbd></th>
+									<td><i>string</i></td>
+									<td>Name of the cache</td>
+								</tr>
+								<tr>
+									<th><kbd>$use_expiration</kbd></th>
+									<td><i>true</i></td>
+									<td>Disable cache expiration for this fetching by setting this to false</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>mixed - cache contents</td>
+					</tr>
+					<tr>
+						<th>Throws</th>
+						<td>Cache_Exception - when Cache doesn't exist or has expired</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>// try to retrieve the cache and save to $content var
+try
+{
+	$content = Cache::get('test');
+}
+// generate the $content var contents and save cache when that failed
+catch (Exception $e)
+{
+	$content = 'String to be cached.';
+	Cache::set('test', $content, 3600 * 3);
+}</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>delete($identifier)</h4>
+				<p>Deletes a cache.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$identifier</kbd></th>
+									<td><i>string</i></td>
+									<td>Name of the cache</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>void</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>Cache::delete('test');</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+			<article>
+				<h4>delete_all($section = null, $driver = null)</h4>
+				<p>Flushes the whole cache for a specific storage driver or just a subsection of it.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$section</kbd></th>
+									<td><i>string</i></td>
+									<td>Name of a section or directory of the cache, null to delete everything</td>
+								</tr>
+								<tr>
+									<th><kbd>$driver</kbd></th>
+									<td><i>string</i></td>
+									<td>Name of the driver to use, null to use the default driver.</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>void</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>// Delete the whole cache for the default driver
+Cache::delete_all();
+
+// Delete the subdirectory "test" of file
+Cache::delete_all('test', 'file');</code></pre>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</article>
+
+		</section>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

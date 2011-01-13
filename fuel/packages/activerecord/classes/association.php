@@ -71,7 +71,7 @@ class Association {
 		}
 	}
 
-	public function destroy(&$source)
+	public function delete(&$source)
 	{
 		if (isset($this->options['dependent']) && $this->options['dependent'] == 'destroy')
 		{

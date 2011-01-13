@@ -417,7 +417,7 @@ abstract class Session_Driver {
 	 * @access	public
 	 * @return	string	name of the flash id
 	 */
-	public function get_flash_id($name)
+	public function get_flash_id()
 	{
 		return $this->config['flash_id'];
 	}
@@ -502,11 +502,11 @@ abstract class Session_Driver {
 		// write the session cookie
 		if ($this->config['expire_on_close'])
 		{
-			return \Cookie::set($this->config['cookie_name'], $payload, 0);
+			return \Cookie::set($this->config['cookie_name'], $payload, 0, $this->config['cookie_path'], $this->config['cookie_domain']);
 		}
 		else
 		{
-			return \Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time']);
+			return \Cookie::set($this->config['cookie_name'], $payload, $this->config['expiration_time'], $this->config['cookie_path'], $this->config['cookie_domain']);
 		}
 	}
 

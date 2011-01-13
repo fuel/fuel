@@ -29,6 +29,13 @@
 		<p>The output class contains the methods to deal with HTTP header information.</p>
 
 		<article>
+			<h4>Setting the Status Header</h4>
+			<p>The status header is treated as a &quot;special&quot; header in Fuel.  You do not set it as you would other headers.  The status header is set as follows:</p>
+			<pre class="php"><code>Output::$status = 404;</code></pre>
+			<p>You simply set the <kbd>$status</kbd> variable to the status number for the request.</p>
+		</article>
+
+		<article>
 			<h4>set_header($name, $value)</h4>
 			<p>The <strong>set_header</strong> method allows set custom HTTP headers.</p>
 			<table class="method">

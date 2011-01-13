@@ -42,30 +42,74 @@ class Security {
 	}
 
 	/**
-	 * Doesn't do anything yet, just here because it will be and facilitates autoload ;-)
+	 * Cleans the request URI
+	 */
+	public static function clean_uri($uri)
+	{
+		$filters = \Config::get('security.uri_filter', array());
+		$filters = is_array($filters) ? $filters : array($filters);
+
+		return static::clean($uri, $filters);
+	}
+
+	/**
+	 * Cleans the $_GET and $_POST arrays
 	 */
 	public static function clean_input()
 	{
-		$filters = \Config::get('security.input_filter');
+		$filters = \Config::get('security.input_filter', array());
+		$filters = is_array($filters) ? $filters : array($filters);
+
+		$_GET = static::clean($_GET, $filters);
+		$_POST = static::clean($_POST, $filters);
+	}
+
+	/**
+	 * Generic variable clean method
+	 */
+	public static function clean($var, $filters)
+	{
 		foreach ($filters as $filter)
 		{
-			if (is_callable('static::'.$filter))
+			// is this filter a callable function?
+			if (is_callable($filter))
 			{
-				$_GET = static::$filter($_GET);
-				$_POST = static::$filter($_POST);
-			}
-			elseif (function_exists($filter))
-			{
-				foreach($_GET as $key => $value)
+				if (is_array($var))
 				{
-					$_GET[$key] = $filter($value);
+					foreach($var as $key => $value)
+					{
+						$var[$key] = call_user_func($filter, $value);
+					}
 				}
-				foreach($_POST as $key => $value)
+				else
 				{
-					$_POST[$key] = $filter($value);
+					$var = call_user_func($filter, $var);
+				}
+			}
+
+			// is this filter a callable local function?
+			elseif (is_callable('static::'.$filter))
+			{
+				$var = static::$filter($var);
+			}
+
+			// assume it's a regex of characters to filter
+			else
+			{
+				if (is_array($var))
+				{
+					foreach($var as $key => $value)
+					{
+						$var[$key] = preg_replace('#['.$filter.']#ui', '', $value);
+					}
+				}
+				else
+				{
+					$var = preg_replace('#['.$filter.']#ui', '', $var);
 				}
 			}
 		}
+		return $var;
 	}
 
 	public static function strip_tags($value)
@@ -79,6 +123,23 @@ class Security {
 			foreach ($value as $k => $v)
 			{
 				$value[$k] = static::strip_tags($v);
+			}
+		}
+
+		return $value;
+	}
+
+	public static function htmlentities($value)
+	{
+		if ( ! is_array($value))
+		{
+			$value = htmlentities($value, ENT_COMPAT, INTERNAL_ENC);
+		}
+		else
+		{
+			foreach ($value as $k => $v)
+			{
+				$value[$k] = static::htmlentities($v, ENT_COMPAT, INTERNAL_ENC);
 			}
 		}
 
