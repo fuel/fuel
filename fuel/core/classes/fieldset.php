@@ -39,10 +39,8 @@ class Fieldset
 	 */
 	protected static $_instances = array();
 
-	public static function factory($name = '', Array $config = array())
+	public static function factory($name = 'default', Array $config = array())
 	{
-		$name = $name ?: 'default';
-
 		if ($exists = static::instance($name))
 		{
 			\Error::notice('Fieldset with this name exists already, cannot be overwritten.');
@@ -50,6 +48,11 @@ class Fieldset
 		}
 
 		static::$_instances[$name] = new Fieldset($name, $config);
+
+		if ($name == 'default')
+		{
+			static::$_instance = static::$_instances[$name];
+		}
 
 		return static::$_instances[$name];
 	}
