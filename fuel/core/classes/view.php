@@ -167,8 +167,7 @@ class View {
 		}
 		catch (\Exception $e)
 		{
-			// Display the exception message
-			// TODO: Write the exception Handler
+			\Error::exception_handler($e);
 
 			return '';
 		}
