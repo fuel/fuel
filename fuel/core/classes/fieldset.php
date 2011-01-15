@@ -236,6 +236,9 @@ class Fieldset
 			$instance ? call_user_func($callback, $this, $instance) : call_user_func($callback, $this);
 		}
 
+		// Add model to validation callables for validation rules
+		$this->validation()->add_callable($class);
+
 		return $this;
 	}
 
