@@ -29,7 +29,7 @@
 		<p>The Uri class allows you to interact with the URI.</p>
 
 		<article>
-			<h4>create($uri = null, $variables = array())</h4>
+			<h4>create($uri = null, $variables = array(), $get_variables = array())</h4>
 			<p>The <strong>create</strong> method allows you to create a URL with the given URI, including the base URL.</p>
 			<table class="method">
 				<tbody>
@@ -56,6 +56,12 @@
 								<td><pre class="php"><code>array()</code></pre></td>
 								<td>The variables for the URL.</td>
 							</tr>
+							<tr>
+								<th><kbd>$get_variables</kbd></th>
+								<td><pre class="php"><code>array()</code></pre></td>
+								<td>The query string additions to the URL, its values &amp; keys can use variables from
+									the $variables array.</td>
+							</tr>
 						</table>
 					</td>
 				</tr>
@@ -66,13 +72,15 @@
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>echo Uri::create('controller/method'); // returns http://localhost/controller/method</code></pre>
+						<pre class="php"><code>echo Uri::create('controller/method'); // returns http://localhost/controller/method
+
+echo Uri::create('controller/:some', array('some' => 'thing', 'and' => 'more'), 'what' => ':and'); // returns http://localhost/controller/thing?what=more</code></pre>
 					</td>
 				</tr>
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>current()</h4>
 			<p>The <strong>current</strong> method allows you to fetch the current URL, including the base URL inside HMVC pattern.</p>
@@ -100,7 +108,7 @@ echo Uri::current(); // returns http://localhost/module/controller/method</code>
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>detect()</h4>
 			<p>The <strong>detect</strong> method detects the current URI to build the correct string.</p>
@@ -128,7 +136,7 @@ echo Uri::detect(); // returns controller/method</code></pre>
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>main()</h4>
 			<p>The <strong>main</strong> method allows you to fetch the current URL, including the base URL.</p>
@@ -156,7 +164,7 @@ echo Uri::main(); // returns http://localhost/controller/method</code></pre>
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>segment($segment, $default = null)</h4>
 			<p>The <strong>segment</strong> method allows you to return the desired segment, or false if it does not exist.</p>
@@ -202,7 +210,35 @@ echo Uri::segment(3); // returns param1</code></pre>
 				</tbody>
 			</table>
 		</article>
-		
+
+		<article>
+			<h4>segments()</h4>
+			<p>The <strong>segments</strong> method allows you to fetch the current URI segments in an array.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>None</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// Example URL: http://localhost/controller/method
+echo Uri::segments(); // returns array(0 => 'controller', 1 => 'method')</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
 		<article>
 			<h4>string()</h4>
 			<p>The <strong>string</strong> method allows you to fetch the current URI.</p>
@@ -230,7 +266,7 @@ echo Uri::string(); // returns controller/method</code></pre>
 				</tbody>
 			</table>
 		</article>
-		
+
 	</section>
 
 	<section id="footer">

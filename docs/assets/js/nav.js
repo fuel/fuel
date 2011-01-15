@@ -25,6 +25,10 @@ var nav = {
 			},
 			"Routing":			"general/routing.html",
 			"Views":			"general/views.html",
+			"Classes": {
+				"Introduction":	"general/classes.html",
+				"Extending Core":	"general/extending_core.html"
+			},
 			"Tasks":			"general/tasks.html",
 			"Migrations":		"general/migrations.html",
 			"Coding Standards":	"general/coding_standards.html"

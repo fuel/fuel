@@ -38,7 +38,7 @@
 
 <pre><code>&lt;html&gt;
 	&lt;head&gt;
-		&lt;?php echo $title; ?&gt;
+		&lt;title>&lt;?php echo $title; ?&gt;&lt;/title>
 	&lt;/head&gt;
 	&lt;body&gt;
 		Welcome, &lt;?php echo $username; ?&gt;.
@@ -53,7 +53,7 @@
 		<p><strong>Example View (fuel/app/views/home/index.php):</strong></p>
 <pre class="html"><code>&lt;html&gt;
 	&lt;head&gt;
-		&lt;?php echo $title; ?&gt;
+		&lt;title>&lt;?php echo $title; ?&gt;&lt;/title>
 	&lt;/head&gt;
 	&lt;body&gt;
 		Welcome, &lt;?php echo $username; ?&gt;.
@@ -63,9 +63,7 @@
 
 		<p><strong>Method 1 (using example view above):</strong></p>
 
-<pre><code>
-
-class Controller_Home extends Controller\Base {
+<pre class="php"><code>class Controller_Home extends Controller {
 
 	$data = array(); //stores variables going to views
 
@@ -73,16 +71,14 @@ class Controller_Home extends Controller\Base {
 	$data['title'] = 'Home';
 
 	//assign the view to browser output
-	$this->output = new View('home/index', $data);
+	$this->output = View::factory('home/index', $data);
 }</code></pre>
 
 		<p><strong>Method 2 (using example view above):</strong></p>
 
-<pre><code>
-
-class Controller_Home extends Controller\Base {
+<pre><code>class Controller_Home extends Controller {
 	//create the view
-	$view = new View('home/index');
+	$view = View::factory('home/index';
 
 	//assign variables for the view
 	$view->username = 'Joe14';
@@ -94,20 +90,6 @@ class Controller_Home extends Controller\Base {
 
 	//assign the view to browser output
 	$this->output = $view;
-}</code></pre>
-
-		<p><strong>Method 3 (using example view above):</strong></p>
-
-<pre><code>
-
-class Controller_Home extends Controller\Base {
-	$data = array(); //stores variables going to views
-
-	$data['username'] = 'Joe14';
-	$data['title'] = 'Home';
-
-	//assign the view to browser output
-	$this->output = View::factory('home/index', $data);
 }</code></pre>
 
 		<h2>Nesting Views</h2>
@@ -151,11 +133,9 @@ class Controller_Home extends Controller\Base {
 
 		<h3>Method 1 (using example views above):</h3>
 
-<pre><code>
-
-class Controller_Home extends Controller\Base {
+<pre><code>class Controller_Home extends Controller {
 	//create the view
-	$view = new View('layout');
+	$view = View::factory('layout');
 
 	//assign variables
 	$view->username = 'Joe14';
@@ -163,10 +143,10 @@ class Controller_Home extends Controller\Base {
 	$view->site_title = 'My Website';
 
 	//assign views as variables
-	$view->head = new View('head');
-	$view->header = new View('header');
-	$view->content = new View('content');
-	$view->footer = new View('footer');
+	$view->head = View::factory('head');
+	$view->header = View::factory('header');
+	$view->content = View::factory('content');
+	$view->footer = View::factory('footer');
 
 	//assign to browser output
 	$this->output = $view;
@@ -174,9 +154,7 @@ class Controller_Home extends Controller\Base {
 
 		<h3>Method 2 (using example views above):</h3>
 
-<pre><code>
-
-class Controller_Home extends Controller\Base {
+<pre><code>class Controller_Home extends Controller {
 	//assign variables
 	$data = array();
 	$data['title'] = 'Home';
@@ -190,7 +168,7 @@ class Controller_Home extends Controller\Base {
 	$data['footer'] = View::factory('footer', $data)->render();
 
 	//assign to browser output
-	$this->output = new View('layout', $data);
+	$this->output = View::factory('layout', $data);
 }</code></pre>
 
 		<h2>View Functions</h2>

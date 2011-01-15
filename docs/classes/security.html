@@ -67,7 +67,7 @@
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>fetch_token()</h4>
 			<p>The <strong>fetch_token</strong> method allows you to fetch the CSRF token from the cookie.</p>
@@ -94,7 +94,7 @@
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>js_fetch_token()</h4>
 			<p>The <strong>js_fetch_token</strong> method allows you to produce JavaScript fuel_csrf_token() function that will return the current CSRF token when called. Use to fill right field on form submit for AJAX operations.</p>
@@ -121,7 +121,7 @@
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>regenerate_token()</h4>
 			<p>The <strong>regenerate_token</strong> method allows you to generate a new token if the old one expired or was checked.</p>
@@ -148,7 +148,7 @@
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>strip_tags($value)</h4>
 			<p>The <strong>strip_tags</strong> method allows you to strip HTML and PHP tags from a string.</p>
@@ -189,7 +189,57 @@ $text = Security::strip_tags($text);</code></pre>
 				</tbody>
 			</table>
 		</article>
-		
+
+		<article>
+			<h4>clean($value, $filters)</h4>
+			<p>The <strong>clean</strong> method allows you clean data using the filters provided.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$value</kbd></th>
+								<td><i>Required</i></td>
+								<td>The value to be cleaned. This can be a string value, or an array of string values.</td>
+							</tr>
+							<tr>
+								<th><kbd>$filters</kbd></th>
+								<td><i>Required</i></td>
+								<td>
+									The filters to be used to clean the string(s). A filter can be a single value, or an array of values. Each value must be a valid PHP callback.
+									You may specify functions ('htmlentities'), objects ($this), or static methods ('Classname::method').
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// first strip tags, convert html entities in the remaining data, and finish it off using our special cleaning solution
+$filters = array('strip_tags', 'html_entities', '\\cleaners\\soap::clean');
+$text = Security::clean($text, $filters);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
 	</section>
 
 	<section id="footer">
