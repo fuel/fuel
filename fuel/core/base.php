@@ -38,6 +38,9 @@ if ( ! function_exists('logger'))
 {
 	function logger($level, $msg, $method = null)
 	{
+		! class_exists('Fuel\\Core\\Log') and import('log');
+		! class_exists('Log') and class_alias('Fuel\\Core\\Log', 'Log');
+
 		if (Config::get('profiling'))
 		{
 			\Console::log($method.' - '.$msg);
@@ -177,6 +180,9 @@ if ( ! function_exists('fuel_error_handler'))
 {
 	function fuel_error_handler($severity, $message, $filepath, $line)
 	{
+		! class_exists('Fuel\\Core\\Error') and import('error');
+		! class_exists('Error') and class_alias('Fuel\\Core\\Error', 'Error');
+
 		return \Error::error_handler($severity, $message, $filepath, $line);
 	}
 }
