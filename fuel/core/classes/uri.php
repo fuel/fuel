@@ -124,6 +124,21 @@ class Uri {
 		return $default;
 	}
 
+	/**
+	 * Returns all segments in an array
+	 *
+	 * @return	array
+	 */
+	public static function segments()
+	{
+		return \Request::active()->uri->segments;
+	}
+
+	/**
+	 * Returns the full uri as a string
+	 *
+	 * @return	string
+	 */
 	public static function string()
 	{
 		return \Request::active()->uri->uri;

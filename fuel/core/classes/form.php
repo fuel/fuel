@@ -29,20 +29,20 @@ class Form {
 	 * Factory & instance methods
 	 * ---------------------------------------------------------------------------- */
 
-	public static function factory($fieldset, $config)
+	public static function factory($fieldset = 'default', array $config = array())
 	{
 		if ( ! $fieldset instanceof Fieldset)
 		{
 			$fieldset = (string) $fieldset;
 			($set = \Fieldset::instance($fieldset)) && $fieldset = $set;
 		}
-		return new Form($fieldset);
+		return new static($fieldset);
 	}
 
 	public static function instance($name = null)
 	{
 		$fieldset = \Fieldset::instance($name);
-		return $fieldset === false ? false : $fieldset->validation();
+		return $fieldset === false ? false : $fieldset->form();
 	}
 
 	/* ----------------------------------------------------------------------------

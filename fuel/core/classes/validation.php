@@ -30,14 +30,14 @@ namespace Fuel\Core;
  */
 class Validation {
 
-	public static function factory($fieldset)
+	public static function factory($fieldset = 'default')
 	{
 		if ( ! $fieldset instanceof Fieldset)
 		{
 			$fieldset = (string) $fieldset;
 			($set = \Fieldset::instance($fieldset)) && $fieldset = $set;
 		}
-		return new Validation($fieldset);
+		return new static($fieldset);
 	}
 
 	public static function instance($name = null)

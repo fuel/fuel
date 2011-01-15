@@ -193,9 +193,9 @@ class Fieldset_Field
 			{
 				$string = ! is_array($callback)
 						? $callback
-						: is_object(@$callback[0])
+						: (is_object(@$callback[0])
 							? get_class(@$callback[0]).'->'.@$callback[1]
-							: @$callback[0].'::'.@$callback[1];
+							: @$callback[0].'::'.@$callback[1]);
 				Error::notice('Invalid rule "'.$string.'" passed to Validation, not used.');
 			}
 		}
