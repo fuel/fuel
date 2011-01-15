@@ -175,7 +175,7 @@ class Validation {
 	{
 		if ( ! (is_object($class) || class_exists($class)))
 		{
-			throw new \Fuel_Exception('Input for add_callable is not a valid object or class.');
+			throw new \Exception('Input for add_callable is not a valid object or class.');
 		}
 
 		array_unshift($this->callables, $class);
