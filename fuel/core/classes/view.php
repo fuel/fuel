@@ -206,8 +206,6 @@ class View {
 		}
 		catch (\Exception $e)
 		{
-			die('Error in view: '.$view_filename);
-
 			// Delete the output buffer
 			ob_end_clean();
 
