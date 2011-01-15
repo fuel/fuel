@@ -36,7 +36,7 @@ class Form {
 			$fieldset = (string) $fieldset;
 			($set = \Fieldset::instance($fieldset)) && $fieldset = $set;
 		}
-		return new Form($fieldset);
+		return new static($fieldset);
 	}
 
 	public static function instance($name = null)

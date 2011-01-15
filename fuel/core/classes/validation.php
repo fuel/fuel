@@ -37,7 +37,7 @@ class Validation {
 			$fieldset = (string) $fieldset;
 			($set = \Fieldset::instance($fieldset)) && $fieldset = $set;
 		}
-		return new Validation($fieldset);
+		return new static($fieldset);
 	}
 
 	public static function instance($name = null)
