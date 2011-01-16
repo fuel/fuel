@@ -265,6 +265,60 @@ class File {
 	}
 
 	/**
+	 * Update a file
+	 *
+	 * @param	string					directory where to write the file
+	 * @param	string					filename
+	 * @param	string|File_Area|null	file area name, object or null for non-specific
+	 * @return	bool
+	 */
+	public static function update($basepath, $name, $contents = null, $area = null)
+	{
+		$basepath	= rtrim(static::instance($area)->get_path($basepath, $area), '\\/').DS;
+		$new_file	= static::instance($area)->get_path($basepath.$name, $area);
+
+		if ( ! is_dir($basepath) || ! is_writable($basepath))
+		{
+			throw new \File_Exception('Invalid basepath, cannot update a file at this location.');
+		}
+
+		$file = static::open_file(@fopen($new_file, 'w'), true, $area);
+		fwrite($file, $contents);
+		static::close_file($file, $area);
+
+		return true;
+	}
+
+	/**
+	 * Append to a file
+	 *
+	 * @param	string					directory where to write the file
+	 * @param	string					filename
+	 * @param	string|File_Area|null	file area name, object or null for non-specific
+	 * @return	bool
+	 */
+	public static function append($basepath, $name, $contents = null, $area = null)
+	{
+		$basepath	= rtrim(static::instance($area)->get_path($basepath, $area), '\\/').DS;
+		$new_file	= static::instance($area)->get_path($basepath.$name, $area);
+
+		if ( ! is_dir($basepath) || ! is_writable($basepath))
+		{
+			throw new \File_Exception('Invalid basepath, cannot append to a file at this location.');
+		}
+		elseif ( ! file_exists($new_file))
+		{
+			throw new \File_Exception('File does not exist, cannot be appended.');
+		}
+
+		$file = static::open_file(@fopen($new_file, 'a'), true, $area);
+		fwrite($file, $contents);
+		static::close_file($file, $area);
+
+		return true;
+	}
+
+	/**
 	 * Rename directory or file
 	 *
 	 * @param	string					path to file or directory to rename
@@ -274,15 +328,10 @@ class File {
 	 */
 	public static function rename($path, $new_path, $area = null)
 	{
-		$file = static::open_file($path, true, $area);
-
 		$path = static::instance($area)->get_path($path, $area);
 		$new_path = static::instance($area)->get_path($new_path, $area);
-		$return = rename($path, $new_path);
 
-		static::close_file($file, $area);
-
-		return $return;
+		return rename($path, $new_path);
 	}
 
 	/**
@@ -306,8 +355,6 @@ class File {
 		$path = static::instance($area)->get_path($path, $area);
 		$new_path = static::instance($area)->get_path($new_path, $area);
 
-		$file = static::open_file($path, true, $area);
-
 		if ( ! is_file($path))
 		{
 			throw new \Exception('Cannot copy file: given path is not a file.');
@@ -317,8 +364,6 @@ class File {
 			throw new \Exception('Cannot copy file: new path already exists.');
 		}
 		$return = copy($path, $new_path);
-
-		static::close_file($file, $area);
 
 		return $return;
 	}

@@ -209,14 +209,14 @@ class Form {
 			$attributes['value'] = (string) $value;
 		}
 
-		$attributes['type'] = @$attributes['type'] ?: 'text';
+		$attributes['type'] = empty($attributes['type']) ? 'text' : $attributes['type'];
 
 		if ( ! in_array($attributes['type'], static::$_valid_inputs))
 		{
 			throw new \Exception(sprintf('"%s" is not a valid input type.', $attributes['type']));
 		}
 
-		if (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true)
+		if (static::get_class_config('prep_value', true) && empty($attributes['dont_prep']))
 		{
 			$attributes['value'] = static::prep_value($attributes['value']);
 			unset($attributes['dont_prep']);
@@ -418,10 +418,10 @@ class Form {
 			$attributes['value'] = (string) $value;
 		}
 
-		$value = @$attributes['value'];
+		$value = empty($attributes['value']) ? '' : $attributes['value'];
 		unset($attributes['value']);
 
-		if (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true)
+		if (static::get_class_config('prep_value', true) && empty($attributes['dont_prep']))
 		{
 			$value = static::prep_value($value);
 			unset($attributes['dont_prep']);
@@ -456,7 +456,7 @@ class Form {
 			$attributes['options'] = $options;
 		}
 
-		$value = @$attributes['value'];
+		$value = empty($attributes['value']) ? '' : $attributes['value'];
 		unset($attributes['value']);
 
 		if ( ! isset($attributes['options']) || ! is_array($attributes['options']))
@@ -468,7 +468,7 @@ class Form {
 		unset($attributes['options']);
 
 		// Get the selected options then unset it from the array
-		$selected = @$attributes['selected'];
+		$selected = empty($attributes['selected']) ? false : $attributes['selected'];
 		unset($attributes['selected']);
 
 		$input = PHP_EOL;
@@ -482,7 +482,7 @@ class Form {
 					$opt_attr = array('value' => $opt_key);
 					($opt_key == $selected) && $opt_attr[] = 'selected';
 					$optgroup .= str_repeat("\t", 2);
-					$opt_attr['value'] = (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true) ?
+					$opt_attr['value'] = (static::get_class_config('prep_value', true) && empty($attributes['dont_prep'])) ?
 						static::prep_value($opt_attr['value']) : $opt_attr['value'];
 					$optgroup .= html_tag('option', $opt_attr, $opt_val).PHP_EOL;
 				}
@@ -494,7 +494,7 @@ class Form {
 				$opt_attr = array('value' => $key);
 				($key == $selected) && $opt_attr[] = 'selected';
 				$input .= str_repeat("\t", 1);
-				$opt_attr['value'] = (static::get_class_config('prep_value', true) && @$attributes['dont_prep'] !== true) ?
+				$opt_attr['value'] = (static::get_class_config('prep_value', true) && empty($attributes['dont_prep'])) ?
 					static::prep_value($opt_attr['value']) : $opt_attr['value'];
 				$input .= html_tag('option', $opt_attr, $val).PHP_EOL;
 			}
@@ -659,8 +659,12 @@ class Form {
 						{
 							$attributes['id'] .= '_'.$i;
 						}
+						else
+						{
+							$attributes['id'] = null;
+						}
 
-						$build_tag[static::label($label, @$attributes['id'])] = $field->type == 'radio'
+						$build_tag[static::label($label, $attributes['id'])] = $field->type == 'radio'
 							? static::radio($attributes)
 							: static::checkbox($attributes);
 					}
