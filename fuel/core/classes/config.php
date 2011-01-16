@@ -101,8 +101,17 @@ CONF;
 
 /* End of file $file.php */
 CONF;
+		if ($path = \Fuel::find_file('config', $file, '.php'))
+		{
+			$path = $path[0];
+		}
+		else
+		{
+			$path = APPPATH.'config'.DS.$file.'.php';
+		}
+		$path = pathinfo($path);
 
-		return File::update(APPPATH.'config', $file.'.php', $content);
+		return File::update($path['dirname'], $path['basename'], $content);
 	}
 
 	public static function get($item, $default = null)
