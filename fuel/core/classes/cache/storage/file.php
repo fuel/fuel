@@ -131,7 +131,7 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 	{
 		foreach($dependencies as $dep)
 		{
-			if (file_exists($file = static::$path.$dep.'.cache'))
+			if (file_exists($file = static::$path.str_replace('.', DS, $dep).'.cache'))
 			{
 				$filemtime = filemtime($file);
 				if ($filemtime === false || $filemtime > $this->created)
