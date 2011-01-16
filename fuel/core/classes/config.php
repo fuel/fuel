@@ -91,8 +91,6 @@ class Config {
  * @link		http://fuelphp.com
  */
 
-namespace Fuel\App;
-
 
 CONF;
 		$content .= 'return '.var_export($config, true).';';
