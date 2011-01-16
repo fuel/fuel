@@ -65,6 +65,46 @@ class Config {
 		return $config;
 	}
 
+	public static function save($file, $config)
+	{
+		if ( ! is_array($config))
+		{
+			if ( ! isset(static::$items[$config]))
+			{
+				return false;
+			}
+			$config = static::$items[$config];
+		}
+
+		$content = <<<CONF
+<?php
+/**
+ * Fuel
+ *
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Fuel Development Team
+ * @license		MIT License
+ * @copyright	2011 Fuel Development Team
+ * @link		http://fuelphp.com
+ */
+
+namespace Fuel\App;
+
+
+CONF;
+		$content .= 'return '.var_export($config, true).';';
+		$content .= <<<CONF
+
+
+/* End of file $file.php */
+CONF;
+
+		return File::update(APPPATH.'config', $file.'.php', $content);
+	}
+
 	public static function get($item, $default = null)
 	{
 		if (isset(static::$items[$item]))
