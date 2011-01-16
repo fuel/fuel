@@ -19,12 +19,6 @@ use \DB;
 
 class HasMany extends Association {
 
-	public function __construct(&$source, $dest, $options=null)
-	{
-		parent::__construct($source, $dest, $options);
-		$this->foreign_key = \Inflector::foreign_key($this->source_class);
-	}
-
 	public function push($args, &$source)
 	{
 		foreach ($args as $object)
