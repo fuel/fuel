@@ -320,6 +320,19 @@ class Asset {
 		{
 			$assets = array($assets);
 		}
+		//Automatically add missing file extension to JavaScript and Stylesheet files
+		switch ($type) {
+			case 'js':
+			case 'css':
+				foreach ($assets as $key => $asset)
+				{
+					if (preg_match('/\.'.$type.'$/', $asset) === 0)
+					{
+						$assets[$key] = $asset.'.'.$type;
+					}
+				}
+			break;
+		}
 
 		foreach ($assets as $key => $asset)
 		{
