@@ -32,6 +32,11 @@ abstract class ViewModel {
 	protected $_controller;
 
 	/**
+	 * @var string	method to execute when rendering
+	 */
+	protected $_method;
+
+	/**
 	 * @var	string|View	view name, after instantiation a View object
 	 */
 	protected $_template = 'template';
@@ -40,15 +45,14 @@ abstract class ViewModel {
 	{
 		$this->_controller	= \Request::active()->controller_instance;
 		$this->_template	= $this->set_template();
+		$this->_method		= $method;
 
-		$this->pre_view();
-		$this->{$method}();
-		$this->post_view();
+		$this->before();
 
 		$this->_controller->output = $this->_template;
 	}
 
-	protected function get_template()
+	protected function set_template()
 	{
 		return \View::factory($this->_template);
 	}
@@ -56,7 +60,7 @@ abstract class ViewModel {
 	/**
 	 * Executed before the view method
 	 */
-	public function pre_view() {}
+	public function before() {}
 
 	/**
 	 * The default view method
@@ -67,7 +71,7 @@ abstract class ViewModel {
 	/**
 	 * Executed after the view method
 	 */
-	public function post_view() {}
+	public function after() {}
 
 	/**
 	 * Fetches an existing value from the template
@@ -99,5 +103,24 @@ abstract class ViewModel {
 	public function set_raw($name, $val)
 	{
 		$this->_template{$name} = $val;
+	}
+
+	/**
+	 * Add variables through method and after() and create template as a string
+	 */
+	public function render()
+	{
+		$this->{$this->_method}();
+		$this->after();
+
+		return (string) $this->_template;
+	}
+
+	/**
+	 * Auto-render on toString
+	 */
+	public function __toString()
+	{
+		return $this->render();
 	}
 }
