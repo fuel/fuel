@@ -250,7 +250,20 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 	 */
 	public function change_password($old_password, $new_password, $username = null)
 	{
-		return $this->update_user(array('old_password' => $old_password, 'password' => $new_password), $username);
+		try
+		{
+			return (bool) $this->update_user(array('old_password' => $old_password, 'password' => $new_password), $username);
+		}
+		catch (\Auth_Exception $e)
+		{
+			if ($e->getMessage() == 'invalid_old_password')
+			{
+				return false;
+			}
+
+			// If it's something else throw the error anyway
+			throw $e;
+		}
 	}
 
 	/**
