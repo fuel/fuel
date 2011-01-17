@@ -49,7 +49,7 @@ abstract class ViewModel {
 
 		$this->before();
 
-		$this->_controller->output = $this->_template;
+		$this->_controller->output = $this;
 	}
 
 	protected function set_template()
