@@ -1,7 +1,31 @@
 <?php
+/**
+ * Fuel
+ *
+ * Fuel is a fast, lightweight, community driven PHP5 framework.
+ *
+ * @package		Fuel
+ * @version		1.0
+ * @author		Fuel Development Team
+ * @license		MIT License
+ * @copyright	2010 - 2011 Fuel Development Team
+ * @link		http://fuelphp.com
+ */
 
 namespace Fuel\Core;
 
+
+
+// ------------------------------------------------------------------------
+
+/**
+ * ViewModel
+ *
+ * @package		Fuel
+ * @subpackage	Core
+ * @category	Core
+ * @author		Jelmer Schreuder
+ */
 abstract class ViewModel {
 
 	/**
@@ -13,7 +37,7 @@ abstract class ViewModel {
 	 */
 	public static function factory($viewmodel, $method = 'view')
 	{
-		$class = 'View_'.$viewmodel;
+		$class = \Request::active()->module.'\\View_'.ucfirst($viewmodel);
 
 		if ( ! class_exists($class))
 		{
@@ -27,11 +51,6 @@ abstract class ViewModel {
 	}
 
 	/**
-	 * @var	Controller	reference to current controller
-	 */
-	protected $_controller;
-
-	/**
 	 * @var string	method to execute when rendering
 	 */
 	protected $_method;
@@ -43,15 +62,23 @@ abstract class ViewModel {
 
 	protected function __construct($method)
 	{
-		$this->_controller	= \Request::active()->controller_instance;
 		$this->_template	= $this->set_template();
 		$this->_method		= $method;
 
 		$this->before();
 
-		$this->_controller->output = $this;
+		// Set this as the controller output if this is the first ViewModel loaded
+		if ( ! \Request::active()->controller_instance->output instanceof ViewModel)
+		{
+			\Request::active()->controller_instance->output = $this;
+		}
 	}
 
+	/**
+	 * Must return a View object or something compatible
+	 *
+	 * @return	Object	any object on which the template vars can be set and which has a toString method
+	 */
 	protected function set_template()
 	{
 		return \View::factory($this->_template);
@@ -124,3 +151,5 @@ abstract class ViewModel {
 		return $this->render();
 	}
 }
+
+/* End of file viewmodel.php */
