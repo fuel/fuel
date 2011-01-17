@@ -134,17 +134,20 @@ abstract class ViewModel {
 
 	/**
 	 * Sets a variable on the template without sanitizing
-	 * Note: Objects are auto-converted to strings unless they're ViewModel instances, if you want objects
-	 *    not to be converted add them through set_raw().
+	 * Note: Objects are auto-converted to strings unless they're ViewModel, View or Closure instances, if you want
+	 * 		objects not to be converted add them through set_raw().
 	 *
 	 * @param	string
 	 * @param	mixed
 	 */
 	public function set_safe($name, $val)
 	{
-		$val = $val instanceof ViewModel ? $val : \Security::clean(is_object($val) ? (string) $val : $val);
+		if ( ! is_object($val) or ! ($val instanceof ViewModel or $val instanceof View or $val instanceof \Closure))
+		{
+			$val = \Security::clean(is_object($val) ? (string) $val : $val);
+		}
 
-		$this->_template->{$name} = \Security::clean($val);
+		$this->_template->{$name} = $val;
 	}
 
 	/**
