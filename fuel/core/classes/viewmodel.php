@@ -177,7 +177,16 @@ abstract class ViewModel {
 	 */
 	public function __toString()
 	{
-		return $this->render();
+		try
+		{
+			return $this->render();
+		}
+		catch (\Exception $e)
+		{
+			\Error::exception_handler($e);
+
+			return '';
+		}
 	}
 }
 
