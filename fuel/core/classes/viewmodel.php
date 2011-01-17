@@ -63,10 +63,16 @@ abstract class ViewModel {
 	/**
 	 * @var	string|View	view name, after instantiation a View object
 	 */
-	protected $_template = 'template';
+	protected $_template;
 
 	protected function __construct($method)
 	{
+		if (empty($this->_template))
+		{
+			$class = get_class($this);
+			$this->_template = strtolower(str_replace('_', '/', preg_replace('#^([a-z0-9_]\\\\*)?(View_)?#i', '', $class)));
+		}
+
 		$this->_template	= $this->set_template();
 		$this->_method		= $method;
 
