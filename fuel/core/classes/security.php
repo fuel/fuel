@@ -67,11 +67,8 @@ class Security {
 	 */
 	public static function clean($var, $filters = null)
 	{
-		if (is_null($filters))
-		{
-			$filters = \Config::get('security.input_filter', array());
-			$filters = is_array($filters) ? $filters : array($filters);
-		}
+		is_null($filters) && $filters = \Config::get('security.input_filter', array());
+		$filters = is_array($filters) ? $filters : array($filters);
 
 		foreach ($filters as $filter)
 		{
