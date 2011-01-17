@@ -269,6 +269,126 @@ File::read(DOCROOT.'test.txt', true);</code></pre>
 			</table>
 		</article>
 
+		<article>
+			<h4>update($basepath, $name, $contents = null, $area = null)</h4>
+			<p>Updates a file.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$basepath</kbd></th>
+								<td><i>required</i></td>
+								<td>Location of the file to update</td>
+							</tr>
+							<tr>
+								<th><kbd>$name</kbd></th>
+								<td><i>required</i></td>
+								<td>Filename for the file. If it does not exist, it will be created</td>
+							</tr>
+							<tr>
+								<th><kbd>$contents</kbd></th>
+								<td><kbd>null</kbd></td>
+								<td>What to put into the file</td>
+							</tr>
+							<tr>
+								<th><kbd>$area</kbd></th>
+								<td><kbd>null</kbd></td>
+								<td>Area object to use, defaults to main config (see <a href="advanced.html">advanced
+								usage</a> for more information)</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td><kbd>true</kbd></td>
+				</tr>
+				<tr>
+					<th>Throws</th>
+					<td><kbd>File_Exception</kbd> when creation fails</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>File::update(DOCROOT, 'test.txt', 'New contents for file.');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>append($basepath, $name, $contents = null, $area = null)</h4>
+			<p>Appends to an existing file.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$basepath</kbd></th>
+								<td><i>required</i></td>
+								<td>Location of the file to append to</td>
+							</tr>
+							<tr>
+								<th><kbd>$name</kbd></th>
+								<td><i>required</i></td>
+								<td>Filename for the file. This file has to exist</td>
+							</tr>
+							<tr>
+								<th><kbd>$contents</kbd></th>
+								<td><kbd>null</kbd></td>
+								<td>What to add to the file</td>
+							</tr>
+							<tr>
+								<th><kbd>$area</kbd></th>
+								<td><kbd>null</kbd></td>
+								<td>Area object to use, defaults to main config (see <a href="advanced.html">advanced
+								usage</a> for more information)</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td><kbd>true</kbd></td>
+				</tr>
+				<tr>
+					<th>Throws</th>
+					<td><kbd>File_Exception</kbd> when the file does not exist</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>File::append(DOCROOT, 'test.txt', 'Additional contents for file.');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
 	</section>
 
 	<section id="footer">

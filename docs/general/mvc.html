@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Model-View-Controller (MVC) - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('general', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Model-View-Controller (MVC)</h2>
+
+		<h3>What is MVC?</h3>
+
+		<p>MVC is an approach to seperating your code depending on what role it plays in your application. In the
+		application flow it starts with a controller that is loaded. That Controller executes a method which retrieves
+		data using Models. Once it is done the controller decides what View to load, which contains the output your
+		visitors get to see.</p>
+
+		<h2>Controllers</h2>
+
+		<p>Fuel's routing decides based on the requested URL what controller to load and what method to call upon it.
+		This is where your application starts working. The Controller decides what actions to take, what to do with any
+		user input, which data gets manipulated and what View is shown to the user. The Controller does none of these
+		things itself however, it calls upon Models and Classes to do the work.</p>
+
+		<p>Read more about <a href="controllers/base.html">Controllers</a>.</p>
+
+		<h2>Models</h2>
+
+		<p>Whenever data needs to be retrieved, manipulated or deleted this should always be done by a model. A Model
+		is a representation of some kind of data and has the methods to change them. For example: you never put SQL
+		queries in a Controller, those are put in the Model and the Controller will call upon the Model to execute
+		the queries. This way if your database changes you won't need to change all your Controllers but just the
+		Model that acts upon it.</p>
+
+		<p>Read more about <a href="models.html">Models</a>.</p>
+
+		<h2>Views</h2>
+
+		<p>Views contain your HTML, which should never be found in your Controllers or any other class that is not
+		specificly meant to create output. By seperating your layout from your logic you ensure that when you decide
+		to change your layout you only have to change the views and won't have to care about the Controllers.<br />
+		Views should thus contain little more than <kbd>echo</kbd> and <kbd>foreach</kbd> usage of PHP.</p>
+
+		<p>Read more about <a href="views.html">Views</a>.</p>
+
+		<h3>ViewModels</h3>
+
+		<p>Once your application gets more complex you'll discover that it gets hard to decide if a piece of logic
+		really belongs in the Controller, what if it is very specificly about the View and has little to do with your
+		application logic? This is where ViewModels come in, they are the glue between your controllers and your
+		views.</p>
+
+		<p>Read more about <a href="viewmodels.html">ViewModels</a>.</p>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

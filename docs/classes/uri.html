@@ -72,9 +72,11 @@
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>echo Uri::create('controller/method'); // returns http://localhost/controller/method
+						<pre class="php"><code>echo Uri::create('controller/method');
+// returns http://localhost/controller/method
 
-echo Uri::create('controller/:some', array('some' => 'thing', 'and' => 'more'), 'what' => ':and'); // returns http://localhost/controller/thing?what=more</code></pre>
+echo Uri::create('controller/:some', array('some' => 'thing', 'and' => 'more'), array('what' => ':and'));
+// returns http://localhost/controller/thing?what=more</code></pre>
 					</td>
 				</tr>
 				</tbody>
