@@ -70,7 +70,7 @@ abstract class ViewModel {
 		if (empty($this->_template))
 		{
 			$class = get_class($this);
-			$this->_template = strtolower(str_replace('_', '/', preg_replace('#^([a-z0-9_]\\\\*)?(View_)?#i', '', $class)));
+			$this->_template = strtolower(str_replace('_', '/', preg_replace('#^([a-z0-9_]*\\\\)?(View_)?#i', '', $class)));
 		}
 
 		$this->_template	= $this->set_template();
