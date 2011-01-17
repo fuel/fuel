@@ -18,11 +18,6 @@ var nav = {
 			"Download":		"installation/download.html"
 		},
 		"General": {
-			"Routing":			"general/routing.html",
-			"Classes": {
-				"Introduction":		"general/classes.html",
-				"Extending Core":	"general/extending_core.html"
-			},
 			"Model-View-Controller":	"general/mvc.html",
 			"Controllers": {
 				"Base" :		"general/controllers/base.html",
@@ -32,6 +27,11 @@ var nav = {
 			"Models":			"general/models.html",
 			"Views":			"general/views.html",
 			"ViewModels":		"general/viewmodels.html",
+			"Routing":			"general/routing.html",
+			"Classes": {
+				"Introduction":		"general/classes.html",
+				"Extending Core":	"general/extending_core.html"
+			},
 			"Tasks":			"general/tasks.html",
 			"Migrations":		"general/migrations.html",
 			"Coding Standards":	"general/coding_standards.html"
