@@ -53,22 +53,26 @@ class Security {
 	}
 
 	/**
-	 * Cleans the $_GET and $_POST arrays
+	 * Cleans the global $_GET, $_POST and $_COOKIE arrays
 	 */
 	public static function clean_input()
 	{
-		$filters = \Config::get('security.input_filter', array());
-		$filters = is_array($filters) ? $filters : array($filters);
-
-		$_GET = static::clean($_GET, $filters);
-		$_POST = static::clean($_POST, $filters);
+		$_GET		= static::clean($_GET);
+		$_POST		= static::clean($_POST);
+		$_COOKIE	= static::clean($_COOKIE);
 	}
 
 	/**
 	 * Generic variable clean method
 	 */
-	public static function clean($var, $filters)
+	public static function clean($var, $filters = null)
 	{
+		if (is_null($filters))
+		{
+			$filters = \Config::get('security.input_filter', array());
+			$filters = is_array($filters) ? $filters : array($filters);
+		}
+
 		foreach ($filters as $filter)
 		{
 			// is this filter a callable local function?
