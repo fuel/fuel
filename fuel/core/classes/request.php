@@ -207,6 +207,11 @@ class Request {
 	public $named_params = array();
 
 	/**
+	 * @var	Controller	Controller instance once instantiated
+	 */
+	public $controller_instance;
+
+	/**
 	 * Creates the new Request object by getting a new URI object, then parsing
 	 * the uri with the Route class.
 	 *
@@ -298,7 +303,7 @@ class Request {
 		}
 
 		logger(Fuel::L_INFO, 'Loading controller '.$class, __METHOD__);
-		$controller = new $class($this);
+		$this->controller_instance = $controller = new $class($this);
 
 		$method = $method_prefix.($method ?: (property_exists($controller, 'default_action') ? $controller->default_action : 'index'));
 
