@@ -145,6 +145,8 @@ Fuel\Core\Autoloader::add_classes(array(
 
 	'Fuel\\Core\\View'						=> COREPATH.'classes/view.php',
 	'Fuel\\Core\\View_Exception'			=> COREPATH.'classes/view/exception.php',
+
+	'Fuel\\Core\\ViewModel'					=> COREPATH.'classes/viewmodel.php',
 ));
 
 /* End of file bootstrap.php */
