@@ -29,6 +29,11 @@ namespace Fuel\Core;
 abstract class ViewModel {
 
 	/**
+	 * @var	bool	whether to filter the variables passed to the View
+	 */
+	static public $filter_output = true;
+
+	/**
 	 * Factory for fetching the ViewModel
 	 *
 	 * @param	string	ViewModel classname without View_ prefix or full classname
@@ -118,6 +123,21 @@ abstract class ViewModel {
 	 */
 	public function __set($name, $val)
 	{
+		static::$filter_output ? $this->set_safe($name, $val) : $this->set_raw($name, $val);
+	}
+
+	/**
+	 * Sets a variable on the template without sanitizing
+	 * Note: Objects are auto-converted to strings unless they're ViewModel instances, if you want objects
+	 *    not to be converted add them through set_raw().
+	 *
+	 * @param	string
+	 * @param	mixed
+	 */
+	public function set_safe($name, $val)
+	{
+		$val = $val instanceof ViewModel ? $val : \Security::clean(is_object($val) ? (string) $val : $val);
+
 		$this->_template->{$name} = \Security::clean($val);
 	}
 
