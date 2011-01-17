@@ -102,7 +102,7 @@ abstract class ViewModel {
 	 */
 	public function set_raw($name, $val)
 	{
-		$this->_template{$name} = $val;
+		$this->_template->{$name} = $val;
 	}
 
 	/**
