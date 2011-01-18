@@ -542,8 +542,8 @@ class Fuel {
 	 */
 	public static function clean_path($path)
 	{
-		static $search = array(APPPATH, COREPATH, DOCROOT, '\\');
-		static $replace = array('APPPATH/', 'COREPATH/', 'DOCROOT/', '/');
+		static $search = array(APPPATH, COREPATH, PKGPATH, DOCROOT, '\\');
+		static $replace = array('APPPATH/', 'COREPATH/', 'PKGPATH/', 'DOCROOT/', '/');
 		return str_ireplace($search, $replace, $path);
 	}
 }
