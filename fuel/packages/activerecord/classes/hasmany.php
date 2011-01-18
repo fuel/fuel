@@ -224,6 +224,8 @@ class HasMany extends Association {
 		}
 		else
 		{
+			$through_foreign_key = array_key_exists('through_foreign_key', $this->options)
+				? $this->options['through_foreign_key'] : \Inflector::foreign_key($this->dest_class);
 			$join = array(
 				array(
 					'table'	=> $this->options['through'],
@@ -233,7 +235,7 @@ class HasMany extends Association {
 				array(
 					'table'	=> $dest_table,
 					'type'	=> 'LEFT OUTER',
-					'on'	=> array($dest_table.'.'.$dest_inst->get_primary_key(), '=', $this->options['through'].'.'.\Inflector::foreign_key($this->dest_class))
+					'on'	=> array($dest_table.'.'.$dest_inst->get_primary_key(), '=', $this->options['through'].'.'.$through_foreign_key)
 				)
 			);
 		}
