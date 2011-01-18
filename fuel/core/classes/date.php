@@ -210,6 +210,20 @@ class Date {
 		return $days_in_month[$month-1];
 	}
 
+	/**
+	 * Returns a MySQL formatted date string
+	 *
+	 * @param int UNIX timestamp 
+	 * @return String
+	 */
+	public static function mysql_date($time = false)
+	{
+		if($time === false) {
+			$time = static::time();
+		}
+		return date("Y-m-d h:m:s", $time);
+	}
+
 	/* ---------------------------------------------------------------------------
 	 * DYNAMIC METHODS
 	 * --------------------------------------------------------------------------- */
