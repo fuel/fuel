@@ -22,7 +22,7 @@ return array(
 	'patterns' => array(
 		'local'		=> '%c',
 		
-		'mysql'		=> '%y-%m-%d %H:%M:%S',
+		'mysql'		=> '%Y-%m-%d %H:%M:%S',
 
 		'us'		=> '%m/%d/%Y',
 		'us_short'	=> '%m/%d',
