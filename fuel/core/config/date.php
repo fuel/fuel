@@ -21,6 +21,8 @@ return array(
 	 */
 	'patterns' => array(
 		'local'		=> '%c',
+		
+		'mysql'		=> '%Y-%m-%d %H:%M:%S',
 
 		'us'		=> '%m/%d/%Y',
 		'us_short'	=> '%m/%d',
