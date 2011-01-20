@@ -990,10 +990,17 @@ class Model {
 			$query->offset($options['offset']);
 		}
 
-		// Get the order
-		if (array_key_exists('order', $options) && is_array($options['order']))
+		// Get the order using new array('field' => 'asc', 'anotherfield' => 'desc') but with support for array('field', 'asc')
+		if (array_key_exists('order', $options))
 		{
-			$query->order_by($options['order'][0], $options['order'][1]);
+			$is_associative = array_keys($options['order']) !== range(0, count($options['order']) - 1);
+			if($is_associative) {
+				foreach($options['order'] as $field => $order) {
+					$query->order_by($field, $order);
+				}
+			} else {
+				$query->order_by($options['order'][0], $options['order'][1]);
+			}
 		}
 
 		// Get the group
