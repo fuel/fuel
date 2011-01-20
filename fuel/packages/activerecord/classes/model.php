@@ -993,12 +993,18 @@ class Model {
 		// Get the order using new array('field' => 'asc', 'anotherfield' => 'desc') but with support for array('field', 'asc')
 		if (array_key_exists('order', $options))
 		{
-			$is_associative = array_keys($options['order']) !== range(0, count($options['order']) - 1);
-			if($is_associative) {
-				foreach($options['order'] as $field => $order) {
+			// Check if the given array is associative
+			$associative = array_keys($options['order']) !== range(0, count($options['order']) - 1);
+			
+			if($associative === true)
+			{
+				foreach($options['order'] as $field => $order)
+				{
 					$query->order_by($field, $order);
 				}
-			} else {
+			}
+			else
+			{
 				$query->order_by($options['order'][0], $options['order'][1]);
 			}
 		}
