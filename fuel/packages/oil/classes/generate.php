@@ -176,7 +176,7 @@ VIEW;
 			{
 				$method = $action.'_action';
 				
-				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method}", $migration_name);
+				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method}", $migration_name, $args);
 				break;
 			}
 		}
