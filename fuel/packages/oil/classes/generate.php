@@ -187,6 +187,17 @@ VIEW;
 			$remove_field = $matches[1];
 			$table = $matches[2];
 		}
+		
+		// rename_table_to_newtable
+		else if (strpos($migration_name, 'rename_table_') === 0)
+		{
+			$mode = 'rename_table';
+
+			preg_match('/rename_table_([a-z0-9_]+)+_to_([a-z0-9_]+)/i', $migration_name, $matches);
+			
+			$table = $matches[1];
+			$args[] = $matches[2];
+		}
 
 		// drop_table
 		else if (strpos($migration_name, 'drop_') === 0)
@@ -336,6 +347,15 @@ DOWN;
 		\DBUtil::drop_table('{$table}');
 UP;
 				$down = '';
+			break;
+			
+			case 'rename_table':
+				$up = <<<UP
+		\DBUtil::rename_table('{$table}', '{$args[0]}');
+UP;
+				$down = <<<DOWN
+		\DBUtil::rename_table('{$args[0]}', '{$table}');
+DOWN;
 			break;
 
 			default:

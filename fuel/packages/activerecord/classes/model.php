@@ -930,13 +930,13 @@ class Model {
 				{
 					foreach ($cols as $key => $col)
 					{
-                                                // Compare the values currently in $select to see if we need to remove them
-                                                if($this->table_name == $table){
-                                                        $foundKey=array_search($col,$select);
-                                                        if($foundKey !== false){
-                                                                unset($select[$foundKey]);
-                                                        }
-                                                }
+						// Compare the values currently in $select to see if we need to remove them
+						if($this->table_name == $table){
+								$foundKey=array_search($col,$select);
+								if($foundKey !== false){
+										unset($select[$foundKey]);
+								}
+						}
 
 						// Add this to the select array
 						array_push($select, array($table.'.'.$col, "t{$table_key}_r$key"));
@@ -951,7 +951,15 @@ class Model {
 		// Start building the query
 		$query = call_user_func_array('DB::select', $select);
 
-		$query->from($this->table_name);
+		// Set from table
+		$from = $this->table_name;
+		// ... change to subquery when a limit was set and joins are used to ensure to right number of entries output
+		if ( ! empty($join) and ! empty($options['limit']))
+		{
+			$from = array(DB::select('*')->from($this->table_name)->limit($options['limit']), 'users');
+			unset($options['limit']);
+		}
+		$query->from($from);
 
 		foreach ($joins as $join)
 		{

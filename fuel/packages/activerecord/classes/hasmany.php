@@ -19,7 +19,7 @@ use \DB;
 
 class HasMany extends Association {
 
-	public function push($args, &$source)
+	public function set($args, &$source)
 	{
 		foreach ($args as $object)
 		{
@@ -145,7 +145,7 @@ class HasMany extends Association {
 		if (count($ids_to_add) > 0)
 		{
 			$objects_to_add = call_user_func_array(array($this->dest_class, 'find'), array($ids_to_add));
-			$this->push($objects_to_add, $source);
+			$this->set($objects_to_add, $source);
 		}
 
 		/* remove relationships that need removing */

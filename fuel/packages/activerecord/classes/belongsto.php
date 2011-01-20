@@ -19,6 +19,18 @@ use \DB;
 
 class BelongsTo extends Association {
 
+	public function __construct($source, $dest, $options = null)
+	{
+		parent::__construct($source, $dest, $options);
+
+		// Belongs to has different foreign key from has_one/has_many so overwrite default
+		// when it wasn't given
+		if (empty($options['foreign_key']))
+		{
+			$this->foreign_key = \Inflector::foreign_key($this->dest_class);
+		}
+	}
+
 	public function set($value, &$source)
 	{
 		if ($value instanceof $this->dest_class)
