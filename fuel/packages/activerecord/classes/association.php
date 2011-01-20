@@ -46,9 +46,9 @@ class Association {
 			$this->foreign_key = \Inflector::foreign_key($this->source_class);
 		}
 
-		if ( ! class_exists($this->dest_class))
+		if ( ! class_exists($this->dest_class = 'Model_'.$this->dest_class))
 		{
-			$this->dest_class = 'Model_'.$this->dest_class;
+			$this->dest_class = $this->dest_class;
 		}
 
 		if ( ! class_exists($this->source_class))
