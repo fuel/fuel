@@ -19,7 +19,7 @@ use \DB;
 
 class HasMany extends Association {
 
-	public function push($args, &$source)
+	public function set($args, &$source)
 	{
 		foreach ($args as $object)
 		{
