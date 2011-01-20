@@ -159,57 +159,30 @@ VIEW;
 	public function migration($args)
 	{
 		$migration_name = strtolower(array_shift($args));
-
-		// Starts with create, so lets create a table
-		if (strpos($migration_name, 'create_') === 0)
+		
+		$actions = array(
+			'create_'		=> 'create_table',
+			'add_'			=> 'add_fields',
+			'remove_'		=> 'remove_field',
+			'rename_table_'	=> 'rename_table',
+			'drop_'			=> 'drop_table'
+		);
+		
+		$migration = array('', '');
+		foreach($actions as $prefix => $action)
 		{
-			$mode = 'create_table';
-			$table = str_replace('create_', '', $migration_name);
-		}
-
-		// add_field_to_table
-		else if (strpos($migration_name, 'add_') === 0)
-		{
-			$mode = 'add_fields';
-
-			preg_match('/add_[a-z0-9_]+_to_([a-z0-9_]+)/i', $migration_name, $matches);
-
-			$table = $matches[1];
-		}
-
-		// remove_field_from_table
-		else if (strpos($migration_name, 'remove_') === 0)
-		{
-			$mode = 'remove_field';
-
-			preg_match('/remove_([a-z0-9_])+_from_([a-z0-9_]+)/i', $migration_name, $matches);
-
-			$remove_field = $matches[1];
-			$table = $matches[2];
+			// If the migration name starts with one of the actions, call it.
+			if(substr($migration_name, 0, strlen($prefix)) == $prefix)
+			{
+				$method = $action.'_action';
+				
+				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method}", $migration_name);
+				break;
+			}
 		}
 		
-		// rename_table_to_newtable
-		else if (strpos($migration_name, 'rename_table_') === 0)
-		{
-			$mode = 'rename_table';
-
-			preg_match('/rename_table_([a-z0-9_]+)+_to_([a-z0-9_]+)/i', $migration_name, $matches);
-			
-			$table = $matches[1];
-			$args[] = $matches[2];
-		}
-
-		// drop_table
-		else if (strpos($migration_name, 'drop_') === 0)
-		{
-			$mode = 'drop_table';
-			$table = str_replace('drop_', '', $migration_name);
-		}
-		unset($matches);
-
-		// Now that we know that, lets build the migration
-
-		if ($filepath = static::_build_migration($migration_name, $mode, $table, $args))
+		// Build the migration
+		if ($filepath = static::_build_migration($migration_name, $migration[0], $migration[1]))
 		{
 			\Cli::write('Created migration: ' . \Fuel::clean_path($filepath));
 		}
@@ -275,94 +248,9 @@ HELP;
 	}
 
 
-	private function _build_migration($migration_name, $mode, $table, $args)
+	private function _build_migration($migration_name, $up, $down)
 	{
 		$migration_name = ucfirst(strtolower($migration_name));
-
-		if ($mode == 'create_table' or $mode == 'add_fields')
-		{
-			// Store an aray of what fields are being added
-			$fields = array();
-			
-			$field_str = '';
-
-			foreach ($args as $arg)
-			{
-				// Parse the argument for each field in a pattern of name:type[constraint]
-				preg_match('/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i', $arg, $matches);
-
-				$name = $fields[] = $matches[1];
-				$type = $matches[2];
-				$constraint = isset($matches[4]) ? $matches[4] : null;
-
-				if ($type === 'string')
-				{
-					$type = 'varchar';
-				}
-				
-				else if ($type === 'integer')
-				{
-					$type = 'int';
-				}
-
-				if (in_array($type, array('text', 'blob', 'datetime')))
-				{
-					$field_str .= "\t\t\t'$name' => array('type' => '$type'),".PHP_EOL;
-				}
-
-				else
-				{
-					if ($constraint === null)
-					{
-						$constraint = self::$_default_constraints[$type];
-					}
-
-					$field_str .= "\t\t\t'$name' => array('type' => '$type', 'constraint' => $constraint),".PHP_EOL;
-				}
-			}
-
-		}
-
-		// Make the up and down based on mode
-		switch ($mode)
-		{
-			case 'create_table':
-
-				// Shove an id field at the start
-				$field_str = "\t\t\t'id' => array('type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
-
-				$up = <<<UP
-		\DBUtil::create_table('{$table}', array(
-$field_str
-		), array('id'));
-UP;
-
-				$down = <<<DOWN
-		\DBUtil::drop_table('{$table}');
-DOWN;
-			break;
-
-			case 'drop_table':
-				$up = <<<UP
-		\DBUtil::drop_table('{$table}');
-UP;
-				$down = '';
-			break;
-			
-			case 'rename_table':
-				$up = <<<UP
-		\DBUtil::rename_table('{$table}', '{$args[0]}');
-UP;
-				$down = <<<DOWN
-		\DBUtil::rename_table('{$args[0]}', '{$table}');
-DOWN;
-			break;
-
-			default:
-				$up = '';
-				$down = '';
-		}
-
 
 		$migration = <<<MIGRATION
 <?php
