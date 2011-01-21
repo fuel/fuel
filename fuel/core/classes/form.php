@@ -77,7 +77,7 @@ class Form {
 	 * @param   array   array of values
 	 * @return  void
 	 */
-	public static function init()
+	public static function _init()
 	{
 		\Config::load('form', true);
 
