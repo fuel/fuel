@@ -295,6 +295,21 @@ class Fieldset_Field
 	}
 
 	/**
+	 * Build the field
+	 */
+	public function __toString()
+	{
+		try
+		{
+			return $this->build();
+		}
+		catch (\Exception $e)
+		{
+			return $e->getMessage();
+		}
+	}
+
+	/**
 	 * Return the parent Fieldset object
 	 *
 	 * @return	Fieldset
