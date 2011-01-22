@@ -956,7 +956,8 @@ class Model {
 		// ... change to subquery when a limit was set and joins are used to ensure to right number of entries output
 		if ( ! empty($join) and ! empty($options['limit']))
 		{
-			$from = array(DB::select('*')->from($this->table_name)->limit($options['limit']), 'users');
+			$from = DB::select('*')->from($this->table_name)->limit($options['limit']);
+			unset($options['limit']);
 
 			if (array_key_exists('where', $options) and is_array($options['where']))
 			{
@@ -982,7 +983,7 @@ class Model {
 				}
 			}
 
-			unset($options['limit']);
+			$from = array($from, $this->table_name);
 		}
 		$query->from($from);
 
