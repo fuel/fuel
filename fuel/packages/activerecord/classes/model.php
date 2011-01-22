@@ -957,6 +957,31 @@ class Model {
 		if ( ! empty($join) and ! empty($options['limit']))
 		{
 			$from = array(DB::select('*')->from($this->table_name)->limit($options['limit']), 'users');
+
+			if (array_key_exists('where', $options) and is_array($options['where']))
+			{
+				foreach ($options['where'] as $key => $conditional)
+				{
+					if (strpos($conditional[0], '.') === false)
+					{
+						$from->where($conditional[0], $conditional[1], $conditional[2]);
+						unset($options['where'][$key]);
+					}
+				}
+			}
+
+			if (array_key_exists('or_where', $options) and is_array($options['or_where']))
+			{
+				foreach ($options['or_where'] as $key => $conditional)
+				{
+					if (strpos($conditional[0], '.') === false)
+					{
+						$from->or_where($conditional[0], $conditional[1], $conditional[2]);
+						unset($options['or_where'][$key]);
+					}
+				}
+			}
+
 			unset($options['limit']);
 		}
 		$query->from($from);
