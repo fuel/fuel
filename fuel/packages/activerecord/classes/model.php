@@ -133,7 +133,7 @@ class Model {
 		}
 		else
 		{
-			$options['where'] = $options['where'] + $where;
+			$options['where'] = array_merge($where, $options['where']);
 		}
 
 		if ( ! array_key_exists('or_where', $options))
@@ -142,7 +142,7 @@ class Model {
 		}
 		else
 		{
-			$options['or_where'] = $options['or_where'] + $or_where;
+			$options['or_where'] = array_merge($or_where, $options['or_where']);
 		}
 
 		return static::find($find_type, $options);
