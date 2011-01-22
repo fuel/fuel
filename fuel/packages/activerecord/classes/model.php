@@ -1122,11 +1122,8 @@ class Model {
 		}
 
 		// Start building the query
-		//DB::select(DB::expr('COUNT(*) AS mycount'))
 		$query = DB::select(DB::expr('COUNT(*) AS mycount'));
-		//$query = call_user_func_array('DB::select', $select);
-		//$query = call_user_func_array('DB::select', arraycall_user_func_array('DB::expr', 'COUNT(*) AS mycount'));
-
+	
 		$query->from($this->table_name);
 
 		foreach ($joins as $join)
