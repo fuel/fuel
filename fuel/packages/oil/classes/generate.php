@@ -158,33 +158,101 @@ VIEW;
 
 	public function migration($args)
 	{
+		
+		// Get the migration name
 		$migration_name = strtolower(array_shift($args));
 		
-		$actions = array(
-			'create_'		=> 'create_table',
-			'add_'			=> 'add_fields',
-			'remove_'		=> 'remove_field',
-			'rename_table_'	=> 'rename_table',
-			'drop_'			=> 'drop_table'
-		);
+		// See if the action exists
+		$methods = get_class_methods(__NAMESPACE__ . '\Generate_Migration_Actions');
 		
+		// For empty migrations that dont have actions
 		$migration = array('', '');
-		foreach($actions as $prefix => $action)
-		{
-			// If the migration name starts with one of the actions, call it.
-			if(substr($migration_name, 0, strlen($prefix)) == $prefix)
+		
+		// Loop through the actions and act on a matching action appropriately
+		foreach($methods as $method_name)
+		{			
+			if(substr($migration_name, 0, strlen($method_name)) === $method_name)
 			{
-				$method = $action.'_action';
+				$subjects = array(false, false);
+				$matches = explode('_', str_replace($method_name . '_', '', $migration_name));
 				
-				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method}", $migration_name, $args);
-				break;
+				if(count($matches) == 1) {
+					$subjects = array(false, $matches[0]);
+				}
+				else if(count($matches) == 3)
+				{
+					$subjects = array($matches[0], $matches[2]);
+				}
+				else
+				{
+					break;
+				}
+				
+				// We always pass in fields to a migration, so lets sort them out here.
+				$fields = array();
+				foreach($args as $field)
+				{
+					$field_array = array();
+					
+					$parts = explode(":", $field);
+					if(count($parts) >= 2)
+					{
+						$field_array['name'] = array_shift($parts);
+						foreach($parts as $part)
+						{
+							preg_match('/([a-z]+)(?:\[([0-9]+)\])?/i', $part, $part_matches);
+							array_shift($part_matches);
+							
+							// Here you should add checks for special flags like possibly :unique or :notnull ?
+							// if($part_matches == 'unique') { ... break; }
+							
+							$field_array['type'] = $part_matches[0];
+							if(isset($part_matches[1]))
+							{
+								$field_array['constraint'] = $part_matches[1];
+							}
+							
+							if($field['type'] === 'string')
+							{
+								$field['type'] = 'varchar';
+							}
+							else if($field['type'] === 'integer')
+							{
+								$field['type'] = 'int';
+							}
+
+							if(!in_array($field['type'], array('text', 'blob', 'datetime')))
+							{
+								if(!isset($field['constraint']))
+								{
+									$field['constraint'] = self::$_default_constraints[$type];
+								}
+							}
+							
+						}
+						$fields[] = $field_array;
+					}
+					else
+					{
+						// Invalid field passed in
+						continue;
+					}
+				}
+				
+				\Cli::write('Building magic migration: ' . $method_name);
+				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method_name}", $subjects, $fields);
+				
+			}
+			else
+			{
+				// No magic action for this migration...
 			}
 		}
 		
 		// Build the migration
 		if ($filepath = static::_build_migration($migration_name, $migration[0], $migration[1]))
 		{
-			\Cli::write('Created migration: ' . \Fuel::clean_path($filepath));
+			\Cli::write('Created migration: ' . \Fuel::clean_path($filepath), 'green');
 		}
 	}
 
@@ -246,8 +314,7 @@ HELP;
 
 		return $result;
 	}
-
-
+	
 	private function _build_migration($migration_name, $up, $down)
 	{
 		$migration_name = ucfirst(strtolower($migration_name));
@@ -287,7 +354,6 @@ MIGRATION;
 
 		return false;
 	}
-
 
 	private function _find_migration_number()
 	{
