@@ -123,8 +123,9 @@ class Validation {
 				$field->add_rule($rule);
 			}
 		}
+                
+		return $field;
 
-		return $this;
 	}
 
 	/**
