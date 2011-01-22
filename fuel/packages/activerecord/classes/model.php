@@ -896,10 +896,9 @@ class Model {
 
 		$joins = array();
 		$column_lookup = array();
+		$includes = array();
 		if (isset($options['include']))
 		{
-			$tables_to_columns = array();
-
 			if (is_string($options['include']))
 			{
 				$includes = array_map('trim', explode(',', $options['include']));
@@ -908,6 +907,16 @@ class Model {
 			{
 				$includes = $options['include'];
 			}
+		}
+
+		foreach ($item->associations as $key => $val)
+		{
+			array_push($includes, $key);
+		}
+
+		if(isset($includes))
+		{
+			$tables_to_columns = array();
 
 			array_push($tables_to_columns, array(
 				$this->table_name => $item->get_columns()
@@ -920,7 +929,6 @@ class Model {
 				{
 					list($cols, $join) = $item->associations[$include]->join();
 					array_push($joins, $join);
-					array_push($tables_to_columns, $cols);
 				}
 			}
 
