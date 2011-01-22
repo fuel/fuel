@@ -198,6 +198,30 @@ class Uri {
 	{
 		return static::create();
 	}
+	
+	/**
+	 * Redirects to desired url
+	 *
+	 * @param	string	the url
+	 * @param	string	redirect method
+	 * @param	string	response code
+	 */
+	public static function redirect($uri = '', $method = 'location', $http_response_code = 302)
+	{
+		if ( ! preg_match('#^https?://#i', $uri))
+		{
+			$uri = static::create($uri);
+		}
+
+		switch($method)
+		{
+			case 'refresh'	: header("Refresh:0;url=".$uri);
+				break;
+			default			: header("Location: ".$uri, TRUE, $http_response_code);
+				break;
+		}
+		exit;
+	}
 
 	/**
 	 * @var	string	The URI string
