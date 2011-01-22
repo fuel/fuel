@@ -1023,6 +1023,184 @@ class Model {
 
 		return array('result' => $result, 'column_lookup' => $column_lookup);
 	}
+	
+		
+		
+	/**
+	 * Exactly as find() but returns the row count see {@link find} 
+	 * all the parameters and options are exactly the same as for find()
+	 *
+	 * Usage:
+	 *
+	 * <code>$user = User::find(2, array('include' => array('group')));</code>
+	 *
+	 * @param	int|string	$id			the primary key value
+	 * @param	srray		$options	the find options
+	 * @return	object		the result
+	 */
+	
+	public static function count($id = 'all', $options = array())
+	{
+		$instance = new static;
+		$count = $instance->count_query($id, $options);
+		unset($instance);
+
+		return $count;
+		
+	}
+	
+		
+	
+	/**
+	 * Generates then executes the count query.  This is used by {@link count}.
+	 * Please see {@link count} for parameter options and usage.
+	 *
+	 * @param	string|int	$id			the primary key to find
+	 * @param	array		$options	the array of options
+	 * @return	array	an array containing the query and column lookup map
+	 */
+	protected function count_query($id, $options = array())
+	{
+		$item = new $this->class_name;
+
+		($id == 'first') and $options['limit'] = 1;
+
+		$select = array_key_exists('select', $options)  ? $options['select'] : array();
+
+		$joins = array();
+		$column_lookup = array();
+		if (isset($options['include']))
+		{
+			$tables_to_columns = array();
+
+			if (is_string($options['include']))
+			{
+				$includes = array_map('trim', explode(',', $options['include']));
+			}
+			else
+			{
+				$includes = $options['include'];
+			}
+
+			array_push($tables_to_columns, array(
+				$this->table_name => $item->get_columns()
+			));
+
+			// get join part of query from association and column names
+			foreach ($includes as $include)
+			{
+				if (isset($item->associations[$include]))
+				{
+					list($cols, $join) = $item->associations[$include]->join();
+					array_push($joins, $join);
+					array_push($tables_to_columns, $cols);
+				}
+			}
+
+			foreach ($tables_to_columns as $table_key => $columns)
+			{
+				foreach ($columns as $table => $cols)
+				{
+					foreach ($cols as $key => $col)
+					{
+                                                // Compare the values currently in $select to see if we need to remove them
+                                                if($this->table_name == $table){
+                                                        $foundKey=array_search($col,$select);
+                                                        if($foundKey !== false){
+                                                                unset($select[$foundKey]);
+                                                        }
+                                                }
+
+						// Add this to the select array
+						array_push($select, array($table.'.'.$col, "t{$table_key}_r$key"));
+
+						$column_lookup["t{$table_key}_r{$key}"]["table"] = $table;
+						$column_lookup["t{$table_key}_r{$key}"]["column"] = $col;
+					}
+				}
+			}
+		}
+
+		// Start building the query
+		//DB::select(DB::expr('COUNT(*) AS mycount'))
+		$query = DB::select(DB::expr('COUNT(*) AS mycount'));
+		//$query = call_user_func_array('DB::select', $select);
+		//$query = call_user_func_array('DB::select', arraycall_user_func_array('DB::expr', 'COUNT(*) AS mycount'));
+
+		$query->from($this->table_name);
+
+		foreach ($joins as $join)
+		{
+			if ( ! array_key_exists('table', $join))
+			{
+				foreach ($join as $j)
+				{
+					$query->join($j['table'], $j['type'])
+						  ->on($j['on'][0], $j['on'][1], $j['on'][2]);
+				}
+			}
+			else
+			{
+				$query->join($join['table'], $join['type'])
+					  ->on($join['on'][0], $join['on'][1], $join['on'][2]);
+			}
+		}
+
+		// Get the limit
+		if (array_key_exists('limit', $options) and is_numeric($options['limit']))
+		{
+			$query->limit($options['limit']);
+		}
+
+		// Get the offset
+		if (array_key_exists('offset', $options) and is_numeric($options['offset']))
+		{
+			$query->offset($options['offset']);
+		}
+
+		// Get the order
+		if (array_key_exists('order', $options) && is_array($options['order']))
+		{
+			$query->order_by($options['order'][0], $options['order'][1]);
+		}
+
+		// Get the group
+		if (array_key_exists('group', $options))
+		{
+			$query->group_by($options['group']);
+		}
+		if (is_array($id))
+		{
+			$query->where($item->primary_key, 'IN', $id);
+		}
+		elseif ($id != 'all' && $id != 'first')
+		{
+			$query->where($this->table_name.'.'.$item->primary_key, '=', $id);;
+		}
+
+		if (array_key_exists('where', $options) and is_array($options['where']))
+		{
+			foreach ($options['where'] as $conditional)
+			{
+				$query->where($conditional[0], $conditional[1], $conditional[2]);
+			}
+		}
+
+		if (array_key_exists('or_where', $options) and is_array($options['or_where']))
+		{
+			foreach ($options['or_where'] as $conditional)
+			{
+				$query->or_where($conditional[0], $conditional[1], $conditional[2]);
+			}
+		}
+
+		// It's all built, now lets execute
+		return $query->execute()->get('mycount');
+	}
+	
+	
+	
+	
 }
 
 
