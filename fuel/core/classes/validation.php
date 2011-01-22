@@ -125,8 +125,6 @@ class Validation {
 		}
                 
 		return $field;
-                // allows us to use complex validation rule like so:
-                //$val->add_field('username', 'Your username', 'required|min_length[3]')->add_rule('valid_string', array('alpha', 'numeric'));
 
 	}
 
