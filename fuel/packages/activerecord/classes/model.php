@@ -977,7 +977,20 @@ class Model {
 		// Get the order
 		if (array_key_exists('order', $options) && is_array($options['order']))
 		{
-			$query->order_by($options['order'][0], $options['order'][1]);
+			if (is_int(key($options['order'])))
+			{
+				$options['order'][$options['order'][0]] = $options['order'][1];
+				unset($options['order'][0], $options['order'][1]);
+			}
+
+			foreach ($options['order'] as $column => $direction)
+			{
+				if (strpos($column, '.') === false or strpos($column, $this->table_name.'.') === 0)
+				{
+					$query->order_by($column, $direction);
+					unset($options['order'][$column]);
+				}
+			}
 		}
 
 		// Get the group
@@ -1039,6 +1052,16 @@ class Model {
 			{
 				$query->join($join['table'], $join['type'])
 					  ->on($join['on'][0], $join['on'][1], $join['on'][2]);
+			}
+		}
+
+		// Get the order
+		if (array_key_exists('order', $options) && is_array($options['order']))
+		{
+			foreach ($options['order'] as $column => $direction)
+			{
+				$query->order_by($column, $direction);
+				unset($options['order'][$column]);
 			}
 		}
 
