@@ -33,6 +33,7 @@
 			<li><a href="#usage">Usage</a></li>
 			<li><a href="#rules">Validation rules</a></li>
 			<li><a href="#errors">Error messages</a></li>
+			<li><a href="#callables">Callable methods</a></li>
 			<li><a href="#methods">All methods</a></li>
 		</ul>
 
@@ -339,6 +340,25 @@ echo $val->errors('username')->get_message('The field :label must be filled out 
 					</tr>
 				</tbody>
 			</table>
+		</article>
+		
+		<article>
+			<h3><a name="callables">Callable methods</a></h3>
+
+			<p>Validation class also allows you to use your own methods to validate user input.</p>
+			<p>You can set you callable method the same way you do it with other rules:</p>
+			<pre class="php">
+				<code>// example usage when you call for method "my_validation" situated in controller "Controller_Blog"
+$val->add('email', 'Email address')->add_rule('Controller_Blog::my_validation');
+				
+// Same, but with the other way to add rules
+$val->add_field('email', 'Email address', 'Controller_Blog::my_validation');
+
+// Same, but now we are calling for "my_validation" method from within
+// the module Post and it's controller Controller_Post
+$val->add_field('email', 'Email address', 'Post\Controller_Post::my_validation');</code>
+			</pre>
+			
 		</article>
 
 		<article>
