@@ -931,10 +931,12 @@ class Model {
 					foreach ($cols as $key => $col)
 					{
 						// Compare the values currently in $select to see if we need to remove them
-						if($this->table_name == $table){
-								$foundKey=array_search($col,$select);
-								if($foundKey !== false){
-										unset($select[$foundKey]);
+						if ($this->table_name == $table)
+						{
+								$found_key = array_search($col, $select);
+								if ($found_key !== false)
+								{
+									unset($select[$found_key]);
 								}
 						}
 
