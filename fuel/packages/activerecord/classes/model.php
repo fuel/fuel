@@ -21,7 +21,7 @@ use \Inflector;
 
 class Model {
 
-	const IS_COUNT = 1;
+	const IS_COUNT = 'IS_COUNT_random_hghj8uyt567uygfvb876trf';
 
 	/**
 	 * Queries the table for the given primary key value ($id).  $id can also
