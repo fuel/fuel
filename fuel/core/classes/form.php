@@ -730,12 +730,9 @@ class Form {
 
 		$label = $field->label ? static::label($field->label, $field->get_attribute('id', null)) : '';
 		$template = $field->template ?: $this->get_config('field_template', "\t\t\t{label} {field}\n");
-		$template = str_replace('{field}', $build_field, $template);
-		$template = str_replace('{label}', $label, $template);
-		if ($required_mark)
-		{
-			$template = str_replace('{required}', $required_mark, $template);
-		}
+		$template = str_replace(array('{field}', '{label}', '{required}'),
+			array($build_field, $label, $required_mark),
+			$template);
 		return $template;
 	}
 
