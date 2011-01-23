@@ -21,7 +21,7 @@ use \Inflector;
 
 class Model {
 
-	private const IS_COUNT = 1;
+	const IS_COUNT = 1;
 
 	/**
 	 * Queries the table for the given primary key value ($id).  $id can also
