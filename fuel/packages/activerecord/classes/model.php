@@ -21,6 +21,8 @@ use \Inflector;
 
 class Model {
 
+	private const IS_COUNT = 1;
+
 	/**
 	 * Queries the table for the given primary key value ($id).  $id can also
 	 * contain 2 special values:
@@ -271,6 +273,16 @@ class Model {
 	{
 		$this->class_name = get_class($this);
 
+		if ($this->table_name === null)
+		{
+			$this->table_name = Inflector::tableize($this->class_name);
+		}
+
+		if ($params === self::IS_COUNT)
+		{
+			return;
+		}
+		
 		// Setup all the associations
 		foreach ($this->assoc_types as $type)
 		{
@@ -292,11 +304,6 @@ class Model {
 					}
 				}
 			}
-		}
-
-		if ($this->table_name === null)
-		{
-			$this->table_name = Inflector::tableize($this->class_name);
 		}
 
 		if (empty($this->columns))
@@ -1041,12 +1048,11 @@ class Model {
 	
 	public static function count($id = 'all', $options = array())
 	{
-		$instance = new static;
+		$instance = new static(self::IS_COUNT);
 		$count = $instance->count_query($id, $options);
 		unset($instance);
 
 		return $count;
-		
 	}
 	
 		
@@ -1061,105 +1067,11 @@ class Model {
 	 */
 	protected function count_query($id, $options = array())
 	{
-		$item = new $this->class_name;
-
-		($id == 'first') and $options['limit'] = 1;
-
-		$select = array_key_exists('select', $options)  ? $options['select'] : array();
-
-		$joins = array();
-		$column_lookup = array();
-		if (isset($options['include']))
-		{
-			$tables_to_columns = array();
-
-			if (is_string($options['include']))
-			{
-				$includes = array_map('trim', explode(',', $options['include']));
-			}
-			else
-			{
-				$includes = $options['include'];
-			}
-
-			array_push($tables_to_columns, array(
-				$this->table_name => $item->get_columns()
-			));
-
-			// get join part of query from association and column names
-			foreach ($includes as $include)
-			{
-				if (isset($item->associations[$include]))
-				{
-					list($cols, $join) = $item->associations[$include]->join();
-					array_push($joins, $join);
-					array_push($tables_to_columns, $cols);
-				}
-			}
-
-			foreach ($tables_to_columns as $table_key => $columns)
-			{
-				foreach ($columns as $table => $cols)
-				{
-					foreach ($cols as $key => $col)
-					{
-                                                // Compare the values currently in $select to see if we need to remove them
-                                                if($this->table_name == $table){
-                                                        $foundKey=array_search($col,$select);
-                                                        if($foundKey !== false){
-                                                                unset($select[$foundKey]);
-                                                        }
-                                                }
-
-						// Add this to the select array
-						array_push($select, array($table.'.'.$col, "t{$table_key}_r$key"));
-
-						$column_lookup["t{$table_key}_r{$key}"]["table"] = $table;
-						$column_lookup["t{$table_key}_r{$key}"]["column"] = $col;
-					}
-				}
-			}
-		}
 
 		// Start building the query
 		$query = DB::select(DB::expr('COUNT(*) AS mycount'));
 	
 		$query->from($this->table_name);
-
-		foreach ($joins as $join)
-		{
-			if ( ! array_key_exists('table', $join))
-			{
-				foreach ($join as $j)
-				{
-					$query->join($j['table'], $j['type'])
-						  ->on($j['on'][0], $j['on'][1], $j['on'][2]);
-				}
-			}
-			else
-			{
-				$query->join($join['table'], $join['type'])
-					  ->on($join['on'][0], $join['on'][1], $join['on'][2]);
-			}
-		}
-
-		// Get the limit
-		if (array_key_exists('limit', $options) and is_numeric($options['limit']))
-		{
-			$query->limit($options['limit']);
-		}
-
-		// Get the offset
-		if (array_key_exists('offset', $options) and is_numeric($options['offset']))
-		{
-			$query->offset($options['offset']);
-		}
-
-		// Get the order
-		if (array_key_exists('order', $options) && is_array($options['order']))
-		{
-			$query->order_by($options['order'][0], $options['order'][1]);
-		}
 
 		// Get the group
 		if (array_key_exists('group', $options))
@@ -1168,11 +1080,11 @@ class Model {
 		}
 		if (is_array($id))
 		{
-			$query->where($item->primary_key, 'IN', $id);
+			$query->where($this->primary_key, 'IN', $id);
 		}
 		elseif ($id != 'all' && $id != 'first')
 		{
-			$query->where($this->table_name.'.'.$item->primary_key, '=', $id);;
+			$query->where($this->table_name.'.'.$this->primary_key, '=', $id);;
 		}
 
 		if (array_key_exists('where', $options) and is_array($options['where']))
@@ -1194,10 +1106,6 @@ class Model {
 		// It's all built, now lets execute
 		return $query->execute()->get('mycount');
 	}
-	
-	
-	
-	
 }
 
 
