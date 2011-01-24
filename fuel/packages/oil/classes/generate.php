@@ -218,7 +218,7 @@ VIEW;
 						$field_array['name'] = array_shift($parts);
 						foreach($parts as $part_i => $part)
 						{
-							preg_match('/([a-z]+)(?:\[([a-z0-9]+)\])?/i', $part, $part_matches);
+							preg_match('/([a-z0-9_-]+)(?:\[([a-z0-9]+)\])?/i', $part, $part_matches);
 							array_shift($part_matches);
 							
 							if(count($part_matches) < 1)
@@ -246,9 +246,16 @@ VIEW;
 
 								if(!in_array($type, array('text', 'blob', 'datetime')))
 								{
-									if($type == null)
+									if(!isset($option[1]) || $option[1] == NULL)
 									{
-										$type = self::$_default_constraints[$type];
+										if(isset(self::$_default_constraints[$type]))
+										{
+											$field_array['constraint'] = self::$_default_constraints[$type];
+										}
+									}
+									else
+									{
+										$field_array['constraint'] = $option[1];
 									}
 								}
 								$option = $type;

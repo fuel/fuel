@@ -42,7 +42,14 @@ class Generate_Migration_Actions
 			$field_opts = array();
 			foreach($field as $option => $val)
 			{
-				$field_opts[] = "'$option' => '$val'";
+				if($val === true)
+				{
+					$field_opts[] = "'$option' => true";
+				}
+				else
+				{
+					$field_opts[] = "'$option' => '$val'";
+				}
 			}
 			$field_opts = implode(', ', $field_opts);
 			
@@ -50,7 +57,7 @@ class Generate_Migration_Actions
 		}
 		
 		// ID Field
-		$field_str = "\t\t\t'id' => array('type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
+ 		$field_str = "\t\t\t'id' => array('constraint' => '11', 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
 
 		$up = <<<UP
 		\DBUtil::create_table('{$subjects[1]}', array(
@@ -68,13 +75,13 @@ DOWN;
 	// add_{thing}_to_{tablename}
 	public static function add($subjects, $fields)
 	{
-		return array("\t\t\t// Not yet implemented this migration action", '\t\t\t// Not yet implemented this migration action');
+		return array("\t\t\t// Not yet implemented this migration action", "\t\t\t// Not yet implemented this migration action");
 	}
 	
 	// remove_{tablename}
 	public static function remove($subjects, $fields)
 	{	
-		return array('\t\t\t// Not yet implemented this migration action', '\t\t\t// Not yet implemented this migration action');
+		return array("\t\t\t// Not yet implemented this migration action", "\t\t\t// Not yet implemented this migration action");
 	}
 	
 	// rename_table_{tablename}_to_{newtablename}
