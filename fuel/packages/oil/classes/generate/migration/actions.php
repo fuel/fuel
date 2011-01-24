@@ -85,9 +85,9 @@ DOWN;
 		return array("\t\t\t// Not yet implemented this migration action", "\t\t\t// Not yet implemented this migration action");
 	}
 	
-	// remove_{tablename}
-	public static function remove($subjects, $fields)
-	{	
+	// rename_field_{fieldname}_to_{newfieldname}
+	public static function rename_field($subjects, $fields)
+	{
 		return array("\t\t\t// Not yet implemented this migration action", "\t\t\t// Not yet implemented this migration action");
 	}
 	
