@@ -123,14 +123,25 @@ class Model {
 			return;
 		}
 		
-		$find_type = strncmp($name, 'find_all_by_', 12) === 0 ? 'all' : (strncmp($name, 'find_by_', 8) === 0 ? 'first' : false);
-		
-		if ( ! $find_type)
+		// Start with count_by? Get counting!
+		if (strpos($name, 'count_by') === 0)
+		{
+			$find_type = 'count';
+			$name = substr($name, 9);
+		}
+
+		// Otherwise, lets find stuff
+		elseif (strpos($name, 'find_') === 0)
+		{
+			$find_type = strncmp($name, 'find_all_by_', 12) === 0 ? 'all' : (strncmp($name, 'find_by_', 8) === 0 ? 'first' : false);
+			$name = $find_type === 'first' ? substr($name, 8) : substr($name, 12);
+		}
+
+		// God knows, complain
+		else
 		{
 			throw new \Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
 		}
-
-		$name = $find_type === 'first' ? substr($name, 8) : substr($name, 12);
 
 		$and_parts = explode('_and_', $name);
 
@@ -181,7 +192,15 @@ class Model {
 			$options['or_where'] = array_merge($or_where, $options['or_where']);
 		}
 
-		return static::find($find_type, $options);
+		if ($find_type == 'count')
+		{
+			return static::count($options);
+		}
+
+		else
+		{
+			return static::find($find_type, $options);
+		}
 	}
 
 	/**
