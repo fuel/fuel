@@ -48,7 +48,14 @@ class Generate_Migration_Actions
 				}
 				else
 				{
-					$field_opts[] = "'$option' => '$val'";
+					if(is_int($val))
+					{
+						$field_opts[] = "'$option' => $val";
+					}
+					else
+					{
+						$field_opts[] = "'$option' => '$val'";
+					}
 				}
 			}
 			$field_opts = implode(', ', $field_opts);
@@ -57,7 +64,7 @@ class Generate_Migration_Actions
 		}
 		
 		// ID Field
- 		$field_str = "\t\t\t'id' => array('constraint' => '11', 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
+ 		$field_str = "\t\t\t'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
 
 		$up = <<<UP
 		\DBUtil::create_table('{$subjects[1]}', array(

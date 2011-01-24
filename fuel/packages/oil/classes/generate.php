@@ -255,7 +255,7 @@ VIEW;
 									}
 									else
 									{
-										$field_array['constraint'] = $option[1];
+										$field_array['constraint'] = (int) $option[1];
 									}
 								}
 								$option = $type;
