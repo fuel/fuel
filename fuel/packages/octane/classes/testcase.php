@@ -137,7 +137,7 @@ class TestCase {
 		}
 		else
 		{
-			$this->fail('assert_instance_of - Value "'.$value.'" is not an instance of "'.$expectation.'"');
+			$this->fail('assert_instance_of - Value is not an instance of "'.$expectation.'", it is an instance of "'.get_class($value).'".');
 		}
 	}
 
@@ -243,8 +243,9 @@ class TestCase {
 		$trace = debug_backtrace();
 
 		// If the test has already failed then we don't want to set it to true.
-		if ( @array_key_exists($this->results[$trace[2]['function']], $this->results )
-		    && $this->results[$trace[2]['function']] === false)
+		if ( ! empty($trace[2]['function']) and (is_int($trace[2]['function']) or is_string($trace[2]['function']))
+			and @array_key_exists($trace[2]['function'], $this->results)
+		    and $this->results[$trace[2]['function']] === false)
 		{
 			return;
 		}
