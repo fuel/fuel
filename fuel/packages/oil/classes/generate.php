@@ -288,7 +288,7 @@ VIEW;
 				}
 				
 				// Call the magic action which returns an array($up, $down) for the migration
-				\Cli::write('Building magic migration: ' . $method_name);
+				\Cli::write("\tBuilding magic migration:" . $method_name);
 				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method_name}", $subjects, $fields);
 				
 			}
@@ -301,7 +301,7 @@ VIEW;
 		// Build the migration
 		if ($filepath = static::_build_migration($migration_name, $migration[0], $migration[1]))
 		{
-			\Cli::write('Created migration: ' . \Fuel::clean_path($filepath), 'green');
+			\Cli::write("\tCreated migration: " . \Fuel::clean_path($filepath), 'green');
 		}
 	}
 
