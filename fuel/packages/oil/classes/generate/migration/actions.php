@@ -68,13 +68,15 @@ DOWN;
 	// add_{thing}_to_{tablename}
 	public static function add($subjects, $fields)
 	{
-		return array("\t\t\t// Not yet implemented this migration action", '\t\t\t// Not yet implemented this migration action');
+		$missing = "\t\t\t// Not yet implemented this migration action";
+		return array($missing, $missing);
 	}
 	
 	// remove_{tablename}
 	public static function remove($subjects, $fields)
 	{	
-		return array('\t\t\t// Not yet implemented this migration action', '\t\t\t// Not yet implemented this migration action');
+		$missing = "\t\t\t// Not yet implemented this migration action";
+		return array($missing, $missing);
 	}
 	
 	// rename_table_{tablename}_to_{newtablename}
@@ -97,7 +99,9 @@ DOWN;
 		$up = <<<UP
 		\DBUtil::drop_table('{$subjects[1]}');
 UP;
-		
+
+		// TODO Create down by looking at the table and building a create
+
 		return array($up, '');
 	}
 	
