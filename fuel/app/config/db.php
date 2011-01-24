@@ -18,10 +18,10 @@ return array(
 	'dev' => array(
 		'type'			=> 'mysql',
 		'connection'	=> array(
-			'hostname'   => 'localhost',
-			'database'   => 'fuel_dev',
+			'hostname'   => '127.0.0.1',
+			'database'   => 'fuel',
 			'username'   => 'root',
-			'password'   => '',
+			'password'   => 'password',
 			'persistent' => false,
 		),
 		'table_prefix' => '',
