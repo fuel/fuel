@@ -1109,7 +1109,7 @@ class Model {
 	 *
 	 * @param	int|string	$id			the primary key value
 	 * @param	srray		$options	the find options
-	 * @return	object		the result
+	 * @return	int|null 	the row count or null
 	 */
 	public static function count($id = 'all', $options = array())
 	{
@@ -1126,7 +1126,7 @@ class Model {
 	 *
 	 * @param	string|int	$id			the primary key to find
 	 * @param	array		$options	the array of options
-	 * @return	array	an array containing the query and column lookup map
+	 * @return	int|null 	the row count or null
 	 */
 	protected function count_query($id, $options = array())
 	{
@@ -1166,7 +1166,17 @@ class Model {
 		}
 
 		// It's all built, now lets execute
-		return $query->execute()->get('mycount');
+		$count = $query->execute()->get('mycount');
+		
+		// Database_Result::get('mycount') returns a string | null
+		if ($count === null)
+		{
+			return null;
+		}
+		else
+		{
+			return (int) $count;
+		}
 	}
 }
 
