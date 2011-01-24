@@ -170,21 +170,36 @@ VIEW;
 		
 		// Loop through the actions and act on a matching action appropriately
 		foreach($methods as $method_name)
-		{			
+		{	
+			// If the miration name starts with the name of the action method
 			if(substr($migration_name, 0, strlen($method_name)) === $method_name)
 			{
+				
+				/**
+				 *	Create an array of the subject the migration is about
+				 *
+				 *	- In a migration named 'create_users' the subject is 'users' since thats what we want to create
+				 *		So it would be the second object in the array
+				 *			array(false, 'users')
+				 *
+				 *	- In a migration named 'add_name_to_users' the object is 'name' and the subject is 'users'.
+				 *		So again 'users' would be the second object, but 'name' would be the first
+				 *			array('name', 'users')
+				 *
+				 */
 				$subjects = array(false, false);
 				$matches = explode('_', str_replace($method_name . '_', '', $migration_name));
 				
-				if(count($matches) == 1) {
+				if(count($matches) == 1) { // create_{table}
 					$subjects = array(false, $matches[0]);
 				}
-				else if(count($matches) == 3)
+				else if(count($matches) == 3) // add_{field}_to_{table}
 				{
 					$subjects = array($matches[0], $matches[2]);
 				}
 				else
 				{
+					// There is no subject here so just carry on with a normal empty migration
 					break;
 				}
 				
@@ -194,41 +209,67 @@ VIEW;
 				{
 					$field_array = array();
 					
+					// Each paramater for a field is seperated by the : character
 					$parts = explode(":", $field);
+					
+					// We must have the 'name:type' if nothing else!
 					if(count($parts) >= 2)
 					{
 						$field_array['name'] = array_shift($parts);
-						foreach($parts as $part)
+						foreach($parts as $part_i => $part)
 						{
-							preg_match('/([a-z]+)(?:\[([0-9]+)\])?/i', $part, $part_matches);
+							preg_match('/([a-z]+)(?:\[([a-z0-9]+)\])?/i', $part, $part_matches);
 							array_shift($part_matches);
 							
-							// Here you should add checks for special flags like possibly :unique or :notnull ?
-							// if($part_matches == 'unique') { ... break; }
-							
-							$field_array['type'] = $part_matches[0];
-							if(isset($part_matches[1]))
+							if(count($part_matches) < 1)
 							{
-								$field_array['constraint'] = $part_matches[1];
+								// Move onto the next part, something is wrong here...
+								continue;
 							}
 							
-							if($field['type'] === 'string')
+							$option_name = ''; // This is the name of the option to be passed to the action in a field
+							$option = $part_matches;
+							
+							// The first option always has to be the field type
+							if($part_i == 0)
 							{
-								$field['type'] = 'varchar';
-							}
-							else if($field['type'] === 'integer')
-							{
-								$field['type'] = 'int';
-							}
-
-							if(!in_array($field['type'], array('text', 'blob', 'datetime')))
-							{
-								if(!isset($field['constraint']))
+								$option_name = 'type';
+								$type = $option[0];
+								if($type === 'string')
 								{
-									$field['constraint'] = self::$_default_constraints[$type];
+									$type = 'varchar';
 								}
+								else if($type === 'integer')
+								{
+									$type = 'int';
+								}
+
+								if(!in_array($type, array('text', 'blob', 'datetime')))
+								{
+									if($type == null)
+									{
+										$type = self::$_default_constraints[$type];
+									}
+								}
+								$option = $type;
 							}
+							else
+							{
+								// This allows you to put any number of :option or :option[val] into your field and these will...
+								// ... always be passed through to the action making it really easy to add extra options for a field
+								$option_name = array_shift($option);
+								if(count($option) > 0)
+								{
+									$option = $option[0];
+								}
+								else
+								{
+									$option = true;
+								}
+							}	
 							
+							$field_array[$option_name] = $option;
+													
 						}
 						$fields[] = $field_array;
 					}
@@ -239,6 +280,7 @@ VIEW;
 					}
 				}
 				
+				// Call the magic action which returns an array($up, $down) for the migration
 				\Cli::write('Building magic migration: ' . $method_name);
 				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method_name}", $subjects, $fields);
 				
