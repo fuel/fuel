@@ -1131,7 +1131,7 @@ class Model {
 	protected function count_query($id, $options = array())
 	{
 		// Start building the query
-		$query = DB::select(DB::expr('COUNT(*) AS mycount'));
+		$query = DB::select(DB::expr('COUNT('.$this->table_name.'.'.$this->primary_key.') AS count_result'));
 	
 		$query->from($this->table_name);
 
@@ -1166,17 +1166,15 @@ class Model {
 		}
 
 		// It's all built, now lets execute
-		$count = $query->execute()->get('mycount');
+		$count = $query->execute()->get('count_result');
 		
 		// Database_Result::get('mycount') returns a string | null
 		if ($count === null)
 		{
 			return null;
 		}
-		else
-		{
-			return (int) $count;
-		}
+
+		return (int) $count;
 	}
 }
 
