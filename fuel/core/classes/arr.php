@@ -67,6 +67,10 @@ class Arr {
 		$key = explode('.', $key);
 		if(count($key) > 1)
 		{
+			if ( ! is_array($array) || ! array_key_exists($key[0], $array))
+			{
+				return $default;
+			}
 			$array = $array[$key[0]];
 			unset($key[0]);
 			$key = implode('.', $key);
