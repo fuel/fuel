@@ -151,7 +151,7 @@ class Asset {
 			{
 				if ( ! ($file = static::find_file($filename, static::$_folders[$type])))
 				{
-					throw new \Exception('Could not find asset: '.$filename);
+					throw new \Fuel_Exception('Could not find asset: '.$filename);
 				}
 
 				$file = static::$_asset_url.$file;

@@ -25,11 +25,11 @@ class HasMany extends Association {
 		{
 			if (($source->is_new_record() || $object->is_new_record()) && isset($this->options['through']) && $this->options['through'])
 			{
-				throw new \Exception("Has-many-through can't associate new records.", Exception::HasManyThroughCantAssociateNewRecords);
+				throw new \Fuel_Exception("Has-many-through can't associate new records.", Exception::HasManyThroughCantAssociateNewRecords);
 			}
 			if (!$object instanceof $this->dest_class)
 			{
-				throw new \Exception("Expected class: {$this->dest_class}; Received: " . get_class($object), Exception::UnexpectedClass);
+				throw new \Fuel_Exception("Expected class: {$this->dest_class}; Received: " . get_class($object), Exception::UnexpectedClass);
 			}
 			if ($source->is_new_record())
 			{

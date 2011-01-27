@@ -72,7 +72,7 @@ class Ftp
 			// Check that it exists
 			if ( ! is_array($config_arr) or $config_arr === array())
 			{
-				throw new \Exception('You have specified an invalid ftp connection group: '.$config);
+				throw new \Fuel_Exception('You have specified an invalid ftp connection group: '.$config);
 			}
 
 			$config = $config_arr;
@@ -120,7 +120,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_connect');
+				throw new \Fuel_Exception('ftp_unable_to_connect');
 			}
 			return false;
 		}
@@ -129,7 +129,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_login');
+				throw new \Fuel_Exception('ftp_unable_to_login');
 			}
 		}
 
@@ -169,7 +169,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_no_connection');
+				throw new \Fuel_Exception('ftp_no_connection');
 			}
 			return false;
 		}
@@ -206,7 +206,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_change_dir');
+				throw new \Fuel_Exception('ftp_unable_to_change_dir');
 			}
 			return false;
 		}
@@ -236,7 +236,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_makdir');
+				throw new \Fuel_Exception('ftp_unable_to_makdir');
 			}
 			return false;
 		}
@@ -270,7 +270,7 @@ class Ftp
 
 		if ( ! file_exists($local_path))
 		{
-			throw new \Exception('ftp_no_source_file');
+			throw new \Fuel_Exception('ftp_no_source_file');
 			return false;
 		}
 
@@ -290,7 +290,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_upload');
+				throw new \Fuel_Exception('ftp_unable_to_upload');
 			}
 			return false;
 		}
@@ -338,7 +338,7 @@ class Ftp
 		{
 			if ($this->_debug === true)
 			{
-				throw new \Exception('ftp_unable_to_download');
+				throw new \Fuel_Exception('ftp_unable_to_download');
 			}
 			return false;
 		}
@@ -372,7 +372,7 @@ class Ftp
 			{
 				$msg = ($move == false) ? 'ftp_unable_to_rename' : 'ftp_unable_to_move';
 
-				throw new \Exception($msg);
+				throw new \Fuel_Exception($msg);
 			}
 			return false;
 		}
@@ -417,7 +417,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_delete');
+				throw new \Fuel_Exception('ftp_unable_to_delete');
 			}
 			return false;
 		}
@@ -466,7 +466,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_delete');
+				throw new \Fuel_Exception('ftp_unable_to_delete');
 			}
 			return false;
 		}
@@ -496,7 +496,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_chmod');
+				throw new \Fuel_Exception('ftp_unable_to_chmod');
 			}
 			return false;
 		}
@@ -507,7 +507,7 @@ class Ftp
 		{
 			if ($this->_debug == true)
 			{
-				throw new \Exception('ftp_unable_to_chmod');
+				throw new \Fuel_Exception('ftp_unable_to_chmod');
 			}
 			return false;
 		}

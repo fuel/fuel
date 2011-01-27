@@ -36,7 +36,7 @@ class HasOne extends Association {
 		}
 		else
 		{
-			throw new \Exception("Did not get expected class: {$this->dest_class}", Exception::UnexpectedClass);
+			throw new \Fuel_Exception("Did not get expected class: {$this->dest_class}", Exception::UnexpectedClass);
 		}
 	}
 

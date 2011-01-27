@@ -140,7 +140,7 @@ class Model {
 		// God knows, complain
 		else
 		{
-			throw new \Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
+			throw new \Fuel_Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
 		}
 
 		$and_parts = explode('_and_', $name);
@@ -419,7 +419,7 @@ class Model {
 			}
 		}
 
-		throw new \Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+		throw new \Fuel_Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 	}
 
 	/**
@@ -443,7 +443,7 @@ class Model {
 	{
 		if ($this->frozen)
 		{
-			throw new \Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
+			throw new \Fuel_Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
 		}
 
 		if (preg_match('#(.+?)_ids$#', $name, $matches))
@@ -474,7 +474,7 @@ class Model {
 		}
 		else
 		{
-			throw new \Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+			throw new \Fuel_Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 		}
 	}
 
@@ -513,7 +513,7 @@ class Model {
 		}
 		else
 		{
-			throw new \Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
+			throw new \Fuel_Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
 		}
 	}
 
@@ -933,7 +933,7 @@ class Model {
 		}
 		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
 		{
-			throw new \Exception("Couldn't find anything.", Exception::RecordNotFound);
+			throw new \Fuel_Exception("Couldn't find anything.", Exception::RecordNotFound);
 		}
 
 		return (is_array($id) || $id == 'all')

@@ -48,7 +48,7 @@ abstract class ViewModel {
 		{
 			if ( ! class_exists($class = $viewmodel))
 			{
-				throw new \Exception('ViewModel could not be found.');
+				throw new \Fuel_Exception('ViewModel could not be found.');
 			}
 		}
 

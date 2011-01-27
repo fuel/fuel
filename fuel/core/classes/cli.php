@@ -271,12 +271,12 @@ class Cli {
 		
 		if ( ! array_key_exists($foreground, static::$foreground_colors))
 		{
-			throw new \Exception('Invalid CLI foreground color: '.$foreground);
+			throw new \Fuel_Exception('Invalid CLI foreground color: '.$foreground);
 		}
 
 		if ( $background !== null and ! array_key_exists($background, static::$background_colors))
 		{
-			throw new \Exception('Invalid CLI background color: '.$background);
+			throw new \Fuel_Exception('Invalid CLI background color: '.$background);
 		}
 
 		$string = "\033[".static::$foreground_colors[$foreground]."m";
