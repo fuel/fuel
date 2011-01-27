@@ -110,7 +110,7 @@ class Date {
 		$timestamp	= is_null($timestamp) ? time() + static::$server_gmt_offset : $timestamp;
 		$timezone	= is_null($timezone) ? static::$default_timezone : $timezone;
 
-		return new Date($timestamp, $timezone);
+		return new static($timestamp, $timezone);
 	}
 
 	/**

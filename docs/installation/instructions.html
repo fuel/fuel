@@ -33,9 +33,12 @@
 			<li>Unzip/Extract the download</li>
 			<li>Move the files to your server
 				<ul>
-					<li>Note the public directory in the source equals your web server's public document directory i.e. public_html, public, htdocs, etc.</li>
-					<li>Placing the fuel directory outside of the public document directory is encouraged.
-					</li>
+					<li>Note the public directory in the source equals your web server's public document directory i.e.
+					public_html, public, htdocs, etc. Move its contents to there or a subdirectory of the webroot
+					where you want to use Fuel.</li>
+					<li>Placing the fuel directory outside of the public document directory is encouraged for security
+					reasons.</li>
+					<li>Edit the paths in index.php to point to your app, core & packages directories.</li>
 				</ul>
 <pre>/
   fuel/
@@ -61,7 +64,7 @@
 
 		<h2 id="configuration">Configuration</h2>
 
-		<p>The main configuration can be found at fuel/app/config/config.php. Edit it to your liking.</p>
+		<p>The main configuration can be found at app/config/config.php. Edit it to your liking.</p>
 
 
 	</section>

@@ -94,7 +94,7 @@
 				the <a href="../../general/controllers/migrations.html">Migration</a> automatically created for you to match:
 			</p>
 
-			<pre class="cli">$ php oil g model post title:varchar[50] body:text user_id:int
+			<pre class="cli">$ php oil g model post title:varchar[50] body:text user_id:int created_at:datetime
 	Created model: APPPATH/classes/model/post.php
 	Created migration: APPPATH/migrations/001_create_posts.php</pre>
 
@@ -114,10 +114,11 @@ class Create_posts {
 	function up()
 	{
 		\DBUtil::create_table('posts', array(
-			'id' => array('type' => 'int', 'auto_increment' => true),
-			'title' => array('type' => 'varchar', 'constraint' => 50),
+			'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true),
+			'title' => array('constraint' => 50, 'type' => 'varchar'),
 			'body' => array('type' => 'text'),
-			'user_id' => array('type' => 'int', 'constraint' => 11),
+			'user_id' => array('constraint' => 11, 'type' => 'int'),
+			'created_at' => array('type' => 'datetime'),
 
 		), array('id'));
 	}
@@ -132,17 +133,22 @@ class Create_posts {
 			<h3>Migrations</h3>
 
 			<p>
-				You can generate migrations without creating a model. This would be used to add new fields to your schema
-				in a way that is easy to deploy to other environments.
+				You can generate migrations without creating a model. This could be used to rename a table, or add fields to a table in a way that is easy to deploy in other environments.
 			</p>
 
-			<pre class="cli">$ php oil g migration add_summary_to_posts summary:text
-	Created migration: APPPATH/migrations/002_add_summary_to_posts.php</pre>
-
-			<p>
-				Note: Adding fields like this needs some work. At the moment the up and down will be empty but soon Oil
-				will work this out based on the name and fields.
-			</p>
+			<pre class="cli">$ php oil generate migration rename_table_users_to_accounts
+	Building magic migration: rename_table
+	Created migration: APPPATH/migrations/002_rename_table_users_to_accounts.php</pre>
+	
+			<h3>Magic Migrations</h3>
+			<p>There are a number of "magic" migrations which automatically build you a migration based on a prefix to your migration name.</p>
+			<pre class="cli">$ php oil generate migration create_users name:text email:string[50] password:string[125]
+$ php oil generate migration rename_table_users_to_accounts
+$ php oil generate migration add_bio_to_accounts bio:text
+$ php oil generate migration rename_field_name_to_username
+$ php oil generate migration drop_accounts
+</pre>
+			<p>Note: Be careful when naming your migrations that you don't begin with any keywords by accident.</p>
 
 			<a name="scaffolding"></a>
 			<h3>Scaffolding</h3>

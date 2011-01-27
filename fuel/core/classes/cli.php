@@ -242,6 +242,16 @@ class Cli {
 		}
 	}
 
+
+	/**
+	 * if oprerating system === windows
+	 */
+ 	public static function is_windows()
+ 	{ 
+ 		return 'win' === strtolower(substr(php_uname("s"), 0, 3));
+ 	}
+
+
 	/**
 	 * Returns the given text with the correct color codes for a foreground and
 	 * optionally a background color.
@@ -253,6 +263,12 @@ class Cli {
 	 */
 	public static function color($text, $foreground, $background = null)
 	{
+	
+		if (static::is_windows())
+		{
+			return $text;
+		}
+		
 		if ( ! array_key_exists($foreground, static::$foreground_colors))
 		{
 			throw new \Exception('Invalid CLI foreground color: '.$foreground);

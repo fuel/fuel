@@ -21,6 +21,10 @@ use \Inflector;
 
 class Model {
 
+	const IS_COUNT = 'IS_COUNT_random_hghj8uyt567uygfvb876trf';
+
+	protected $prefixed_table_name = null;
+
 	/**
 	 * Queries the table for the given primary key value ($id).  $id can also
 	 * contain 2 special values:
@@ -51,7 +55,7 @@ class Model {
 	 * <code>$user = User::find(2, array('include' => array('group')));</code>
 	 *
 	 * @param	int|string	$id			the primary key value
-	 * @param	srray		$options	the find options
+	 * @param	array		$options	the find options
 	 * @return	object		the result
 	 */
 	public static function find($id = 'all', $options = array())
@@ -61,6 +65,36 @@ class Model {
 		unset($instance);
 
 		return $results;
+	}
+
+	/**
+	 * Alias for find('all', ...)
+	 *
+	 * Usage:
+	 *
+	 * <code>$user = User::all(array('include' => array('group')));</code>
+	 *
+	 * @param	array		$options	the find options
+	 * @return	object		the result
+	 */
+	public static function all($options = array())
+	{
+		return static::find('all', $options);
+	}
+
+	/**
+	 * Alias for find('first', ...)
+	 *
+	 * Usage:
+	 *
+	 * <code>$user = User::all(array('include' => array('group')));</code>
+	 *
+	 * @param	array		$options	the find options
+	 * @return	object		the result
+	 */
+	public static function first($options = array())
+	{
+		return static::find('first', $options);
 	}
 
 	/**
@@ -88,8 +122,10 @@ class Model {
 		{
 			return;
 		}
+		
 		$find_type = strncmp($name, 'find_all_by_', 12) === 0 ? 'all' : (strncmp($name, 'find_by_', 8) === 0 ? 'first' : false);
-		if ( ! $find_type && $name != '_init')
+		
+		if ( ! $find_type)
 		{
 			throw new \Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
 		}
@@ -271,6 +307,19 @@ class Model {
 	{
 		$this->class_name = get_class($this);
 
+		if ($this->table_name === null)
+		{
+			$this->table_name = Inflector::tableize($this->class_name);
+		}
+
+		$this->prefixed_table_name = \Database::instance()->table_prefix($this->table_name);
+
+		//don't process associacions when instance was created by static::count() 
+		if ($params === self::IS_COUNT)
+		{
+			return;
+		}
+
 		// Setup all the associations
 		foreach ($this->assoc_types as $type)
 		{
@@ -292,11 +341,6 @@ class Model {
 					}
 				}
 			}
-		}
-
-		if ($this->table_name === null)
-		{
-			$this->table_name = Inflector::tableize($this->class_name);
 		}
 
 		if (empty($this->columns))
@@ -1089,6 +1133,76 @@ class Model {
 		$result = $query->execute();
 
 		return array('result' => $result, 'column_lookup' => $column_lookup);
+	}
+	
+	/**
+	 * Exactly as find() but returns the row count see {@link find} 
+	 * all the parameters and options are exactly the same as for find()
+	 *
+	 * Usage:
+	 *
+	 * <code>$user = Model_User::count(array('include' => array('group')));</code>
+	 *
+	 * @param	int|string	$id			the primary key value
+	 * @param	array		$options	the find options
+	 * @return	int|null 	the row count or null
+	 */
+	public static function count($options = array())
+	{
+		$instance = new static(self::IS_COUNT);
+		$count = $instance->count_query($options);
+		unset($instance);
+
+		return $count;
+	}
+	
+	/**
+	 * Generates then executes the count query.  This is used by {@link count}.
+	 * Please see {@link count} for parameter options and usage.
+	 *
+	 * @param	string|int	$id			the primary key to find
+	 * @param	array		$options	the array of options
+	 * @return	int|null 	the row count or null
+	 */
+	protected function count_query($options = array())
+	{
+		// Start building the query
+		$query = DB::select(DB::expr('COUNT('.$this->prefixed_table_name.'.'.$this->primary_key.') AS count_result'));
+	
+		$query->from($this->table_name);
+
+		// Get the group
+		if (array_key_exists('group', $options))
+		{
+			$query->group_by($options['group']);
+		}
+
+		if (array_key_exists('where', $options) and is_array($options['where']))
+		{
+			foreach ($options['where'] as $conditional)
+			{
+				$query->where($conditional[0], $conditional[1], $conditional[2]);
+			}
+		}
+
+		if (array_key_exists('or_where', $options) and is_array($options['or_where']))
+		{
+			foreach ($options['or_where'] as $conditional)
+			{
+				$query->or_where($conditional[0], $conditional[1], $conditional[2]);
+			}
+		}
+
+		// It's all built, now lets execute
+		$count = $query->execute()->get('count_result');
+		
+		// Database_Result::get('mycount') returns a string | null
+		if ($count === null)
+		{
+			return null;
+		}
+
+		return (int) $count;
 	}
 }
 

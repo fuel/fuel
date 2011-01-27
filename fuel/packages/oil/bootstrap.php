@@ -14,13 +14,14 @@
 
 
 Fuel\Core\Autoloader::add_classes(array(
-	'Oil\\Cli'			=> __DIR__.'/classes/cli.php',
-	'Oil\\Console'		=> __DIR__.'/classes/console.php',
-	'Oil\\Exception'	=> __DIR__.'/classes/exception.php',
-	'Oil\\Generate'		=> __DIR__.'/classes/generate.php',
-	'Oil\\Package'		=> __DIR__.'/classes/package.php',
-	'Oil\\Refine'		=> __DIR__.'/classes/refine.php',
-	'Oil\\Scaffold'		=> __DIR__.'/classes/scaffold.php',
+	'Oil\\Cli'						   	=> __DIR__.'/classes/cli.php',
+	'Oil\\Console'					   	=> __DIR__.'/classes/console.php',
+	'Oil\\Exception'				   	=> __DIR__.'/classes/exception.php',
+	'Oil\\Generate'						=> __DIR__.'/classes/generate.php',
+	'Oil\\Generate_Migration_Actions'	=> __DIR__.'/classes/generate/migration/actions.php',
+	'Oil\\Package'					 	=> __DIR__.'/classes/package.php',
+	'Oil\\Refine'					 	=> __DIR__.'/classes/refine.php',
+	'Oil\\Scaffold'					 	=> __DIR__.'/classes/scaffold.php',
 ));
 
 /* End of file bootstrap.php */

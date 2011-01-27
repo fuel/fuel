@@ -56,7 +56,7 @@ class DBUtil {
 	 */
 	public static function drop_table($table)
 	{
-		return DB::query('DROP TABLE IF EXISTS '.DB::escape($table), \Database::DELETE);
+		return DB::query('DROP TABLE IF EXISTS '.DB::quote_identifier($table), \Database::DELETE)->execute();
 	}
 
 	/**
@@ -69,7 +69,7 @@ class DBUtil {
 	 */
 	public static function rename_table($table, $new_table_name)
 	{
-		return DB::query('DROP TABLE IF EXISTS '.DB::escape($table), Database::UPDATE);
+		return DB::query('RENAME TABLE '.DB::quote_identifier($table).' TO '.DB::quote_identifier($new_table_name),Database::UPDATE)->execute();
 	}
 
 	public static function create_table($table, $fields, $primary_keys = array(), $if_not_exists = true)

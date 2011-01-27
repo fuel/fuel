@@ -158,49 +158,150 @@ VIEW;
 
 	public function migration($args)
 	{
+		
+		// Get the migration name
 		$migration_name = strtolower(array_shift($args));
+		
+		// See if the action exists
+		$methods = get_class_methods(__NAMESPACE__ . '\Generate_Migration_Actions');
+		
+		// For empty migrations that dont have actions
+		$migration = array('', '');
+		
+		// Loop through the actions and act on a matching action appropriately
+		foreach($methods as $method_name)
+		{	
+			// If the miration name starts with the name of the action method
+			if(substr($migration_name, 0, strlen($method_name)) === $method_name)
+			{
+				
+				/**
+				 *	Create an array of the subject the migration is about
+				 *
+				 *	- In a migration named 'create_users' the subject is 'users' since thats what we want to create
+				 *		So it would be the second object in the array
+				 *			array(false, 'users')
+				 *
+				 *	- In a migration named 'add_name_to_users' the object is 'name' and the subject is 'users'.
+				 *		So again 'users' would be the second object, but 'name' would be the first
+				 *			array('name', 'users')
+				 *
+				 */
+				$subjects = array(false, false);
+				$matches = explode('_', str_replace($method_name . '_', '', $migration_name));
+				
+				if(count($matches) == 1) { // create_{table}
+					$subjects = array(false, $matches[0]);
+				}
+				else if(count($matches) == 3) // add_{field}_to_{table}
+				{
+					$subjects = array($matches[0], $matches[2]);
+				}
+				else
+				{
+					// There is no subject here so just carry on with a normal empty migration
+					break;
+				}
+				
+				// We always pass in fields to a migration, so lets sort them out here.
+				$fields = array();
+				foreach($args as $field)
+				{
+					$field_array = array();
+					
+					// Each paramater for a field is seperated by the : character
+					$parts = explode(":", $field);
+					
+					// We must have the 'name:type' if nothing else!
+					if(count($parts) >= 2)
+					{
+						$field_array['name'] = array_shift($parts);
+						foreach($parts as $part_i => $part)
+						{
+							preg_match('/([a-z0-9_-]+)(?:\[([a-z0-9]+)\])?/i', $part, $part_matches);
+							array_shift($part_matches);
+							
+							if(count($part_matches) < 1)
+							{
+								// Move onto the next part, something is wrong here...
+								continue;
+							}
+							
+							$option_name = ''; // This is the name of the option to be passed to the action in a field
+							$option = $part_matches;
+							
+							// The first option always has to be the field type
+							if($part_i == 0)
+							{
+								$option_name = 'type';
+								$type = $option[0];
+								if($type === 'string')
+								{
+									$type = 'varchar';
+								}
+								else if($type === 'integer')
+								{
+									$type = 'int';
+								}
 
-		// Starts with create, so lets create a table
-		if (strpos($migration_name, 'create_') === 0)
-		{
-			$mode = 'create_table';
-			$table = str_replace('create_', '', $migration_name);
+								if(!in_array($type, array('text', 'blob', 'datetime')))
+								{
+									if(!isset($option[1]) || $option[1] == NULL)
+									{
+										if(isset(self::$_default_constraints[$type]))
+										{
+											$field_array['constraint'] = self::$_default_constraints[$type];
+										}
+									}
+									else
+									{
+										$field_array['constraint'] = (int) $option[1];
+									}
+								}
+								$option = $type;
+							}
+							else
+							{
+								// This allows you to put any number of :option or :option[val] into your field and these will...
+								// ... always be passed through to the action making it really easy to add extra options for a field
+								$option_name = array_shift($option);
+								if(count($option) > 0)
+								{
+									$option = $option[0];
+								}
+								else
+								{
+									$option = true;
+								}
+							}	
+							
+							$field_array[$option_name] = $option;
+													
+						}
+						$fields[] = $field_array;
+					}
+					else
+					{
+						// Invalid field passed in
+						continue;
+					}
+				}
+				
+				// Call the magic action which returns an array($up, $down) for the migration
+				\Cli::write("\tBuilding magic migration:" . $method_name);
+				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method_name}", $subjects, $fields);
+				
+			}
+			else
+			{
+				// No magic action for this migration...
+			}
 		}
-
-		// add_field_to_table
-		else if (strpos($migration_name, 'add_') === 0)
+		
+		// Build the migration
+		if ($filepath = static::_build_migration($migration_name, $migration[0], $migration[1]))
 		{
-			$mode = 'add_fields';
-
-			preg_match('/add_[a-z0-9_]+_to_([a-z0-9_]+)/i', $migration_name, $matches);
-
-			$table = $matches[1];
-		}
-
-		// remove_field_from_table
-		else if (strpos($migration_name, 'remove_') === 0)
-		{
-			$mode = 'remove_field';
-
-			preg_match('/remove_([a-z0-9_])+_from_([a-z0-9_]+)/i', $migration_name, $matches);
-
-			$remove_field = $matches[1];
-			$table = $matches[2];
-		}
-
-		// drop_table
-		else if (strpos($migration_name, 'drop_') === 0)
-		{
-			$mode = 'drop_table';
-			$table = str_replace('drop_', '', $migration_name);
-		}
-		unset($matches);
-
-		// Now that we know that, lets build the migration
-
-		if ($filepath = static::_build_migration($migration_name, $mode, $table, $args))
-		{
-			\Cli::write('Created migration: ' . \Fuel::clean_path($filepath));
+			\Cli::write("\tCreated migration: " . \Fuel::clean_path($filepath), 'green');
 		}
 	}
 
@@ -262,87 +363,10 @@ HELP;
 
 		return $result;
 	}
-
-
-	private function _build_migration($migration_name, $mode, $table, $args)
+	
+	private function _build_migration($migration_name, $up, $down)
 	{
 		$migration_name = ucfirst(strtolower($migration_name));
-
-		if ($mode == 'create_table' or $mode == 'add_fields')
-		{
-			// Store an aray of what fields are being added
-			$fields = array();
-			
-			$field_str = '';
-
-			foreach ($args as $arg)
-			{
-				// Parse the argument for each field in a pattern of name:type[constraint]
-				preg_match('/([a-z0-9_]+):([a-z0-9_]+)(\[([0-9]+)\])?/i', $arg, $matches);
-
-				$name = $fields[] = $matches[1];
-				$type = $matches[2];
-				$constraint = isset($matches[4]) ? $matches[4] : null;
-
-				if ($type === 'string')
-				{
-					$type = 'varchar';
-				}
-				
-				else if ($type === 'integer')
-				{
-					$type = 'int';
-				}
-
-				if (in_array($type, array('text', 'blob', 'datetime')))
-				{
-					$field_str .= "\t\t\t'$name' => array('type' => '$type'),".PHP_EOL;
-				}
-
-				else
-				{
-					if ($constraint === null)
-					{
-						$constraint = self::$_default_constraints[$type];
-					}
-
-					$field_str .= "\t\t\t'$name' => array('type' => '$type', 'constraint' => $constraint),".PHP_EOL;
-				}
-			}
-
-		}
-
-		// Make the up and down based on mode
-		switch ($mode)
-		{
-			case 'create_table':
-
-				// Shove an id field at the start
-				$field_str = "\t\t\t'id' => array('type' => 'int', 'auto_increment' => true),".PHP_EOL . $field_str;
-
-				$up = <<<UP
-		\DBUtil::create_table('{$table}', array(
-$field_str
-		), array('id'));
-UP;
-
-				$down = <<<DOWN
-		\DBUtil::drop_table('{$table}');
-DOWN;
-			break;
-
-			case 'drop_table':
-				$up = <<<UP
-		\DBUtil::drop_table('{$table}');
-UP;
-				$down = '';
-			break;
-
-			default:
-				$up = '';
-				$down = '';
-		}
-
 
 		$migration = <<<MIGRATION
 <?php
@@ -379,7 +403,6 @@ MIGRATION;
 
 		return false;
 	}
-
 
 	private function _find_migration_number()
 	{

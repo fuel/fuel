@@ -56,11 +56,11 @@
 ?&gt;
 &lt;/ul&gt;</code></pre>
 
-		<p><strong>On view names:</strong> A ViewModel and its view are expected to share the same name. Thus a 
+		<p><strong>On view names:</strong> A ViewModel and its view are expected to share the same name. Thus a
 		ViewModel <kbd>View_Index</kbd> expects the view to be in <kbd>app/views/index.php</kbd>. And underscores
-		work here the same as with classes, which means that the view for <kbd>View_Some_Thing</kbd> is expected 
+		work here the same as with classes, which means that the view for <kbd>View_Some_Thing</kbd> is expected
 		to be in <kbd>app/views/some/thing.php</kbd>.<br />
-		This default can be overwritten by setting a <kbd>$_template</kbd> property in your ViewModel with the
+		This default can be overwritten by setting a non-static <kbd>$_template</kbd> property in your ViewModel with the
 		View name (without .php suffix).</p>
 
 		<p>And last we'll call the ViewModel from the controller:</p>
@@ -92,7 +92,8 @@
 
 	public function view()
 	{
-		// add it filtered, this becomes &lt;strong&gt;not bold because filtered&lt;/strong&gt;
+		// add it unfiltered just like you added
+		// add it filtered, outputs: &amp;lt;strong&amp;gt;not bold because filtered&amp;lt;/strong&amp;gt;
 		$this->title = '&lt;strong&gt;not bold because filtered&lt;/strong&gt;';
 
 		// add it unfiltered just like you added
@@ -103,6 +104,13 @@
 		<p>If you don't want your ViewModel to work like this add a public static property <kbd>$filter_output</kbd>
 		and set it to false. Now anything will be added unfiltered, if you do want some values filtered you can use
 		<kbd>set_safe()</kbd> in the same way <kbd>set_raw()</kbd> was used in the example above.</p>
+
+		<p><strong>Note on objects:</strong> Unless the passed object is of the type View, ViewModel or Closure it is
+		expected to have a __toString() method and forced to be a string when output filtering is enabled. If you want
+		to pass it anyway you need to use <kbd>set_raw()</kbd>, but don't forget to filter what you use!<br />
+		View &amp; ViewModels are expected to contain HTML and take care of their own filtering, which is why they're
+		not sanitized. Closures cannot be sanitized, and you should take care to ensure this is done within them if
+		necessary.</p>
 
 		<h2>Passing functions to views</h2>
 
