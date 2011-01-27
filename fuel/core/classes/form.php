@@ -826,6 +826,57 @@ class Form {
 	{
 		$this->fieldset->repopulate();
 	}
+	
+	/**
+	 * Generate array of options for Form::select() from an array of objects / array of arrays
+	 *
+	 * @param	array	$rows_array: array of objects / array of arrays
+	 * @param	string	the id column
+	 * @param	string	the label column
+	 * @return	array	
+	 */
+	public static function options_list(Array $rows_array, $id, $label)
+	{
+		$options = array();
+		$error_str_obj = 'The %1$s is missing from the $rows_array: $rows_array[%2$d]->%3$s is not set.';
+		$error_str_array = 'The %1$s is missing from the $rows_array: $rows_array[%2$d][%3$s] is not set.';
+	  	foreach ($rows_array as $key => $row)
+		{
+	  		if (is_object($row))
+			{
+				if ($row->$id === null)
+				{
+					throw new \Exception(sprintf($error_str_obj, '$id', $key , $id));
+				}
+				
+				if ($row->$label === null)
+				{
+					throw new \Exception(sprintf($error_str_obj, '$label', $key , $label));
+				}
+				
+				$options[$row->$id] = $row->$label;
+			}
+			elseif (is_array($row))	
+			{
+				if ( ! isset($row[$id]))
+				{
+					throw new \Exception(sprintf($error_str_array, '$id', $key , $id));
+				}
+				
+				if ( ! isset($row[$label]))
+				{
+					throw new \Exception(sprintf($error_str_array, '$label', $key , $label));
+				}
+				
+				$options[$row[$id]] = $row[$label];	
+			}
+			else
+			{
+				throw new \Fuel_Exception('Parameter 1 for function Form::options_list() must be an array of *objects*, OR an array of *arrays* .');
+			}
+	  	}
+	  	return $options;
+	}
 }
 
 /* End of file form.php */

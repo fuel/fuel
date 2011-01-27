@@ -22,6 +22,7 @@ use \Inflector;
 class Model {
 
 	const IS_COUNT = 'IS_COUNT_random_hghj8uyt567uygfvb876trf';
+	const IS_TO_OPTIONS_LIST = 'IS_TO_OPTIONS_LIST_random_tyujko098uhgt67u';
 
 	protected $prefixed_table_name = null;
 
@@ -334,7 +335,7 @@ class Model {
 		$this->prefixed_table_name = \Database::instance()->table_prefix($this->table_name);
 
 		//don't process associacions when instance was created by static::count() 
-		if ($params === self::IS_COUNT)
+		if ($params === self::IS_COUNT OR $params === self::IS_TO_OPTIONS_LIST)
 		{
 			return;
 		}
@@ -1223,7 +1224,46 @@ class Model {
 
 		return (int) $count;
 	}
+	
+	/**
+	 * Generate array of options for Form::select()
+	 *
+	 * @param	string	$label_column
+	 * @param	string	$id_column default = the primary_key
+	 * @return	array
+	 */
+	public static function to_options_list($label_column, $id_column = null)
+	{	
+		$instance = new static(self::IS_TO_OPTIONS_LIST);
+		
+		$id_column = $id_column ?: $instance->get_primary_key();
+		
+		$columns = array_keys(Database::instance()->list_columns($instance->table_name));
+
+		$error_str = 'The %1$s "%2$s" was not found among the columns of the database table asociated to this model';
+		
+		if ( ! in_array($id_column, $columns))
+		{
+			throw new \Exception(sprintf($error_str, '$id_column', $id_column), 0);
+		}
+		
+		if ( ! in_array($label_column, $columns))
+		{
+			throw new \Exception(sprintf($error_str, '$label_column', $label_column), 0);
+		}
+		
+		$all_rows = DB::select($id_column, $label_column)->from($instance->table_name)->execute()->as_array();
+	
+		$options = array();
+	   	foreach ($all_rows as $key => $row)
+		{
+	   		$options[$row[$id_column]] = $row[$label_column];
+	   	}
+
+		return $options;
+	}
 }
+
 
 
 /* End of file model.php */
