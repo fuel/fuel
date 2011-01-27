@@ -156,12 +156,12 @@ class Request {
 				}
 				else
 				{
-					throw new \Exception('404 Action not found.');
+					throw new \Fuel_Exception('404 Action not found.');
 				}
 			}
 			else
 			{
-				throw new \Exception('404 Controller not found.');
+				throw new \Fuel_Exception('404 Controller not found.');
 			}
 		}
 	}

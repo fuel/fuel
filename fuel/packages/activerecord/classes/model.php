@@ -123,14 +123,25 @@ class Model {
 			return;
 		}
 		
-		$find_type = strncmp($name, 'find_all_by_', 12) === 0 ? 'all' : (strncmp($name, 'find_by_', 8) === 0 ? 'first' : false);
-		
-		if ( ! $find_type)
+		// Start with count_by? Get counting!
+		if (strpos($name, 'count_by') === 0)
 		{
-			throw new \Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
+			$find_type = 'count';
+			$name = substr($name, 9);
 		}
 
-		$name = $find_type === 'first' ? substr($name, 8) : substr($name, 12);
+		// Otherwise, lets find stuff
+		elseif (strpos($name, 'find_') === 0)
+		{
+			$find_type = strncmp($name, 'find_all_by_', 12) === 0 ? 'all' : (strncmp($name, 'find_by_', 8) === 0 ? 'first' : false);
+			$name = $find_type === 'first' ? substr($name, 8) : substr($name, 12);
+		}
+
+		// God knows, complain
+		else
+		{
+			throw new \Fuel_Exception('Invalid method call.  Method '.$name.' does not exist.', 0);
+		}
 
 		$and_parts = explode('_and_', $name);
 
@@ -181,7 +192,15 @@ class Model {
 			$options['or_where'] = array_merge($or_where, $options['or_where']);
 		}
 
-		return static::find($find_type, $options);
+		if ($find_type == 'count')
+		{
+			return static::count($options);
+		}
+
+		else
+		{
+			return static::find($find_type, $options);
+		}
 	}
 
 	/**
@@ -400,7 +419,7 @@ class Model {
 			}
 		}
 
-		throw new \Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+		throw new \Fuel_Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 	}
 
 	/**
@@ -424,7 +443,7 @@ class Model {
 	{
 		if ($this->frozen)
 		{
-			throw new \Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
+			throw new \Fuel_Exception("Can not update $name as object is frozen.", Exception::ObjectFrozen);
 		}
 
 		if (preg_match('#(.+?)_ids$#', $name, $matches))
@@ -455,7 +474,7 @@ class Model {
 		}
 		else
 		{
-			throw new \Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
+			throw new \Fuel_Exception("attribute called '$name' doesn't exist", Exception::AttributeNotFound);
 		}
 	}
 
@@ -494,7 +513,7 @@ class Model {
 		}
 		else
 		{
-			throw new \Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
+			throw new \Fuel_Exception("method or association not found for ($name)", Exception::MethodOrAssocationNotFound);
 		}
 	}
 
@@ -914,7 +933,7 @@ class Model {
 		}
 		if (count($base_objects) == 0 && (is_array($id) || is_numeric($id)))
 		{
-			throw new \Exception("Couldn't find anything.", Exception::RecordNotFound);
+			throw new \Fuel_Exception("Couldn't find anything.", Exception::RecordNotFound);
 		}
 
 		return (is_array($id) || $id == 'all')

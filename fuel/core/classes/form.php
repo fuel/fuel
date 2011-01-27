@@ -213,7 +213,7 @@ class Form {
 
 		if ( ! in_array($attributes['type'], static::$_valid_inputs))
 		{
-			throw new \Exception(sprintf('"%s" is not a valid input type.', $attributes['type']));
+			throw new \Fuel_Exception(sprintf('"%s" is not a valid input type.', $attributes['type']));
 		}
 
 		if (static::get_class_config('prep_value', true) && empty($attributes['dont_prep']))
@@ -461,7 +461,7 @@ class Form {
 
 		if ( ! isset($attributes['options']) || ! is_array($attributes['options']))
 		{
-			throw new \Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $attributes['name']));
+			throw new \Fuel_Exception(sprintf('Select element "%s" is either missing the "options" or "options" is not array.', $attributes['name']));
 		}
 		// Get the options then unset them from the array
 		$options = $attributes['options'];

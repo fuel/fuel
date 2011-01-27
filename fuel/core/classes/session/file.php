@@ -312,12 +312,12 @@ class Session_File extends Session_Driver {
 						// do we have a path?
 						if ( empty($item) OR ! is_dir($item))
 						{
-							throw new \Exception('You have specify a valid path to store the session data files.');
+							throw new \Fuel_Exception('You have specify a valid path to store the session data files.');
 						}
 						// and can we write to it?
 						if ( ! is_writable($item))
 						{
-							throw new \Exception('The webserver doesn\'t have write access to the path to store the session data files.');
+							throw new \Fuel_Exception('The webserver doesn\'t have write access to the path to store the session data files.');
 						}
 						// update the path, and add the trailing slash
 						$item = realpath($item).'/';

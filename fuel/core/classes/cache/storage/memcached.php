@@ -178,7 +178,7 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 		{
 			if ($this->memcached->getResultCode() !== \Memcached::RES_NOTFOUND)
 			{
-				throw new \Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
+				throw new \Fuel_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on delete. Check your configuration.');
 			}
 		}
 
@@ -321,12 +321,12 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 					// do we have a host?
 					if ( ! isset($server['host']) OR ! is_string($server['host']))
 					{
-						throw new \Exception('Invalid Memcached server definition in the session configuration.');
+						throw new \Fuel_Exception('Invalid Memcached server definition in the session configuration.');
 					}
 					// do we have a port number?
 					if ( ! isset($server['port']) OR ! is_numeric($server['port']) OR $server['port'] < 1025 OR $server['port'] > 65535)
 					{
-						throw new \Exception('Invalid Memcached server definition in the session configuration.');
+						throw new \Fuel_Exception('Invalid Memcached server definition in the session configuration.');
 					}
 					// do we have a relative server weight?
 					if ( ! isset($server['weight']) OR ! is_numeric($server['weight']) OR $server['weight'] < 0)

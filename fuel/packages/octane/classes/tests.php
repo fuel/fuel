@@ -91,7 +91,7 @@ HELP;
 
 		if (strncmp($name, 'run_', 4) !== 0)
 		{
-			throw new \Exception('Invalid method call: '.$name);
+			throw new \Fuel_Exception('Invalid method call: '.$name);
 			return;
 		}
 
