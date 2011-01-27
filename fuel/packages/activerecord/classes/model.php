@@ -1244,12 +1244,12 @@ class Model {
 		
 		if ( ! in_array($id_column, $columns))
 		{
-			throw new \Exception(sprintf($error_str, '$id_column', $id_column), 0);
+			throw new \Fuel_Exception(sprintf($error_str, '$id_column', $id_column), 0);
 		}
 		
 		if ( ! in_array($label_column, $columns))
 		{
-			throw new \Exception(sprintf($error_str, '$label_column', $label_column), 0);
+			throw new \Fuel_Exception(sprintf($error_str, '$label_column', $label_column), 0);
 		}
 		
 		$all_rows = DB::select($id_column, $label_column)->from($instance->table_name)->execute()->as_array();

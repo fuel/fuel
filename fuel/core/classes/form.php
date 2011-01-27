@@ -846,12 +846,12 @@ class Form {
 			{
 				if ($row->$id === null)
 				{
-					throw new \Exception(sprintf($error_str_obj, '$id', $key , $id));
+					throw new \Fuel_Exception(sprintf($error_str_obj, '$id', $key , $id));
 				}
 				
 				if ($row->$label === null)
 				{
-					throw new \Exception(sprintf($error_str_obj, '$label', $key , $label));
+					throw new \Fuel_Exception(sprintf($error_str_obj, '$label', $key , $label));
 				}
 				
 				$options[$row->$id] = $row->$label;
@@ -860,12 +860,12 @@ class Form {
 			{
 				if ( ! isset($row[$id]))
 				{
-					throw new \Exception(sprintf($error_str_array, '$id', $key , $id));
+					throw new \Fuel_Exception(sprintf($error_str_array, '$id', $key , $id));
 				}
 				
 				if ( ! isset($row[$label]))
 				{
-					throw new \Exception(sprintf($error_str_array, '$label', $key , $label));
+					throw new \Fuel_Exception(sprintf($error_str_array, '$label', $key , $label));
 				}
 				
 				$options[$row[$id]] = $row[$label];	
