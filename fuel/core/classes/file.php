@@ -495,7 +495,7 @@ class File {
 	{
 		if (is_string($resource))
 		{
-			$resource = fopen($resource, 'w+');
+			$resource = fopen($resource, 'r+');
 		}
 
 		// If locks aren't used, don't lock
