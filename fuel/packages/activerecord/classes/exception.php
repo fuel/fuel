@@ -16,7 +16,7 @@ namespace ActiveRecord;
 
 use Fuel;
 
-class Exception extends Fuel\Core\Exception {
+class Exception extends Fuel\Core\Fuel_Exception {
 	const RecordNotFound = 0;
 	const AttributeNotFound = 1;
 	const UnexpectedClass = 2;
