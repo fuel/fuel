@@ -846,12 +846,12 @@ class Form {
 			{
 				if ($row->$id === null)
 				{
-					throw new \Fuel_Exception(sprintf($error_str_obj, '$id', $key , $id));
+					\Error::notice(sprintf($error_str_obj, '$id', $key , $id));
 				}
 				
 				if ($row->$label === null)
 				{
-					throw new \Fuel_Exception(sprintf($error_str_obj, '$label', $key , $label));
+					\Error::notice(sprintf($error_str_obj, '$label', $key , $label));
 				}
 				
 				$options[$row->$id] = $row->$label;
@@ -860,19 +860,19 @@ class Form {
 			{
 				if ( ! isset($row[$id]))
 				{
-					throw new \Fuel_Exception(sprintf($error_str_array, '$id', $key , $id));
+					\Error::notice(sprintf($error_str_array, '$id', $key , $id));
 				}
 				
 				if ( ! isset($row[$label]))
 				{
-					throw new \Fuel_Exception(sprintf($error_str_array, '$label', $key , $label));
+					\Error::notice(sprintf($error_str_array, '$label', $key , $label));
 				}
 				
 				$options[$row[$id]] = $row[$label];	
 			}
 			else
 			{
-				throw new \Fuel_Exception('Parameter 1 for function Form::options_list() must be an array of *objects*, OR an array of *arrays* .');
+				\Error::notice('Parameter 1 for function Form::options_list() must be an array of *objects*, OR an array of *arrays* .');
 			}
 	  	}
 	  	return $options;
