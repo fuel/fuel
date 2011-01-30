@@ -228,6 +228,59 @@ class Arr {
 		
 		return $c;
 	}
+	
+	/**
+	 * Turn an array of arrays | array of objects into an array of key => value pairs 
+	 * example for an array of db rows:  collection_to_list($rows, 'id', 'name')
+	 * returns array( 0 => array( 'id_of_first_row' => 'name of first row'), ...)
+	 *
+	 * @param	array	$collection: array of objects / array of arrays
+	 * @param	string	the key_data name 
+	 * @param	string	the value_data name
+	 * @return	array	
+	 */
+	public static function collection_to_list(Array $collection, $key_data, $value_data)
+	{
+		$list = array();
+		$error_str_obj = 'The %1$s is missing from the $collection: $collection[%2$d]->%3$s is not set.';
+		$error_str_array = 'The %1$s is missing from the $collection: $collection[%2$d][%3$s] is not set.';
+	  	foreach ($collection as $n => $item)
+		{
+	  		if (is_object($item))
+			{
+				if ($item->$key_data === null)
+				{
+					\Error::notice(sprintf($error_str_obj, '$key_data', $n , $key_data));
+				}
+				
+				if ($item->$value_data === null)
+				{
+					\Error::notice(sprintf($error_str_obj, '$value_data', $n , $value_data));
+				}
+				
+				$list[$item->$key_data] = $item->$value_data;
+			}
+			elseif (is_array($item))	
+			{
+				if ( ! isset($item[$key_data]))
+				{
+					\Error::notice(sprintf($error_str_array, '$key_data', $n , $key_data));
+				}
+				
+				if ( ! isset($item[$value_data]))
+				{
+					\Error::notice(sprintf($error_str_array, '$value_data', $n , $value_data));
+				}
+				
+				$list[$item[$key_data]] = $item[$value_data];	
+			}
+			else
+			{
+				\Error::notice('Parameter 1 for function Form::options_list() must be an array of *objects*, OR an array of *arrays* .');
+			}
+	  	}
+	  	return $list;
+	}
 }
 
 /* End of file arr.php */
