@@ -1232,7 +1232,7 @@ class Model {
 	 * @param	string	$id_column default = the primary_key
 	 * @return	array
 	 */
-	public static function to_options_list($label_column, $id_column = null)
+	public static function all_to_list($label_column, $id_column = null)
 	{	
 		$instance = new static(self::IS_TO_OPTIONS_LIST);
 		
