@@ -14,12 +14,12 @@ class HtmlTest extends TestCase {
 		$this->assert_equal($expected, $output);
 
 		$output = Html::h('Some other example', '2', array('id' => 'h2', 'class' => 'sample', 'style' => 'color:red;'));
-		$expected = "<h2 id=\"h2\" class=\"sample\" style=\"color:red;\">Some other example</h2>";
+		$expected = '<h2 id="h2" class="sample" style="color:red;">Some other example</h2>';
 		$this->assert_equal($expected, $output);
 
 		$attributes = array('id' => 'sample', 'class' => 'sample', 'style' => 'color:blue;');
 		$output = Html::h('Variable!', '3', $attributes);
-		$expected = "<h3 id=\"sample\" class=\"sample\" style=\"color:blue;\">Variable!</h3>";
+		$expected = '<h3 id="sample" class="sample" style="color:blue;">Variable!</h3>';
 		$this->assert_equal($expected, $output);
 	}
 
@@ -30,7 +30,7 @@ class HtmlTest extends TestCase {
 		$this->assert_equal($expected, $output);
 
 		$output = Html::br('2', array('id' => 'example', 'class' => 'sample', 'style' => 'color:red;'));
-		$expected = "<br id=\"example\" class=\"sample\" style=\"color:red;\" /><br id=\"example\" class=\"sample\" style=\"color:red;\" />";
+		$expected = '<br id="example" class="sample" style="color:red;" /><br id="example" class="sample" style="color:red;" />';
 		$this->assert_equal($expected, $output);
 	}
 
@@ -41,7 +41,7 @@ class HtmlTest extends TestCase {
 		$this->assert_equal($expected, $output);
 
 		$output = Html::hr(array('id' => 'example', 'class' => 'sample', 'style' => 'color:red;'));
-		$expected = "<hr id=\"example\" class=\"sample\" style=\"color:red;\" />";
+		$expected = '<hr id="example" class="sample" style="color:red;" />';
 		$this->assert_equal($expected, $output);
 	}
 
@@ -70,11 +70,11 @@ class HtmlTest extends TestCase {
 	public function test_meta()
 	{
 		$output = Html::meta('description', 'Meta Example!');
-		$expected = "<meta name=\"description\" content=\"Meta Example!\" />";
+		$expected = '<meta name="description" content="Meta Example!" />';
 		$this->assert_equal($expected, $output);
 
 		$output = Html::meta('robots', 'no-cache');
-		$expected = "<meta name=\"robots\" content=\"no-cache\" />";
+		$expected = '<meta name="robots" content="no-cache" />';
 		$this->assert_equal($expected, $output);
 
 		$meta = array(
@@ -84,7 +84,7 @@ class HtmlTest extends TestCase {
 			);
 
 		$output = Html::meta($meta);
-		$expected = "<meta name=\"robots\" content=\"no-cache\" /><meta name=\"description\" content=\"Meta Example\" /><meta name=\"keywords\" content=\"fuel, rocks\" />";
+		$expected = '<meta name="robots" content="no-cache" /><meta name="description" content="Meta Example" /><meta name="keywords" content="fuel, rocks" />';
 		$this->assert_equal($expected, $output);
 	}
 
