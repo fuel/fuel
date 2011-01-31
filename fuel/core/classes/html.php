@@ -190,6 +190,7 @@ class Html
 		}
 		elseif(is_array($name))
 		{
+			$result = "";
 			foreach($name as $array)
 			{
 				$meta = $array;
