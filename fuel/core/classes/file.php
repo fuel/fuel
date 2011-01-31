@@ -357,11 +357,11 @@ class File {
 
 		if ( ! is_file($path))
 		{
-			throw new \Exception('Cannot copy file: given path is not a file.');
+			throw new \Fuel_Exception('Cannot copy file: given path is not a file.');
 		}
 		elseif (file_exists($new_path))
 		{
-			throw new \Exception('Cannot copy file: new path already exists.');
+			throw new \Fuel_Exception('Cannot copy file: new path already exists.');
 		}
 		$return = copy($path, $new_path);
 
@@ -384,11 +384,11 @@ class File {
 
 		if ( ! is_dir($path))
 		{
-			throw new \Exception('Cannot copy directory: given path is not a directory.');
+			throw new \Fuel_Exception('Cannot copy directory: given path is not a directory.');
 		}
 		elseif (file_exists($new_path))
 		{
-			throw new \Exception('Cannot copy directory: new path already exists.');
+			throw new \Fuel_Exception('Cannot copy directory: new path already exists.');
 		}
 
 		$files = static::read_dir($path, -1, array(), $area);
@@ -425,7 +425,7 @@ class File {
 
 		if ( ! is_file($path))
 		{
-			throw new \Exception('Cannot delete file: given path "'.$path.'" is not a file.');
+			throw new \Fuel_Exception('Cannot delete file: given path "'.$path.'" is not a file.');
 		}
 
 		return unlink($path);
@@ -445,7 +445,7 @@ class File {
 		$path = rtrim(static::instance($area)->get_path($path, $area), '\\/').DS;
 		if ( ! is_dir($path))
 		{
-			throw new \Exception('Cannot delete directory: given path is not a directory.');
+			throw new \Fuel_Exception('Cannot delete directory: given path is not a directory.');
 		}
 
 		$files = static::read_dir($path, -1, array(), $area);
@@ -473,7 +473,7 @@ class File {
 			// abort if something went wrong
 			if ( ! $check)
 			{
-				throw new \Exception('Directory deletion aborted prematurely, part of the operation failed.');
+				throw new \Fuel_Exception('Directory deletion aborted prematurely, part of the operation failed.');
 			}
 		}
 

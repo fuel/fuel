@@ -205,7 +205,7 @@ class Crypt {
 			if (substr($value,0,2) == '1:')
 			{
 				// houston, we have a problem!
-				throw new \Exception('Encrypted string was encrypted using the PHP mcrypt library, which is not loaded on this system.');
+				throw new \Fuel_Exception('Encrypted string was encrypted using the PHP mcrypt library, which is not loaded on this system.');
 			}
 
 			$value = substr($value,2);

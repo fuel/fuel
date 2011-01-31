@@ -11,7 +11,7 @@
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
+ 
+namespace Orm;
 
-namespace Fuel\Core;
-
-class Exception extends \Exception { }
+class Exception extends \Fuel_Exception { }

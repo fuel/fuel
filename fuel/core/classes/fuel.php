@@ -79,7 +79,7 @@ class Fuel {
 	{
 		if (static::$initialized)
 		{
-			throw new \Exception("You can't initialize Fuel more than once.");
+			throw new \Fuel_Exception("You can't initialize Fuel more than once.");
 		}
 
 		register_shutdown_function('fuel_shutdown_handler');
@@ -506,7 +506,7 @@ class Fuel {
 			{
 				if ( ! class_exists(ucfirst($class)))
 				{
-					throw new \Exception('Always load class does not exist.');
+					throw new \Fuel_Exception('Always load class does not exist.');
 				}
 			}
 		}

@@ -245,7 +245,7 @@ abstract class Database_Result implements \Countable, \Iterator, \SeekableIterat
 	 */
 	final public function offsetSet($offset, $value)
 	{
-		throw new \Exception('Database results are read-only');
+		throw new \Fuel_Exception('Database results are read-only');
 	}
 
 	/**
@@ -258,7 +258,7 @@ abstract class Database_Result implements \Countable, \Iterator, \SeekableIterat
 	 */
 	final public function offsetUnset($offset)
 	{
-		throw new \Exception('Database results are read-only');
+		throw new \Fuel_Exception('Database results are read-only');
 	}
 
 	/**

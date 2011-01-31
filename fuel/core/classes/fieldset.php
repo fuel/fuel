@@ -172,7 +172,7 @@ class Fieldset
 	{
 		if (empty($name) || (is_array($name) && empty($name['name'])))
 		{
-			throw new \Exception('Cannot create field without name.');
+			throw new \Fuel_Exception('Cannot create field without name.');
 		}
 
 		// Allow passing the whole config in an array, will overwrite other values if that's the case

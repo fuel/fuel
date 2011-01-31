@@ -67,6 +67,10 @@ class Arr {
 		$key = explode('.', $key);
 		if(count($key) > 1)
 		{
+			if ( ! is_array($array) || ! array_key_exists($key[0], $array))
+			{
+				return $default;
+			}
 			$array = $array[$key[0]];
 			unset($key[0]);
 			$key = implode('.', $key);
@@ -100,7 +104,7 @@ class Arr {
 
 		if ( ! is_array($keys))
 		{
-			throw new \Exception('Arr::elements() - $keys must be an array.');
+			throw new \Fuel_Exception('Arr::elements() - $keys must be an array.');
 		}
 
 		foreach ($keys as $key)
@@ -194,7 +198,7 @@ class Arr {
 	{
 		if( ! is_array($array))
 		{
-			throw new \Exception('Arr::sort() - $array must be an array.');
+			throw new \Fuel_Exception('Arr::sort() - $array must be an array.');
 		}
 		
 		foreach($array as $k=>$v) 
@@ -213,7 +217,7 @@ class Arr {
 			break;
 			
 			default:
-				throw new \Exception('Arr::sort() - $order must be asc or desc.');
+				throw new \Fuel_Exception('Arr::sort() - $order must be asc or desc.');
 			break;
 		}
 		

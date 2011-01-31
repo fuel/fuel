@@ -120,7 +120,7 @@ return array(
 		 * );
 		 */
 		'packages'	=> array(
-			//'activerecord',
+			// 'activerecord',
 		),
 
 		/**
