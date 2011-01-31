@@ -229,7 +229,17 @@ class Validation {
 				{
 					$callback	= $rule[0];
 					$params		= $rule[1];
-					$this->_run_rule($callback, $value, $params, $field);
+					if (is_array($value))
+					{
+						foreach ($value as $key => $element)
+						{
+							$this->_run_rule($callback, $element, $params, $field);
+						}
+					}
+					else
+					{
+						$this->_run_rule($callback, $value, $params, $field);
+					}
 				}
 				$this->validated[$field->name] = $value;
 			}
