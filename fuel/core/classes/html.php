@@ -190,10 +190,11 @@ class Html
 		}
 		elseif(is_array($name))
 		{
+			$result = "";
 			foreach($name as $array)
 			{
 				$meta = $array;
-				$result .= html_tag('meta', $meta);
+				$result .= "\n" . html_tag('meta', $meta);
 			}
 		}
 		return $result;
