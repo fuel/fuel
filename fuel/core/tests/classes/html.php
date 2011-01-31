@@ -84,7 +84,10 @@ class HtmlTest extends TestCase {
 			);
 
 		$output = Html::meta($meta);
-		$expected = '<meta name="robots" content="no-cache" /><meta name="description" content="Meta Example" /><meta name="keywords" content="fuel, rocks" />';
+		$expected = '
+<meta name="robots" content="no-cache" />
+<meta name="description" content="Meta Example" />
+<meta name="keywords" content="fuel, rocks" />';
 		$this->assert_equal($expected, $output);
 	}
 
