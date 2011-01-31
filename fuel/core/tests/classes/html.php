@@ -67,6 +67,27 @@ class HtmlTest extends TestCase {
 		$this->assert_equal($expected, $output);
 	}
 
+	public function test_meta()
+	{
+		$output = Html::meta('description', 'Meta Example!');
+		$expected = "<meta name=\"description\" content=\"Meta Example!\" />";
+		$this->assert_equal($expected, $output);
+
+		$output = Html::meta('robots', 'no-cache');
+		$expected = "<meta name=\"robots\" content=\"no-cache\" />";
+		$this->assert_equal($expected, $output);
+
+		$meta = array(
+			array('name' => 'robots', 'content' => 'no-cache'),
+			array('name' => 'description', 'content' => 'Meta Example'),
+			array('name' => 'keywords', 'content' => 'fuel, rocks'),
+			);
+
+		$output = Html::meta($meta);
+		$expected = "<meta name=\"robots\" content=\"no-cache\" /><meta name=\"description\" content=\"Meta Example\" /><meta name=\"keywords\" content=\"fuel, rocks\" />";
+		$this->assert_equal($expected, $output);
+	}
+
 }
 
 /* End of file html.php */
