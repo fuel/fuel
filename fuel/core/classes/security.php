@@ -85,7 +85,17 @@ class Security {
 				{
 					foreach($var as $key => $value)
 					{
-						$var[$key] = call_user_func($filter, $value);
+						if (is_array($value))
+						{	
+							foreach($value as $k => $el)
+							{
+								$var[$key][$k] = call_user_func($filter, $el);
+							}
+						}
+						else
+						{
+							$var[$key] = call_user_func($filter, $value);
+						}
 					}
 				}
 				else
