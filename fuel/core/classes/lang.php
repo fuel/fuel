@@ -30,65 +30,103 @@ class Lang {
 
 	public static $fallback = 'en';
 
+	protected static $language = '';
+
 	public static function load($file, $group = null)
 	{
+		static::$language = \Config::get('language');
+
 		$lang = array();
 
 		// Use the current language, failing that use the fallback language
-		foreach (array(\Config::get('language'), static::$fallback) as $language)
+		foreach (array(static::$language, static::$fallback) as $language)
 		{
+			$lang[$language] = array();
+
 			if ($path = \Fuel::find_file('lang/'.$language, $file, '.php', true))
 			{
-				$lang = array();
 				foreach ($path as $p)
 				{
-					$lang = $lang + \Fuel::load($p);
+					$lang[$language] = $lang[$language] + \Fuel::load($p);
 				}
+			}
+
+			if ( ! isset(static::$lines[$language]))
+			{
+				static::$lines[$language] = array();
+			}
+
+			if ($group === null)
+			{
+				static::$lines[$language] = static::$lines[$language] + $lang[$language];
+			}
+			else
+			{
+				$group = ($group === true) ? $file : $group;
+
+				if ( ! isset(static::$lines[$language][$group]))
+				{
+					static::$lines[$language][$group] = array();
+				}
+
+				static::$lines[$language][$group] = static::$lines[$language][$group] + $lang[$language];
+			}
+
+			// Loading same language again not needed
+			if (static::$language == static::$fallback)
+			{
 				break;
 			}
-		}
-
-		if ($group === null)
-		{
-			static::$lines = static::$lines + $lang;
-		}
-		else
-		{
-			$group = ($group === true) ? $file : $group;
-			if ( ! isset(static::$lines[$group]))
-			{
-				static::$lines[$group] = array();
-			}
-			static::$lines[$group] = static::$lines[$group] + $lang;
 		}
 	}
 
 	public static function line($line, $params = array())
 	{
-		if (strpos($line, '.') !== false)
+		// Use the current language, failing that use the fallback language
+		foreach (array(static::$language, static::$fallback) as $i => $language)
 		{
-			$parts = explode('.', $line);
-
-			$return = false;
-			foreach ($parts as $part)
+			if ( ! isset(static::$lines[$language]))
 			{
-				if ($return === false and isset(static::$lines[$part]))
-				{
-					$return = static::$lines[$part];
-				}
-				elseif (isset($return[$part]))
-				{
-					$return = $return[$part];
-				}
-				else
-				{
-					return false;
-				}
+				continue;
 			}
-			return  static::_parse_params($return, $params);
-		}
 
-		isset(static::$lines[$line]) and $line = static::$lines[$line];
+			if (strpos($line, '.') !== false)
+			{
+				$parts = explode('.', $line);
+
+				$return = false;
+				foreach ($parts as $part)
+				{
+					if ($return === false and isset(static::$lines[$language][$part]))
+					{
+						$return = static::$lines[$language][$part];
+					}
+					elseif (isset($return[$part]))
+					{
+						$return = $return[$part];
+					}
+					elseif ($i == 0)
+					{
+						continue(2);
+					}
+					else
+					{
+						$return = array_pop($parts);
+
+						break;
+					}
+				}
+
+				return static::_parse_params($return, $params);
+			}
+
+			if (isset(static::$lines[$language][$line]))
+			{
+				$line = static::$lines[$language][$line];
+
+				break;
+			}
+		}
 
 		return static::_parse_params($line, $params);
 	}
@@ -97,12 +135,12 @@ class Lang {
 	{
 		if ($group === null)
 		{
-			static::$lines[$line] = $value;
+			static::$lines[static::$language][$line] = $value;
 			return true;
 		}
-		elseif (isset(static::$lines[$group][$line]))
+		elseif (isset(static::$lines[static::$language][$group][$line]))
 		{
-			static::$lines[$group][$line] = $value;
+			static::$lines[static::$language][$group][$line] = $value;
 			return true;
 		}
 		return false;
