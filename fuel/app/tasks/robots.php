@@ -78,7 +78,7 @@ class Robots {
 	 *
 	 * Usage (from command line):
 	 *
-	 * php oil r robots protect
+	 * php oil r robots:protect
 	 *
 	 * @return string
 	 */
