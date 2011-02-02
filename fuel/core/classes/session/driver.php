@@ -615,7 +615,7 @@ abstract class Session_Driver {
 	 */
 	protected function _unserialize($data)
 	{
-		$data = @unserialize(stripslashes($data));
+		$data = @unserialize($data);
 
 		if (is_array($data))
 		{
