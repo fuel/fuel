@@ -46,7 +46,7 @@ class Association {
 			$this->foreign_key = \Inflector::foreign_key($this->source_class);
 		}
 
-		$namespace = ucfirst(\Request::active()->module).'\\';
+		$namespace = (\Request::active() ? ucfirst(\Request::active()->module) : '').'\\';
 		if (class_exists($dest = $namespace.'Model_'.$this->dest_class))
 		{
 			$this->dest_class = $dest;
