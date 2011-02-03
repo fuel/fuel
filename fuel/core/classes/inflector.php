@@ -101,7 +101,7 @@ class Inflector {
 		}
 		else
 		{
-			switch (($number % 10))
+			switch ($number % 10)
 			{
 				case 1:
 					return $number . 'st';
@@ -194,7 +194,7 @@ class Inflector {
 	 */
 	public static function underscore($camel_cased_word)
 	{
-		return strtolower(preg_replace('/([A-Z]+)([A-Z])/', '\1_\2', preg_replace('/([a-z\d])([A-Z])/', '\1_\2', strval($camel_cased_word))));
+		return \Str::lower(preg_replace('/([A-Z]+)([A-Z])/', '\1_\2', preg_replace('/([a-z\d])([A-Z])/', '\1_\2', strval($camel_cased_word))));
 	}
 
 	/**
@@ -233,12 +233,13 @@ class Inflector {
 		$str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
 
 		$trans = array(
-			'\s+' => $sep,					// one or more spaces => seperator
-			$sep.'+' => $sep,				// multiple seperators => 1 seperator
-			$sep.'$' => '',					// ending seperator => (nothing)
-			'^'.$sep => '',					// starting seperator => (nothing)
-			'\.+$' => ''					// ending dot => (nothing)
+			'\s+' => $sep,        // one or more spaces => seperator
+			$sep.'+' => $sep,   // multiple seperators => 1 seperator
+			$sep.'$' => '',	        // ending seperator => (nothing)
+			'^'.$sep => '',         // starting seperator => (nothing)
+			'\.+$' => ''             // ending dot => (nothing)
 		);
+		
 		foreach ($trans as $key => $val)
 		{
 			$str = preg_replace("#".$key."#i", $val, $str);
@@ -251,9 +252,7 @@ class Inflector {
 
 		if ($lowercase === true)
 		{
-			$str = function_exists('mb_convert_case')
-				? mb_convert_case($str, MB_CASE_LOWER, 'UTF-8')
-				: strtolower($str);
+			$str = \Str::lower($str);
 		}
 
 		return $str;
@@ -274,16 +273,7 @@ class Inflector {
 
 		if ($lowercase === true)
 		{
-			if (function_exists('mb_convert_case'))
-			{
-				$str = mb_convert_case($str, MB_CASE_LOWER, 'UTF-8');
-
-				$str[0] = mb_convert_case($str[0], MB_CASE_UPPER, 'UTF-8');
-			}
-			else
-			{
-				$str = ucfirst(strtolower($str));
-			}
+			$str = \Str::ucfirst($str);
 		}
 		
 		return str_replace($sep, " ", strval($str));
@@ -330,7 +320,7 @@ class Inflector {
 		{
 			$class_name = substr($class_name, 6);
 		}
-		return strtolower(static::pluralize(static::underscore($class_name)));
+		return \Str::lower(static::pluralize(static::underscore($class_name)));
 	}
 
 	/**
@@ -353,7 +343,7 @@ class Inflector {
 	 */
 	public static function foreign_key($class_name, $use_underscore = true)
 	{
-		$class_name = static::denamespace(strtolower($class_name));
+		$class_name = static::denamespace(\Str::lower($class_name));
 		if (strncasecmp($class_name, 'Model_', 6) === 0)
 		{
 			$class_name = substr($class_name, 6);
@@ -369,7 +359,7 @@ class Inflector {
 	 */
 	public static function is_countable($word)
 	{
-		return ! (\in_array(\strtolower(\strval($word)), static::$uncountable_words));
+		return ! (\in_array(\Str::lower(\strval($word)), static::$uncountable_words));
 	}
 }
 
