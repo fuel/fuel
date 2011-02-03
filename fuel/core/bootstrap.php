@@ -37,6 +37,12 @@ import('fuel');
  */
 define('MBSTRING', function_exists('mb_get_info'));
 
+/**
+ * Is mbstring enabled?
+ * Set the encoding to use whatever Fuel is set to use.
+ */
+MBSTRING and mb_internal_encoding(INTERNAL_ENC);
+
 // Is Fuel being requested via an AJAX request?
 define('IS_AJAX', isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
