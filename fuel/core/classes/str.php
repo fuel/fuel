@@ -22,22 +22,36 @@ namespace Fuel\Core;
  */
 class Str {
 
-	public static $encoding = 'UTF-8';
-	
 	/**
-	 * strtolower
+	 * lower
 	 * 
 	 * @param string $str required
 	 * @param string $encoding default UTF-8
 	 * @return string 
 	 */
-	public static function strtolower($str, $encoding = null)
+	public static function lower($str, $encoding = null)
 	{
-		empty($encoding) and $encoding = static::$encoding;
+		$encoding or $encoding = INTERNAL_ENC;
 		
 		return function_exists('mb_strtolower')
 			? mb_strtolower($str, $encoding)
 			: strtolower($str);
+	}
+
+	/**
+	 * upper
+	 *
+	 * @param string $str required
+	 * @param string $encoding default UTF-8
+	 * @return string
+	 */
+	public static function upper($str, $encoding = null)
+	{
+		$encoding or $encoding = INTERNAL_ENC;
+
+		return function_exists('mb_strtoupper')
+			? mb_strtoupper($str, $encoding)
+			: strtoupper($str);
 	}
 
 	/**
@@ -51,28 +65,12 @@ class Str {
 	 */
 	public static function lcfirst($str, $encoding = null)
 	{
-		empty($encoding) and $encoding = static::$encoding;
+		$encoding or $encoding = INTERNAL_ENC;
 
 		return function_exists('mb_strtolower')
 			? mb_strtolower(mb_substr($str, 0, 1, $encoding)).
 				mb_substr($str, 1, mb_strlen($str), $encoding)
 			: ucfirst($str);
-	}
-
-	/**
-	 * strtoupper
-	 * 
-	 * @param string $str required
-	 * @param string $encoding default UTF-8
-	 * @return string 
-	 */
-	public static function strtoupper($str, $encoding = null)
-	{
-		empty($encoding) and $encoding = static::$encoding;
-
-		return function_exists('mb_strtoupper')
-			? mb_strtoupper($str, $encoding)
-			: strtoupper($str);
 	}
 
 	/**
@@ -86,7 +84,7 @@ class Str {
 	 */
 	public static function ucfirst($str, $encoding = null)
 	{
-		empty($encoding) and $encoding = static::$encoding;
+		$encoding or $encoding = INTERNAL_ENC;
 
 		return function_exists('mb_strtoupper')
 			? mb_strtoupper(mb_substr($str, 0, 1, $encoding)).
@@ -108,7 +106,7 @@ class Str {
 	 */
 	public static function ucwords($str, $encoding = null)
 	{
-		empty($encoding) and $encoding = static::$encoding;
+		$encoding or $encoding = INTERNAL_ENC;
 
 		return function_exists('mb_convert_case')
 			? mb_convert_case($str, MB_CASE_TITLE, $encoding)
