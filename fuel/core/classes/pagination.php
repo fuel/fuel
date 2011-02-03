@@ -51,6 +51,11 @@ class Pagination {
 	 * @var	integer	The URI segment containg page number
 	 */
 	protected static $uri_segment = 3;
+	
+	/**
+	 * @var	integer	Query variablecontaining current page
+	 */
+	protected static $query_variable = false;
 
 	/**
 	 * @var	mixed	The pagination URL
@@ -107,8 +112,15 @@ class Pagination {
 
 		static::$total_pages = ceil(static::$total_items / static::$per_page) ?: 1;
 
-		static::$current_page = (int) \URI::segment(static::$uri_segment);
-
+		if (static::$query_variable !== false)
+		{
+			static::$current_page = (int) \Input::get(static::$query_variable);
+		}
+		else
+		{
+			static::$current_page = (int) \URI::segment(static::$uri_segment);
+		}
+		
 		if (static::$current_page > static::$total_pages)
 		{
 			static::$current_page = static::$total_pages;
@@ -147,6 +159,7 @@ class Pagination {
 
 		$pagination .= '&nbsp;'.static::prev_link('&laquo Previous').'&nbsp;&nbsp;';
 
+		$query_vars = \Input::get();
 		for($i = $start; $i <= $end; $i++)
 		{
 			if (static::$current_page == $i)
@@ -155,7 +168,26 @@ class Pagination {
 			}
 			else
 			{
-				$url = ($i == 1) ? '' : '/'.$i;
+				if (static::$query_variable !== false)
+				{
+					$url = array();
+					foreach ($query_vars as $key => $var)
+					{
+						if ($key == static::$query_variable)
+						{
+							$url[] = $key.'='.$i;
+						}
+						else
+						{
+							$url[] .= $key.'='.$var;
+						}
+					}
+					$url = '?'.implode('&', $url);
+				}
+				else
+				{
+					$url = ($i == 1) ? '' : '/'.$i;
+				}
 				$pagination .= \Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
 			}
 		}
@@ -187,8 +219,29 @@ class Pagination {
 		}
 		else
 		{
-			$next_page = static::$current_page + 1;
-			return \Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
+			$query_vars = \Input::get();
+			if (static::$query_variable !== false)
+			{
+				$next_page = array();
+				foreach ($query_vars as $key => $var)
+				{
+					if ($key == static::$query_variable)
+					{
+						$next_page[] = $key . '=' . (static::$current_page+1);
+					}
+					else
+					{
+						$next_page[] .= $key . '=' . $var;
+					}
+				}
+				$next_page = '?' . implode('&', $next_page);
+			}
+			else
+			{
+				$next_page = '/' . (static::$current_page+1);
+			}
+
+			return \Html::anchor(rtrim(static::$pagination_url, '/').$next_page, $value);
 		}
 	}
 
@@ -214,8 +267,28 @@ class Pagination {
 		}
 		else
 		{
-			$previous_page = static::$current_page - 1;
-			$previous_page = ($previous_page == 1) ? '' : '/' . $previous_page;
+			$query_vars = \Input::get();
+			if (static::$query_variable !== false)
+			{
+				$previous_page = array();
+				foreach ($query_vars as $key => $var)
+				{
+					if ($key == static::$query_variable)
+					{
+						$previous_page[] = $key . '=' . (static::$current_page-1);
+					}
+					else
+					{
+						$previous_page[] .= $key . '=' . $var;
+					}
+				}
+				$previous_page = '?' . implode('&', $previous_page);
+			}
+			else
+			{
+				$previous_page = '/' . (static::$current_page - 1);
+			}
+			$previous_page = ($previous_page == 1) ? '' : $previous_page;
 			return \Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
 		}
 	}
