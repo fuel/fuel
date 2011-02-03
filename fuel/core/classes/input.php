@@ -113,7 +113,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function get($index, $default = null)
+	public static function get($index = null, $default = null)
 	{
 		return static::_fetch_from_array($_GET, $index, $default);
 	}
@@ -126,7 +126,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function post($index, $default = null)
+	public static function post($index = null, $default = null)
 	{
 		return static::_fetch_from_array($_POST, $index, $default);
 	}
@@ -139,7 +139,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function put($index, $default = null)
+	public static function put($index = null, $default = null)
 	{
 		if (static::method() !== 'PUT')
 		{
@@ -163,7 +163,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function delete($index, $default = null)
+	public static function delete($index = null, $default = null)
 	{
 		if (static::method() !== 'DELETE')
 		{
@@ -187,7 +187,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function get_post($index, $default = null)
+	public static function get_post($index = null, $default = null)
 	{
 		return static::post($index, 's)meR4nD0ms+rIng') === 's)meR4nD0ms+rIng'
 				? static::get($index, $default)
@@ -202,7 +202,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function cookie($index, $default = null)
+	public static function cookie($index = null, $default = null)
 	{
 		return static::_fetch_from_array($_COOKIE, $index, $default);
 	}
@@ -215,7 +215,7 @@ class Input {
 	 * @param	mixed	The default value
 	 * @return	string
 	 */
-	public static function server($index, $default = null)
+	public static function server($index = null, $default = null)
 	{
 		return static::_fetch_from_array($_SERVER, strtoupper($index), $default);
 	}
