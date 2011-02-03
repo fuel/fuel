@@ -260,14 +260,33 @@ class Inflector {
 	}
 
 	/**
-	 * Turns an underscore separated word and turns it into a human looking string.
+	 * Turns an underscore or dash separated word and turns it into a human looking string.
 	 *
-	 * @param	string	$lower_case_and_underscored_word	the word
-	 * @return	string	the human version of $lower_case_and_underscored_word
+	 * @param	string	$str	the word
+	 * @param	string	the separator (either _ or -)
+	 * @param	bool	lowercare string and upper case first
+	 * @return	string	the human version of given string
 	 */
-	public static function humanize($lower_case_and_underscored_word)
+	public static function humanize($str, $sep = '_', $lowercase = true)
 	{
-		return ucfirst(strtolower(str_replace('_', " ", strval($lower_case_and_underscored_word))));
+		// Allow dash, otherwise default to underscore
+		$sep = $sep != '-' ? '_' : $sep;
+
+		if ($lowercase === true)
+		{
+			if (function_exists('mb_convert_case'))
+			{
+				$str = mb_convert_case($str, MB_CASE_LOWER, 'UTF-8');
+
+				$str[0] = mb_convert_case($str[0], MB_CASE_UPPER, 'UTF-8');
+			}
+			else
+			{
+				$str = ucfirst(strtolower($str));
+			}
+		}
+		
+		return str_replace($sep, " ", strval($str));
 	}
 
 	/**
