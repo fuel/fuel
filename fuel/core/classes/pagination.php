@@ -58,6 +58,32 @@ class Pagination {
 	protected static $pagination_url;
 
 	/**
+	 * @var	mixed	The replacement tag
+	 */
+	protected static $replacement_tag = '{p}';
+
+	/**
+	 * @var	mixed	The get_variable
+	 */
+	protected static $get_variable = 'page';
+	
+	/**
+	 * @var	mixed	Hide pagination nr whe it == 1 (not supported in static::CLASSIC)
+	 */
+	protected static $hide_1 = true;
+	
+	/**
+	 * @var	string	static::CLASSIC | static::SEGMENT_TAG | static::GET_TAG
+	 */
+	protected static $method = 'classic'; // static::CLASSIC
+	
+	const CLASSIC = 'classic';
+	const SEGMENT_TAG = 'segment_tag';
+	const GET_TAG = 'get_tag';
+
+
+
+	/**
 	 * Init
 	 *
 	 * Loads in the config and sets the variables
@@ -107,7 +133,7 @@ class Pagination {
 
 		static::$total_pages = ceil(static::$total_items / static::$per_page) ?: 1;
 
-		static::$current_page = (int) \URI::segment(static::$uri_segment);
+		static::$current_page = static::current_page();
 
 		if (static::$current_page > static::$total_pages)
 		{
@@ -155,8 +181,7 @@ class Pagination {
 			}
 			else
 			{
-				$url = ($i == 1) ? '' : '/'.$i;
-				$pagination .= \Html::anchor(rtrim(static::$pagination_url, '/') . $url, $i);
+				$pagination .= \Html::anchor(static::create_link_url($i), $i);
 			}
 		}
 
@@ -188,7 +213,7 @@ class Pagination {
 		else
 		{
 			$next_page = static::$current_page + 1;
-			return \Html::anchor(rtrim(static::$pagination_url, '/').'/'.$next_page, $value);
+			return \Html::anchor(static::create_link_url($next_page), $value);
 		}
 	}
 
@@ -215,10 +240,98 @@ class Pagination {
 		else
 		{
 			$previous_page = static::$current_page - 1;
-			$previous_page = ($previous_page == 1) ? '' : '/' . $previous_page;
-			return \Html::anchor(rtrim(static::$pagination_url, '/') . $previous_page, $value);
+			return \Html::anchor(static::create_link_url($previous_page), $value);
 		}
 	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Create the the link url from page_nr and pagination_url via the configured $method
+	 *
+	 * @access public
+	 * @param string $page_nr The page nr for the url
+	 * @return string    The pagination_url
+	 */
+	public static function create_link_url($page_nr)
+	{
+		switch (strtolower(static::$method)) 
+		{
+			case static::CLASSIC:
+			
+				$page_nr = ($page_nr == 1) ? '' : '/'.$page_nr;
+				return rtrim(static::$pagination_url, '/').$page_nr;
+	
+			case static::SEGMENT_TAG:
+		  	case static::GET_TAG:
+		  	
+		  		if($page_nr == 1 AND static::$hide_1 === true)
+				{
+					//if found remove'/{p}'
+					//else if found, remove'{p}&'
+					//else if found, remove '&{p}'
+					//else if found, remove'?{p}'
+					if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
+					{
+						return str_replace('/'.static::$replacement_tag, '', static::$pagination_url);
+					}
+					elseif(is_int(strpos(static::$pagination_url, static::$replacement_tag.'&')))
+					{
+						return str_replace(static::$replacement_tag.'&', '', static::$pagination_url);
+					}
+					elseif(is_int(strpos(static::$pagination_url, '&'.static::$replacement_tag)))
+					{
+						return str_replace('&'.static::$replacement_tag, '', static::$pagination_url);
+					}
+					elseif(is_int(strpos(static::$pagination_url, '?'.static::$replacement_tag)))
+					{
+						return str_replace('?'.static::$replacement_tag, '', static::$pagination_url);
+					}
+					else
+					{
+						//throw exception ?
+						// or:
+						return static::$pagination_url;
+					}
+				}
+				else
+				{
+					//if found '/{p}'
+					if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
+					{
+						return str_replace(static::$replacement_tag, $page_nr, static::$pagination_url);
+					}
+					else
+					{
+						return str_replace(static::$replacement_tag, static::$get_variable.'='.$page_nr, static::$pagination_url);
+					}
+				}
+				break;
+			default:
+				die("die()".' '.__FILE__.'::Line:'.__LINE__);
+		}	
+	}
+	
+	/**
+	 * Get current page from uri with the configured static::$method
+	 *
+	 * @access public
+	 * @return int    The page nr if present in the request url
+	 */
+	public static function current_page()
+	{
+		switch (strtolower(static::$method)) 
+		{
+			case static::CLASSIC:
+		  	case static::SEGMENT_TAG:
+		  		return (int) \URI::segment(static::$uri_segment);
+		  	case static::GET_TAG:
+		  		return (int) \Input::get(static::$get_variable, 1);
+		  	default:
+				die("die()".' '.__FILE__.'::Line:'.__LINE__);
+  		}
+	}
+	
 }
 
 /* End of file pagination.php */
