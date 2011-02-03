@@ -170,12 +170,18 @@ class Pagination {
 			{
 				if (static::$query_variable !== false)
 				{
+					
+					$query_vars = \Input::get();
+					if ( ! isset($query_vars[static::$query_variable]))
+					{
+						$query_vars[static::$query_variable] = static::$current_page;
+					}
 					$url = array();
 					foreach ($query_vars as $key => $var)
 					{
 						if ($key == static::$query_variable)
 						{
-							$url[] = $key.'='.$i;
+							$url[] = static::$query_variable.'='.$i;
 						}
 						else
 						{
@@ -219,15 +225,20 @@ class Pagination {
 		}
 		else
 		{
-			$query_vars = \Input::get();
+			
 			if (static::$query_variable !== false)
 			{
+				$query_vars = \Input::get();
+				if ( ! isset($query_vars[static::$query_variable]))
+				{
+					$query_vars[static::$query_variable] = static::$current_page;
+				}
 				$next_page = array();
 				foreach ($query_vars as $key => $var)
 				{
 					if ($key == static::$query_variable)
 					{
-						$next_page[] = $key . '=' . (static::$current_page+1);
+						$next_page[] = static::$query_variable . '=' . (static::$current_page+1);
 					}
 					else
 					{
@@ -267,15 +278,19 @@ class Pagination {
 		}
 		else
 		{
-			$query_vars = \Input::get();
 			if (static::$query_variable !== false)
 			{
+				$query_vars = \Input::get();
+				if ( ! isset($query_vars[static::$query_variable]))
+				{
+					$query_vars[static::$query_variable] = static::$current_page;
+				}
 				$previous_page = array();
 				foreach ($query_vars as $key => $var)
 				{
 					if ($key == static::$query_variable)
 					{
-						$previous_page[] = $key . '=' . (static::$current_page-1);
+						$previous_page[] = static::$query_variable . '=' . (static::$current_page-1);
 					}
 					else
 					{
