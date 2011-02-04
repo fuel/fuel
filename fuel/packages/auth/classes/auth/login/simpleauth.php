@@ -47,7 +47,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
     /**
      * @var string  table name
      */
-    protected $table_name = 'users';
+    protected $table_name = 'simpleusers';
 
 	/**
 	 * @var	array	SimpleAuth config
