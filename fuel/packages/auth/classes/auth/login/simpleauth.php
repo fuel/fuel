@@ -44,6 +44,11 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 	 */
 	protected $user;
 
+    /**
+     * @var string  table name
+     */
+    protected $table_name = 'users';
+
 	/**
 	 * @var	array	SimpleAuth config
 	 */
@@ -67,7 +72,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 
 		if ($this->user === null || (is_object($this->user) && $this->user->get('username') != $username))
 		{
-			$this->user = \DB::select()->where('username', '=', $username)->from('simpleusers')->execute();
+			$this->user = \DB::select()->where('username', '=', $username)->from($this->table_name)->execute();
 			// this prevents a second check to query again, but will still fail the login_hash check
 			if ($this->user->count() == 0)
 			{
@@ -103,7 +108,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 		$this->user = \DB::select()
 				->where('username', '=', $username)
 				->where('password', '=', $password)
-				->from('simpleusers')->execute();
+				->from($this->table_name)->execute();
 		if ($this->user->count() == 0)
 		{
 			return false;
@@ -153,7 +158,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 			'group'			=> (int) $group,
 			'profile_fields'=> serialize($profile_fields)
 		);
-		$result = \DB::insert('simpleusers')
+		$result = \DB::insert($this->table_name)
 			->set($user)
 			->execute();
 
@@ -173,7 +178,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 		$username = $username ?: $this->user->get('username');
 		$current_values = \DB::select()
 			->where('username', '=', $username)
-			->from('simpleusers')->execute();
+			->from($this->table_name)->execute();
 		if (empty($current_values))
 		{
 			throw new \Auth_Exception('not_found');
@@ -229,10 +234,10 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 					$profile_fields[$key] = $val;
 				}
 			}
-			$update['profile_fields'] = $profile_fields;
+			$update['profile_fields'] = serialize($profile_fields);
 		}
 
-		$affected_rows = \DB::update('simpleusers')
+		$affected_rows = \DB::update($this->table_name)
 			->set($update)
 			->where('username', '=', $username)
 			->execute();
@@ -279,7 +284,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 			throw new \Auth_Exception('cannot_delete_empty_username');
 		}
 
-		$affected_rows = \DB::delete('simpleusers')
+		$affected_rows = \DB::delete($this->table_name)
 			->where('username', '=', $username)
 			->execute();
 
@@ -291,7 +296,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 		$username = $username;
 		$user = \DB::select()
 			->where('username', '=', $username)
-			->from('simpleusers')->execute();
+			->from($this->table_name)->execute();
 		if (empty($user))
 		{
 			throw new \Auth_Exception('not_found');
@@ -316,7 +321,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 		$last_login = \Date::factory()->get_timestamp();
 		$login_hash = sha1($this->config['login_hash_salt'].$this->user->get('username').$last_login);
 
-		\DB::update('simpleusers')
+		\DB::update($this->table_name)
 			->set(array('last_login' => $last_login, 'login_hash' => $login_hash))
 			->where('username', '=', $this->user->get('username'))->execute();
 
