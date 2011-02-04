@@ -126,7 +126,10 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Input'						=> COREPATH.'classes/input.php',
 	'Fuel\\Core\\Lang'						=> COREPATH.'classes/lang.php',
 	'Fuel\\Core\\Log'						=> COREPATH.'classes/log.php',
+	
 	'Fuel\\Core\\Migrate'					=> COREPATH.'classes/migrate.php',
+	'Fuel\\Core\\Migrate_Exception'			=> COREPATH.'classes/migrate/exception.php',
+	
 	'Fuel\\Core\\Model'						=> COREPATH.'classes/model.php',
 	'Fuel\\Core\\Output'					=> COREPATH.'classes/output.php',
 	'Fuel\\Core\\Pagination'				=> COREPATH.'classes/pagination.php',

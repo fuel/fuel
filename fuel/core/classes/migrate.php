@@ -61,7 +61,7 @@ class Migrate
 	{
 		if ( ! $migrations = static::find_migrations())
 		{
-			throw new Exception('no_migrations_found');
+			throw new Migrate_Exception('no_migrations_found');
 			return false;
 		}
 
@@ -69,7 +69,8 @@ class Migrate
 
 		// Calculate the last migration step from existing migration
 		// filenames and procceed to the standard version migration
-		$last_version = intval(substr($last_migration, 0, 3));
+		$last_version = intval(substr(basename($last_migration, '.php'), -3));
+
 		return static::version($last_version, 10);
 	}
 
@@ -129,12 +130,12 @@ class Migrate
 		// But first let's make sure that everything is the way it should be
 		for ($i = $start; $i != $stop; $i += $step)
 		{
-			$f = glob(sprintf(\Config::get('migrate.path') . '%03d_*.php', $i));
+			$f = glob(sprintf(\Config::get('migrate.path') . '*_%03d.php', $i));
 
 			// Only one migration per step is permitted
 			if (count($f) > 1)
 			{
-				throw new Exception('multiple_migrations_version');
+				throw new Migrate_Exception('multiple_migrations_version');
 				return false;
 			}
 
@@ -147,7 +148,7 @@ class Migrate
 
 				// If trying to migrate down but we're missing a step,
 				// something must definitely be wrong.
-				throw new Exception('migration_not_found');
+				throw new Migrate_Exception('migration_not_found');
 				return false;
 			}
 
@@ -155,37 +156,37 @@ class Migrate
 			$name = basename($f[0], '.php');
 
 			// Filename validations
-			if (preg_match('/^\d{3}_(\w+)$/', $name, $match))
+			if (preg_match('/^(\w+)_\d{3}$/', $name, $match))
 			{
-				$match[1] = strtolower($match[1]);
+				$match[0] = strtolower($match[0]);
 
 				// Cannot repeat a migration at different steps
-				if (in_array($match[1], $migrations))
+				if (in_array($match[0], $migrations))
 				{
-					throw new Exception('multiple_migrations_name');
+					throw new Migrate_Exception('multiple_migrations_name');
 					return false;
 				}
 
 				include $f[0];
-				$class = static::$prefix . ucfirst($match[1]);
+				$class = static::$prefix . ucfirst($match[0]);
 
 				if ( ! class_exists($class))
 				{
-					throw new Exception('migration_class_doesnt_exist');
+					throw new Migrate_Exception('migration_class_doesnt_exist');
 					return false;
 				}
 
-				if ( ! is_callable(array($class, 'up')) || !is_callable(array($class, 'down')))
+				if ( ! is_callable(array($class, 'up')) || ! is_callable(array($class, 'down')))
 				{
-					throw new Exception('wrong_migration_interface');
+					throw new Migrate_Exception('wrong_migration_interface');
 					return false;
 				}
 
-				$migrations[] = $match[1];
+				$migrations[] = $match[0];
 			}
 			else
 			{
-				throw new Exception('invalid_migration_filename');
+				throw new Migrate_Exception('invalid_migration_filename');
 				return false;
 			}
 		}
@@ -201,6 +202,7 @@ class Migrate
 		// Loop through the migrations
 		foreach ($migrations AS $migration)
 		{
+
 			logger(Fuel::L_INFO, 'Migrating to: ' . static::$version + $step);
 
 			$class = static::$prefix . ucfirst($migration);
@@ -234,7 +236,9 @@ class Migrate
 		{
 			// Mark wrongly formatted files as false for later filtering
 			$name = basename($files[$i], '.php');
-			if ( ! preg_match('/^\d{3}_(\w+)$/', $name))
+			
+			// /^\d{3}_(\w+)$/
+			if ( ! preg_match('/^(\w+)_\d{3}$/', $name))
 			{
 				$files[$i] = false;
 			}
