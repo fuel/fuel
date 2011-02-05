@@ -68,8 +68,8 @@ class Str {
 		$encoding or $encoding = INTERNAL_ENC;
 
 		return function_exists('mb_strtolower')
-			? mb_strtolower(mb_substr($str, 0, 1, $encoding)).
-				mb_substr($str, 1, mb_strlen($str), $encoding)
+			? mb_strtolower(mb_substr($str, 0, 1, $encoding), $encoding).
+				mb_substr($str, 1, mb_strlen($str, $encoding), $encoding)
 			: ucfirst($str);
 	}
 
@@ -87,8 +87,8 @@ class Str {
 		$encoding or $encoding = INTERNAL_ENC;
 
 		return function_exists('mb_strtoupper')
-			? mb_strtoupper(mb_substr($str, 0, 1, $encoding)).
-				mb_substr($str, 1, mb_strlen($str), $encoding)
+			? mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding).
+				mb_substr($str, 1, mb_strlen($str, $encoding), $encoding)
 			: ucfirst($str);
 	}
 
