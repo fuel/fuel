@@ -17,4 +17,6 @@ return array(
 		'admin' => array('website' => 'cud', 'admin' => 'crud'),
 		'super' => true,
 	),
+
+    'table_name' => 'simpleusers',
 );
