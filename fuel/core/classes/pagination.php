@@ -59,7 +59,7 @@ class Pagination {
 
 	
 	/**
-	 * @var	bool	Hide pagination nr when method == SEGMENT_TAG / GET_TAG and page_nr == 1 (not supported in static::CLASSIC)
+	 * @var	bool	Hide pagination nr when method == SEGMENT / GET and page_nr == 1 (not supported in static::CLASSIC)
 	 */
 	protected static $hide_1 = true;
 	
@@ -69,12 +69,12 @@ class Pagination {
 	protected static $method = 'classic'; // static::CLASSIC
 	
 	const CLASSIC = 'classic';
-	const SEGMENT_TAG = 'segment_tag';
-	const GET_TAG = 'get_tag';
+	const SEGMENT = 'segment';
+	const GET = 'get';
 
 
 	/**
-	 * @var	string	To avoid confusing settings when method == segment_tag | get_tag, the uri will be set in $uri, not in $pagination_url
+	 * @var	string	To avoid confusing settings when method == segment | get, the uri will be set in $uri, not in $pagination_url
 	 */
 	public static $uri;	
 
@@ -91,8 +91,8 @@ class Pagination {
 	/**
 	 * @var	string	NOTICE: in $uri this must be preceded by colon: ':page' eg: 'monkeys/index/:page' 
 	 * this is because of how Uri::create works.
-	 * The segment placeholder when method == SEGMENT_TAG, 
-	 * eg: monkeys/index/:page, or if method == GET_TAG, the get var name
+	 * The segment placeholder when method == SEGMENT, 
+	 * eg: monkeys/index/:page, or if method == GET, the get var name
 	 */
 	public static $variable_name = 'page';	
 
@@ -277,7 +277,7 @@ class Pagination {
 		
 		switch (strtolower(static::$method)) 
 		{
-			case static::SEGMENT_TAG:
+			case static::SEGMENT:
 			
 				if($page_nr == 1 AND static::$hide_1 === true)
 				{
@@ -305,7 +305,7 @@ class Pagination {
 				
 				return \Uri::create($uri, $variables, $get_variables);
 				
-		  	case static::GET_TAG:
+		  	case static::GET:
 		  		
 		  		if($page_nr == 1 AND static::$hide_1 === true)
 				{
@@ -344,9 +344,9 @@ class Pagination {
 			default:
 				\Error::notice('The value of Pagination::$method is configured with an unknown and unsuported method: "'.static::$method.'". Falling back to "classic" method');
 			case static::CLASSIC:
-		  	case static::SEGMENT_TAG:
+		  	case static::SEGMENT:
 		  		return (int) \URI::segment(static::$uri_segment);
-		  	case static::GET_TAG:
+		  	case static::GET:
 		  		return (int) \Input::get(static::$variable_name, 1);
   		}
 	}
