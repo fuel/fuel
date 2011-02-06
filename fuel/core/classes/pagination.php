@@ -57,23 +57,14 @@ class Pagination {
 	 */
 	protected static $pagination_url;
 
-	/**
-	 * @var	mixed	The replacement tag
-	 */
-	protected static $replacement_tag = '{p}';
-
-	/**
-	 * @var	mixed	The get_variable
-	 */
-	protected static $get_variable = 'page';
 	
 	/**
-	 * @var	mixed	Hide pagination nr whe it == 1 (not supported in static::CLASSIC)
+	 * @var	bool	Hide pagination nr when method == SEGMENT_TAG / GET_TAG and page_nr == 1 (not supported in static::CLASSIC)
 	 */
 	protected static $hide_1 = true;
 	
 	/**
-	 * @var	string	static::CLASSIC | static::SEGMENT_TAG | static::GET_TAG
+	 * @var	string	the functioning mode of the class is dictated by this 
 	 */
 	protected static $method = 'classic'; // static::CLASSIC
 	
@@ -82,6 +73,28 @@ class Pagination {
 	const GET_TAG = 'get_tag';
 
 
+	/**
+	 * @var	string	To avoid confusing settings when method == segment_tag | get_tag, the uri will be set in $uri, not in $pagination_url
+	 */
+	public static $uri;	
+
+	/**
+	 * @var	array	When creating the pagination links, this will be passed to Uri::create() as the second parameter
+	 */
+	public static $variables = array();
+	
+	/**
+	 * @var	array	When creating the pagination links, this will be passed to Uri::create() as the third parameter
+	 */
+	public static $get_variables = array();
+	
+	/**
+	 * @var	string	NOTICE: in $uri this must be preceded by colon: ':page' eg: 'monkeys/index/:page' 
+	 * this is because of how Uri::create works.
+	 * The segment placeholder when method == SEGMENT_TAG, 
+	 * eg: monkeys/index/:page, or if method == GET_TAG, the get var name
+	 */
+	public static $variable_name = 'page';	
 
 	/**
 	 * Init
@@ -255,60 +268,66 @@ class Pagination {
 	 */
 	public static function create_link_url($page_nr)
 	{
+		// make local copyes to mess around with (and remove the static:: stuff so I can actually read the code :P )
+		$variables = static::$variables;
+		$get_variables = static::$get_variables;
+		$uri = static::$uri;
+		$variable_name = static::$variable_name;
+		$paceholder_variable = ':'.$variable_name;
+		
 		switch (strtolower(static::$method)) 
 		{
-			case static::CLASSIC:
-			
-				$page_nr = ($page_nr == 1) ? '' : '/'.$page_nr;
-				return rtrim(static::$pagination_url, '/').$page_nr;
-	
 			case static::SEGMENT_TAG:
+			
+				if($page_nr == 1 AND static::$hide_1 === true)
+				{
+					//the $variables[':page'] should not be set anyway, but just in case: 
+					if (isset($variables[$variable_name])) 
+					{
+						unset($variables[$variable_name]);
+					}
+					
+					//remove ':page/' (in case there are other segments after it), 
+					//or just ':page' if there is no slash after it (and therefor no other segments)
+					$uri = str_replace(array($paceholder_variable.'/', $paceholder_variable), '', $uri);
+				}
+				else
+				{
+					$variables = array_merge($variables, array($variable_name => $page_nr)); 
+
+					// there better be a ':page' or equivalent in $uri
+					if (false === strpos($uri, $variable_name)) 
+					{
+						\Error::notice('Pagination::create_link_url(): The Pagination::$variable_name:"'.$variable_name.'" is missing from Pagination::$uri: "'.$uri.'"');
+						return '#';
+					}
+				}
+				
+				return \Uri::create($uri, $variables, $get_variables);
+				
 		  	case static::GET_TAG:
-		  	
+		  		
 		  		if($page_nr == 1 AND static::$hide_1 === true)
 				{
-					//if found remove'/{p}'
-					//else if found, remove'{p}&'
-					//else if found, remove '&{p}'
-					//else if found, remove'?{p}'
-					if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
+					//the $get_variables[':page'] should not be set anyway, but just in case: 
+					if (isset($get_variables[$variable_name]))
 					{
-						return str_replace('/'.static::$replacement_tag, '', static::$pagination_url);
-					}
-					elseif(is_int(strpos(static::$pagination_url, static::$replacement_tag.'&')))
-					{
-						return str_replace(static::$replacement_tag.'&', '', static::$pagination_url);
-					}
-					elseif(is_int(strpos(static::$pagination_url, '&'.static::$replacement_tag)))
-					{
-						return str_replace('&'.static::$replacement_tag, '', static::$pagination_url);
-					}
-					elseif(is_int(strpos(static::$pagination_url, '?'.static::$replacement_tag)))
-					{
-						return str_replace('?'.static::$replacement_tag, '', static::$pagination_url);
-					}
-					else
-					{
-						//throw exception ?
-						// or:
-						return static::$pagination_url;
+						unset($get_variables[$variable_name]);
 					}
 				}
 				else
 				{
-					//if found '/{p}'
-					if(is_int(strpos(static::$pagination_url, '/'.static::$replacement_tag)))
-					{
-						return str_replace(static::$replacement_tag, $page_nr, static::$pagination_url);
-					}
-					else
-					{
-						return str_replace(static::$replacement_tag, static::$get_variable.'='.$page_nr, static::$pagination_url);
-					}
+					$get_variables = array_merge($get_variables, array($variable_name => $page_nr)); 
 				}
-				break;
-			default:
-				die("die()".' '.__FILE__.'::Line:'.__LINE__);
+				return \Uri::create($uri, $variables, $get_variables);
+
+			default:	
+				//fall back to classic
+				\Error::notice('The value of Pagination::$method is configured with an unknown and unsuported method: "'.static::$method.'". Falling back to "classic" method');
+				
+			case static::CLASSIC:
+				$page_nr = ($page_nr == 1) ? '' : '/'.$page_nr;
+				return rtrim(static::$pagination_url, '/').$page_nr;
 		}	
 	}
 	
@@ -322,13 +341,13 @@ class Pagination {
 	{
 		switch (strtolower(static::$method)) 
 		{
+			default:
+				\Error::notice('The value of Pagination::$method is configured with an unknown and unsuported method: "'.static::$method.'". Falling back to "classic" method');
 			case static::CLASSIC:
 		  	case static::SEGMENT_TAG:
 		  		return (int) \URI::segment(static::$uri_segment);
 		  	case static::GET_TAG:
-		  		return (int) \Input::get(static::$get_variable, 1);
-		  	default:
-				die("die()".' '.__FILE__.'::Line:'.__LINE__);
+		  		return (int) \Input::get(static::$variable_name, 1);
   		}
 	}
 	
