@@ -615,7 +615,7 @@ abstract class Email_Driver {
 					}
 				}
 			}
-                        $return .= "--".$boundary."--".$this->newline;
+			$return .= "--".$boundary."--".$this->newline;
 		}
 		else if ($textCheck || $htmlCheck)
 		{
