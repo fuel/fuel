@@ -615,7 +615,7 @@ abstract class Email_Driver {
 					}
 				}
 			}
-			$return .= "--".$boundary.$this->newline.$this->newline;
+                        $return .= "--".$boundary."--".$this->newline;
 		}
 		else if ($textCheck || $htmlCheck)
 		{
@@ -980,7 +980,7 @@ abstract class Email_Driver {
 
 		// wrap each line with the shebang, charset, and transfer encoding
 		// the preceding space on successive lines is required for header "folding"
-		$str = trim(preg_replace('/^(.*)$/m', ' =?'.$this->charset.'?Q?$1? = ', $str));
+		$str = trim(preg_replace('/^(.*)$/m', ' =?'.$this->charset.'?Q?$1?= ', $str));
 
 		return $str;
 	}
