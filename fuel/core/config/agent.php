@@ -134,6 +134,7 @@ return array(
 		'palm'				=> "Palm",
 		'iphone'			=> "Apple iPhone",
 		'ipod'				=> "Apple iPod Touch",
+		'ipad'				=> "Apple iPad",
 		'sony'				=> "Sony Ericsson",
 		'ericsson'			=> "Sony Ericsson",
 		'blackberry'		=> "BlackBerry",

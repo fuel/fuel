@@ -37,7 +37,8 @@ var nav = {
 			"Coding Standards":	"general/coding_standards.html"
 		},
 		"Classes": {
-			 "Arr":			"classes/arr.html",
+			"Agent":		"classes/agent.html",
+			"Arr":			"classes/arr.html",
 			"Asset":		"classes/asset.html",
 			"Cache": {
 				"Configuration":	"classes/cache/config.html",

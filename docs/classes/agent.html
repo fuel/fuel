@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Agent Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Agent Class</h2>
+
+		<p>The agent class is a set of methods to help with easy access to user agent information.</p>
+
+		<article>
+			<h4>string()</h4>
+			<p>The <strong>string</strong> method returns the user agent string.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>if ($agent_string = \Agent::string())
+{
+	// do something with $agent_string
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>platform()</h4>
+			<p>The <strong>platform</strong> method returns the user agent platformname.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if ($platform = \Agent::platform())
+{
+	// do something with $platform
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>browser()</h4>
+			<p>The <strong>browser</strong> method returns the user agent browsername if it is a browser.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if ($browser = \Agent::browser())
+{
+	// do something with $browser
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>version()</h4>
+			<p>The <strong>version</strong> method returns the user agent browser version if it is a browser.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if ($version = \Agent::version())
+{
+	// do something with browser $version
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>robot()</h4>
+			<p>The <strong>robot</strong> method returns the user agent robotname if it is a robot.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if ($robot = \Agent::robot())
+{
+	// do something with $robot
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>mobile()</h4>
+			<p>The <strong>mobile</strong> method returns the user agent mobilename if it is a mobile.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if ($mobile = \Agent::mobile())
+{
+	// do something with $mobile
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>referrer()</h4>
+			<p>The <strong>referrer</strong> method returns the user agent referrername if it is a referrer.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if ($referrer = \Agent::referrer())
+{
+	// do something with $referrer
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>languages()</h4>
+			<p>The <strong>languages</strong> method returns the user agent accepted languages.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if ($languages = \Agent::languages())
+{
+	// do something with accepted $languages
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>accept_language($language = 'en')</h4>
+			<p>The <strong>accept_language</strong> method checks if the given language is accepted by the user agent.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$language</kbd></th>
+								<td><span class="keyword">en</span></td>
+								<td>A string with the language code.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if (\Agent::accept_language('nl'))
+{
+	// do something special with dutch language
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>charsets()</h4>
+			<p>The <strong>charsets</strong> method returns the user agent accepted charsets.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>if ($charsets = \Agent::charsets())
+{
+	// do something with accepted $charsets
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>accept_charset($charset = 'utf-8')</h4>
+			<p>The <strong>accept_charset</strong> method checks if the given charset is accepted by the user agent.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$charset</kbd></th>
+								<td><span class="keyword">en</span></td>
+								<td>A string with the charset code.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>
+if (\Agent::accept_charset('iso-8859-1'))
+{
+	// do something special with Latin-1
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>is_browser($browser = null)</h4>
+			<p>The <strong>is_browser</strong> method checks if the user agent is a browser. If the browser param is given, that given browsername will be checkt against the user agent.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$browser</kbd></th>
+								<td><span class="keyword">null</span></td>
+								<td>A string with the browsername (or array with browsernames) will be checkt against the user agent.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>if (\Agent::is_browser())
+{
+	// do something special
+}
+
+if (\Agent::is_browser('MSIE')) // case sensitive
+{
+	// it's Internet Explorer, check version and if not 9 apply html5shiv
+}
+
+if (\Agent::is_browser(array('Firefox', 'Chrome', 'Opera'))) // case sensitive
+{
+	// it's all fine, need to do nothing
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>is_robot($robot = null)</h4>
+			<p>The <strong>is_robot</strong> method checks if the user agent is a robot. If the robot param is given, that given robotname will be checkt against the user agent.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$robot</kbd></th>
+								<td><span class="keyword">null</span></td>
+								<td>A string with the robotname (or array with robotnames) will be checkt against the user agent.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>if (\Agent::is_robot())
+{
+	// load robot view
+}
+else
+{
+	// load normal view
+}
+
+if (\Agent::is_robot('googlebot'))
+{
+	// it's Google Bot
+}
+
+if (\Agent::is_robot(array('slurp', 'yahoo')))
+{
+	// it's Yahoo
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>is_mobile($mobile = null)</h4>
+			<p>The <strong>is_mobile</strong> method checks if the user agent is a mobile. If the mobile param is given, that given mobilename will be checkt against the user agent.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$mobile</kbd></th>
+								<td><span class="keyword">null</span></td>
+								<td>A string with the mobilename (or array with mobilenames) will be checkt against the user agent.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>if (\Agent::is_mobile())
+{
+	// load mobile view
+}
+else
+{
+	// load normal view
+}
+
+if (\Agent::is_mobile('iphone'))
+{
+	// it's an iPhone
+}
+
+if (\Agent::is_mobile(array('iphone', 'ipod', 'ipad')))
+{
+	// it's an iDevice
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>is_referral()</h4>
+			<p>The <strong>is_referral</strong> method checks if the user agent has a referrer.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>if (\Agent::is_referral())
+{
+	// nice, check from where?
+}
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>
