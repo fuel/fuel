@@ -340,16 +340,18 @@ class Asset {
 	 *
 	 * @access	public
 	 * @param	string	The filename to locate
-	 * @param	string	The sub-folder to look in
+	 * @param	string	The sub-folder to look in (optional)
 	 * @return	mixed	Either the path to the file or false if not found
 	 */
-	public static function find_file($file, $folder)
+	public static function find_file($file, $folder = '')
 	{
 		foreach (static::$_asset_paths as $path)
 		{
-			if (is_file($path.$folder.$file))
+			empty($folder) or $folder = trim($folder, '/').'/';
+
+			if (is_file($path.$folder.ltrim($file, '/')))
 			{
-				return $path.$folder.$file;
+				return $path.$folder.ltrim($file, '/');
 			}
 		}
 
