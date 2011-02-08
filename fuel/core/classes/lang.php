@@ -108,7 +108,7 @@ class Lang {
 		return false;
 	}
 
-	protected function _parse_params($string, $array = array())
+	protected static function _parse_params($string, $array = array())
 	{
 		$tr_arr = array();
 
