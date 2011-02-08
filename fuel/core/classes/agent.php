@@ -17,6 +17,8 @@ namespace Fuel\Core;
 /**
  * Agent class
  *
+ * Identifies the platform, browser, robot, or mobile devise of the browsing agent
+ *
  * NOTE: This class has been taken from the CodeIgniter framework and slightly modified,
  * but on the whole all credit goes to them. Over time this will be worked on.
  *
@@ -24,18 +26,22 @@ namespace Fuel\Core;
  * @category	Core
  * @author		ExpressionEngine Dev Team
  * @modified	Mike Branderhorst
- * @copyright	(c) 2008-2010 EllisLab, Inc.
+ * @copyright	(c) 2008 - 2011 EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://fuelphp.com/docs/classes/agent.html
  */
 class Agent {
 
-	protected static $agent		= null; // \Agent::string()
-	protected static $platform	= null; // \Agent::platform()
-	protected static $browser	= null; // \Agent::browser()
-	protected static $version	= null; // \Agent::version()
-	protected static $mobile	= null; // \Agent::mobile()
-	protected static $robot		= null; // \Agent::robot()
+	protected static $is_browser = false;	// \Agent::is_browser()	or \Agent::is_browser('browsername')
+	protected static $is_robot	= false;	// \Agent::is_robot()	or \Agent::is_robot('robotname')
+	protected static $is_mobile	= false;	// \Agent::is_mobile()	or \Agent::is_mobile('mobilename')
+
+	protected static $agent		= null;		// \Agent::string()
+	protected static $platform	= null;		// \Agent::platform()
+	protected static $browser	= null;		// \Agent::browser()
+	protected static $version	= null;		// \Agent::version()
+	protected static $mobile	= null;		// \Agent::mobile()
+	protected static $robot		= null;		// \Agent::robot()
 	
 	protected static $languages	= array();
 	protected static $charsets	= array();
@@ -163,6 +169,7 @@ class Agent {
 			{
 				if (preg_match("|".preg_quote($key).".*?([0-9\.]+)|i", static::$agent, $match))
 				{
+					static::$is_browser = true;
 					static::$version = $match[1];
 					static::$browser = $val;
 					static::_set_mobile();
@@ -191,6 +198,7 @@ class Agent {
 			{
 				if (preg_match("|".preg_quote($key)."|i", static::$agent))
 				{
+					static::$is_robot = true;
 					static::$robot = $val;
 
 					return true;
@@ -217,6 +225,7 @@ class Agent {
 			{
 				if (stripos(static::$agent, $key) !== false)
 				{
+					static::$is_mobile = true;
 					static::$mobile = $val;
 
 					return true;
@@ -265,6 +274,122 @@ class Agent {
 		}
 		
 		empty(static::$charsets) and static::$charsets = array('Undefined');
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Is Browser ?
+	 *
+	 * @param mixed $browser optional, check (one of) if given browsername(s) is true
+	 * @access public
+	 * @return bool
+	 */
+	public static function is_browser($browser = null)
+	{
+		if ( ! static::$is_browser)
+		{
+			return false;
+		}
+
+		if (empty($browser))
+		{
+			return true;
+		}
+
+		is_array($browser) or $browser = array($browser);
+
+		foreach ($browser as $b)
+		{
+			if (array_key_exists($b, static::$browsers) and static::$browser === static::$browsers[$b]) return true;
+		}
+
+		return false;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Is Robot ?
+	 *
+	 * @param mixed $robot optional, check (one of) if given robotname(s) is true
+	 * @access public
+	 * @return bool
+	 */
+	public static function is_robot($robot = null)
+	{
+		if ( ! static::$is_robot)
+		{
+			return false;
+		}
+
+		if (empty($robot))
+		{
+			return true;
+		}
+
+		is_array($robot) or $robot = array($robot);
+
+		foreach ($robot as $r)
+		{
+			if (array_key_exists(strtolower($r), static::$robots) and static::$robot === static::$robots[strtolower($r)]) return true;
+		}
+
+		return false;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Is Mobile ?
+	 *
+	 * @param mixed $mobile optional, check (one of) if given mobilename(s) is true
+	 * @access public
+	 * @return bool
+	 */
+	public static function is_mobile($mobile = null)
+	{
+		if ( ! static::$is_mobile)
+		{
+			return false;
+		}
+
+		if (empty($mobile))
+		{
+			return true;
+		}
+
+		is_array($mobile) or $mobile = array($mobile);
+
+		foreach ($mobile as $m)
+		{
+			if (array_key_exists(strtolower($m), static::$mobiles) and static::$mobile === static::$mobiles[strtolower($m)]) return true;
+		}
+
+		return false;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Is referral ?
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	public static function is_referral()
+	{
+		return (\Input::server('http_referer')) ? true : false;
+	}
+
+	public static function is_referrer()
+	{
+		return static::is_referral();
+	}
+
+	public static function is_referer()
+	{
+		return static::is_referral();
 	}
 
 	// --------------------------------------------------------------------
@@ -357,6 +482,11 @@ class Agent {
 		return ($referrer = \Input::server('http_referer')) ? trim($referrer) : null;
 	}
 
+	public static function referer()
+	{
+		return static::referrer();
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -401,9 +531,9 @@ class Agent {
 	 * @access	public
 	 * @return	bool
 	 */
-	public static function accept_lang($lang = 'en')
+	public static function accept_language($language = 'en')
 	{
-		return (in_array(strtolower($lang), static::languages(), true)) ? true : false;
+		return (in_array(strtolower($language), static::languages(), true)) ? true : false;
 	}
 
 	// --------------------------------------------------------------------
