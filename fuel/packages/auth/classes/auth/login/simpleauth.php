@@ -229,7 +229,7 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 					$profile_fields[$key] = $val;
 				}
 			}
-			$update['profile_fields'] = $profile_fields;
+			$update['profile_fields'] = serialize($profile_fields);
 		}
 
 		$affected_rows = \DB::update(\Config::get('simpleauth.table_name'))
