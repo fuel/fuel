@@ -197,6 +197,10 @@ class Auth_Login_SimpleAuth extends \Auth_Login_Driver {
 			}
 			unset($values['password']);
 		}
+		if (array_key_exists('old_password', $values))
+		{
+			unset($values['old_password']);
+		}
 		if (array_key_exists('email', $values))
 		{
 			$email = filter_var(trim($values['email']), FILTER_VALIDATE_EMAIL);
