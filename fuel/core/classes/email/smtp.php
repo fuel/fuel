@@ -121,7 +121,7 @@ class Email_Smtp extends Email_Driver {
 		$return = false;
 		$this->_smtp_connect = fsockopen(
 			$this->smtp_vars['host'],
-			25,
+			$this->smtp_vars['port'],
 			$errno,
 			$errstr,
 			$this->smtp_vars['timeout']
