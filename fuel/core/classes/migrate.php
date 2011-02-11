@@ -70,7 +70,7 @@ class Migrate
 		// Calculate the last migration step from existing migration
 		// filenames and procceed to the standard version migration
 		$last_version = intval(substr($last_migration, 0, 3));
-		return static::version($last_version, 10);
+		return static::version($last_version);
 	}
 
 	// --------------------------------------------------------------------
