@@ -94,6 +94,24 @@ class Output {
 	}
 
 	/**
+	 * Adds multiple headers to the queue
+	 *
+	 * @access	public
+	 * @param	array	Array with header name/value pairs
+	 * @return	void
+	 */
+	public static function set_headers($headers)
+	{
+		if (is_array($headers))
+		{
+			foreach ($headers as $name => $value)
+			{
+				static::set_header($name, $value);
+			}
+		}
+	}
+
+	/**
 	 * Redirects to another uri/url.  Sets the redirect header,
 	 * sends the headers and exits.  Can redirect via a Location header
 	 * or using a refresh header.

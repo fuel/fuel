@@ -56,12 +56,12 @@
 							<tr>
 								<th><kbd>$name</kbd></th>
 								<td><i>Required</i></td>
-								<td>Name of the header to add</td>
+								<td>Name of the header to add. Note that names are unique, overwriting each other if the same name is used.</td>
 							</tr>
 							<tr>
 								<th><kbd>$value</kbd></th>
 								<td><i>Required</i></td>
-								<td>The string that needs to be added to the HTTP header. It needs to be in the form "name: value", where 'name' needs to be identical to <kbd>$name</kbd>.</td>
+								<td>The string that needs to be added to the HTTP header.</td>
 							</tr>
 						</table>
 					</td>
@@ -74,10 +74,71 @@
 					<th>Example</th>
 					<td>
 						<pre class="php"><code>// We'll be outputting a PDF
-Output::set_header('Content-type', 'Content-type: application/pdf');
+Output::set_header('Content-Type', 'application/pdf');
 
 // It will be called downloaded.pdf
-Output::set_header('Content-Disposition', 'Content-Disposition: attachment; filename="downloaded.pdf"');
+Output::set_header('Content-Disposition', 'attachment; filename="downloaded.pdf"');
+
+// Set no cache
+Output::set_header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
+Output::set_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
+Output::set_header('Pragma', 'no-cache');
+
+// More examples
+Output::set_header('Content-Language', 'en');
+Output::set_header('Content-Type', 'text/html; charset=utf-8');
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>set_header($headers)</h4>
+			<p>The <strong>set_headers</strong> method allows set multiple custom HTTP headers.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$headers</kbd></th>
+								<td><i>Required</i></td>
+								<td>Array with name/value pairs of the headers to add</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>
+$headers = array(
+	'Cache-Control' => 'no-cache, no-store, max-age=0, must-revalidate',
+	'Expires'		=> 'Mon, 26 Jul 1997 05:00:00 GMT',
+	'Pragma'		=> 'no-cache'
+);
+Output::set_headers($headers);
+
+// Above method will do the same as
+Output::set_header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
+Output::set_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
+Output::set_header('Pragma', 'no-cache');
 </code></pre>
 					</td>
 				</tr>
