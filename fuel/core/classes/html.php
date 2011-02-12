@@ -79,12 +79,7 @@ class Html
 			$src = \Uri::create($src);
 		}
 		$attr['src'] = $src;
-		if( ! array_key_exists("alt",$attr))
-		{
-			$url_parts = explode("/",$src);
-			$attr['alt'] = end($url_parts);
-			unset($url_parts);
-		}
+		$attr['alt'] = (isset($attr['alt'])) ? $attr['alt'] : pathinfo($src, PATHINFO_FILENAME);
 		return html_tag('img', $attr);
 	}
 
