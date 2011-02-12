@@ -96,6 +96,9 @@ class Pagination {
 	 */
 	public static $variable_name = 'page';	
 
+	//remember initial var settings to reset them every time when set_config() is called (but not the first time - in _init)
+	protected static $reset;
+
 	/**
 	 * Init
 	 *
@@ -129,6 +132,16 @@ class Pagination {
 		{
 			static::${$key} = $value;
 		}
+
+		if ( ! (strtolower(static::$method) === static::CLASSIC) and ! empty(static::$pagination_url))
+		{
+			if (empty(static::$uri))
+			{
+				throw new \Fuel_Exception('Pagination::set_config() - "pagination_url" is only used with "method" => "classic", 
+					with "method" => "segment" or "get" you must use "uri" => "...". This exception was triggered  
+					because you did NOT set "uri", but you did set "pagination_url", and you set "method" => "'.static::$method.'"');
+			}
+		}  
 
 		static::initialize();
 	}
