@@ -272,6 +272,56 @@ echo Html::nbs(2);</code></pre>
 				</tbody>
 			</table>
 		</article>
+		
+		<article>
+			<h4>img($src, $attr = array())</h4>
+			<p>The <strong>img</strong> method returns an image tag.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$src</kbd></th>
+								<td><i>required</i></td>
+								<td>Path to image.</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>array()</strong></td>
+								<td>Attributes array. If no alt attribute is supplied, the alt attribute defaults to the filename.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated image tag.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;img src="http://example.com/path/to/image.png" alt="image.png" /&gt;
+echo Html::img('path/to/image.png');
+
+//returns &lt;img src="http://example.com/path/to/image.png" alt="Alt Message" class="myclass" /&gt;
+echo Html::img('path/to/image.png', array("alt" => "Alt Message", class => "myclass"));
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
 		<article>
 			<h4>meta($name, $content = '', $type = 'name')</h4>
