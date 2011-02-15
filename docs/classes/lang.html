@@ -70,7 +70,7 @@
 return array(
 	'hello' => 'Hello :name',
 	'something'=> 'something :name!',
-	'test'=> array('hello'=>'hello','something'=>'plop')// Group
+	'test'=> array('hello' => 'Hello', 'something' => 'Plop') // Group
 );
 
 // Loads example.php.
@@ -78,7 +78,7 @@ return array(
 $language = Lang::load('example');
 
 // Will load the 'test' group from the given file.
-$language = Lang:load('example','test');
+$language = Lang:load('example', 'test');
 </code></pre>
 					</td>
 				</tr>
@@ -125,7 +125,10 @@ $language = Lang:load('example','test');
 					<th>Example</th>
 					<td>
 						<pre class="php"><code>// Outputs Hello world
-$this->output = Lang::line('hello',array('name'=>'world');</code></pre>
+$this->output = Lang::line('hello', array('name' => 'world');
+
+// Outputs Plop
+$this->output = Lang::line('test.something');</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -176,14 +179,14 @@ $this->output = Lang::line('hello',array('name'=>'world');</code></pre>
 					<th>Example</th>
 					<td>
 						<pre class="php"><code>// Returns true
-Lang::set('hello','Ahoy!');
+Lang::set('hello', 'Ahoy!');
 
 // Using groups
-Lang:set('hello','Ahoy!','test');
+Lang:set('hello', 'Ahoy!', 'test');
 
 // Will also work as above
-Lang::load('test','test);
-Lang::set('hello','Ahoy!');</code></pre>
+Lang::load('test', 'test);
+Lang::set('hello', 'Ahoy!');</code></pre>
 					</td>
 				</tr>
 				</tbody>
