@@ -83,7 +83,7 @@ class Format {
 
 		foreach ((array) $this->_data as $key => $value)
 		{
-			if (is_object($value))
+			if (is_object($value) or is_array($value))
 			{
 				$array[$key] = static::to_array($value);
 			}
@@ -133,7 +133,7 @@ class Format {
 			}
 
 			// replace anything not alpha numeric
-			$key = preg_replace('/[^a-z_]/i', '', $key);
+			$key = preg_replace('/[^a-z_\-0-9]/i', '', $key);
 
 			// if there is another array found recrusively call this function
 			if (is_array($value) OR is_object($value))
@@ -149,8 +149,6 @@ class Format {
 
 				// add single node.
 				$value = htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, "UTF-8");
-
-				$UsedKeys[] = $key;
 
 				$structure->addChild($key, $value);
 			}
