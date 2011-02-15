@@ -201,9 +201,11 @@ class Fuel {
 	 * @param	string	The directory to look in.
 	 * @param	string	The name of the file
 	 * @param	string	The file extension
+	 * @param	boolean	if true return an array of all files found
+	 * @param	boolean	if false do not cache the result
 	 * @return	string	The path to the file
 	 */
-	public static function find_file($directory, $file, $ext = '.php', $multiple = false)
+	public static function find_file($directory, $file, $ext = '.php', $multiple = false, $cache = true)
 	{
 		$path = $directory.DS.strtolower($file).$ext;
 
@@ -235,7 +237,7 @@ class Fuel {
 			}
 		}
 
-		static::$path_cache[$path] = $found;
+		$cache and static::$path_cache[$path] = $found;
 		static::$paths_changed = true;
 
 		return $found;
