@@ -113,6 +113,26 @@ class Security {
 		return $var;
 	}
 
+	public static function xss_clean($value)
+	{
+		if ( ! is_array($value))
+		{
+			if ( ! function_exists('htmLawed'))
+			{
+				import('htmlawed/htmlawed', 'vendor');
+			}
+
+			return htmLawed($value, array('safe' => 1));
+		}
+		
+		foreach ($value as $k => $v)
+		{
+			$value[$k] = static::xss_clean($v);
+		}
+
+		return $value;
+	}
+
 	public static function strip_tags($value)
 	{
 		if ( ! is_array($value))
