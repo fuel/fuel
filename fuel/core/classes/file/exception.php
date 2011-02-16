@@ -15,4 +15,4 @@
 namespace Fuel\Core;
 
 
-class File_Exception extends \Exception {}
+class File_Exception extends Fuel_Exception {}

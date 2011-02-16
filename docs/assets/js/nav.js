@@ -37,7 +37,8 @@ var nav = {
 			"Coding Standards":	"general/coding_standards.html"
 		},
 		"Classes": {
-			 "Arr":			"classes/arr.html",
+			"Agent":		"classes/agent.html",
+			"Arr":			"classes/arr.html",
 			"Asset":		"classes/asset.html",
 			"Cache": {
 				"Configuration":	"classes/cache/config.html",
@@ -63,6 +64,7 @@ var nav = {
 				"Advanced":		"classes/file/advanced.html"
 			},
 			// "Form":			"todo.html",
+			"Format":		"classes/format.html",
 			"Ftp":			"classes/ftp.html",
 			"Html":			"classes/html.html",
 			"Inflector":	"classes/inflector.html",

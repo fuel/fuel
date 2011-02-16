@@ -52,15 +52,35 @@ class Html
 	 * @param	array	the attributes array
 	 * @return	string	the html link
 	 */
-	public static function anchor($href, $text, $attributes = array())
+	public static function anchor($href, $text, $attr = array())
 	{
 		if ( ! preg_match('#^(\w+://|javascript:)# i', $href))
 		{
 			$href = \Uri::create($href);
 		}
-		$attributes['href'] = $href;
+		$attr['href'] = $href;
 
-		return html_tag('a', $attributes, $text);
+		return html_tag('a', $attr, $text);
+	}
+	
+	/**
+	 * Creates an html image tag
+	 *
+	 * Sets the alt atribute to filename of it is not supplied.
+	 *
+	 * @param	string	the source
+	 * @param	array	the attributes array
+	 * @return	string	the image tag
+	 */
+	public static function img($src, $attr = array())
+	{
+		if ( ! preg_match('#^(\w+://)# i', $src))
+		{
+			$src = \Uri::create($src);
+		}
+		$attr['src'] = $src;
+		$attr['alt'] = (isset($attr['alt'])) ? $attr['alt'] : pathinfo($src, PATHINFO_FILENAME);
+		return html_tag('img', $attr);
 	}
 
 	/**
@@ -277,9 +297,9 @@ class Html
 	 * @param	array|string	outer list attributes
 	 * @return	string
 	 */
-	public static function ul(Array $list = array(), $style = false)
+	public static function ul(Array $list = array(), $attr = false)
 	{
-		return static::build_list('ul', $list, $style);
+		return static::build_list('ul', $list, $attr);
 	}
 
 	/**
@@ -289,9 +309,9 @@ class Html
 	 * @param	array|string	outer list attributes
 	 * @return	string
 	 */
-	public static function ol(Array $list = array(), $style = false)
+	public static function ol(Array $list = array(), $attr = false)
 	{
-		return static::build_list('ol', $list, $style);
+		return static::build_list('ol', $list, $attr);
 	}
 
 	/**

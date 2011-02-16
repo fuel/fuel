@@ -14,4 +14,4 @@
 
 namespace Fuel\Core;
 
-class Redis_Exception extends Exception { }
+class Redis_Exception extends Fuel_Exception {}

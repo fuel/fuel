@@ -12,8 +12,6 @@
  * @link		http://fuelphp.com
  */
 
-
-
 return array(
 
 	/**
@@ -26,7 +24,7 @@ return array(
 	'paths' => array('assets/'),
 
 	/**
-	* URL to your CodeIgniter root. Typically this will be your base URL,
+	* URL to your Fuel root. Typically this will be your base URL,
 	* WITH a trailing slash:
 	*
 	* Config::get('base_url')

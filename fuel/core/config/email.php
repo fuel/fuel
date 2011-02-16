@@ -21,7 +21,7 @@ return array(
 	 * Value is the location of the sendmail executable.
 	 * Defaults to '/usr/bin/sendmail'
 	 */
-	// 'mailpath' => '/usr/bin/sendmail',
+	// 'sendmail_path' => '/usr/bin/sendmail',
 
 	/* Sets the SMTP host to use when mailing through SMTP.
 	 * Value is the hostname of the SMTP server you are trying to connect to.

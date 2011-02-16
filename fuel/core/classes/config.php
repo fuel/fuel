@@ -93,20 +93,15 @@ class Config {
 
 
 CONF;
-		$content .= 'return '.var_export($config, true).';';
+		$content .= 'return '.str_replace('  ', "\t", var_export($config, true)).';';
 		$content .= <<<CONF
 
 
 /* End of file $file.php */
 CONF;
-		if ($path = \Fuel::find_file('config', $file, '.php'))
-		{
-			$path = $path[0];
-		}
-		else
-		{
-			$path = APPPATH.'config'.DS.$file.'.php';
-		}
+		
+		($path = \Fuel::find_file('config', $file, '.php')) or $path = APPPATH.'config'.DS.$file.'.php';
+
 		$path = pathinfo($path);
 
 		return File::update($path['dirname'], $path['basename'], $content);

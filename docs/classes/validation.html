@@ -342,6 +342,49 @@ echo $val->errors('username')->get_message('The field :label must be filled out 
 		</article>
 
 		<article>
+            <h3><a name="methods">Extending Validation class</a></h3>
+
+            <p>There are few aproaches to extend the validation class:</p>
+            
+            <p>1. To extend the core class like described in the <a href="../general/extending_core.html">Extending Core Classes</a></p>
+            
+            <p>2. To create a class in <b>app/classes/myvalidation.php</b> (for example)</p>
+            <pre class="php"><code>// app/classes/myvalidation.php
+class Myvalidation {
+    
+    public function _validation_unique($val, $options)
+    {
+        list($table, $field) = explode('.', $options);
+
+        $result = DB::select("LOWER (\"$field\")")
+            ->where("$field", '=', MBSTRING ? mb_strtolower($val) : strtolower($val))
+            ->from($table)->execute();
+
+        if($result->count() > 0)
+            return false;
+        else
+            return true;
+    }
+
+}
+
+// and call it like:
+$val = Validation::factory();
+$val->add_callable('myvalidation'); // here we add the class to load rules from
+
+$val->add_field('username', 'Your username', 'trim|strip_tags|required|unique[users.username]');</code></pre>
+        
+        <p>3. Calling callbacks from a model. It works like a method described above, but we only need to call it in other way:</p>
+<pre class="php"><code>$val = Validation::factory();
+$val->add_model('Model_User');</code></pre>
+        
+        <p class="note"> 
+        <strong>Note: </strong> 
+        You need the '_validation_' prefix for a method to be used in validation.
+        </p>     
+        </article>
+        
+        <article>
 			<h3><a name="methods">All methods</a></h3>
 
 			<p>To be written.</p>

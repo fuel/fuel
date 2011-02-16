@@ -14,4 +14,4 @@
 
 namespace Fuel\Core;
 
-class Cache_Exception extends Exception {}
+class Cache_Exception extends Fuel_Exception {}

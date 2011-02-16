@@ -133,7 +133,7 @@ MODEL;
 		// Add the default template if it doesnt exist
 		if ( ! file_exists($app_template = APPPATH . 'views/template.php'))
 		{
-			copy(PKGPATH . 'oil/views/template.php', $app_template);
+			copy(PKGPATH . 'oil/views/default/template.php', $app_template);
 			chmod($app_template, 0666);
 		}
 		unset($app_template);
