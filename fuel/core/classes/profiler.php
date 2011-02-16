@@ -11,7 +11,7 @@ class Profiler {
 
 	protected static $profiler = null;
 
-	public static function init()
+	public static function _init()
 	{
 		static::$profiler = new PhpQuickProfiler(FUEL_START_TIME);
 	}
@@ -33,7 +33,7 @@ class Profiler {
 
 	public static function output()
 	{
-		return static::$profiler->display();
+		print static::$profiler->display();
 	}
 
 	public static function app_total()
