@@ -548,14 +548,14 @@ abstract class Email_Driver {
 			// Generate a boundary for the message
 			$boundary = 'email_boundary_'.md5(time() * microtime());
 			// Set our headers
-			$this->set_header('Content-Type', 'multipart/alternative; boundary = "'.$boundary.'"');
+			$this->set_header('Content-Type', 'multipart/alternative; boundary="'.$boundary.'"');
 			// Create a little warning for older email clients
 			$return = $this->newline."Multipart emails may not work on your client.".$this->newline.$this->newline;
 			if ($textCheck)
 			{
 				// Create the text part of the message
 				$return .= "--".$boundary.$this->newline;  // Boundary
-				$return .= "Content-Type: text/plain; charset = ".$this->charset.$this->newline;
+				$return .= "Content-Type: text/plain; charset=".$this->charset.$this->newline;
 				$return .= "Content-Transfer-Encoding: ".$this->encoding.$this->newline;
 				$return .= $this->newline.$this->_prep_quoted_printable($this->_word_wrap($this->text_contents)).$this->newline.$this->newline;
 			}
@@ -563,7 +563,7 @@ abstract class Email_Driver {
 			{
 				// Create the text part of the message
 				$return .= "--".$boundary.$this->newline;  // Boundary
-				$return .= "Content-Type: text/html; charset = ".$this->charset.$this->newline;
+				$return .= "Content-Type: text/html; charset=".$this->charset.$this->newline;
 				$return .= "Content-Transfer-Encoding: ".$this->encoding.$this->newline;
 				$return .= $this->newline.$this->_prep_quoted_printable($this->_word_wrap($this->html_contents)).$this->newline.$this->newline;
 			}
@@ -608,7 +608,7 @@ abstract class Email_Driver {
 						$filetype = is_array($attachment['filetype']) ? $attachment['filetype'][0] : $attachment['filetype'];
 						// Create the headers
 						$return .= "--".$boundary.$this->newline;  // Boundary
-						$return .= "Content-Type: ".$filetype."; name = \"$basename\"".$this->newline;
+						$return .= "Content-Type: ".$filetype."; name=\"$basename\"".$this->newline;
 						$return .= "Content-Disposition: ".$attachment['disposition'].";".$this->newline;
 						$return .= "Content-Transfer-Encoding: base64".$this->newline.$this->newline;
 						$return .= chunk_split(base64_encode($contents)).$this->newline.$this->newline;
@@ -865,7 +865,7 @@ abstract class Email_Driver {
 		// Break into an array of lines
 		$lines = explode("\n", $str);
 
-		$escape = ' = ';
+		$escape = '=';
 		$output = '';
 
 		foreach ($lines as $line)
@@ -931,11 +931,11 @@ abstract class Email_Driver {
 		$str = str_replace(array("\r", "\n"), array('', ''), $str);
 
 		// Line length must not exceed 76 characters, so we adjust for
-		// a space, 7 extra characters =??Q?? = , and the charset that we will add to each line
+		// a space, 7 extra characters =??Q??= , and the charset that we will add to each line
 		$limit = 75 - 7 - strlen($this->charset);
 
 		// these special characters must be converted too
-		$convert = array('_', ' = ', '?');
+		$convert = array('_', '=', '?');
 
 		if ($from === TRUE)
 		{
@@ -955,7 +955,7 @@ abstract class Email_Driver {
 			// convert ALL non-printable ASCII characters and our specials
 			if ($ascii < 32 OR $ascii > 126 OR in_array($char, $convert))
 			{
-				$char = ' = '.dechex($ascii);
+				$char = '='.dechex($ascii);
 			}
 
 			// handle regular spaces a bit more compactly than =20
@@ -980,7 +980,7 @@ abstract class Email_Driver {
 
 		// wrap each line with the shebang, charset, and transfer encoding
 		// the preceding space on successive lines is required for header "folding"
-		$str = trim(preg_replace('/^(.*)$/m', ' =?'.$this->charset.'?Q?$1?= ', $str));
+		$str = trim(preg_replace('/^(.*)$/m', ' =?'.$this->charset.'?Q?$1?=', $str));
 
 		return $str;
 	}
@@ -1092,7 +1092,7 @@ abstract class Email_Driver {
 	 */
 	public function print_debugger()
 	{
-		$message = "<div style = 'font-family: Monospace;'>\n<strong>Dmail Class Log:</strong><br />\n";
+		$message = "<div style='font-family: Monospace;'>\n<strong>Dmail Class Log:</strong><br />\n";
 		foreach ($this->_debug AS $debug)
 		{
 			$message .= preg_replace(array('#<#', '#>#', "#\t#"), array('&lt;', '&gt;', '&nbsp;&nbsp;&nbsp;'),
