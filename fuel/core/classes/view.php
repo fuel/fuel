@@ -267,7 +267,7 @@ class View {
 	 */
 	public function set_filename($file)
 	{
-		if (($path = \Fuel::find_file('views', $file)) === false)
+		if (($path = \Fuel::find_file('views', $file, '.php', false, false)) === false)
 		{
 			throw new \View_Exception('The requested view could not be found: '.\Fuel::clean_path($file));
 		}

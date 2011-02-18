@@ -329,7 +329,7 @@ class Autoloader {
 		else
 		{
 			// need to stick the trimed \ back on...
-			$namespace = '\\'.substr($class, 0, $pos);
+			$namespace = '\\'.ucfirst(strtolower(substr($class, 0, $pos)));
 
 			foreach (static::$namespaces as $ns => $path)
 			{

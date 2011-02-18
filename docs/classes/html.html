@@ -63,7 +63,7 @@
 							<tr>
 								<th><kbd>$attr</kbd></th>
 								<td><strong>false</strong></td>
-								<td>Array of attributes to be applied to the heading tag.Content to be found between the heading tags.</td>
+								<td>Array of attributes to be applied to the heading tag. Content to be found between the heading tags.</td>
 							</tr>
 						</table>
 					</td>
@@ -84,6 +84,187 @@ echo Html::h('Some other example', '2', array('id' => 'h2', 'class' => 'sample',
 //returns &lt;h3 id="sample" class="sample" style="color:blue;"&gt;Variable!&lt;/h3&gt;
 $attributes = array('id' => 'sample', 'class' => 'sample', 'style' => 'color:blue');
 echo Html::h('Variable!', '3', $attributes);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>anchor($href, $text, $attributes = array())</h4>
+			<p>The <strong>anchor</strong> method returns an html anchor tag.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$href</kbd></th>
+								<td><i>required</i></td>
+								<td>Target url</td>
+							</tr>
+							<tr>
+								<th><kbd>$text</kbd></th>
+								<td><i>required</i></td>
+								<td>Anchor value</td>
+							</tr>
+							<tr>
+								<th><kbd>$attributes</kbd></th>
+								<td><strong>false</strong></td>
+								<td>Array of attributes to be applied to the anchor tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated anchor tag (and attributes if supplied).</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;a href="http://www.domain.com/example"&gt;Example&lt;/a&gt;
+echo Html::anchor('example', 'Example');
+
+//returns &lt;a href="http://www.otherdomain.com/example"&gt;Example&lt;/a&gt;
+echo Html::anchor('http://www.otherdomain.com/example', 'Example');
+
+//returns &lt;a href="http://www.domain.com/example" id="a1" class="sample" style="color:red;"&gt;Example&lt;/a&gt;
+echo Html::anchor('example', 'Example', array('id' => 'a1', 'class' => 'sample', 'style' => 'color:red'));</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>mail_to($email, $text, $subject = null, $attr = array())</h4>
+			<p>The <strong>mail_to</strong> method returns an html anchor tag with mailto as target.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$email</kbd></th>
+								<td><i>required</i></td>
+								<td>Email address</td>
+							</tr>
+							<tr>
+								<th><kbd>$text</kbd></th>
+								<td><i>required</i></td>
+								<td>Anchor value</td>
+							</tr>
+							<tr>
+								<th><kbd>$subject</kbd></th>
+								<td><strong>null</strong></td>
+								<td>Anchor value</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>empty</strong></td>
+								<td>Array of attributes to be applied to the anchor tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated anchor tag (and attributes if supplied).</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;a href="mailto:name@domain.com"&gt;Name&lt;/a&gt;
+echo Html::mail_to('name@domain.com', 'Name');
+
+//returns &lt;a href="mailto:name@domain.com?subject=Something"&gt;Name&lt;/a&gt;
+echo Html::mail_to('name@domain.com', 'Name', 'Something');
+
+//returns &lt;a href="mailto:name@domain.com" id="a2" class="sample" style="color:red;"&gt;Name&lt;/a&gt;
+echo Html:::mail_to('name@domain.com', 'Name', null, array('id' => 'a2', 'class' => 'sample', 'style' => 'color:red'));</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>mail_to_save($email, $text, $subject = null, $attr = array())</h4>
+			<p>The <strong>mail_to_save</strong> method returns javascript code that produce an html anchor tag with mailto as target.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$email</kbd></th>
+								<td><i>required</i></td>
+								<td>Email address</td>
+							</tr>
+							<tr>
+								<th><kbd>$text</kbd></th>
+								<td><i>required</i></td>
+								<td>Anchor value</td>
+							</tr>
+							<tr>
+								<th><kbd>$subject</kbd></th>
+								<td><strong>null</strong></td>
+								<td>Anchor value</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>empty</strong></td>
+								<td>Array of attributes to be applied to the anchor tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated anchor tag (and attributes if supplied).</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns
+//&lt;script type="text/javascript"&gt
+//	var user = "name";
+//	var at = "@";
+//	var server = "domain.com";
+//	document.write('&lt;a href="' + 'mail' + 'to:' + user + at + server + '"&gtName&lt;/a&gt');
+//&lt;/script&gt
+echo Html::mail_to_save('name@domain.com', 'Name');
 					</td>
 				</tr>
 				</tbody>
@@ -267,6 +448,56 @@ echo Html::nbs();
 
 //returns &amp;nbsp;&amp;nbsp;
 echo Html::nbs(2);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>img($src, $attr = array())</h4>
+			<p>The <strong>img</strong> method returns an image tag.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$src</kbd></th>
+								<td><i>required</i></td>
+								<td>Path to image.</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>array()</strong></td>
+								<td>Attributes array. If no alt attribute is supplied, the alt attribute defaults to the filename.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated image tag.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns &lt;img src="http://example.com/path/to/image.png" alt="image.png" /&gt;
+echo Html::img('path/to/image.png');
+
+//returns &lt;img src="http://example.com/path/to/image.png" alt="Alt Message" class="myclass" /&gt;
+echo Html::img('path/to/image.png', array("alt" => "Alt Message", class => "myclass"));
+</code></pre>
 					</td>
 				</tr>
 				</tbody>

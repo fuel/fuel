@@ -42,7 +42,7 @@ abstract class ViewModel {
 	 */
 	public static function factory($viewmodel, $method = 'view')
 	{
-		$class = ucfirst(\Request::active()->module).'\\View_'.ucfirst($viewmodel);
+		$class = ucfirst(\Request::active()->module).'\\View_'.ucfirst(str_replace(DS, '_', $viewmodel));
 
 		if ( ! class_exists($class))
 		{

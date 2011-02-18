@@ -109,6 +109,7 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Crypt'						=> COREPATH.'classes/crypt.php',
 	'Fuel\\Core\\Event'						=> COREPATH.'classes/event.php',
 	'Fuel\\Core\\Error'						=> COREPATH.'classes/error.php',
+	'Fuel\\Core\\Format'					=> COREPATH.'classes/format.php',
 
 	'Fuel\\Core\\Fieldset'					=> COREPATH.'classes/fieldset.php',
 	'Fuel\\Core\\Fieldset_Field'			=> COREPATH.'classes/fieldset/field.php',
