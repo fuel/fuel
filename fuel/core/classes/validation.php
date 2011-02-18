@@ -228,7 +228,7 @@ class Validation {
 				foreach ($field->rules as $rule)
 				{
 					$callback	= $rule[0];
-					$params		= $rule[1];
+					$params		= empty($rule[1]) ? array(null) : $rule[1];
 
 					$this->_run_rule($callback, $value, $params, $field);
 				}
