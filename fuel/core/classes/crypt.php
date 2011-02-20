@@ -60,7 +60,9 @@ class Crypt {
 		static::$have_mcrypt = function_exists('mcrypt_encrypt');
 
 		// load the config
-		$config = \Config::load('crypt', true);
+		\Config::load('crypt', true);
+
+		$config = \Config::get('crypt', array());
 
 		// update the defaults with the configed values
 		foreach($config as $key => $value)
