@@ -244,7 +244,7 @@ VIEW;
 									$type = 'int';
 								}
 
-								if(!in_array($type, array('text', 'blob', 'datetime')))
+								if(!in_array($type, array('text', 'blob', 'datetime', 'date')))
 								{
 									if(!isset($option[1]) || $option[1] == NULL)
 									{
