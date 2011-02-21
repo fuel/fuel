@@ -15,6 +15,24 @@
 namespace Fuel\Core;
 
 class Arr {
+	
+	/**
+	 * Find the average of an array
+	 *
+	 * @access	public
+	 * @param	array	The array containing the values
+	 * @return	numeric	The average value
+	 */
+	function average($array)
+	{
+		// No arguments passed, lets not divide by 0
+		if ( ! ($count = count($array)) > 0)
+		{
+			return 0;
+		}
+		
+		return (array_sum($array) / $count);
+	}
 
 	/**
 	 * Flattens a multi-dimensional associative array down into a 1 dimensional

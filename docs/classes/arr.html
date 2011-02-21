@@ -29,6 +29,47 @@
 		<p>The arr class is a set of helper functions for working with arrays.</p>
 
 		<article>
+			<h4>average($array = null)</h4>
+			<p>The <strong>average</strong> method takes all values of an array and returns the average value.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$array</kbd></th>
+								<td><i>Required</i></td>
+								<td>Array of values to average.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>echo Arr::average(array('1', 2, 4, '8')); // Outputs 3.75</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
 			<h4>flatten_assoc($array, $glue = ':', $reset = true)</h4>
 			<p>The <strong>flatten_assoc</strong> method flattens a multi-dimensional associative array down into a 1 dimensional associative array.</p>
 			<table class="method">
@@ -82,7 +123,7 @@
 	)
 );
 
-print_r( arr::flatten_assoc($people) );
+print_r( Arr::flatten_assoc($people) );
 
 // Returns
 Array
@@ -94,7 +135,7 @@ Array
 )
 
 // Let's flatten another array on top
-print_r( arr::flatten_assoc( array( array( "name" => "Humpty", "age" => 11 ) ) ,":",false) );
+print_r( Arr::flatten_assoc( array( array( "name" => "Humpty", "age" => 11 ) ) ,":",false) );
 
 // Returns
 Array
@@ -104,10 +145,6 @@ Array
     [1:name] => Jill
     [1:age] => 23
 )
-
-
-
-
 </code></pre>
 					</td>
 				</tr>
@@ -168,14 +205,14 @@ Array
 	)		
 );
 
-echo arr::element($person, "name", "Unknown Name");
+echo Arr::element($person, "name", "Unknown Name");
 // Returns "Jack"
 
-echo arr::element($person, "job", "Unknown job");
+echo Arr::element($person, "job", "Unknown job");
 // Returns "Unknown job"
 
 // This method can also dive into arrays by using a dot to separate between keys
-echo arr::element($person, "location.city", "Unknown City");
+echo Arr::element($person, "location.city", "Unknown City");
 // Returns "Pittsburgh"</code></pre>
 					</td>
 				</tr>
@@ -230,7 +267,7 @@ echo arr::element($person, "location.city", "Unknown City");
 						<pre class="php"><code>$people = array("Jack", "Jill");
 
 // Add one value
-arr::insert($people, "Humpty", 0 );
+Arr::insert($people, "Humpty", 0 );
 print_r( $people );
 // Returns 
 Array
@@ -241,7 +278,7 @@ Array
 )
 
 // Add multiple values
-arr::insert($people, array("Hansel", "Gretel"), 1 );
+Arr::insert($people, array("Hansel", "Gretel"), 1 );
 print_r( $people );
 // Returns
 Array
@@ -254,7 +291,7 @@ Array
 )
 
 // Add an array
-arr::insert($people, array( array("name" => "Wolf", "teeth" => "sharp" ) ), 0 );
+Arr::insert($people, array( array("name" => "Wolf", "teeth" => "sharp" ) ), 0 );
 print_r( $people );
 
 // Returns
@@ -326,7 +363,7 @@ Array
 					<td>
 						<pre class="php"><code>$people = array("Jack", "Jill");
 
-arr::insert_after_key($people, "Humpty", 1 );
+Arr::insert_after_key($people, "Humpty", 1 );
 print_r( $people );
 
 // Returns
@@ -389,7 +426,7 @@ Array
 					<td>
 						<pre class="php"><code>$people = array("Jack", "Jill");
 
-arr::insert_after_key($people, "Humpty", "Jack" );
+Arr::insert_after_key($people, "Humpty", "Jack" );
 print_r( $people );
 
 // Returns
@@ -478,7 +515,7 @@ Array
 	),
 );
 
-$data = arr::sort($data, 'info.pet.type');
+$data = Arr::sort($data, 'info.pet.type');
 // Returns
 array(
 	array(
