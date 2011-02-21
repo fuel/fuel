@@ -468,7 +468,7 @@ class Form {
 		unset($attributes['options']);
 
 		// Get the selected options then unset it from the array
-		$selected = array_values((array) (empty($attributes['selected']) ? false : $attributes['selected']));
+		$selected = empty($attributes['selected']) ? array() : array_values((array) $attributes['selected']);
 		unset($attributes['selected']);
 
 		$input = PHP_EOL;
