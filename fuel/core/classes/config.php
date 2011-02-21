@@ -14,8 +14,6 @@
 
 namespace Fuel\Core;
 
-
-
 class Config {
 
 	public static $loaded_files = array();
@@ -75,7 +73,6 @@ class Config {
 			}
 			$config = static::$items[$config];
 		}
-
 		$content = <<<CONF
 <?php
 /**
@@ -99,10 +96,10 @@ CONF;
 
 /* End of file $file.php */
 CONF;
-		
-		($path = \Fuel::find_file('config', $file, '.php')) or $path = APPPATH.'config'.DS.$file.'.php';
 
-		$path = pathinfo($path);
+		($path = \Fuel::find_file('config', $file, '.php')) or $path[0] = APPPATH.'config'.DS.$file.'.php';
+
+		$path = pathinfo($path[0]);
 
 		return File::update($path['dirname'], $path['basename'], $content);
 	}

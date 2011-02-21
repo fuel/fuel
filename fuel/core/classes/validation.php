@@ -123,7 +123,7 @@ class Validation {
 				$field->add_rule($rule);
 			}
 		}
-                
+
 		return $field;
 
 	}
@@ -228,7 +228,8 @@ class Validation {
 				foreach ($field->rules as $rule)
 				{
 					$callback	= $rule[0];
-					$params		= $rule[1];
+					$params		= empty($rule[1]) ? array(null) : $rule[1];
+
 					$this->_run_rule($callback, $value, $params, $field);
 				}
 				$this->validated[$field->name] = $value;
@@ -255,7 +256,7 @@ class Validation {
 	 */
 	protected function _run_rule($rule, &$value, $params, $field)
 	{
-		$output = call_user_func_array($rule, array_merge(array($value), $params));
+		$output = call_user_func_array($rule, array_merge(array($value), $params, array($this)));
 
 		if ($output === false && $value !== false)
 		{

@@ -113,6 +113,26 @@ class Security {
 		return $var;
 	}
 
+	public static function xss_clean($value)
+	{
+		if ( ! is_array($value))
+		{
+			if ( ! function_exists('htmLawed'))
+			{
+				import('htmlawed/htmlawed', 'vendor');
+			}
+
+			return htmLawed($value, array('safe' => 1));
+		}
+
+		foreach ($value as $k => $v)
+		{
+			$value[$k] = static::xss_clean($v);
+		}
+
+		return $value;
+	}
+
 	public static function strip_tags($value)
 	{
 		if ( ! is_array($value))
@@ -176,7 +196,7 @@ class Security {
 		}
 
 		static::$csrf_token = \Input::cookie(static::$csrf_token_key, null);
-		if (static::$csrf_token === null || \Config::get('security.csrf_expiration', 0) <= 0)
+		if (static::$csrf_token === null || \Config::get('security.csrf_expiration', 0) < 0)
 		{
 			// set new token for next session when necessary
 			static::regenerate_token();

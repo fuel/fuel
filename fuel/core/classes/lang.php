@@ -110,15 +110,22 @@ class Lang {
 
 	protected static function _parse_params($string, $array = array())
 	{
-		$tr_arr = array();
-
-		foreach ($array as $from => $to)
+		if (is_string($string))
 		{
-			$tr_arr[':'.$from] = $to;
-		}
-		unset($array);
+			$tr_arr = array();
 
-		return strtr($string, $tr_arr);
+			foreach ($array as $from => $to)
+			{
+				$tr_arr[':'.$from] = $to;
+			}
+			unset($array);
+
+			return strtr($string, $tr_arr);
+		}
+		else
+		{
+			return $string;
+		}
 	}
 }
 
