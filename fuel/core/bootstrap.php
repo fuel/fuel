@@ -94,6 +94,8 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Database_Result_Cached'		=> COREPATH.'classes/database/result/cached.php',
 	'Fuel\\Core\\Database_Mysql'				=> COREPATH.'classes/database/mysql.php',
 	'Fuel\\Core\\Database_MySQL_Result'			=> COREPATH.'classes/database/mysql/result.php',
+	'Fuel\\Core\\Database_Mysqli'				=> COREPATH.'classes/database/mysqli.php',
+	'Fuel\\Core\\Database_MySQLi_Result'		=> COREPATH.'classes/database/mysqli/result.php',
 
 	'Fuel\\Core\\Email'						=> COREPATH.'classes/email.php',
 	'Fuel\\Core\\Email_Driver'				=> COREPATH.'classes/email/driver.php',
