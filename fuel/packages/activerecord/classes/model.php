@@ -27,8 +27,6 @@ class Model {
 
 	protected static $_primary_key = 'id';
 
-	protected static $_primary_key = 'id';
-
 
 	protected $prefixed_table_name = null;
 
