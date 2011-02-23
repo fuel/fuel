@@ -23,12 +23,12 @@ if ( ! function_exists('import'))
 {
 	function import($path, $folder = 'classes')
 	{
-		$path = str_replace('/', DS, $path);
-		require_once COREPATH.$folder.DS.$path.'.php';
+		$path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+		require_once COREPATH.$folder.DIRECTORY_SEPARATOR.$path.'.php';
 
-		if (is_file(APPPATH.$folder.DS.$path.'.php'))
+		if (is_file(APPPATH.$folder.DIRECTORY_SEPARATOR.$path.'.php'))
 		{
-			require_once APPPATH.$folder.DS.$path.'.php';
+			require_once APPPATH.$folder.DIRECTORY_SEPARATOR.$path.'.php';
 		}
 	}
 }
@@ -82,7 +82,7 @@ if ( ! function_exists('array_to_attr'))
 
 			if (in_array($property, array('value', 'alt', 'title')))
 			{
-				$value = htmlentities($value, ENT_QUOTES, INTERNAL_ENC);
+				$value = htmlentities($value, ENT_QUOTES, \Fuel::$encoding);
 			}
 			$attr_str .= $property.'="'.$value.'" ';
 		}

@@ -157,7 +157,7 @@ class Form {
 
 		if (empty($attributes['accept-charset']))
 		{
-			$attributes['accept-charset'] = strtolower(INTERNAL_ENC);
+			$attributes['accept-charset'] = strtolower(\Fuel::$encoding);
 		}
 
 		// If method is empty, use POST

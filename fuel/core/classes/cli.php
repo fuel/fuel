@@ -65,7 +65,7 @@ class Cli {
 	 */
 	public static function _init()
 	{
-		if ( ! IS_CLI)
+		if ( ! \Fuel::$is_cli)
 		{
 			throw new Exception('Cli class cannot be used outside of the command line.');
 		}
