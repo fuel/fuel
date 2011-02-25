@@ -43,6 +43,10 @@
 ),</code></pre>
 
 
+        <h3>Special Routes</h3>
+        
+        <p>The <kbd>''</kbd> and <kbd>'404'</kbd> routes are special routes in the system.  The empty route (<kbd>''</kbd>) is your applications default route.
+            The 404 route (<kbd>'404'</kbd>) is used for custom 404 pages.</p>
 
         <h3>Slightly Advanced Routing</h3>
 
@@ -93,13 +97,13 @@
 
         <pre><code>'routes' => array(
     // Routes GET /blog to /blog/all and POST /blog to /blog/create
-    'blog' => array(array('GET', 'blog/all'), array('POST', 'blog/create')),
+    'blog' => array(array('GET', new Route('blog/all')), array('POST', new Route('blog/create'))),
 ),</code></pre>
 
         <p>You can use named parameters and regexes within your URL just like normal:</p>
 
         <pre><code>'routes' => array(
-    'blog/(:any)' => array(array('GET', 'blog/show/$1')),
+    'blog/(:any)' => array(array('GET', new Route('blog/show/$1'))),
 ),</code></pre>
 
 
