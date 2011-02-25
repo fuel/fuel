@@ -1,29 +1,35 @@
 <?php
 /**
- * Set all the paths
- */
-$app_path		= '../fuel/app/';
-$package_path	= '../fuel/packages/';
-$core_path		= '../fuel/core/';
-
-/**
  * Set error reporting and display errors settings.  You will want to change these when in production.
  */
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-/**
- * Website docroot
- */
-define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
+// Use an anonymous function to keep the global namespace clean
+call_user_func(function() {
 
-( ! is_dir($app_path) and is_dir(DOCROOT.$app_path)) and $app_path = DOCROOT.$app_path;
-( ! is_dir($core_path) and is_dir(DOCROOT.$core_path)) and $core_path = DOCROOT.$core_path;
-( ! is_dir($package_path) and is_dir(DOCROOT.$package_path)) and $package_path = DOCROOT.$package_path;
+	/**
+	 * Set all the paths here
+	 */
+	$app_path		= '../fuel/app/';
+	$package_path	= '../fuel/packages/';
+	$core_path		= '../fuel/core/';
 
-define('APPPATH', realpath($app_path).DIRECTORY_SEPARATOR);
-define('PKGPATH', realpath($package_path).DIRECTORY_SEPARATOR);
-define('COREPATH', realpath($core_path).DIRECTORY_SEPARATOR);
+
+	/**
+	 * Website docroot
+	 */
+	define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
+
+	( ! is_dir($app_path) and is_dir(DOCROOT.$app_path)) and $app_path = DOCROOT.$app_path;
+	( ! is_dir($core_path) and is_dir(DOCROOT.$core_path)) and $core_path = DOCROOT.$core_path;
+	( ! is_dir($package_path) and is_dir(DOCROOT.$package_path)) and $package_path = DOCROOT.$package_path;
+
+	define('APPPATH', realpath($app_path).DIRECTORY_SEPARATOR);
+	define('PKGPATH', realpath($package_path).DIRECTORY_SEPARATOR);
+	define('COREPATH', realpath($core_path).DIRECTORY_SEPARATOR);
+
+});
 
 // Get the start time and memory for use later
 defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
