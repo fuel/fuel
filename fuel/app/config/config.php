@@ -174,9 +174,8 @@ return array(
 	/**************************************************************************/
 
 	'routes'	=> array(
-		// This is the default route.  We use a "#" here so that we do not have any
-		// reserved routes.
-		'#'		=> 'welcome',
+		// This is the default route.
+		''		=> 'welcome',
 		'404'	=> 'welcome/404',
 	),
 );

@@ -112,6 +112,8 @@ class Fuel {
 
 		static::$_paths = array_merge(\Config::get('module_paths', array()), array(APPPATH, COREPATH));
 
+		\Router::add(\Config::get('routes'));
+
 		if ( ! static::$is_cli)
 		{
 			if (\Config::get('base_url') === null)
@@ -399,6 +401,26 @@ class Fuel {
 		}
 
 		return $path;
+	}
+
+	/**
+	 * Checks to see if a module exists or not.
+	 * 
+	 * @param	string	the module name
+	 * @return	bool	whether it exists or not
+	 */
+	public static function module_exists($module)
+	{
+		$paths = \Config::get('module_paths', array());
+		
+		foreach ($paths as $path)
+		{
+			if (is_dir($path.$module))
+			{
+				return $path.$module.DS;
+			}
+		}
+		return false;
 	}
 
 	/**

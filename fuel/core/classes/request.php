@@ -47,11 +47,11 @@ class Request {
 	 * @param	bool	if true use routes to process the URI
 	 * @return	object	The new request
 	 */
-	public static function factory($uri = null, $route = true)
+	public static function factory($uri = null)
 	{
 		logger(Fuel::L_INFO, 'Creating a new Request with URI = "'.$uri.'"', __METHOD__);
 
-		static::$active = new static($uri, $route);
+		static::$active = new static($uri);
 
 		if ( ! static::$main)
 		{
@@ -113,13 +113,21 @@ class Request {
 
 		\Output::$status = 404;
 
-		if (\Config::get('routes.404') === null)
+		if ( ! isset(\Router::$routes['404']))
 		{
-			static::active()->output = \View::factory('404');
+			$output = \View::factory('404');
+
+			if ($return)
+			{
+				return $output;
+			}
+
+			\Output::send_headers();
+			exit($output);
 		}
 		else
 		{
-			list($controller, $action) = array_pad(explode('/', \Config::get('routes.404')), 2, false);
+			list($controller, $action) = array_pad(explode('/', \Router::$routes['404']->translation), 2, false);
 
 			$action or $action = 'index';
 
@@ -177,6 +185,11 @@ class Request {
 	public $uri = '';
 
 	/**
+	 * @var	object	The request's route object
+	 */
+	public $route = null;
+
+	/**
 	 * @var	string	Controller module
 	 */
 	public $module = '';
@@ -220,40 +233,28 @@ class Request {
 	 * @param	bool	whether or not to route the URI
 	 * @return	void
 	 */
-	public function __construct($uri, $route)
+	public function __construct($uri)
 	{
 		$this->uri = new \URI($uri);
-		$route = $route === true ? \Route::parse($this->uri) : \Route::parse_match($uri);
 
-		// Attempts to register the first segment as a module
-		$mod_path = \Fuel::add_module($route['segments'][0]);
+		$this->route = \Router::process($this);
 
-		if ($mod_path !== false)
+		if ( ! $this->route)
 		{
-			$this->module = array_shift($route['segments']);
-			$this->paths = array($mod_path, $mod_path.'classes'.DS);
+			return false;
 		}
 
-		// Check for directory
-		$path = ( ! empty($this->module) ? $mod_path : APPPATH).'classes'.DS.'controller'.DS;
-		if ( ! empty($route['segments']) && is_dir($dirpath = $path.strtolower($route['segments'][0])))
+		if ($this->route->module !== null)
 		{
-			$this->directory = array_shift($route['segments']);
+			$this->module = $this->route->module;
+			\Fuel::add_module($this->module);
 		}
 
-		// When emptied the controller defaults to directory or module
-		$controller = empty($this->directory) ? $this->module : $this->directory;
-		if (count($route['segments']) == 0)
-		{
-			$route['segments'] = array($controller);
-		}
-
-		$this->controller = $route['segments'][0];
-		$this->action = isset($route['segments'][1]) ? $route['segments'][1] : '';
-		$this->method_params = array_slice($route['segments'], 2);
-		$this->named_params = $route['named_params'];
-
-		unset($route);
+		$this->directory = $this->route->directory;
+		$this->controller = $this->route->controller;
+		$this->action = $this->route->action;
+		$this->method_params = $this->route->method_params;
+		$this->named_params = $this->route->named_params;
 	}
 
 	/**
@@ -270,36 +271,23 @@ class Request {
 	{
 		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
+		if ( ! $this->route)
+		{
+			$this->output = static::show_404(true);
+			return $this;
+		}
+
 		$controller_prefix = '\\'.($this->module ? ucfirst($this->module).'\\' : '').'Controller_';
 		$method_prefix = 'action_';
 
 		$class = $controller_prefix.($this->directory ? ucfirst($this->directory).'_' : '').ucfirst($this->controller);
 		$method = $this->action;
 
-		// Allow omitting the controller name when in an equally named directory or module
+		// If the class doesn't exist then 404
 		if ( ! class_exists($class))
 		{
-			// set the new controller to directory or module when applicable
-			$controller = $this->directory ?: $this->module;
-			// ... or to the default controller if it was in neither
-			$controller = $controller ?: preg_replace('#/([a-z0-9/_]*)$#uiD', '', \Route::$routes['#']);
-
-			// try again with new controller if it differs from the previous attempt
-			if ($controller != $this->controller)
-			{
-				$class = $controller_prefix.($this->directory ? $this->directory.'_' : '').ucfirst($controller);
-				array_unshift($this->method_params, $this->action);
-				$this->action = $this->controller;
-				$method = $this->action ?: '';
-				$this->controller = $controller;
-			}
-
-			// 404 if it's still not found
-			if ( ! class_exists($class))
-			{
-				$this->output = static::show_404(true);
-				return $this;
-			}
+			$this->output = static::show_404(true);
+			return $this;
 		}
 
 		logger(Fuel::L_INFO, 'Loading controller '.$class, __METHOD__);
