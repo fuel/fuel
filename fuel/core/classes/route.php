@@ -36,11 +36,19 @@ class Route {
 
 	protected $search = null;
 
-	public function __construct($path, $translation)
+	public function __construct($path, $translation = null)
 	{
-		$this->path = $path;
-		$this->translation = $translation;
-		$this->compile();
+		if ($translation === null)
+		{
+			$this->path = $path;
+			$this->translation = $path;
+		}
+		else
+		{
+			$this->path = $path;
+			$this->translation = $translation;
+			$this->compile();
+		}
 	}
 
 	protected function compile()
@@ -59,10 +67,9 @@ class Route {
 	public function parse(\Request $request)
 	{
 		$uri = $request->uri->get();
-//echo '"'.$uri.'" === "'.$this->path.'" ?';
-		if ($uri === $this->path)
+
+		if ($uri === '' and $uri === $this->path)
 		{
-//			var_dump($this->matched());
 			return $this->matched();
 		}
 
@@ -128,11 +135,11 @@ class Route {
 			foreach ($route->translation as $r)
 			{
 				$verb = $r[0];
-				$forward = $r[1];
 
 				if (\Input::method() == strtoupper($verb))
 				{
-					$result = $route->_parse_search($uri, $forward);
+					$r[1]->search = $route->search;
+					$result = $route->_parse_search($uri, $r[1]);
 
 					if ($result)
 					{
