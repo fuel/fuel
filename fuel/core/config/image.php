@@ -62,7 +62,7 @@ return array(
 		 *
 		 * Note that config values here override the current configuration.
 		 *
-		 * Libraries cannot be changed in here.
+		 * Libraries cannot be changed in here. (TODO - Add this feature)
 		 */
 		'example' => array(
 			'quality' => 100,

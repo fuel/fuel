@@ -45,9 +45,9 @@ class Image {
 			$config = array_merge($initconfig, $config);
 		}
 
-		$protocol = ucfirst( ! empty($config['driver']) ? $config['driver'] : 'gd');
+		$protocol = ucfirst(!empty($config['driver']) ? $config['driver'] : 'gd');
 		$class = 'Image_' . $protocol;
-		if ($protocol == 'Driver' || ! class_exists($class))
+		if ($protocol == 'Driver' || !class_exists($class))
 		{
 			throw new \Fuel_Exception('Protocol ' . $protocol . ' is not a valid protocol for emailing.');
 		}
@@ -127,7 +127,7 @@ class Image {
 	{
 		return Image::instance()->watermark($filename, $position);
 	}
-	
+
 	/**
 	 * Rounds the corners of the image.
 	 * 

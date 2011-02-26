@@ -20,13 +20,14 @@ namespace Fuel\Core;
 class Image_Imagemagick extends Image_Driver {
 
 	private $image_temp = null;
-
 	protected $accepted_extensions = array('png', 'gif', 'jpg', 'jpeg');
 
 	public function _load($return_data)
 	{
-		if (empty($this->image_temp)) {
-			do {
+		if (empty($this->image_temp))
+		{
+			do
+			{
 				$this->image_temp = substr($this->config['temp_dir'] . $this->config['temp_append'] . md5(time() * microtime()), 0, 32);
 			} while (file_exists($this->image_temp));
 		}
@@ -97,23 +98,29 @@ class Image_Imagemagick extends Image_Driver {
 	{
 		extract(parent::output($filetype));
 		$this->run_queue();
-		if (substr($this->image_fullpath, -1 * strlen($filetype)) != $filetype) {
+		if (substr($this->image_fullpath, -1 * strlen($filetype)) != $filetype)
+		{
 			$old = '"' . $this->image_temp . '"';
 			passthru('convert ' . $old . ' ' . strtolower($filetype) . ':');
-		} else {
+		} else
+		{
 			echo file_get_contents($this->image_temp);
 		}
 	}
 
-	public function exec($program, $params) {
+	public function exec($program, $params)
+	{
 		$command = realpath($this->config['imagemagick_dir'] . $program) . " " . $params;
 		$this->debug("Running command: <span style='font-family: courier;'>$command</span>");
 		exec($command, $output, $code);
-		if ($code != 0) {
+		if ($code != 0)
+		{
 			// Try to come up with a common error?
-			if (!file_exists(realpath($this->config['imagemagick_dir'] . $program))) {
+			if (!file_exists(realpath($this->config['imagemagick_dir'] . $program)))
+			{
 				$this->error("imagemagick executable not found in " . $this->config['imagemagick_dir']);
-			} else {
+			} else
+			{
 				$this->error("imagemagick failed to edit the image. Returned with $code.");
 			}
 			print_r($output);
@@ -121,14 +128,16 @@ class Image_Imagemagick extends Image_Driver {
 		return $output;
 	}
 
-	public function create_color($hex, $alpha) {
+	public function create_color($hex, $alpha)
+	{
 		$red = hexdec(substr($hex, 1, 2));
 		$green = hexdec(substr($hex, 3, 2));
 		$blue = hexdec(substr($hex, 5, 2));
 		return "\"rgba(" . $red . ", " . $green . ", " . $blue . ", " . round($alpha / 100, 2) . ")\"";
 	}
 
-	public function __destruct() {
+	public function __destruct()
+	{
 		unlink($this->image_temp);
 	}
 

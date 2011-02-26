@@ -285,7 +285,8 @@ abstract class Image_Driver {
 		return $this;
 	}
 
-	public function _mask($maskimage) {
+	public function _mask($maskimage)
+	{
 
 		return array(
 			'maskimage' => $maskimage
