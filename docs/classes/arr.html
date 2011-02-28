@@ -11,7 +11,7 @@
 		$(function() {
 			show_nav('classes', '../');
 		});
-		hljs.tabReplace = '    ';
+		hljs.tabReplace = '	 ';
 		hljs.initHighlightingOnLoad();
 	</script>
 </head>
@@ -90,7 +90,7 @@
 							<tr>
 								<th><kbd>$array</kbd></th>
 								<td><i>Required</i></td>
-								<td>The key in the $_COOKIE array.</td>
+								<td>The array to flatten.</td>
 							</tr>
 							<tr>
 								<th><kbd>$glue</kbd></th>
@@ -113,14 +113,14 @@
 					<th>Example</th>
 					<td>
 <pre class="php"><code>$people = array(
-	array(
-		"name" => "Jack",
-		"age" => 21
-	),
-	array(
-		"name" => "Jill",
-		"age" => 23
-	)
+    array(
+        "name" => "Jack",
+        "age" => 21
+    ),
+    array(
+        "name" => "Jill",
+        "age" => 23
+    )
 );
 
 print_r( Arr::flatten_assoc($people) );
@@ -144,6 +144,81 @@ Array
     [0:age] => 11
     [1:name] => Jill
     [1:age] => 23
+)
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>filter_prefixed($array, $prefix = 'prefix_', $remove_prefix = true)</h4>
+			<p>The <strong>filter_prefixed</strong> method filters the array on a prefix. It returns an array where the key starts with the specified prefix.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$array</kbd></th>
+								<td><i>Required</i></td>
+								<td>The array to filter.</td>
+							</tr>
+							<tr>
+								<th><kbd>$prefix</kbd></th>
+								<td><pre class="php"><code>prefix_</code></pre></td>
+								<td>The string used to filter on</td>
+							</tr>
+							<tr>
+								<th><kbd>$remove_prefix</kbd></th>
+								<td><pre class="php"><code>true</code></pre></td>
+								<td>Remove or keep the profix in the array key?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$arr = array(
+    "user_name" => "Frank",
+    "user_surname" => "de Jonge",
+    "project_name" => "FuelPHP",
+    "project_type" => "Framework",
+);
+
+print_r( Arr::filter_prefixed($arr, "user_"));
+
+// Returns
+Array
+(
+    [name] => Frank
+    [surname] => de Jonge
+)
+
+// Let's keep the prefix
+print_r( Arr::filter_prefixed($arr, "project_", false);
+
+// Returns
+Array
+(
+    [project_name] => FuelPHP
+    [project_type] => Framework
 )
 </code></pre>
 					</td>
@@ -196,13 +271,13 @@ Array
 					<th>Example</th>
 					<td>
 						<pre class="php"><code>$person = array(
-	"name" => "Jack",
-	"age" => "21",
-	"location" => array(
-		"city" => "Pittsburgh",
-		"state" => "PA",
-		"country" => "US"
-	)		
+    "name" => "Jack",
+    "age" => "21",
+    "location" => array(
+        "city" => "Pittsburgh",
+        "state" => "PA",
+        "country" => "US"
+    )        
 );
 
 echo Arr::element($person, "name", "Unknown Name");
@@ -492,53 +567,53 @@ Array
 					<th>Example</th>
 					<td>
 						<pre class="php"><code>$data = array(
-	array(
-		'info' => array(
-			'pet' => array(
-				'type' => 'dog'
-			)
-		),
-	),
-	array(
-		'info' => array(
-			'pet' => array(
-				'type' => 'fish'
-			)
-		),
-	),
-	array(
-		'info' => array(
-			'pet' => array(
-				'type' => 'cat'
-			)
-		),
-	),
+    array(
+        'info' => array(
+            'pet' => array(
+                'type' => 'dog'
+            )
+        ),
+    ),
+    array(
+        'info' => array(
+            'pet' => array(
+                'type' => 'fish'
+            )
+        ),
+    ),
+    array(
+        'info' => array(
+            'pet' => array(
+                'type' => 'cat'
+            )
+        ),
+    ),
 );
 
 $data = Arr::sort($data, 'info.pet.type');
 // Returns
 array(
-	array(
-		'info' => array(
-			'pet' => array(
-				'type' => 'cat'
-			)
-		),
-	),
-	array(
-		'info' => array(
-			'pet' => array(
-				'type' => 'dog'
-			)
-		),
-	),
-	array(
-		'info' => array(
-			'pet' => array(
-				'type' => 'fish'
-			)
-		),
-	),
+    array(
+        'info' => array(
+            'pet' => array(
+                'type' => 'cat'
+            )
+        ),
+    ),
+    array(
+        'info' => array(
+            'pet' => array(
+                'type' => 'dog'
+            )
+        ),
+    ),
+    array(
+        'info' => array(
+            'pet' => array(
+                'type' => 'fish'
+            )
+        ),
+    ),
 );</code></pre>
 					</td>
 				</tr>
