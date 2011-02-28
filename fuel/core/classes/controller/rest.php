@@ -6,6 +6,7 @@ abstract class Controller_Rest extends \Controller {
 
 	protected $rest_format = null; // Set this in a controller to use a default format
 	protected $methods = array(); // contains a list of method properties such as limit, log and level
+	protected $set_format_header = true; // Set this to true to automatically set the header's Content-Type
 
 	// List all supported methods, the first will be the default format
 	protected $_supported_formats = array(
@@ -90,8 +91,10 @@ abstract class Controller_Rest extends \Controller {
 		// If the format method exists, call and return the output in that format
 		if (method_exists('Controller_Rest', '_format_' . $this->request->format))
 		{
-			// Set the correct format header
-			\Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
+			if ($this->set_format_header !== false) {
+				// Set the correct format header
+				\Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
+			}
 
 			$this->output = $this->{'_format_' . $this->request->format}($data);
 		}
