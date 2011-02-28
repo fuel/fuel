@@ -63,19 +63,25 @@ class Router {
 		{
 			return $match;
 		}
-		
 		// Check for a module
 		if ($module_path = \Fuel::module_exists($segments[0]))
 		{
-			$match->module = array('name' => $segments[0], 'path' => $module_path);
-			array_shift($segments);
-
+			$match->module = $segments[0];
+			\Fuel::add_module($match->module);
 			if (static::find_controller($match, $segments))
 			{
 				return $match;
 			}
+			elseif (count($segments) > 1)
+			{
+				array_shift($segments);
+				if (static::find_controller($match, $segments))
+				{
+					return $match;
+				}
+			}
 		}
-
+		
 		return false;
 	}
 	

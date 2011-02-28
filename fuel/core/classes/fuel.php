@@ -110,7 +110,8 @@ class Fuel {
 
 		\Config::load($config);
 
-		static::$_paths = array_merge(\Config::get('module_paths', array()), array(APPPATH, COREPATH));
+		static::$_paths = array(APPPATH, COREPATH);
+		array_splice(static::$_paths, 1, 0, \Config::get('module_paths', array()));
 
 		\Router::add(\Config::get('routes'));
 
@@ -239,8 +240,11 @@ class Fuel {
 			}
 		}
 
-		$cache and static::$path_cache[$path] = $found;
-		static::$paths_changed = true;
+		if ( ! empty($found))
+		{
+			$cache and static::$path_cache[$path] = $found;
+			static::$paths_changed = true;
+		}
 
 		return $found;
 	}
@@ -373,6 +377,7 @@ class Fuel {
 				if (is_dir($mod_check_path = $modpath.strtolower($name).DS))
 				{
 					$path = $mod_check_path;
+					static::add_path($path);
 					$ns = '\\'.ucfirst($name);
 					\Autoloader::add_namespaces(array(
 						$ns					=> $path.'classes'.DS,
