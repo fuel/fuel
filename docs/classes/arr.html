@@ -11,7 +11,7 @@
 		$(function() {
 			show_nav('classes', '../');
 		});
-		hljs.tabReplace = '	 ';
+		hljs.tabReplace = '    ';
 		hljs.initHighlightingOnLoad();
 	</script>
 </head>
@@ -113,14 +113,14 @@
 					<th>Example</th>
 					<td>
 <pre class="php"><code>$people = array(
-    array(
-        "name" => "Jack",
-        "age" => 21
-    ),
-    array(
-        "name" => "Jill",
-        "age" => 23
-    )
+	array(
+		"name" => "Jack",
+		"age" => 21
+	),
+	array(
+		"name" => "Jill",
+		"age" => 23
+	)
 );
 
 print_r( Arr::flatten_assoc($people) );
@@ -128,10 +128,10 @@ print_r( Arr::flatten_assoc($people) );
 // Returns
 Array
 (
-    [0:name] => Jack
-    [0:age] => 21
-    [1:name] => Jill
-    [1:age] => 23
+	[0:name] => Jack
+	[0:age] => 21
+	[1:name] => Jill
+	[1:age] => 23
 )
 
 // Let's flatten another array on top
@@ -140,10 +140,10 @@ print_r( Arr::flatten_assoc( array( array( "name" => "Humpty", "age" => 11 ) ) ,
 // Returns
 Array
 (
-    [0:name] => Humpty
-    [0:age] => 11
-    [1:name] => Jill
-    [1:age] => 23
+	[0:name] => Humpty
+	[0:age] => 11
+	[1:name] => Jill
+	[1:age] => 23
 )
 </code></pre>
 					</td>
@@ -196,10 +196,10 @@ Array
 					<th>Example</th>
 					<td>
 <pre class="php"><code>$arr = array(
-    "user_name" => "Frank",
-    "user_surname" => "de Jonge",
-    "project_name" => "FuelPHP",
-    "project_type" => "Framework",
+	"user_name" => "Frank",
+	"user_surname" => "de Jonge",
+	"project_name" => "FuelPHP",
+	"project_type" => "Framework",
 );
 
 print_r( Arr::filter_prefixed($arr, "user_"));
@@ -207,8 +207,8 @@ print_r( Arr::filter_prefixed($arr, "user_"));
 // Returns
 Array
 (
-    [name] => Frank
-    [surname] => de Jonge
+	[name] => Frank
+	[surname] => de Jonge
 )
 
 // Let's keep the prefix
@@ -217,8 +217,8 @@ print_r( Arr::filter_prefixed($arr, "project_", false);
 // Returns
 Array
 (
-    [project_name] => FuelPHP
-    [project_type] => Framework
+	[project_name] => FuelPHP
+	[project_type] => Framework
 )
 </code></pre>
 					</td>
@@ -271,13 +271,13 @@ Array
 					<th>Example</th>
 					<td>
 						<pre class="php"><code>$person = array(
-    "name" => "Jack",
-    "age" => "21",
-    "location" => array(
-        "city" => "Pittsburgh",
-        "state" => "PA",
-        "country" => "US"
-    )        
+	"name" => "Jack",
+	"age" => "21",
+	"location" => array(
+		"city" => "Pittsburgh",
+		"state" => "PA",
+		"country" => "US"
+	)		 
 );
 
 echo Arr::element($person, "name", "Unknown Name");
@@ -347,9 +347,9 @@ print_r( $people );
 // Returns 
 Array
 (
-    [0] => Humpty
-    [1] => Jack
-    [2] => Jill
+	[0] => Humpty
+	[1] => Jack
+	[2] => Jill
 )
 
 // Add multiple values
@@ -358,11 +358,11 @@ print_r( $people );
 // Returns
 Array
 (
-    [0] => Humpty
-    [1] => Hansel
-    [2] => Gretel
-    [3] => Jack
-    [4] => Jill
+	[0] => Humpty
+	[1] => Hansel
+	[2] => Gretel
+	[3] => Jack
+	[4] => Jill
 )
 
 // Add an array
@@ -372,17 +372,17 @@ print_r( $people );
 // Returns
 Array
 (
-    [0] => Array
-        (
-            [name] => Wolf
-            [teeth] => sharp
-        )
+	[0] => Array
+		(
+			[name] => Wolf
+			[teeth] => sharp
+		)
 
-    [1] => Humpty
-    [2] => Hansel
-    [3] => Gretel
-    [4] => Jack
-    [5] => Jill
+	[1] => Humpty
+	[2] => Hansel
+	[3] => Gretel
+	[4] => Jack
+	[5] => Jill
 )
 
 </code></pre>
@@ -444,9 +444,9 @@ print_r( $people );
 // Returns
 Array
 (
-    [0] => Jack
-    [1] => Jill
-    [2] => Humpty
+	[0] => Jack
+	[1] => Jill
+	[2] => Humpty
 )
 </code></pre>
 					</td>
@@ -507,9 +507,9 @@ print_r( $people );
 // Returns
 Array
 (
-    [0] => Jack
-    [1] => Humpty
-    [2] => Jill
+	[0] => Jack
+	[1] => Humpty
+	[2] => Jill
 )
 </code></pre>
 					</td>
@@ -567,53 +567,53 @@ Array
 					<th>Example</th>
 					<td>
 						<pre class="php"><code>$data = array(
-    array(
-        'info' => array(
-            'pet' => array(
-                'type' => 'dog'
-            )
-        ),
-    ),
-    array(
-        'info' => array(
-            'pet' => array(
-                'type' => 'fish'
-            )
-        ),
-    ),
-    array(
-        'info' => array(
-            'pet' => array(
-                'type' => 'cat'
-            )
-        ),
-    ),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'dog'
+			)
+		),
+	),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'fish'
+			)
+		),
+	),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'cat'
+			)
+		),
+	),
 );
 
 $data = Arr::sort($data, 'info.pet.type');
 // Returns
 array(
-    array(
-        'info' => array(
-            'pet' => array(
-                'type' => 'cat'
-            )
-        ),
-    ),
-    array(
-        'info' => array(
-            'pet' => array(
-                'type' => 'dog'
-            )
-        ),
-    ),
-    array(
-        'info' => array(
-            'pet' => array(
-                'type' => 'fish'
-            )
-        ),
-    ),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'cat'
+			)
+		),
+	),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'dog'
+			)
+		),
+	),
+	array(
+		'info' => array(
+			'pet' => array(
+				'type' => 'fish'
+			)
+		),
+	),
 );</code></pre>
 					</td>
 				</tr>
