@@ -192,7 +192,7 @@ class Autoloader {
 
 			if ($file_path !== false)
 			{
-				require $file_path;
+				require_once $file_path;
 				if ( ! class_exists($class, false) && class_exists($class_name = 'Fuel\\Core\\'.$class, false))
 				{
 					static::alias_to_namespace($class_name);
@@ -219,7 +219,7 @@ class Autoloader {
 					{
 						// Fuel::$path_cache[$class] = $file_path;
 						// Fuel::$paths_changed = true;
-						require $file_path;
+						require_once $file_path;
 						static::_init_class($class);
 						return true;
 					}
