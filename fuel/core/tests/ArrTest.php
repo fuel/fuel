@@ -71,8 +71,6 @@ class ArrTest extends \PHPUnit_Framework_TestCase {
 			)
 		);
 
-		$output = Arr::flatten_assoc($people);
-
 		$expected = array(
 			"0:name" => "Jack",
 			"0:age" => 21,

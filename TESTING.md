@@ -109,8 +109,6 @@ All tests should extend the **PHPUnit_Framework_TestCase** class.  **NOTE:** if 
     			)
     		);
 
-    		$output = Arr::flatten_assoc($people);
-
     		$expected = array(
     			"0:name" => "Jack",
     			"0:age" => 21,
