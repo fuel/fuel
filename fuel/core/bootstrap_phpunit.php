@@ -33,3 +33,6 @@ defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 
 // Boot the app
 require_once APPPATH.'bootstrap.php';
+
+// Set the environment to TEST
+Config::set('environment', Fuel::TEST);
