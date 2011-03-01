@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit colors="true" stopOnFailure="false" bootstrap="fuel/core/bootstrap_phpunit.php">
+	<php>
+		<env name="app_path" value="fuel/app"/>
+		<env name="core_path" value="fuel/core"/>
+		<env name="package_path" value="fuel/package"/>
+	</php>
+	<testsuites>
+		<testsuite name="CoreTests">
+			<directory>fuel/core/tests</directory>
+		</testsuite>
+		<testsuite name="AppTests">
+			<directory>fuel/app/tests</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
