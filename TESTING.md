@@ -1,6 +1,8 @@
 # Testing Fuel
 
-Fuel uses [PHPUnit](https://github.com/sebastianbergmann/phpunit/) for it's Unit Testing needs.  It must be installed for the tests to run/
+Fuel uses [PHPUnit](https://github.com/sebastianbergmann/phpunit/) for it's Unit Testing needs.  It must be installed for the tests to run.
+
+**NOTE: No code will be accepted without tests written.**
 
 ## Running Tests
 
@@ -31,9 +33,9 @@ Classes / File names **MUST** end in the word **Test** (Case Sensative).
 Some example names:
 
     // Good
-    ArrTest
-    ImageTest
-    FuelTest
+    ArrTest in fuel/core/tests/ArrTest.php
+    ImageTest in fuel/core/tests/ImageTest.php
+    FuelTest in fuel/core/tests/FuelTest.php
     
     // Bad
     Arrtests
