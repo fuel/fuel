@@ -10,6 +10,9 @@
 		<testsuite name="CoreTests">
 			<directory>fuel/core/tests</directory>
 		</testsuite>
+		<testsuite name="PackageTests">
+			<directory>fuel/packages/*/tests</directory>
+		</testsuite>
 		<testsuite name="AppTests">
 			<directory>fuel/app/tests</directory>
 		</testsuite>
