@@ -3,8 +3,11 @@
 // This needs to run as core for now
 namespace Fuel\Core;
 
-// Load in the PHPUnit Autoloader
-include_once 'PHPUnit/Autoload.php';
+// Attempt to load PUPUnit.  If it fails, we are done.
+if ( ! @include_once('PHPUnit/Autoload.php'))
+{
+	die(PHP_EOL.'PHPUnit does not appear to be installed properly.'.PHP_EOL.PHP_EOL.'Please visit http://phpunit.de and re-install.'.PHP_EOL.PHP_EOL);
+}
 
 // Extend from TestCase to allow flexibility in the future
 class TestCase extends \PHPUnit_Framework_TestCase { }
