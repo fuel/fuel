@@ -2,9 +2,9 @@
 
 <phpunit colors="true" stopOnFailure="false" bootstrap="fuel/core/bootstrap_phpunit.php">
 	<php>
-		<env name="app_path" value="fuel/app"/>
-		<env name="core_path" value="fuel/core"/>
-		<env name="package_path" value="fuel/package"/>
+		<server name="app_path" value="fuel/app"/>
+		<server name="core_path" value="fuel/core"/>
+		<server name="package_path" value="fuel/package"/>
 	</php>
 	<testsuites>
 		<testsuite name="CoreTests">

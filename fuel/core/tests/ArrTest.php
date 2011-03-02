@@ -20,7 +20,7 @@ namespace Fuel\Core;
  * @group Core
  * @group Arr
  */
-class ArrTest extends \PHPUnit_Framework_TestCase {
+class ArrTest extends TestCase {
 
 	/**
 	 * Tests Arr::element()

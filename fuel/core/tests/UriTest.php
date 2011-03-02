@@ -20,7 +20,7 @@ namespace Fuel\Core;
  * @group Core
  * @group Uri
  */
-class UriTest extends \PHPUnit_Framework_TestCase {
+class UriTest extends TestCase {
 
 	/**
 	 * Tests Uri::create()

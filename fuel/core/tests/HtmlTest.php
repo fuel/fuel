@@ -20,7 +20,7 @@ namespace Fuel\Core;
  * @group Core
  * @group Html
  */
-class HtmlTest extends \PHPUnit_Framework_TestCase {
+class HtmlTest extends TestCase {
 
 	/**
 	 * Tests Html::h()

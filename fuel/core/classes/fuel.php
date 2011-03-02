@@ -64,6 +64,7 @@ class Fuel {
 	public static $paths_changed = false;
 
 	public static $is_cli = false;
+	public static $is_test = false;
 
 	protected static $_paths = array();
 
