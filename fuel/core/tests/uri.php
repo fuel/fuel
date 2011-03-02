@@ -20,7 +20,7 @@ namespace Fuel\Core;
  * @group Core
  * @group Uri
  */
-class UriTest extends TestCase {
+class Tests_Uri extends TestCase {
 
 	/**
 	 * Tests Uri::create()

@@ -20,7 +20,7 @@ namespace Fuel\Core;
  * @group Core
  * @group Html
  */
-class HtmlTest extends TestCase {
+class Tests_Html extends TestCase {
 
 	/**
 	 * Tests Html::h()

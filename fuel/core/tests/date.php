@@ -20,7 +20,7 @@ namespace Fuel\Core;
  * @group Core
  * @group Date
  */
-class DateTest extends \PHPUnit_Framework_TestCase {
+class Tests_Date extends TestCase {
 
 	/**
 	 * Test for Date::days_in_month()

@@ -20,7 +20,7 @@ namespace Fuel\Core;
  * @group Core
  * @group Arr
  */
-class ArrTest extends TestCase {
+class Tests_Arr extends TestCase {
 
 	/**
 	 * Tests Arr::element()

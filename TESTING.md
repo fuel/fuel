@@ -26,16 +26,16 @@ All tests are to go in the **tests** folders inside their respective parent fold
 
 ### File / Class Naming
 
-The files must have the same name as the test class (Case Sensative).
+The Test class names should be in the form of **Tests_Whatever**.
 
-Classes / File names **MUST** end in the word **Test** (Case Sensative).
+Filenames should be all lower case and be the class name minus the "Tests_" part.
 
 Some example names:
 
     // Good
-    ArrTest in fuel/core/tests/ArrTest.php
-    ImageTest in fuel/core/tests/ImageTest.php
-    FuelTest in fuel/core/tests/FuelTest.php
+    Tests_Arr in fuel/core/tests/arr.php
+    Tests_Image in fuel/core/tests/image.php
+    Tests_Fuel in fuel/core/tests/fuel.php
     
     // Bad
     Arrtests
@@ -53,7 +53,7 @@ Here is an example of a core class test with proper DocBlocks:
      * @group Core
      * @group Arr
      */
-    class ArrTest extends \PHPUnit_Framework_TestCase {
+    class Tests_Arr extends TestCase {
 
     	/**
     	 * Tests Arr::element()
@@ -77,7 +77,9 @@ App tests can be in any namespace.
 
 ### What class do I extend?
 
-All tests should extend the **PHPUnit_Framework_TestCase** class.  **NOTE:** if you are in a namespace make sure you prepend a ** \ ** in front of the class name.
+All tests should extend the **Fuel\Core\TestCase** class.
+
+**NOTE: if you are in the Fuel\Core namespace you can leave off the Fuel\Core namespace and just extend **TestCase**.
 
 ## Example
 
@@ -89,7 +91,7 @@ All tests should extend the **PHPUnit_Framework_TestCase** class.  **NOTE:** if 
      * @group Core
      * @group Arr
      */
-    class ArrTest extends \PHPUnit_Framework_TestCase {
+    class Tests_Arr extends TestCase {
 
     	/**
     	 * Tests Arr::flatten_assoc()
