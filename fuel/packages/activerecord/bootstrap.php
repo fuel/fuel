@@ -14,7 +14,7 @@
 
 
 
-Fuel\Core\Autoloader::add_classes(array(
+Autoloader::add_classes(array(
 	'ActiveRecord\\Association'	=> __DIR__.'/classes/association.php',
 	'ActiveRecord\\BelongsTo'	=> __DIR__.'/classes/belongsto.php',
 	'ActiveRecord\\Exception'	=> __DIR__.'/classes/exception.php',

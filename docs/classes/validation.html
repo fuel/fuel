@@ -352,15 +352,13 @@ echo $val->errors('username')->get_message('The field :label must be filled out 
             <pre class="php"><code>// app/classes/myvalidation.php
 class Myvalidation {
 
-    public function _validation_unique($val, $options, $object)
+    public function _validation_unique($val, $options)
     {
         list($table, $field) = explode('.', $options);
 
         $result = DB::select("LOWER (\"$field\")")
             ->where("$field", '=', MBSTRING ? mb_strtolower($val) : strtolower($val))
             ->from($table)->execute();
-
-		$object->set_message('unique', 'The field :label must have an unique value.');
 
         if($result->count() > 0)
             return false;

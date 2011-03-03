@@ -23,6 +23,11 @@ class Model {
 
 	const IS_COUNT = 'IS_COUNT_random_hghj8uyt567uygfvb876trf';
 
+	protected static $_table_name = null;
+
+	protected static $_primary_key = 'id';
+
+
 	protected $prefixed_table_name = null;
 
 	/**

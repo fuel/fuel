@@ -65,7 +65,7 @@ class Cli {
 	 */
 	public static function _init()
 	{
-		if ( ! IS_CLI)
+		if ( ! \Fuel::$is_cli)
 		{
 			throw new Exception('Cli class cannot be used outside of the command line.');
 		}
@@ -121,57 +121,96 @@ class Cli {
 	{
 		$args = func_get_args();
 
-		// Ask question with options
-		if (count($args) == 2)
-		{
-			list($output, $options)=$args;
-		}
+		$options = array();
+		$output = '';
+		$default = null;
 
-		// No question (probably been asked already) so just show options
-		elseif (count($args) == 1 && is_array($args[0]))
-		{
-			$output = '';
-			$options = $args[0];
-		}
+		// How many we got
+		$arg_count = count($args);
 
-		// Question without options
-		elseif (count($args) == 1 && is_string($args[0]))
-		{
-			$output = $args[0];
-			$options = array();
-		}
+		// Is the last argument a boolean? True means required
+		$required = end($args) === true;
 
-		// Run out of ideas, EPIC FAIL!
-		else
+		// Reduce the argument count if required was passed, we don't care about that anymore
+		$required === true and --$arg_count;
+
+		// This method can take a few crazy combinations of arguments, so lets work it out
+		switch ($arg_count)
 		{
-			$output = '';
-			$options = array();
+			case 2:
+
+				// E.g: $ready = CLI::read('Are you ready?', array('y','n'));
+				if (is_array($args[1]))
+				{
+					list($output, $options)=$args;
+				}
+
+				// E.g: $color = CLI::read('What is your favourite color?', 'white');
+				elseif (is_string($args[1]))
+				{
+					list($output, $default)=$args;
+				}
+
+			break;
+
+			case 1:
+
+				// No question (probably been asked already) so just show options
+				// E.g: $ready = CLI::read(array('y','n'));
+				if (is_array($args[0]))
+				{
+					$options = $args[0];
+				}
+
+				// Question without options
+				// E.g: $ready = CLI::read('What did you do today?');
+				elseif (is_string($args[0]))
+				{
+					$output = $args[0];
+				}
+
+			break;
 		}
 
 		// If a question has been asked with the read
-		if( ! empty($output))
+		if ($output !== '')
 		{
-			$options_output = '';
-			if( ! empty($options))
+			$extra_output = '';
+
+			if ($default !== null)
 			{
-				$options_output = ' [ '.implode(', ', $options).' ]';
+				$extra_output = ' [ Default: "'.$default.'" ]';
 			}
 
-			fwrite(STDOUT, $output.$options_output.': ');
+			elseif ($options !== array())
+			{
+				$extra_output = ' [ '.implode(', ', $options).' ]';
+			}
+
+			fwrite(STDOUT, $output.$extra_output.': ');
 		}
 
 		// Read the input from keyboard.
-		$input = trim(fgets(STDIN));
+		$input = trim(fgets(STDIN)) ?: $default;
 
-		// If options are provided and the choice is not in the array, tell them to try again
-		if( ! empty($options) && ! in_array($input, $options))
+		// No input provided and we require one (default will stop this being called)
+		if (empty($input) and $required === true)
 		{
-			static::write('This is not a valid option. Please try again.'.PHP_EOL);
+			static::write('This is required.');
+			static::new_line();
 
-			$input = static::read($output, $options);
+			$input = forward_static_call_array(array(__CLASS__, 'read'), $args);
 		}
 
-		// Read the input
+		// If options are provided and the choice is not in the array, tell them to try again
+		if ( ! empty($options) && ! in_array($input, $options))
+		{
+			static::write('This is not a valid option. Please try again.');
+			static::new_line();
+
+			$input = forward_static_call_array(array(__CLASS__, 'read'), $args);
+		}
+
 		return $input;
 	}
 
@@ -251,6 +290,36 @@ class Cli {
  		return 'win' === strtolower(substr(php_uname("s"), 0, 3));
  	}
 
+	/**
+	 * Enter a number of empty lines
+	 *
+	 * @param	integer	Number of lines to output
+	 * @return	void
+	 */
+	function new_line($num = 1)
+	{
+        // Do it once or more, write with empty string gives us a new line
+        for($i = 0; $i < $num; $i++)
+		{
+			static::write();
+		}
+    }
+
+	/**
+	 * Clears the screen of output
+	 *
+	 * @return	void
+	 */
+    function clear_screen()
+    {
+		static::is_windows()
+
+			// Windows is a bit crap at this, but their terminal is tiny so shove this in
+			? static::new_line(40)
+
+			// Anything with a flair of Unix will handle these magic characters
+			: fwrite(STDOUT, chr(27)."[H".chr(27)."[2J");
+	}
 
 	/**
 	 * Returns the given text with the correct color codes for a foreground and

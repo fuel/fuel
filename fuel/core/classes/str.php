@@ -31,7 +31,7 @@ class Str {
 	 */
 	public static function lower($str, $encoding = null)
 	{
-		$encoding or $encoding = INTERNAL_ENC;
+		$encoding or $encoding = \Fuel::$encoding;
 		
 		return function_exists('mb_strtolower')
 			? mb_strtolower($str, $encoding)
@@ -47,7 +47,7 @@ class Str {
 	 */
 	public static function upper($str, $encoding = null)
 	{
-		$encoding or $encoding = INTERNAL_ENC;
+		$encoding or $encoding = \Fuel::$encoding;
 
 		return function_exists('mb_strtoupper')
 			? mb_strtoupper($str, $encoding)
@@ -65,7 +65,7 @@ class Str {
 	 */
 	public static function lcfirst($str, $encoding = null)
 	{
-		$encoding or $encoding = INTERNAL_ENC;
+		$encoding or $encoding = \Fuel::$encoding;
 
 		return function_exists('mb_strtolower')
 			? mb_strtolower(mb_substr($str, 0, 1, $encoding), $encoding).
@@ -84,7 +84,7 @@ class Str {
 	 */
 	public static function ucfirst($str, $encoding = null)
 	{
-		$encoding or $encoding = INTERNAL_ENC;
+		$encoding or $encoding = \Fuel::$encoding;
 
 		return function_exists('mb_strtoupper')
 			? mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding).
@@ -106,7 +106,7 @@ class Str {
 	 */
 	public static function ucwords($str, $encoding = null)
 	{
-		$encoding or $encoding = INTERNAL_ENC;
+		$encoding or $encoding = \Fuel::$encoding;
 
 		return function_exists('mb_convert_case')
 			? mb_convert_case($str, MB_CASE_TITLE, $encoding)

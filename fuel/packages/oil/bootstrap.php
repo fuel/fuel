@@ -13,7 +13,7 @@
  */
 
 
-Fuel\Core\Autoloader::add_classes(array(
+Autoloader::add_classes(array(
 	'Oil\\Cli'						   	=> __DIR__.'/classes/cli.php',
 	'Oil\\Console'					   	=> __DIR__.'/classes/console.php',
 	'Oil\\Exception'				   	=> __DIR__.'/classes/exception.php',

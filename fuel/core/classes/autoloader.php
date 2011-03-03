@@ -1,18 +1,11 @@
 <?php
 
-namespace Fuel\Core;
-
 class Autoloader {
 
 	/**
 	 * @var array	$classes	holds all the classes and paths
 	 */
 	protected static $classes = array();
-
-	/**
-	 * @var array	Holds all the class aliases
-	 */
-	protected static $aliases = array();
 
 	/**
 	 * @var array	Holds all the namespace paths
@@ -25,11 +18,6 @@ class Autoloader {
 	protected static $core_namespaces = array('Fuel\\Core');
 
 	/**
-	 * @var array	Holds all the namespace aliases
-	 */
-	protected static $namespace_aliases = array();
-
-	/**
 	 * @var array	The default path to look in if the class is not in a package
 	 */
 	protected static $default_path = null;
@@ -39,47 +27,6 @@ class Autoloader {
 	 */
 	protected static $auto_initialize = null;
 
-	/**
-	 * Adds a package to the autoloader.  The prefix is the prefix for the
-	 * package classes.
-	 *
-	 * @access	public
-	 * @param	string	the class name prefix
-	 * @param
-	 * @return	void
-	 */
-	public static function add_prefix($prefix, $path)
-	{
-		static::$prefixes[$prefix] = $path;
-	}
-
-	/**
-	 * Adds an array of packages to the autoloader
-	 *
-	 * @access	public
-	 * @param	array	the packages
-	 * @return	void
-	 */
-	public static function add_prefixes(array $prefixes)
-	{
-		static::$prefixes = array_merge(static::$prefixes, $prefixes);
-	}
-
-	/**
-	 * Returns the prefix's path or false when it doesn't exist
-	 *
-	 * @param	string
-	 * @return	array|bool
-	 */
-	public static function prefix_path($prefix)
-	{
-		if ( ! array_key_exists($prefix, static::$prefixes))
-		{
-			return false;
-		}
-
-		return static::$prefixes[$prefix];
-	}
 
 	/**
 	 * Adds a namespace and path
@@ -130,76 +77,6 @@ class Autoloader {
 	}
 
 	/**
-	 * Adds an alias for a class.
-	 *
-	 * @access	public
-	 * @param	string	the alias
-	 * @param	string	class name
-	 * @return	void
-	 */
-	public static function add_alias($alias, $class)
-	{
-		static::$aliases[strtolower($alias)] = $class;
-	}
-
-	/**
-	 * Adds an array of class aliases.
-	 *
-	 * @access	public
-	 * @param	string	the alias
-	 * @param	string	class name
-	 * @return	void
-	 */
-	public static function add_aliases(array $aliases)
-	{
-		static::$aliases = array_merge(static::$aliases, array_change_key_case($aliases, CASE_LOWER));
-	}
-
-	/**
-	 * Adds an alias for a namespace.
-	 *
-	 * @access	public
-	 * @param	string	the alias
-	 * @param	string	alias name
-	 * @return	void
-	 */
-	public static function add_namespace_alias($alias, $namespace, $prepend = false)
-	{
-		$namespace = (array) $namespace;
-
-		if (array_key_exists($alias, static::$namespace_aliases))
-		{
-			static::$namespace_aliases[$alias] = array_merge($namespace, static::$namespace_aliases[$alias]);
-		}
-		else
-		{
-			if ($prepend)
-			{
-				static::$namespace_aliases = array($alias => $namespace) + static::$namespace_aliases;
-			}
-			else
-			{
-				static::$namespace_aliases[$alias] = $namespace;
-			}
-		}
-	}
-
-	/**
-	 * Adds an array of namespaces aliases.
-	 *
-	 * @access	public
-	 * @param	array	the aliases
-	 * @return	void
-	 */
-	public static function add_namespace_aliases(array $aliases, $prepend = false)
-	{
-		foreach ($aliases as $alias => $namespace)
-		{
-			$namespace = (array) $namespace;
-			static::add_namespace_alias($alias, $namespace, $prepend);
-		}
-	}
-	/**
 	 * Adds a class path
 	 *
 	 * @param	string	$class	the class name
@@ -243,7 +120,7 @@ class Autoloader {
 	 */
 	public static function register()
 	{
-		spl_autoload_register('\\Fuel\\Core\\Autoloader::load', true, true);
+		spl_autoload_register('Autoloader::load', true, true);
 	}
 
 	/**

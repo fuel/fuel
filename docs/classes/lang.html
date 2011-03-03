@@ -74,18 +74,21 @@ return array(
 );
 
 // Loads example.php.
-// Note: If no language is set by default it will fallback to english.
-$language = Lang::load('example');
+// Note: If no language is set in the config, it will fallback to english.
+Lang::load('example');
 
-// Will load the 'test' group from the given file.
-$language = Lang:load('example', 'test');
+// Will load the given file into the 'test' group.
+Lang:load('example', 'test');
+
+// Outputs Plop
+$this->output = Lang::line('test.test.something');</code></pre>
 </code></pre>
 					</td>
 				</tr>
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>line($line, $params = array())</h4>
 			<p>The <strong>line</strong> method allows you to get a specific line from the language file.</p>
@@ -134,7 +137,7 @@ $this->output = Lang::line('test.something');</code></pre>
 				</tbody>
 			</table>
 		</article>
-		
+
 		<article>
 			<h4>set($line, $value, $group = null)</h4>
 			<p>The <strong>set</strong> method allows you to set a specific line to the language file.</p>

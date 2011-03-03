@@ -47,14 +47,14 @@
 		<p>But classes that have the same name as core classes are ignored by default. To make the Autoloader recognize
 		your replacement you need to register it in the application bootstrap file. Search for the lines below:</p>
 
-		<pre><code>Fuel\Core\Autoloader::add_classes(array(
+		<pre><code>Autoloader::add_classes(array(
 	// Add classes you want to override here
 	// Example: 'View' => APPPATH.'classes/view.php',
 ));</code></pre>
 
 		<p>As is explained in the comments you need to add the new Config class as follows:</p>
 
-		<pre><code>Fuel\Core\Autoloader::add_classes(array(
+		<pre><code>Autoloader::add_classes(array(
 	// Add classes you want to override here
 	// Example: 'View' => APPPATH.'classes/view.php',
 	'Config' => APPPATH.'classes/config.php',

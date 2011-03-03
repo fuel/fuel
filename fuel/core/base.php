@@ -23,12 +23,12 @@ if ( ! function_exists('import'))
 {
 	function import($path, $folder = 'classes')
 	{
-		$path = str_replace('/', DS, $path);
-		require_once COREPATH.$folder.DS.$path.'.php';
+		$path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+		require_once COREPATH.$folder.DIRECTORY_SEPARATOR.$path.'.php';
 
-		if (is_file(APPPATH.$folder.DS.$path.'.php'))
+		if (is_file(APPPATH.$folder.DIRECTORY_SEPARATOR.$path.'.php'))
 		{
-			require_once APPPATH.$folder.DS.$path.'.php';
+			require_once APPPATH.$folder.DIRECTORY_SEPARATOR.$path.'.php';
 		}
 	}
 }
@@ -82,7 +82,7 @@ if ( ! function_exists('array_to_attr'))
 
 			if (in_array($property, array('value', 'alt', 'title')))
 			{
-				$value = htmlentities($value, ENT_QUOTES, INTERNAL_ENC);
+				$value = htmlentities($value, ENT_QUOTES, \Fuel::$encoding);
 			}
 			$attr_str .= $property.'="'.$value.'" ';
 		}
@@ -159,6 +159,23 @@ if ( ! function_exists('__'))
 		return \Lang::line($string, $params);
 	}
 }
+
+/**
+ * Prepares the given string for output.  It first cleans xss (optional)
+ * then converts the html entities.
+ *
+ * @param	mixed	The string to escape
+ * @param	bool	whether to clean the input for xss
+ * @return	string
+ */
+if ( ! function_exists('e'))
+{
+	function e($string, $xss_clean = true)
+	{
+		return Security::htmlentities($xss_clean ? Security::xss_clean($string) : $string);
+	}
+}
+
 
 if ( ! function_exists('fuel_shutdown_handler'))
 {

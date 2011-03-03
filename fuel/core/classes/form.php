@@ -157,7 +157,7 @@ class Form {
 
 		if (empty($attributes['accept-charset']))
 		{
-			$attributes['accept-charset'] = strtolower(INTERNAL_ENC);
+			$attributes['accept-charset'] = strtolower(\Fuel::$encoding);
 		}
 
 		// If method is empty, use POST
@@ -443,7 +443,7 @@ class Form {
 	 * @param	array
 	 * @return	string
 	 */
-	public static function select($field, $value = null, Array $options = array(), Array $attributes = array())
+	public static function select($field, $values = null, Array $options = array(), Array $attributes = array())
 	{
 		if (is_array($field))
 		{
@@ -452,7 +452,7 @@ class Form {
 		else
 		{
 			$attributes['name'] = (string) $field;
-			$attributes['selected'] = (string) $value;
+			$attributes['selected'] = $values;
 			$attributes['options'] = $options;
 		}
 
@@ -468,7 +468,7 @@ class Form {
 		unset($attributes['options']);
 
 		// Get the selected options then unset it from the array
-		$selected = empty($attributes['selected']) ? false : $attributes['selected'];
+		$selected = empty($attributes['selected']) ? array() : array_values((array) $attributes['selected']);
 		unset($attributes['selected']);
 
 		$input = PHP_EOL;
@@ -480,7 +480,7 @@ class Form {
 				foreach ($val as $opt_key => $opt_val)
 				{
 					$opt_attr = array('value' => $opt_key);
-					($opt_key == $selected) && $opt_attr[] = 'selected';
+					(in_array($opt_key, $selected)) && $opt_attr[] = 'selected';
 					$optgroup .= str_repeat("\t", 2);
 					$opt_attr['value'] = (static::get_class_config('prep_value', true) && empty($attributes['dont_prep'])) ?
 						static::prep_value($opt_attr['value']) : $opt_attr['value'];
@@ -492,7 +492,7 @@ class Form {
 			else
 			{
 				$opt_attr = array('value' => $key);
-				($key == $selected) && $opt_attr[] = 'selected';
+				(in_array($key, $selected)) && $opt_attr[] = 'selected';
 				$input .= str_repeat("\t", 1);
 				$opt_attr['value'] = (static::get_class_config('prep_value', true) && empty($attributes['dont_prep'])) ?
 					static::prep_value($opt_attr['value']) : $opt_attr['value'];

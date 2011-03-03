@@ -354,7 +354,7 @@ class Request {
 
 	public function output()
 	{
-		echo $this->output;
+		return $this->output;
 	}
 
 	/**

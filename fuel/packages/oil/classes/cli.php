@@ -126,7 +126,7 @@ class Cli
 
 		catch (Exception $e)
 		{
-			\Cli::write(\Cli::color('Error: ' . $e->getMessage(), 'light_red'));
+			\Cli::color('Error: ' . $e->getMessage(), 'light_red');
 			\Cli::beep();
 		}
 	}

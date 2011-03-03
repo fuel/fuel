@@ -12,24 +12,17 @@
  * @link		http://fuelphp.com
  */
 
-// Get the start time and memory for use later
-defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
-defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
-
-define('DS', DIRECTORY_SEPARATOR);
-define('CRLF', sprintf('%s%s', chr(13), chr(10)));
-
-// save a bit of memory by unsetting the path array
-unset($app_path, $package_path);
-
-// If the user has added a base.php to their app load it
-
-is_file(APPPATH.'base.php') and require APPPATH.'base.php';
+// Load the base functions
 require COREPATH.'base.php';
 
+// Import the core Fuel class
 import('fuel');
 
+// If the app does not have a Fuel class, then we need to alias it.
 ( ! class_exists('Fuel')) and class_alias('Fuel\\Core\\Fuel', 'Fuel');
+
+define('DS', DIRECTORY_SEPARATOR);
+define('CRLF', chr(13).chr(10));
 
 /**
  * Do we have access to mbstring?
@@ -41,20 +34,17 @@ define('MBSTRING', function_exists('mb_get_info'));
  * Is mbstring enabled?
  * Set the encoding to use whatever Fuel is set to use.
  */
-MBSTRING and mb_internal_encoding(INTERNAL_ENC);
-
-// Is Fuel being requested via an AJAX request?
-define('IS_AJAX', isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+MBSTRING and mb_internal_encoding(Fuel::$encoding);
 
 // Is Fuel running on the command line?
-define('IS_CLI', defined('STDIN'));
+Fuel::$is_cli = (bool) defined('STDIN');
 
 // Load in the Autoloader
 require COREPATH.'classes'.DS.'autoloader.php';
 
-Fuel\Core\Autoloader::add_namespace('Fuel\\Core', COREPATH.'classes/');
+Autoloader::add_namespace('Fuel\\Core', COREPATH.'classes/');
 
-Fuel\Core\Autoloader::add_classes(array(
+Autoloader::add_classes(array(
 	'Fuel\\Core\\Arr'						=> COREPATH.'classes/arr.php',
 	'Fuel\\Core\\Asset'						=> COREPATH.'classes/asset.php',
 
@@ -94,6 +84,8 @@ Fuel\Core\Autoloader::add_classes(array(
 	'Fuel\\Core\\Database_Result_Cached'		=> COREPATH.'classes/database/result/cached.php',
 	'Fuel\\Core\\Database_Mysql'				=> COREPATH.'classes/database/mysql.php',
 	'Fuel\\Core\\Database_MySQL_Result'			=> COREPATH.'classes/database/mysql/result.php',
+	'Fuel\\Core\\Database_Mysqli'				=> COREPATH.'classes/database/mysqli.php',
+	'Fuel\\Core\\Database_MySQLi_Result'		=> COREPATH.'classes/database/mysqli/result.php',
 
 	'Fuel\\Core\\Email'						=> COREPATH.'classes/email.php',
 	'Fuel\\Core\\Email_Driver'				=> COREPATH.'classes/email/driver.php',

@@ -14,7 +14,6 @@
 
 namespace ActiveRecord;
 
-
 use \DB;
 
 class HasOne extends Association {

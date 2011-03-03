@@ -122,9 +122,9 @@ class Security {
 				import('htmlawed/htmlawed', 'vendor');
 			}
 
-			return htmLawed($value, array('safe' => 1));
+			return htmLawed($value, array('safe' => 1, 'balanced' => 0));
 		}
-
+		
 		foreach ($value as $k => $v)
 		{
 			$value[$k] = static::xss_clean($v);
@@ -154,13 +154,13 @@ class Security {
 	{
 		if ( ! is_array($value))
 		{
-			$value = htmlentities($value, ENT_COMPAT, INTERNAL_ENC);
+			$value = htmlentities($value, ENT_COMPAT, \Fuel::$encoding, false);
 		}
 		else
 		{
 			foreach ($value as $k => $v)
 			{
-				$value[$k] = static::htmlentities($v, ENT_COMPAT, INTERNAL_ENC);
+				$value[$k] = static::htmlentities($v);
 			}
 		}
 
@@ -196,7 +196,7 @@ class Security {
 		}
 
 		static::$csrf_token = \Input::cookie(static::$csrf_token_key, null);
-		if (static::$csrf_token === null || \Config::get('security.csrf_expiration', 0) < 0)
+		if (static::$csrf_token === null || \Config::get('security.csrf_expiration', 0) <= 0)
 		{
 			// set new token for next session when necessary
 			static::regenerate_token();

@@ -47,6 +47,8 @@ class Fuel {
 
 	public static $locale;
 
+	public static $encoding = 'UTF-8';
+
 	public static $path_cache = array();
 
 	public static $caching = false;
@@ -62,6 +64,7 @@ class Fuel {
 	public static $paths_changed = false;
 
 	public static $is_cli = false;
+	public static $is_test = false;
 
 	protected static $_paths = array();
 
@@ -109,8 +112,6 @@ class Fuel {
 		\Config::load($config);
 
 		static::$_paths = array_merge(\Config::get('module_paths', array()), array(APPPATH, COREPATH));
-
-		static::$is_cli = (bool) (php_sapi_name() == 'cli');
 
 		if ( ! static::$is_cli)
 		{
@@ -357,7 +358,7 @@ class Fuel {
 	 */
 	public static function add_module($name, $loaded = false)
 	{
-		if ( ! $path = Autoloader::namespace_path('\\'.ucfirst($name)))
+		if ( ! $path = \Autoloader::namespace_path('\\'.ucfirst($name)))
 		{
 			$paths = \Config::get('module_paths', array());
 
@@ -372,7 +373,7 @@ class Fuel {
 				{
 					$path = $mod_check_path;
 					$ns = '\\'.ucfirst($name);
-					Autoloader::add_namespaces(array(
+					\Autoloader::add_namespaces(array(
 						$ns					=> $path.'classes'.DS,
 					), true);
 					break;
@@ -391,7 +392,7 @@ class Fuel {
 			static::add_path($path);
 
 			// get the path for this modules namespace
-			if ( $path = Autoloader::namespace_path('\\'.ucfirst($name)))
+			if ( $path = \Autoloader::namespace_path('\\'.ucfirst($name)))
 			{
 				// add the namespace path too
 				static::add_path($path);
