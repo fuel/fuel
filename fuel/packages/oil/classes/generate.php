@@ -90,12 +90,6 @@ CONTROLLER;
 		}
 
 		$plural = \Inflector::pluralize($singular);
-		
-		// Turn any model name with have underscore to camelcase format
-		$singular = \Inflector::camelize($singular);
-		
-		// filename should be in lowercase
-		$filename = strtolower($singular);
 
 		$filepath = APPPATH . 'classes/model/' . str_replace('_', '/', $singular) .'.php';
 
@@ -106,7 +100,7 @@ CONTROLLER;
 
 class Model_{$class_name} extends ActiveRecord\Model { }
 
-/* End of file $filename.php */
+/* End of file $singular.php */
 MODEL;
 
 		if (self::write($filepath, $model))
