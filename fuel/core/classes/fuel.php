@@ -113,6 +113,8 @@ class Fuel {
 
 		static::$_paths = array_merge(\Config::get('module_paths', array()), array(APPPATH, COREPATH));
 
+		\View::$auto_encode = \Config::get('security.auto_encode_view_data');
+
 		if ( ! static::$is_cli)
 		{
 			if (\Config::get('base_url') === null)

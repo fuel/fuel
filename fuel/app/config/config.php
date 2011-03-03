@@ -95,6 +95,11 @@ return array(
 		 * dependant on how much input data there is.
 		 */
 		'input_filter'			=> array(),
+		
+		/**
+		 * Whether to automatically encode (htmlentities) view data
+		 */
+		'auto_encode_view_data'	=> true,
 	),
 
 	/**

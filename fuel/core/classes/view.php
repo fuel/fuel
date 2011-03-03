@@ -55,7 +55,7 @@ class View {
 	 * @param   array   array of values
 	 * @return  View
 	 */
-	public static function factory($file = null, array $data = null, $auto_encode = true)
+	public static function factory($file = null, array $data = null, $auto_encode = null)
 	{
 		return new static($file, $data, $auto_encode);
 	}
@@ -70,9 +70,9 @@ class View {
 	 * @return  void
 	 * @uses    View::set_filename
 	 */
-	public function __construct($file = null, array $data = null, $auto_encode = true)
+	public function __construct($file = null, array $data = null, $encode = null)
 	{
-		static::$auto_encode = $auto_encode;
+		$encode === null and $encode = static::$auto_encode;
 		
 		if ($file !== null)
 		{
@@ -81,7 +81,7 @@ class View {
 
 		if ($data !== null)
 		{
-			if (static::$auto_encode)
+			if ($encode)
 			{
 				foreach ($data as $k => $v)
 				{
