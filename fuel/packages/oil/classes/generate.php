@@ -190,16 +190,20 @@ VIEW;
 				$subjects = array(false, false);
 				$matches = explode('_', str_replace($method_name . '_', '', $migration_name));
 				
-				if(count($matches) == 1) { // create_{table}
+				if (count($matches) == 1) // create_{table}
+				{
 					$subjects = array(false, $matches[0]);
 				}
-				else if(count($matches) == 3) // add_{field}_to_{table}
+				elseif (count($matches) == 3 and $matches[1] == 'to') // add_{field}_to_{table}
 				{
 					$subjects = array($matches[0], $matches[2]);
 				}
+				elseif (count($matches) !== 0)
+				{
+					$subjects = array(false, implode('_', $matches));
+				}
 				else
 				{
-					// There is no subject here so just carry on with a normal empty migration
 					break;
 				}
 				
