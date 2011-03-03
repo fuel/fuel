@@ -29,7 +29,7 @@ class Generate
 		'int' => 11
 	);
 
-	public function controller($args)
+	public static function controller($args)
 	{
 		$args = self::_clear_args($args);
 		$singular = strtolower(array_shift($args));
@@ -80,7 +80,7 @@ CONTROLLER;
 	}
 
 
-	public function model($args)
+	public static function model($args)
 	{
 		$singular = strtolower(array_shift($args));
 
@@ -116,7 +116,7 @@ MODEL;
 	}
 
 
-	public function views($args)
+	public static function views($args)
 	{
 		$args = self::_clear_args($args);
 		$folder = array_shift($args);
@@ -156,14 +156,14 @@ VIEW;
 	}
 
 
-	public function migration($args)
+	public static function migration($args)
 	{
 		
 		// Get the migration name
 		$migration_name = strtolower(array_shift($args));
 		
 		// See if the action exists
-		$methods = get_class_methods(__NAMESPACE__ . '\Generate_Migration_Actions');
+		$methods = get_class_methods(__NAMESPACE__ . '\\Generate_Migration_Actions');
 		
 		// For empty migrations that dont have actions
 		$migration = array('', '');
@@ -306,7 +306,7 @@ VIEW;
 	}
 
 
-	public function help()
+	public static function help()
 	{
 		$output = <<<HELP
 Usage:
@@ -342,7 +342,7 @@ HELP;
 	// Helper functions
 
 
-	private function write($filepath, $data)
+	private static function write($filepath, $data)
 	{
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
@@ -364,7 +364,7 @@ HELP;
 		return $result;
 	}
 	
-	private function _build_migration($migration_name, $up, $down)
+	private static function _build_migration($migration_name, $up, $down)
 	{
 		$migration_name = ucfirst(strtolower($migration_name));
 
@@ -404,14 +404,16 @@ MIGRATION;
 		return false;
 	}
 
-	private function _find_migration_number()
+	private static function _find_migration_number()
 	{
-		list($last) = explode('_', basename(end(glob(APPPATH .'migrations/*_*.php'))));
+		$files = glob(APPPATH .'migrations/*_*.php');
+		$last_file = end($files);
+		list($last) = explode('_', basename($last_file));
 
 		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
 	}
 
-	private function _update_current_version($version)
+	private static function _update_current_version($version)
 	{
 		$contents = '';
 		$path = '';
@@ -429,7 +431,7 @@ MIGRATION;
 		self::write($path, $contents);
 	}
 
-	private function _clear_args($actions = array())
+	private static function _clear_args($actions = array())
 	{
  		foreach ($actions as $key => $action)
 		{
