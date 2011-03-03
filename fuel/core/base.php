@@ -160,6 +160,23 @@ if ( ! function_exists('__'))
 	}
 }
 
+/**
+ * Prepares the given string for output.  It first cleans xss (optional)
+ * then converts the html entities.
+ *
+ * @param	mixed	The string to escape
+ * @param	bool	whether to clean the input for xss
+ * @return	string
+ */
+if ( ! function_exists('e'))
+{
+	function e($string, $xss_clean = true)
+	{
+		return Security::htmlentities($xss_clean ? Security::xss_clean($string) : $string);
+	}
+}
+
+
 if ( ! function_exists('fuel_shutdown_handler'))
 {
 	function fuel_shutdown_handler()
