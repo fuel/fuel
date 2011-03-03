@@ -35,7 +35,7 @@ class Generate
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
 
-		$filepath = APPPATH . 'classes/controller/' . $singular .'.php';
+		$filepath = APPPATH . 'classes/controller/' . str_replace('_', '/', $singular) .'.php';
 
 		$class_name = ucfirst($singular);
 
@@ -97,7 +97,7 @@ CONTROLLER;
 		// filename should be in lowercase
 		$filename = strtolower($singular);
 
-		$filepath = APPPATH . 'classes/model/' . $filename .'.php';
+		$filepath = APPPATH . 'classes/model/' . str_replace('_', '/', $singular) .'.php';
 
 		$class_name = ucfirst($singular);
 
@@ -354,6 +354,12 @@ HELP;
 
 	private static function write($filepath, $data)
 	{
+		$dir = dirname($filepath);
+		if ( ! is_dir($dir))
+		{
+			mkdir($dir, 0755, true);
+		}
+		
 		if ( ! $handle = @fopen($filepath, 'w+'))
 		{
 			throw new Exception('Cannot open file: '. $filepath);
@@ -369,7 +375,7 @@ HELP;
 
 		@fclose($handle);
 
-		chmod($filepath, 0666);
+		chmod($filepath, 0755);
 
 		return $result;
 	}
