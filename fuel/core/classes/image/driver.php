@@ -293,6 +293,18 @@ abstract class Image_Driver {
 		);
 	}
 
+	public function rounded($radius, $tl) {
+		$this->queue('rounded', $radius, $tl);
+		return $this;
+	}
+
+	public function _rounded($radius, $tl) {
+		return Array(
+			'radius' => $radius,
+			'tl' => $tl
+		);
+	}
+
 	/**
 	 * Saves the image, and optionally attempts to set permissions
 	 *

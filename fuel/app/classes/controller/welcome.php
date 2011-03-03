@@ -17,7 +17,7 @@ class Controller_Welcome extends Controller {
 	public function action_imageview()
 	{
 		$image = Image::factory();
-		$image->load('C:/wamp/www/test.jpeg')->mask('C:/wamp/www/mask.png')->output('png');
+		$image->load('C:/wamp/www/solidblack.png')->rounded(10, 2)->output('png');
 	}
 
 	public function action_404()

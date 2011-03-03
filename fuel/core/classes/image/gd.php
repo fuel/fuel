@@ -154,7 +154,11 @@ class Image_Gd extends Image_Driver {
 		$masksizes = $this->sizes($maskimage);
 		// Create new blank image
 		$image = $this->create_transparent_image($sizes->width, $sizes->height);
-		$maskim = $this->load($maskimage, true);
+		if (is_resource($maskimage)) {
+			$maskim = $maskimage;
+		} else {
+			$maskim = $this->load($maskimage, true);
+		}
 		// Loop through all the pixels
 		for ($x = 0; $x < $masksizes->width; $x++)
 		{
@@ -169,11 +173,63 @@ class Image_Gd extends Image_Driver {
 				$newalpha = floor($ouralpha - (($maskalpha / 127) * $ouralpha));
 				$newcolor = imagecolorallocatealpha($image, $ourcolor['red'], $ourcolor['green'], $ourcolor['blue'], 127 - $newalpha);
 				imagesetpixel($image, $x, $y, $newcolor);
-				if ($x == 0)
-					$this->debug($ouralpha . " -  ((" . $maskalpha . " / 255) * " . $ouralpha . "))");
 			}
 		}
 		$this->image_data = $image;
+	}
+
+	public function _rounded($radius, $tl) {
+		$this->round_corner($this->image_data, $radius, true, false);
+		$this->round_corner($this->image_data, $radius, true, true);
+		$this->round_corner($this->image_data, $radius, false, true);
+		$this->round_corner($this->image_data, $radius, false, false);
+	}
+
+	private function round_corner(&$image, $radius, $top, $left) {
+		$sX = $left ? -$radius : 0;
+		$sY = $top ? -$radius : 0;
+		$eX = $left ? 0 : $radius;
+		$eY = $top ? 0 : $radius;
+		// Get this images size
+		$sizes = $this->sizes();
+		$offsetX = ($left ? $radius : $sizes->width - $radius - 1);
+		$offsetY = ($top ? $radius : $sizes->height - $radius - 2);
+		$antialias = 1;
+		// Set the images alpha blend to false
+		imagealphablending($image, false);
+		// Make this color ahead time
+		$transparent = imagecolorallocatealpha($image, 0, 0, 0, 127);
+		for ($x = $sX; $x <= $eX; $x++) {
+			for ($y = $sY; $y <= $eY; $y++) {
+				$dist = sqrt(($x * $x) + ($y * $y));
+				if ($dist <= $radius + $antialias) {
+					// Decide if anything needs to be changed
+					// We subtract from antialias so the transparency makes sense.
+					$fromCirc = $dist - $radius;
+					if ($fromCirc > 0) {
+						if ($fromCirc == 0) {
+							imagesetpixel($image, $x + $offsetX, $y + $offsetY, $transparent);
+						} else {
+							// Get color information from this spot on the image
+							$rgba = imagecolorat($image, $x + $offsetX, $y + $offsetY);
+							$tmpColor = imagecolorallocatealpha(
+									$image,
+									($rgba >> 16) & 0xFF, // Red
+									($rgba >> 8) & 0xFF, // Green
+									$rgba & 0xFF, // Blue
+									(127 - (($rgba >> 24) & 0xFF)) * ($fromCirc / $antialias) // Alpha
+							);
+							imagesetpixel($image, $x + $offsetX, $y + $offsetY, $tmpColor);
+						}
+					}
+				} else {
+					// Clear this area out...
+					imagesetpixel($image, $x + $offsetX, $y + $offsetY, $transparent);
+				}
+			}
+		}
+		// Reset alpha blending
+		imagealphablending($image, false);
 	}
 
 	public function sizes($filename = null)
