@@ -161,18 +161,16 @@ if ( ! function_exists('__'))
 }
 
 /**
- * Prepares the given string for output.  It first cleans xss (optional)
- * then converts the html entities.
+ * Encodes the given string.  This is just a wrapper function for Security::htmlentities()
  *
- * @param	mixed	The string to escape
- * @param	bool	whether to clean the input for xss
+ * @param	mixed	The string to encode
  * @return	string
  */
 if ( ! function_exists('e'))
 {
-	function e($string, $xss_clean = true)
+	function e($string)
 	{
-		return Security::htmlentities($xss_clean ? Security::xss_clean($string) : $string);
+		return Security::htmlentities($string);
 	}
 }
 
