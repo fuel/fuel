@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit colors="true" stopOnFailure="false" bootstrap="fuel/core/bootstrap_phpunit.php">
+	<php>
+		<server name="app_path" value="fuel/app"/>
+		<server name="core_path" value="fuel/core"/>
+		<server name="package_path" value="fuel/package"/>
+	</php>
+	<testsuites>
+		<testsuite name="CoreTests">
+			<directory suffix=".php">fuel/core/tests</directory>
+		</testsuite>
+		<testsuite name="PackageTests">
+			<directory suffix=".php">fuel/packages/*/tests</directory>
+		</testsuite>
+		<testsuite name="AppTests">
+			<directory suffix=".php">fuel/app/tests</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

@@ -94,10 +94,7 @@ return array(
 		 * WARNING: Using xss_clean will cause a performance hit.  How much is
 		 * dependant on how much input data there is.
 		 */
-		'input_filter'			=> array(
-			// 'xss_clean',
-			'htmlentities'
-		),
+		'input_filter'			=> array(),
 	),
 
 	/**

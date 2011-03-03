@@ -122,7 +122,7 @@ class Security {
 				import('htmlawed/htmlawed', 'vendor');
 			}
 
-			return htmLawed($value, array('safe' => 1));
+			return htmLawed($value, array('safe' => 1, 'balanced' => 0));
 		}
 		
 		foreach ($value as $k => $v)
@@ -154,13 +154,13 @@ class Security {
 	{
 		if ( ! is_array($value))
 		{
-			$value = htmlentities($value, ENT_COMPAT, \Fuel::$encoding);
+			$value = htmlentities($value, ENT_COMPAT, \Fuel::$encoding, false);
 		}
 		else
 		{
 			foreach ($value as $k => $v)
 			{
-				$value[$k] = static::htmlentities($v, ENT_COMPAT, \Fuel::$encoding);
+				$value[$k] = static::htmlentities($v);
 			}
 		}
 

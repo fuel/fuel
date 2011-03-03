@@ -70,6 +70,32 @@ class Arr {
 		}
 		return $return;
 	}
+	
+	/**
+	 * Filters an array on prefixed associative keys.
+	 *
+	 * @access	public
+	 * @param	array	The array to filter.
+	 * @param	string	Prefix to filter on.
+	 * @param	bool	Whether to remove the prefix.
+	 * @return	array
+	 */
+	public static function filter_prefixed($array, $prefix = 'prefix_', $remove_prefix = true)
+	{
+		$return = array();
+		foreach ($array as $key => $val)
+		{
+			if(preg_match('/^'.$prefix.'/', $key))
+			{
+				if($remove_prefix === true)
+				{
+					$key = preg_replace('/^'.$prefix.'/','',$key);
+				}
+				$return[$key] = $val;
+			}
+		}
+		return $return;
+	}
 
 	/**
 	 * Returns the element of the given array or a default if it is not set.
