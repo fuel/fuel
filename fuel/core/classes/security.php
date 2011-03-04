@@ -152,7 +152,7 @@ class Security {
 
 	public static function htmlentities($value)
 	{
-		if ( ! is_array($value) and is_string($value))
+		if (is_string($value))
 		{
 			$value = htmlentities($value, ENT_COMPAT, \Fuel::$encoding, false);
 		}
