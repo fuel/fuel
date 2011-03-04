@@ -16,8 +16,15 @@ class Controller_Welcome extends Controller {
 
 	public function action_imageview()
 	{
-		$image = Image::factory();
-		$image->load('C:/wamp/www/solidblack.png')->rounded(10, 2)->output('png');
+		Image::load('C:/wamp/www/test.jpeg')
+				->border(20, '#000000')
+				->rounded(20, null, 1)
+				//->rotate(90)
+				//->mask('C:/wamp/www/mask.png')
+				->resize('50%')
+				->output('png')
+				// ->save('C:/wamp/www/solidblock-modified.jpeg')
+				;
 	}
 
 	public function action_404()

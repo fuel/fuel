@@ -60,7 +60,7 @@ class Image {
 	 * @param	array	$config		An array of configuration settings.
 	 * @return	\Fuel\Core\Image_Driver
 	 */
-	public function init($config = array())
+	public static function init($config = array())
 	{
 		return Image::instance()->init($config);
 	}
@@ -71,7 +71,7 @@ class Image {
 	 * @param	string	$filename	The file to load
 	 * @return	Image_Driver
 	 */
-	public function load($filename)
+	public static function load($filename)
 	{
 		return Image::instance()->load($filename);
 	}
@@ -87,7 +87,7 @@ class Image {
 	 * @param	integer	$y2	Y-Coordinate based from the bottom-right corner.
 	 * @return	Image_Driver
 	 */
-	public function crop($x1, $y1, $x2, $y2)
+	public static function crop($x1, $y1, $x2, $y2)
 	{
 		return Image::instance()->crop($x1, $y1, $x2, $y2);
 	}
@@ -100,7 +100,7 @@ class Image {
 	 * @param	boolean	$keepar	Defaults to true. If false, allows resizing without keeping AR.
 	 * @return	Image_Driver
 	 */
-	public function resize($width, $height, $keepar = true)
+	public static function resize($width, $height, $keepar = true)
 	{
 		return Image::instance()->resize($width, $height, $keepar);
 	}
@@ -111,7 +111,7 @@ class Image {
 	 * @param	integer	$degrees	The degrees to rotate, negatives integers allowed.
 	 * @param	Image_Driver
 	 */
-	public function rotate($degrees)
+	public static function rotate($degrees)
 	{
 		return Image::instance()->rotate($degrees);
 	}
@@ -123,23 +123,43 @@ class Image {
 	 * @param	string	$position	The position of the watermark, ex: "bottom right", "center center", "top left"
 	 * @param	Image_Driver
 	 */
-	public function watermark($filename, $position)
+	public static function watermark($filename, $position, $padding = 5)
 	{
-		return Image::instance()->watermark($filename, $position);
+		return Image::instance()->watermark($filename, $position, $padding);
 	}
 
 	/**
-	 * Rounds the corners of the image.
-	 * 
-	 * @param	integer	$tl	Top left corner's rounding
-	 * @param	integer	$tr	Top right corner's rounding
-	 * @param	integer	$br	Bottom right corner's rounding
-	 * @param	integer	$bl	Bottom left corner's rounding
+	 * Adds a border to the image.
+	 *
+	 * @param	integer	$size	The side of the border, in pixels.
+	 * @param	string	$color	A hexidecimal color.
+	 * @param	Image_Driver
+	 */
+	public static function border($size, $color = null) {
+		return Image::instance()->border($size, $color);
+	}
+
+	/**
+	 * Masks the image using the alpha channel of the image input.
+	 *
+	 * @param	string	$maskimage	The location of the image to use as the mask
 	 * @return	Image_Driver
 	 */
-	public function round_corners($tl, $tr, $br, $bl)
+	public static function mask($maskimage) {
+		return Image::instance()->mask($maskimage);
+	}
+
+	/**
+	 * Adds rounded corners to the image.
+	 *
+	 * @param	integer	$radius
+	 * @param	integer	$sides	Accepts any combination of "tl tr bl br" seperated by spaces, or null for all sides
+	 * @param	integer	$antialias	Sets the antialias range.
+	 * @return	Image_Driver
+	 */
+	public static function rounded($radius, $sides = null, $antialias = null)
 	{
-		return Image::instance()->round_corners($tl, $tr, $br, $bl);
+		return Image::instance()->rounded($radius, $sides, $antialias);
 	}
 
 	/**
@@ -148,7 +168,7 @@ class Image {
 	 * @param	string	$filename	The location where to save the image.
 	 * @param	string	$permissions	Allows unix style permissions
 	 */
-	public function save($filename, $permissions = null)
+	public static function save($filename, $permissions = null)
 	{
 		return Image::instance()->save($filename, $permissions);
 	}
@@ -158,7 +178,7 @@ class Image {
 	 * 
 	 * @param	string	$filetype	The extension type to use. Ex: png, jpg, bmp, gif
 	 */
-	public function output($filetype)
+	public static function output($filetype)
 	{
 		return Image::instance()->output($filetype);
 	}
