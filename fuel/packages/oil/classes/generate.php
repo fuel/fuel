@@ -34,10 +34,11 @@ class Generate
 		$args = self::_clear_args($args);
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
-
-		$filepath = APPPATH . 'classes/controller/' . str_replace('_', '/', $singular) .'.php';
-
-		$class_name = ucfirst($singular);
+		
+		$filename = str_replace('_', '/', $singular);
+		$filepath = APPPATH . 'classes/controller/' . $filename .'.php';
+		
+		$class_name = implode('_', array_map('ucfirst', explode('_', $singular)));
 
 		// Stick "blogs" to the start of the array
 		array_unshift($args, $singular);
@@ -69,7 +70,7 @@ class Controller_{$class_name} extends Controller_Template {
 {$action_str}
 }
 
-/* End of file $singular.php */
+/* End of file $filename.php */
 CONTROLLER;
 
 		// Write controller
@@ -90,17 +91,19 @@ CONTROLLER;
 		}
 
 		$plural = \Inflector::pluralize($singular);
+		
+		$filename = str_replace('_', '/', $singular);
 
-		$filepath = APPPATH . 'classes/model/' . str_replace('_', '/', $singular) .'.php';
+		$filepath = APPPATH . 'classes/model/' . $filename .'.php';
 
-		$class_name = ucfirst($singular);
+		$class_name = implode('_', array_map('ucfirst', explode('_', $singular)));
 
 		$model = <<<MODEL
 <?php
 
 class Model_{$class_name} extends ActiveRecord\Model { }
 
-/* End of file $singular.php */
+/* End of file $filename.php */
 MODEL;
 
 		if (self::write($filepath, $model))
