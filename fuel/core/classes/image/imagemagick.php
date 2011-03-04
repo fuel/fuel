@@ -22,7 +22,7 @@ class Image_Imagemagick extends Image_Driver {
 	private $image_temp = null;
 	protected $accepted_extensions = array('png', 'gif', 'jpg', 'jpeg');
 
-	public function _load($return_data)
+	protected function _load($return_data)
 	{
 		if (empty($this->image_temp))
 		{
@@ -35,21 +35,21 @@ class Image_Imagemagick extends Image_Driver {
 		$this->debug($this->image_fullpath . '<br />' . $this->image_temp);
 	}
 
-	public function _crop($x1, $y1, $x2, $y2)
+	protected function _crop($x1, $y1, $x2, $y2)
 	{
 		extract(parent::_crop($x1, $y1, $x2, $y2));
 		$image = '"' . $this->image_temp . '"';
 		$this->exec('convert', $image . ' -crop ' . ($x2 - $x1) . 'x' . ($y2 - $y1) . '-' . $x1 . '-' . $y1 . ' ' . $image);
 	}
 
-	public function _resize($width, $height = null, $keepar = true, $pad = true)
+	protected function _resize($width, $height = null, $keepar = true, $pad = true)
 	{
 		extract(parent::_resize($width, $height, $keepar, $pad));
 		$image = '"' . $this->image_temp . '"';
 		$this->exec('convert', $image . " -resize " . $width . "x" . $height . ($keepar ? "!" : "") . " " . $image);
 	}
 
-	public function _rotate($degrees)
+	protected function _rotate($degrees)
 	{
 		extract(parent::_rotate($degrees));
 		$color = $this->create_color($this->config['bgcolor'], 0);
@@ -57,7 +57,7 @@ class Image_Imagemagick extends Image_Driver {
 		$this->exec('convert', $image . " -background " . $color . " -rotate " . $degrees . " " . $image);
 	}
 
-	public function _watermark($filename, $x, $y)
+	protected function _watermark($filename, $x, $y)
 	{
 		extract(parent::_watermark($filename, $x, $y));
 		$wsizes = $this->sizes($filename);
@@ -85,7 +85,7 @@ class Image_Imagemagick extends Image_Driver {
 		);
 	}
 
-	public function _save($filename, $permissions = null)
+	protected function _save($filename, $permissions = null)
 	{
 		extract(parent::output($filename, $permissions));
 		$this->run_queue();
