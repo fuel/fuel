@@ -44,7 +44,7 @@ class Migrate {
 
 			else
 			{
-				static::_update_version($result);
+				static::_update_version($version);
 				\Cli::write('Migrated to version: ' . $version .'.', 'green');
 			}
 		}
