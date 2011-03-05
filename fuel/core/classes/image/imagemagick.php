@@ -29,7 +29,8 @@ class Image_Imagemagick extends Image_Driver {
 			do
 			{
 				$this->image_temp = substr($this->config['temp_dir'] . $this->config['temp_append'] . md5(time() * microtime()), 0, 32) . '.png';
-			} while (file_exists($this->image_temp));
+			}
+			while (file_exists($this->image_temp));
 		}
 		$this->exec('convert', '"' . $this->image_fullpath . '" "' . $this->image_temp . '"');
 		$this->debug($this->image_fullpath . '<br />' . $this->image_temp);
@@ -101,11 +102,11 @@ class Image_Imagemagick extends Image_Driver {
 		extract(parent::_rounded($radius, $sides, $antialias));
 		$image = '"' . $this->image_temp . '"';
 		$command = $image . ' ( ' .
-					'+clone -alpha extract -draw ' . 
-						'"fill black polygon 0,0 0,' . $radius . ' ' . $radius . ',0 ' .
-						'fill white circle ' . $radius . ',' . $radius . ' ' . $radius . ',0" ' .
-					'( +clone -flip ) -compose Multiply -composite ' .
-					'( +clone -flop ) -compose Multiply -composite ' .
+				'+clone -alpha extract -draw ' .
+				'"fill black polygon 0,0 0,' . $radius . ' ' . $radius . ',0 ' .
+				'fill white circle ' . $radius . ',' . $radius . ' ' . $radius . ',0" ' .
+				'( +clone -flip ) -compose Multiply -composite ' .
+				'( +clone -flop ) -compose Multiply -composite ' .
 				') -alpha off -compose CopyOpacity -composite ' . $image;
 		$this->exec('convert', $command);
 	}
@@ -141,19 +142,24 @@ class Image_Imagemagick extends Image_Driver {
 		if (substr($this->image_fullpath, -1 * strlen($filetype)) != $filetype)
 		{
 			$old = '"' . $this->image_temp . '"';
-			$this->exec('convert', $old . ' ' . strtolower($filetype) . ':-', true);
-		} else
+			if (!$this->debugging)
+				$this->exec('convert', $old . ' ' . strtolower($filetype) . ':-', true);
+		}
+		else
 		{
-			echo file_get_contents($this->image_temp);
+			if (!$this->debugging)
+				echo file_get_contents($this->image_temp);
 		}
 	}
 
-	private function add_background() {
-		if ($this->config['bgcolor'] != null) {
+	private function add_background()
+	{
+		if ($this->config['bgcolor'] != null)
+		{
 			$image = '"' . $this->image_temp . '"';
 			$color = $this->create_color($this->config['bgcolor'], 100);
 			$sizes = $this->sizes();
-			$command =  '-size ' . $sizes->width . 'x' . $sizes->height . ' ' . 'canvas:' . $color . ' ' .
+			$command = '-size ' . $sizes->width . 'x' . $sizes->height . ' ' . 'canvas:' . $color . ' ' .
 					$image . ' -composite ' . $image;
 			$this->exec('convert', $command);
 		}
@@ -174,7 +180,8 @@ class Image_Imagemagick extends Image_Driver {
 			if (!file_exists(realpath($this->config['imagemagick_dir'] . $program . ".exe")))
 			{
 				$this->error("imagemagick executable not found in " . $this->config['imagemagick_dir']);
-			} else
+			}
+			else
 			{
 				$this->error("imagemagick failed to edit the image. Returned with $code.");
 			}
@@ -182,17 +189,36 @@ class Image_Imagemagick extends Image_Driver {
 		return $output;
 	}
 
-	public function create_color($hex, $alpha, $quote = true)
+	protected function create_color($hex, $alpha)
 	{
-		$red = hexdec(substr($hex, 1, 2));
-		$green = hexdec(substr($hex, 3, 2));
-		$blue = hexdec(substr($hex, 5, 2));
-		return ($quote ? '"' : '') . "rgba(" . $red . ", " . $green . ", " . $blue . ", " . round($alpha / 100, 2) . ")" . ($quote ? '"' : '');
+		if ($hex == null)
+		{
+			$red = 0;
+			$green = 0;
+			$blue = 0;
+		}
+		else
+		{
+			// Check if theres a # in front
+			if (substr($hex, 0, 1) == '#')
+				$hex = substr($hex, 1);
+			// Break apart the hex
+			if (strlen($hex) == 6) {
+				$red = hexdec(substr($hex, 0, 2));
+				$green = hexdec(substr($hex, 2, 2));
+				$blue = hexdec(substr($hex, 4, 2));
+			} else {
+				$red = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+				$green = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+				$blue = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+			}
+		}
+		return "\"rgba(" . $red . ", " . $green . ", " . $blue . ", " . round($alpha / 100, 2) . ")'\"";
 	}
 
 	public function __destruct()
 	{
-		// unlink($this->image_temp);
+		unlink($this->image_temp);
 	}
 
 }

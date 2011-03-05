@@ -144,7 +144,8 @@ class Image_Gd extends Image_Driver {
 		$image = $this->create_transparent_image($sizes->width + ($size * 2), $sizes->height + ($size * 2));
 		$color = $this->create_color($image, $color, 100);
 		$this->image_merge($image, $this->image_data, $size, $size, 100);
-		for ($s = 0; $s < $size; $s++) {
+		for ($s = 0; $s < $size; $s++)
+		{
 			imagerectangle($image, $s, $s, $sizes->width + ($size * 2) - $s - 1, $sizes->height + ($size * 2) - $s - 1, $color);
 		}
 		$this->image_data = $image;
@@ -235,7 +236,8 @@ class Image_Gd extends Image_Driver {
 
 		$vars = array($this->image_data, $filename);
 		$filetype = $this->image_extension;
-		if ($filetype == 'jpg' || $filetype == 'jpeg') {
+		if ($filetype == 'jpg' || $filetype == 'jpeg')
+		{
 			$vars[] = $this->config['quality'];
 			$filetype = 'jpeg';
 		}
@@ -260,7 +262,8 @@ class Image_Gd extends Image_Driver {
 
 		$sizes = $this->sizes();
 		$vars = array($this->image_data, null);
-		if ($filetype == 'jpg' || $filetype == 'jpeg') {
+		if ($filetype == 'jpg' || $filetype == 'jpeg')
+		{
 			$vars[] = $this->config['quality'];
 			$filetype = 'jpeg';
 		}
@@ -278,22 +281,31 @@ class Image_Gd extends Image_Driver {
 	 * @param	integer	$alpha	The alpha of the color, 0 (trans) to 100 (opaque)
 	 * @return	integer	The color
 	 */
-	private function create_color(&$image, $hex, $alpha)
+	protected function create_color(&$image, $hex, $alpha)
 	{
-		if ($hex == null) {
+		if ($hex == null)
+		{
 			$red = 0;
 			$green = 0;
 			$blue = 0;
 			$alpha = 127;
-		} else {
+		}
+		else
+		{
 			// Check if theres a # in front
 			if (substr($hex, 0, 1) == '#')
 				$hex = substr($hex, 1);
 			// Break apart the hex
-			$red = hexdec(substr($hex, 0, 2));
-			$green = hexdec(substr($hex, 2, 2));
-			$blue = hexdec(substr($hex, 4, 2));
-			$alpha = 127 - floor($alpha * 1.27);
+			if (strlen($hex) == 6) {
+				$red = hexdec(substr($hex, 0, 2));
+				$green = hexdec(substr($hex, 2, 2));
+				$blue = hexdec(substr($hex, 4, 2));
+			} else {
+				$red = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+				$green = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+				$blue = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+			}
+				$alpha = 127 - floor($alpha * 1.27);
 		}
 		// Check if the transparency is allowed
 		return imagecolorallocatealpha($image, $red, $green, $blue, $alpha);
@@ -302,8 +314,10 @@ class Image_Gd extends Image_Driver {
 	/**
 	 * Adds a background to the image, used after running the queue
 	 */
-	private function add_background() {
-		if ($this->config['bgcolor'] != null) {
+	private function add_background()
+	{
+		if ($this->config['bgcolor'] != null)
+		{
 			$sizes = $this->sizes();
 			$bgimg = $this->create_transparent_image($sizes->width, $sizes->height);
 			$color = $this->create_color($bgimg, $this->config['bgcolor'], 100);
@@ -379,11 +393,11 @@ class Image_Gd extends Image_Driver {
 							// Get color information from this spot on the image
 							$rgba = imagecolorat($image, $x + $offsetX, $y + $offsetY);
 							$tmpColor = imagecolorallocatealpha(
-										$image,
-										($rgba >> 16) & 0xFF, // Red
-										($rgba >> 8) & 0xFF, // Green
-										$rgba & 0xFF, // Blue
-										(127 - (($rgba >> 24) & 0xFF)) * ($fromCirc / $antialias) // Alpha
+											$image,
+											($rgba >> 16) & 0xFF, // Red
+											($rgba >> 8) & 0xFF, // Green
+											$rgba & 0xFF, // Blue
+											(127 - (($rgba >> 24) & 0xFF)) * ($fromCirc / $antialias) // Alpha
 							);
 							imagesetpixel($image, $x + $offsetX, $y + $offsetY, $tmpColor);
 						}
