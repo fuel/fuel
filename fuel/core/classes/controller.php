@@ -85,7 +85,7 @@ class Controller {
 		return $this->request->named_params;
 	}
 
-	public function render($view, $data = array(), $auto_encode = true)
+	public function render($view, $data = array(), $auto_encode = null)
 	{
 		$this->output .= \View::factory($view, $data, $auto_encode);
 	}

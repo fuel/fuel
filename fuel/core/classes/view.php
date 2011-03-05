@@ -37,13 +37,13 @@ class View {
 	// Array of global view data
 	protected static $_global_data = array();
 
+	public static $auto_encode = true;
+
 	// View filename
 	protected $_file;
 
 	// Array of local variables
 	protected $_data = array();
-
-	protected $_auto_encode = true;
 
 	/**
 	 * Returns a new View object. If you do not define the "file" parameter,
@@ -55,7 +55,7 @@ class View {
 	 * @param   array   array of values
 	 * @return  View
 	 */
-	public static function factory($file = null, array $data = null, $auto_encode = true)
+	public static function factory($file = null, array $data = null, $auto_encode = null)
 	{
 		return new static($file, $data, $auto_encode);
 	}
@@ -70,9 +70,9 @@ class View {
 	 * @return  void
 	 * @uses    View::set_filename
 	 */
-	public function __construct($file = null, array $data = null, $auto_encode = true)
+	public function __construct($file = null, array $data = null, $encode = null)
 	{
-		$this->_auto_encode = $auto_encode;
+		$encode === null and $encode = static::$auto_encode;
 		
 		if ($file !== null)
 		{
@@ -81,7 +81,7 @@ class View {
 
 		if ($data !== null)
 		{
-			if ($this->_auto_encode)
+			if ($encode)
 			{
 				foreach ($data as $k => $v)
 				{
@@ -134,7 +134,7 @@ class View {
 	 */
 	public function __set($key, $value)
 	{
-		$this->set($key, $value, $this->_auto_encode);
+		$this->set($key, $value, static::$auto_encode);
 	}
 
 	/**
@@ -241,7 +241,7 @@ class View {
 	 */
 	public static function set_global($key, $value = null, $encode = null)
 	{
-		$encode === null and $encode = $this->_auto_encode;
+		$encode === null and $encode = static::$auto_encode;
 		
 		if (is_array($key))
 		{
@@ -281,7 +281,7 @@ class View {
 	 */
 	public function auto_encode($encode = true)
 	{
-		$this->_auto_encode = $encode;
+		static::$auto_encode = $encode;
 
 		return $this;
 	}
@@ -328,7 +328,7 @@ class View {
 	 */
 	public function set($key, $value = null, $encode = null)
 	{
-		$encode === null and $encode = $this->_auto_encode;
+		$encode === null and $encode = static::$auto_encode;
 		
 		if (is_array($key))
 		{
