@@ -98,19 +98,19 @@ class Cli
 
 				case 't':
 				case 'test':
-					\Fuel::add_package('octane');
-					
-					$action = isset($args[2]) ? $args[2]: '--help';
-					
-					switch ($action)
-					{
-						case '--help':
-							\Fuel\Octane\Tests::help();
-						break;
-						
-						default:
-							call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
-					}
+					passthru('cd '.COREPATH.'; phpunit');
+
+//					$action = isset($args[2]) ? $args[2]: '--help';
+//
+//					switch ($action)
+//					{
+//						case '--help':
+//							\Fuel\Octane\Tests::help();
+//						break;
+//
+//						default:
+//							call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
+//					}
 
 				break;
  
@@ -126,7 +126,7 @@ class Cli
 
 		catch (Exception $e)
 		{
-			\Cli::color('Error: ' . $e->getMessage(), 'light_red');
+			\Cli::write('Error: ' . $e->getMessage(), 'light_red');
 			\Cli::beep();
 		}
 	}
