@@ -30,7 +30,7 @@
 			<?php
 			// February, 1, 2011
 			$timestamp = mktime(0, 0, 0, 2, 1, 2011);
-			echo Date::time_ago($timestamp);
+			echo Date::factory()->time_ago($timestamp);
 			?>
 			<p></p>
 		</div>

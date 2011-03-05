@@ -305,6 +305,49 @@ echo Date::days_in_month(2,2000); // 29
 				</tbody>
 			</table>
 		</article>
+		
+		<article>
+			<h4>time_ago()</h4>
+			<p>The <strong>time_ago</strong> method returns the Date object's timestamp</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$timestamp</kbd></th>
+								<td><i>Required</i></td>
+								<td>The timestamp</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// Timestamp for February, 1, 2011
+$timestamp = mktime(0, 0, 0, 2, 1, 2011);
+
+echo Date::time_ago($timestamp); // 1 month ago</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
 
 
