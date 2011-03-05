@@ -112,6 +112,31 @@ class Str {
 			? mb_convert_case($str, MB_CASE_TITLE, $encoding)
 			: ucwords(strtolower($str));
 	}
+
+    /**
+	 * random
+	 *
+	 * Generates a random string with a given length
+	 *
+	 * @param int $len string length
+	 * @return string
+	 */
+    public function random($len)
+    {
+        $random = '';
+        srand((double)microtime() * 1000000);
+
+        $data  = "AbcDE123IJKLMN67QRSTUVWXYZ";
+        $data .= "aBCdefghijklmn123opq45rs67tuv89wxyz";
+        $data .= "0FGH45OP89";
+
+        for ($i = 0; $i < $len; $i++)
+        {
+            $random .= substr($data, (rand() % ( strlen($data) )), 1);
+        }
+
+        return $random;
+    }
 }
 
 /* End of file str.php */
