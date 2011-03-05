@@ -26,6 +26,15 @@ class Cli
 {
 	public static function init($args)
 	{
+		// Remove flag options from the main argument list
+		for ($i =0; $i < count($args); $i++)
+		{
+			if (strpos($args[$i], '-') === 0)
+			{
+				unset($args[$i]);
+			}
+		}
+
 		try
 		{
 			if ( ! isset($args[1]))

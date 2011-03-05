@@ -177,7 +177,7 @@ HELP;
 		{
 			$path = str_replace($tmp_package_folder, $package_folder, $file);
 			chmod($path, octdec(755));
-			\Cli::write("\t" . \Fuel::clean_path($path));
+			\Cli::write("\t" . $path);
 		}
 	}
 
