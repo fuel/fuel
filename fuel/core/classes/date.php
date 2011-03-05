@@ -259,6 +259,32 @@ class Date {
 	{
 		return $this->timestamp;
 	}
+	
+	/**
+	 * Returns the time ago
+	 *
+	 * @param	int		UNIX timestamp from current server
+	 * @return	string	Time ago
+	 */
+	public function time_ago($timestamp)
+    {
+        if ($timestamp === null) return;
+
+        $difference = time() - $timestamp;
+        $periods    = array('second', 'minute', 'hour', 'day', 'week', 'month', 'years', 'decade');
+        $lengths    = array(60, 60, 24, 7, 4.35, 12, 10);
+
+        for ($j = 0; $difference >= $lengths[$j]; $j++)
+		{
+            $difference /= $lengths[$j];
+		}
+		
+        $difference = round($difference);
+        if ($difference != 1) $periods[$j] = \Inflector::pluralize($periods[$j]);
+        $text = $difference. ' '. $periods[$j]. ' ago';
+
+        return $text;
+    }
 
 	/**
 	 * Returns the internal timezone

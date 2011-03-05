@@ -26,7 +26,12 @@
 			<p>The Controller_Welcome is using the view:</p>
 			
 			<pre><code>APPPATH/views/welcome/index.php</code></pre>
-		
+			
+			<?php
+			// February, 1, 2011
+			$timestamp = mktime(0, 0, 0, 2, 1, 2011);
+			echo Date::time_ago($timestamp);
+			?>
 			<p></p>
 		</div>
 		<div id="footer">
