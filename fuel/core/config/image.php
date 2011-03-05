@@ -5,9 +5,9 @@
 
 return array(
 	/**
-	 * The driver to be used.
+	 * The driver to be used. Currently gd or imagemagick
 	 */
-	'driver' => 'gd',
+	'driver' => 'imagemagick',
 
 	/**
 	 * Sets the background color of the image.

@@ -124,11 +124,7 @@ class Image {
 	 * @param	integer	$padding	The spacing between the edge of the image.
 	 * @return	Image_Driver
 	 */
-<<<<<<< HEAD
 	public static function watermark($filename, $position, $padding = 5)
-=======
-	public static function watermark($filename, $position)
->>>>>>> 91d82066866c06e1659f467c847a23eab6268b62
 	{
 		return Image::instance()->watermark($filename, $position, $padding);
 	}
@@ -183,11 +179,7 @@ class Image {
 	 * 
 	 * @param	string	$filetype	The extension type to use. Ex: png, jpg, bmp, gif
 	 */
-<<<<<<< HEAD
 	public static function output($filetype = null)
-=======
-	public static function output($filetype)
->>>>>>> 91d82066866c06e1659f467c847a23eab6268b62
 	{
 		return Image::instance()->output($filetype);
 	}

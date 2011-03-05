@@ -192,8 +192,6 @@ abstract class Image_Driver {
 	/**
 	 * Rotates the image
 	 *
-	 * Note: Bug exists when rotating after adding borders in GD, where borders are removed.
-	 *
 	 * @param	integer	$degrees	The degrees to rotate, negatives integers allowed.
 	 * @param	Image_Driver
 	 */
@@ -458,11 +456,6 @@ abstract class Image_Driver {
 		{
 			$input = floor((substr($input, 0, -1) / 100) * $size);
 		}
-		// Make sure its within bounds
-		if ($input > $size)
-			$input = $size;
-		if ($input < -$size)
-			$input = -$size;
 		// Negatives are based off the bottom right
 		if ($x !== null && $input < 0)
 		{

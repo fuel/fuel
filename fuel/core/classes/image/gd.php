@@ -65,16 +65,16 @@ class Image_Gd extends Image_Driver {
 		$this->image_data = $image;
 	}
 
-	protected function _resize($width, $height = null, $keepar = true, $pad = true)
+	protected function _resize($width, $height, $keepar, $pad)
 	{
 		extract(parent::_resize($width, $height, $keepar, $pad));
 		$origwidth = $this->convert_number($width, true);
 		$origheight = $this->convert_number($height, false);
 		$width = $origwidth;
 		$height = $origheight;
+		$sizes = $this->sizes();
 		if ($keepar)
 		{
-			$sizes = $this->sizes();
 			// See which is the biggest ratio
 			$width_ratio = $width / $sizes->width;
 			$height_ratio = $height / $sizes->height;
@@ -145,7 +145,7 @@ class Image_Gd extends Image_Driver {
 		$color = $this->create_color($image, $color, 100);
 		$this->image_merge($image, $this->image_data, $size, $size, 100);
 		for ($s = 0; $s < $size; $s++) {
-			imagerectangle($image, $s, $s, $sizes->width + ($size * 2) - $s, $sizes->height + ($size * 2) - $s, $color);
+			imagerectangle($image, $s, $s, $sizes->width + ($size * 2) - $s - 1, $sizes->height + ($size * 2) - $s - 1, $color);
 		}
 		$this->image_data = $image;
 	}
@@ -173,9 +173,10 @@ class Image_Gd extends Image_Driver {
 			{
 				$maskcolor = imagecolorat($maskim, $x, $y);
 				$maskcolor = imagecolorsforindex($maskim, $maskcolor);
-				if ($maskcolor['alpha'] == 127)
+				$maskalpha = 127 - floor(($maskcolor['red'] + $maskcolor['green'] + $maskcolor['blue']) / 6);
+				$this->debug("$maskcolor[red] + $maskcolor[green] + $maskcolor[blue] = $maskalpha");
+				if ($maskalpha == 127)
 					continue;
-				$maskalpha = $maskcolor['alpha'];
 				$ourcolor = imagecolorat($this->image_data, $x, $y);
 				$ourcolor = imagecolorsforindex($this->image_data, $ourcolor);
 				$ouralpha = 127 - $ourcolor['alpha'];

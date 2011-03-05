@@ -17,11 +17,12 @@ class Controller_Welcome extends Controller {
 	public function action_imageview()
 	{
 		Image::load('C:/wamp/www/test.jpeg')
-				->border(20, '#000000')
-				->rounded(20, null, 1)
-				//->rotate(90)
 				//->mask('C:/wamp/www/mask.png')
-				->resize('50%')
+				->crop('25%', '25%', '75%', '75%')
+				->resize('200%')
+				->border(20, '#FF0000')
+				->rounded(10, null, 1)
+				->rotate(90)
 				->output('png')
 				// ->save('C:/wamp/www/solidblock-modified.jpeg')
 				;
