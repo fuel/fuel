@@ -58,7 +58,7 @@ class Image {
 	 * Used to set class information.
 	 *
 	 * @param	array	$config		An array of configuration settings.
-	 * @return	\Fuel\Core\Image_Driver
+	 * @return	Image_Driver
 	 */
 	public static function init($config = array())
 	{
@@ -109,7 +109,7 @@ class Image {
 	 * Rotates the image
 	 * 
 	 * @param	integer	$degrees	The degrees to rotate, negatives integers allowed.
-	 * @param	Image_Driver
+	 * @return	Image_Driver
 	 */
 	public static function rotate($degrees)
 	{
@@ -121,7 +121,8 @@ class Image {
 	 * 
 	 * @param	string	$filename	The filename of the watermark file to use.
 	 * @param	string	$position	The position of the watermark, ex: "bottom right", "center center", "top left"
-	 * @param	Image_Driver
+	 * @param	integer	$padding	The spacing between the edge of the image.
+	 * @return	Image_Driver
 	 */
 	public static function watermark($filename, $position, $padding = 5)
 	{
@@ -178,7 +179,7 @@ class Image {
 	 * 
 	 * @param	string	$filetype	The extension type to use. Ex: png, jpg, bmp, gif
 	 */
-	public static function output($filetype)
+	public static function output($filetype = null)
 	{
 		return Image::instance()->output($filetype);
 	}
