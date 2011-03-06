@@ -114,7 +114,7 @@ class Command
 
 				case 't':
 				case 'test':
-					passthru('cd '.COREPATH.'; phpunit');
+					passthru('cd '.DOCROOT.'; phpunit');
 
 //					$action = isset($args[2]) ? $args[2]: '--help';
 //
