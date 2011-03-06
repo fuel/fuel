@@ -22,10 +22,26 @@ namespace Oil;
  * @category	Core
  * @author		Phil Sturgeon
  */
-class Cli
+class Command
 {
 	public static function init($args)
 	{
+		if (\Cli::option('v', \Cli::option('version')))
+		{
+			\Cli::write('Fuel: ' . \Fuel::VERSION);
+			exit;
+		}
+
+
+		// Remove flag options from the main argument list
+		for ($i =0; $i < count($args); $i++)
+		{
+			if (strpos($args[$i], '-') === 0)
+			{
+				unset($args[$i]);
+			}
+		}
+
 		try
 		{
 			if ( ! isset($args[1]))
@@ -98,27 +114,22 @@ class Cli
 
 				case 't':
 				case 'test':
-					\Fuel::add_package('octane');
-					
-					$action = isset($args[2]) ? $args[2]: '--help';
-					
-					switch ($action)
-					{
-						case '--help':
-							\Fuel\Octane\Tests::help();
-						break;
-						
-						default:
-							call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
-					}
+					passthru('cd '.COREPATH.'; phpunit');
+
+//					$action = isset($args[2]) ? $args[2]: '--help';
+//
+//					switch ($action)
+//					{
+//						case '--help':
+//							\Fuel\Octane\Tests::help();
+//						break;
+//
+//						default:
+//							call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
+//					}
 
 				break;
  
-				case '-v':
-				case '--version':
-					\Cli::write('Fuel: ' . \Fuel::VERSION);
-				break;
-
 				default:
 					static::help();
 			}
@@ -126,7 +137,7 @@ class Cli
 
 		catch (Exception $e)
 		{
-			\Cli::color('Error: ' . $e->getMessage(), 'light_red');
+			\Cli::write('Error: ' . $e->getMessage(), 'light_red');
 			\Cli::beep();
 		}
 	}
@@ -143,11 +154,8 @@ Runtime options:
   -s, [--skip]     # Skip files that already exist
   -q, [--quiet]    # Supress status output
 
-Fuel options:
-  -v, [--version]  # Show Fuel version number and quit
-
 Description:
-  The 'oil' command can be used in serveral ways to facilitate quick development, help with
+  The 'oil' command can be used in several ways to facilitate quick development, help with
   testing your application and for running Tasks.
 
 Documentation:

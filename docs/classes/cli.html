@@ -131,7 +131,7 @@ Cli::write($message);</code></pre>
 
 
 		<article>
-			<h4>read($question = null, $options = array())</h4>
+			<h4>prompt($question = null, $options = array())</h4>
 			<p>The <strong>read</strong> method prompts the user for input.</p>
 			<table class="method">
 				<tbody>
@@ -169,13 +169,16 @@ Cli::write($message);</code></pre>
 					<th>Example</th>
 					<td>
 <pre><code>// Waits for any key press
-Cli::read();
+Cli::prompt();
 
 // Takes any input
-$color = Cli::read('What is your favorite color?');
+$color = Cli::prompt('What is your favorite color?');
+
+// Takes any input, but offers default
+$color = CLI::prompt('What is your favorite color?', 'white');
 
 // Will only accept the options in the array
-$ready = Cli::read('Are you ready?', array('y','n'));</code></pre>
+$ready = Cli::prompt('Are you ready?', array('y','n'));</code></pre>
 					</td>
 				</tr>
 				</tbody>
