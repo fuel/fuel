@@ -37,6 +37,8 @@ class View {
 	// Array of global view data
 	protected static $_global_data = array();
 
+	public static $auto_encode = true;
+
 	// View filename
 	protected $_file;
 
@@ -53,9 +55,9 @@ class View {
 	 * @param   array   array of values
 	 * @return  View
 	 */
-	public static function factory($file = null, array $data = null)
+	public static function factory($file = null, array $data = null, $auto_encode = null)
 	{
-		return new static($file, $data);
+		return new static($file, $data, $auto_encode);
 	}
 
 	/**
@@ -68,8 +70,10 @@ class View {
 	 * @return  void
 	 * @uses    View::set_filename
 	 */
-	public function __construct($file = null, array $data = null)
+	public function __construct($file = null, array $data = null, $encode = null)
 	{
+		$encode === null and $encode = static::$auto_encode;
+		
 		if ($file !== null)
 		{
 			$this->set_filename($file);
@@ -77,6 +81,14 @@ class View {
 
 		if ($data !== null)
 		{
+			if ($encode)
+			{
+				foreach ($data as $k => $v)
+				{
+					$data[$k] = \Security::htmlentities($v);
+				}
+			}
+
 			// Add the values to the current data
 			$this->_data = $data + $this->_data;
 		}
@@ -122,7 +134,7 @@ class View {
 	 */
 	public function __set($key, $value)
 	{
-		$this->set($key, $value);
+		$this->set($key, $value, static::$auto_encode);
 	}
 
 	/**
@@ -224,20 +236,23 @@ class View {
 	 *
 	 * @param   string  variable name or an array of variables
 	 * @param   mixed   value
+	 * @param   bool    whether to encode the data or not
 	 * @return  void
 	 */
-	public static function set_global($key, $value = null)
+	public static function set_global($key, $value = null, $encode = null)
 	{
+		$encode === null and $encode = static::$auto_encode;
+		
 		if (is_array($key))
 		{
 			foreach ($key as $key2 => $value)
 			{
-				static::$_global_data[$key2] = $value;
+				static::$_global_data[$key2] = $encode ? \Security::htmlentities($value) : $value;
 			}
 		}
 		else
 		{
-			static::$_global_data[$key] = $value;
+			static::$_global_data[$key] = $encode ? \Security::htmlentities($value) : $value;
 		}
 	}
 
@@ -255,6 +270,22 @@ class View {
 	{
 		static::$_global_data[$key] =& $value;
 	}
+
+	/**
+	 * Sets whether to encode the data or not.
+	 *
+	 *     $view->auto_encode(false);
+	 *
+	 * @param   bool  whether to auto encode or not
+	 * @return  View
+	 */
+	public function auto_encode($encode = true)
+	{
+		static::$auto_encode = $encode;
+
+		return $this;
+	}
+
 
 	/**
 	 * Sets the view filename.
@@ -292,20 +323,23 @@ class View {
 	 *
 	 * @param   string   variable name or an array of variables
 	 * @param   mixed    value
+	 * @param   bool     whether to encode the data or not
 	 * @return  $this
 	 */
-	public function set($key, $value = null)
+	public function set($key, $value = null, $encode = null)
 	{
+		$encode === null and $encode = static::$auto_encode;
+		
 		if (is_array($key))
 		{
 			foreach ($key as $name => $value)
 			{
-				$this->_data[$name] = $value;
+				$this->_data[$name] = $encode ? \Security::htmlentities($value) : $value;
 			}
 		}
 		else
 		{
-			$this->_data[$key] = $value;
+			$this->_data[$key] = $encode ? \Security::htmlentities($value) : $value;
 		}
 
 		return $this;
