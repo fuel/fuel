@@ -99,6 +99,12 @@ class Scaffold
 			Generate::create(APPPATH.'views/'.$plural.'/'.$view.'.php', \View::factory($subfolder.'/scaffold/views/'.$view, $data), 'view');
 		}
 
+		// Add the default template if it doesnt exist
+		if ( ! file_exists($app_template = APPPATH . 'views/template.php'))
+		{
+			Generate::create($app_template, file_get_contents(PKGPATH . 'oil/views/default/template.php'), 'view');
+		}
+
 		Generate::build();
 	}
 

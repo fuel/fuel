@@ -6,7 +6,7 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		Phil Sturgeon
+ * @author		Fuel Development Team
  * @license		MIT License
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
@@ -34,20 +34,27 @@ class Console {
 		ini_set("html_errors", 0);
 		ini_set("display_errors", 0);
 
+		while (ob_get_level ())
+		{
+			 ob_end_clean();
+		}
+		
+		ob_implicit_flush(true);
+
 		// And, go!
 		self::main();
 	}
 
 	private function main()
 	{
-		echo sprintf(
+		\Cli::write(sprintf(
 			'Fuel %s - PHP %s (%s) (%s) [%s]',
 			\Fuel::VERSION,
 			phpversion(),
 			php_sapi_name(),
 			self::build_date(),
 			PHP_OS
-		) . PHP_EOL;
+		));
 
 		// Loop until they break it
 		while (TRUE)
@@ -65,6 +72,13 @@ class Console {
 			if ($__line == 'quit')
 			{
 				break;
+			}
+
+			// Add this line to history
+			//$this->history[] = array_slice($this->history, 0, -99) + array($line);
+			if (\Cli::$readline_support)
+			{
+				readline_add_history($__line);
 			}
 
 			if (self::is_immediate($__line))

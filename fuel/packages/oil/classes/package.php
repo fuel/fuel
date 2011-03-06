@@ -24,7 +24,7 @@ namespace Oil;
  */
 class Package
 {
-	protected static $protected = array('auth', 'activerecord', 'octane', 'oil');
+	protected static $protected = array('auth', 'activerecord', 'oil', 'orm');
 
 	protected static $git = 'git';
 

@@ -22,10 +22,17 @@ namespace Oil;
  * @category	Core
  * @author		Phil Sturgeon
  */
-class Cli
+class Command
 {
 	public static function init($args)
 	{
+		if (\Cli::option('v', \Cli::option('version')))
+		{
+			\Cli::write('Fuel: ' . \Fuel::VERSION);
+			exit;
+		}
+
+
 		// Remove flag options from the main argument list
 		for ($i =0; $i < count($args); $i++)
 		{
@@ -123,11 +130,6 @@ class Cli
 
 				break;
  
-				case '-v':
-				case '--version':
-					\Cli::write('Fuel: ' . \Fuel::VERSION);
-				break;
-
 				default:
 					static::help();
 			}
@@ -152,11 +154,8 @@ Runtime options:
   -s, [--skip]     # Skip files that already exist
   -q, [--quiet]    # Supress status output
 
-Fuel options:
-  -v, [--version]  # Show Fuel version number and quit
-
 Description:
-  The 'oil' command can be used in serveral ways to facilitate quick development, help with
+  The 'oil' command can be used in several ways to facilitate quick development, help with
   testing your application and for running Tasks.
 
 Documentation:

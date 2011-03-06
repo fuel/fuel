@@ -172,14 +172,18 @@ VIEW;
 				return;
 			}
 
-			// If we aren't skipping it, tell em to use -f
-			// We only do this if it is scaffolding because they may be re-trying,
-			// if it is just made on the fly then they can share a name, +1
-			if (static::$scaffolding === true and \Cli::option('f', \Cli::option('force')) === null)
-			{
-				// Tear up the file path and name to get the last duplicate
-				$file_name = pathinfo(end($duplicates), PATHINFO_FILENAME);
+			// Tear up the file path and name to get the last duplicate
+			$file_name = pathinfo(end($duplicates), PATHINFO_FILENAME);
 
+			// Override the (most recent) migration with the same name by using its number
+			if (\Cli::option('f', \Cli::option('force')) === true)
+			{
+				list($number) = explode('_', $file_name);
+			}
+
+			// Name clashes but this is done by hand. Assume they know what they're doing and just increment the file
+			elseif (static::$scaffolding === false)
+			{
 				// Increment the name of this
 				$migration_name = \Str::increment(substr($file_name, 4), 2);
 			}
@@ -343,7 +347,7 @@ class {$migration_name} {
 }
 MIGRATION;
 
-		$number = static::_find_migration_number();
+		$number = isset($number) ? $number : static::_find_migration_number();
 		$filepath = APPPATH . 'migrations/'.$number.'_' . strtolower($migration_name) . '.php';
 
 		static::create($filepath, $migration, 'migration');
