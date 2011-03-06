@@ -256,7 +256,7 @@ class Migrate
 	 * @param $schema_version integer	Schema version reached
 	 * @return	void					Outputs a report of the migration
 	 */
-	private function _update_schema_version($old_version, $version)
+	private static function _update_schema_version($old_version, $version)
 	{
 		\DB::update('migration')->set(array('current' => (int) $version))->where('current', '=', (int) $old_version)->execute();
 	}
