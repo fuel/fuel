@@ -40,8 +40,10 @@ class Generate
 		$args = self::_clear_args($args);
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
+		
+		$filename = str_replace('_', '/', $singular);
 
-		$filepath = APPPATH . 'classes/controller/' . $singular .'.php';
+		$filepath = APPPATH . 'classes/controller/' . $filename .'.php';
 
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = static::class_name($singular);
