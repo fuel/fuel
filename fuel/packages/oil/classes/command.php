@@ -114,7 +114,10 @@ class Command
 
 				case 't':
 				case 'test':
-					passthru('cd '.COREPATH.'; phpunit');
+				
+					$group = isset($args[2]) ? ' --group '.$args[2] : '';
+
+					passthru('cd '.DOCROOT.'; phpunit'.$group);
 
 //					$action = isset($args[2]) ? $args[2]: '--help';
 //
