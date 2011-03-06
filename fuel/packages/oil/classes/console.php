@@ -34,13 +34,6 @@ class Console {
 		ini_set("html_errors", 0);
 		ini_set("display_errors", 0);
 
-		while (ob_get_level ())
-		{
-			ob_end_clean();
-		}
-
-		ob_implicit_flush(true);
-
 		// And, go!
 		self::main();
 	}
@@ -59,9 +52,12 @@ class Console {
 		// Loop until they break it
 		while (TRUE)
 		{
-			echo ">>> ";
+			if (\Cli::$readline_support)
+			{
+				readline_completion_function(array(__CLASS__, 'tab_complete'));
+			}
 
-			if ( ! $__line = rtrim(trim(trim(fgets(STDIN)), PHP_EOL), ';'))
+			if ( ! $__line = rtrim(trim(trim(\Cli::input('>>> ')), PHP_EOL), ';'))
 			{
 				continue;
 			}
@@ -92,13 +88,13 @@ class Console {
 			{
 				if (is_bool($ret))
 				{
-					echo ($ret ? "true" : "false");
+					echo $ret ? 'true' : 'false';
 				}
-				else if (is_string($ret))
+				elseif (is_string($ret))
 				{
 					echo addcslashes($ret, "\0..\37\177..\377");
 				}
-				else if ( ! is_null($ret))
+				elseif ( ! is_null($ret))
 				{
 					var_export($ret);
 				}
@@ -118,7 +114,7 @@ class Console {
 		}
 	}
 
-	private function is_immediate($line)
+	private static function is_immediate($line)
 	{
 		$skip = array(
 			'class', 'declare', 'die', 'echo', 'exit', 'for',
@@ -140,12 +136,12 @@ class Console {
 			{
 				$sq = !$sq;
 			}
-			else if ($c == '"')
+			elseif ($c == '"')
 			{
 				$dq = !$dq;
 			}
 
-			else if ( ($sq) || ($dq) && $c == "\\")
+			elseif ( ($sq) || ($dq) && $c == "\\")
 			{
 				++$i;
 			}
@@ -161,7 +157,7 @@ class Console {
 			return false;
 		}
 
-		$kw = preg_split("[^A-Za-z0-9_]", $code);
+		$kw = preg_split("[^a-z0-9_]i", $code);
 		foreach ($kw as $i)
 		{
 			if (in_array($i, $skip))
@@ -173,7 +169,22 @@ class Console {
 		return true;
 	}
 
-	private function build_date()
+	public static function tab_complete($line, $pos, $cursor)
+	{
+		$const = array_keys(get_defined_constants());
+		$var = array_keys($GLOBALS);
+		$func = get_defined_functions();
+
+		foreach ($func["user"] as $i)
+		{
+				$func["internal"][] = $i;
+		}
+		$func = $func["internal"];
+
+		return array_merge($const, $var, $func);
+	}
+
+	private static function build_date()
 	{
 		ob_start();
 		phpinfo(INFO_GENERAL);

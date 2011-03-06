@@ -26,6 +26,8 @@ namespace Fuel\Core;
  */
 class Cli {
 
+	public static $readline_support = false;
+
 	public static $wait_msg = 'Press any key to continue...';
 
 	protected static $args = array();
@@ -80,6 +82,10 @@ class Cli {
 				static::$args[ltrim($arg[0], '-')] = isset($arg[1]) ? $arg[1] : true;
 			}
 		}
+
+		// Readline is an extension for PHP that makes interactive with PHP much more bash-like
+		// http://www.php.net/manual/en/readline.installation.php
+		static::$readline_support = extension_loaded('readline');
 	}
 
 	/**
@@ -100,6 +106,22 @@ class Cli {
 		}
 		return static::$args[$name];
 	}
+
+	
+	/**
+	 * Get input from the shell, using readline or the standard STDIN
+	 *
+	 * Named options must be in the following formats:
+	 * php index.php user -v --v -name=John --name=John
+	 *
+	 * @param	string|int	$name	the name of the option (int if unnamed)
+	 * @return	string
+	 */
+	public static function input($prefix = '')
+	{
+        return static::$readline_support ? readline($prefix) : fgets(STDIN);
+	}
+
 
 	/**
 	 * Reads input from the user.  This can have either 1 or 2 arguments.
@@ -191,7 +213,7 @@ class Cli {
 		}
 
 		// Read the input from keyboard.
-		$input = trim(fgets(STDIN)) ?: $default;
+		$input = trim(static::input()) ?: $default;
 
 		// No input provided and we require one (default will stop this being called)
 		if (empty($input) and $required === true)
