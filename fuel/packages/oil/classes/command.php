@@ -115,7 +115,8 @@ class Command
 				case 't':
 				case 'test':
 				
-				    $group = isset($args[2]) ? ' --group '.$args[2] : '';
+					$group = isset($args[2]) ? ' --group '.$args[2] : '';
+
 					passthru('cd '.DOCROOT.'; phpunit'.$group);
 
 //					$action = isset($args[2]) ? $args[2]: '--help';
