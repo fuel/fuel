@@ -160,6 +160,21 @@ if ( ! function_exists('__'))
 	}
 }
 
+/**
+ * Encodes the given string.  This is just a wrapper function for Security::htmlentities()
+ *
+ * @param	mixed	The string to encode
+ * @return	string
+ */
+if ( ! function_exists('e'))
+{
+	function e($string)
+	{
+		return Security::htmlentities($string);
+	}
+}
+
+
 if ( ! function_exists('fuel_shutdown_handler'))
 {
 	function fuel_shutdown_handler()

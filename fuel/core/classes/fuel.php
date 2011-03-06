@@ -64,6 +64,7 @@ class Fuel {
 	public static $paths_changed = false;
 
 	public static $is_cli = false;
+	public static $is_test = false;
 
 	protected static $_paths = array();
 
@@ -111,6 +112,8 @@ class Fuel {
 		\Config::load($config);
 
 		static::$_paths = array_merge(\Config::get('module_paths', array()), array(APPPATH, COREPATH));
+
+		\View::$auto_encode = \Config::get('security.auto_encode_view_data');
 
 		if ( ! static::$is_cli)
 		{

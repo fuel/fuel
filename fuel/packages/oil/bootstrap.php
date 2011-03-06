@@ -14,7 +14,7 @@
 
 
 Autoloader::add_classes(array(
-	'Oil\\Cli'						   	=> __DIR__.'/classes/cli.php',
+	'Oil\\Command'				   	=> __DIR__.'/classes/command.php',
 	'Oil\\Console'					   	=> __DIR__.'/classes/console.php',
 	'Oil\\Exception'				   	=> __DIR__.'/classes/exception.php',
 	'Oil\\Generate'						=> __DIR__.'/classes/generate.php',
