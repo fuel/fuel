@@ -114,19 +114,14 @@ class Command
 
 				case 't':
 				case 'test':
-					passthru('cd '.COREPATH.'; phpunit');
 
-//					$action = isset($args[2]) ? $args[2]: '--help';
-//
-//					switch ($action)
-//					{
-//						case '--help':
-//							\Fuel\Octane\Tests::help();
-//						break;
-//
-//						default:
-//							call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
-//					}
+					// CD to the root of Fuel and call up phpunit with a path to our config
+					$command = 'cd '.DOCROOT.'; phpunit -c "'.COREPATH.'phpunit.xml"';
+
+					// Respect the group option
+					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
+
+					passthru($command);
 
 				break;
  
