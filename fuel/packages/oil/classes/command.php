@@ -122,7 +122,7 @@ class Command
 					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
 
 					passthru($command);
-
+				
 				break;
  
 				default:
