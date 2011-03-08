@@ -97,8 +97,6 @@ CONTROLLER;
 		
 		$filename = str_replace('_', '/', $singular);
 
-		$filename = str_replace('_', '/', $singular);
-
 		$filepath = APPPATH . 'classes/model/' . $filename .'.php';
 
 		// Uppercase each part of the class name and remove hyphens
