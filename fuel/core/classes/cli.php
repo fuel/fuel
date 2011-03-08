@@ -26,6 +26,8 @@ namespace Fuel\Core;
  */
 class Cli {
 
+	public static $readline_support = false;
+
 	public static $wait_msg = 'Press any key to continue...';
 
 	protected static $args = array();
@@ -80,6 +82,10 @@ class Cli {
 				static::$args[ltrim($arg[0], '-')] = isset($arg[1]) ? $arg[1] : true;
 			}
 		}
+
+		// Readline is an extension for PHP that makes interactive with PHP much more bash-like
+		// http://www.php.net/manual/en/readline.installation.php
+		static::$readline_support = extension_loaded('readline');
 	}
 
 	/**
@@ -101,23 +107,48 @@ class Cli {
 		return static::$args[$name];
 	}
 
+	
 	/**
-	 * Reads input from the user.  This can have either 1 or 2 arguments.
+	 * Get input from the shell, using readline or the standard STDIN
+	 *
+	 * Named options must be in the following formats:
+	 * php index.php user -v --v -name=John --name=John
+	 *
+	 * @param	string|int	$name	the name of the option (int if unnamed)
+	 * @return	string
+	 */
+	public static function input($prefix = '')
+	{
+        if (static::$readline_support)
+		{
+			return readline($prefix);
+		}
+
+		echo $prefix;
+		return fgets(STDIN);
+	}
+
+
+	/**
+	 * Asks the user for input.  This can have either 1 or 2 arguments.
 	 *
 	 * Usage:
 	 *
 	 * // Waits for any key press
-	 * CLI::read();
+	 * CLI::prompt();
 	 *
 	 * // Takes any input
-	 * $color = CLI::read('What is your favorite color?');
+	 * $color = CLI::prompt('What is your favorite color?');
+	 *
+	 * // Takes any input, but offers default
+	 * $color = CLI::prompt('What is your favourite color?', 'white');
 	 *
 	 * // Will only accept the options in the array
-	 * $ready = CLI::read('Are you ready?', array('y','n'));
+	 * $ready = CLI::prompt('Are you ready?', array('y','n'));
 	 *
 	 * @return	string	the user input
 	 */
-	public static function read()
+	public static function prompt()
 	{
 		$args = func_get_args();
 
@@ -139,13 +170,13 @@ class Cli {
 		{
 			case 2:
 
-				// E.g: $ready = CLI::read('Are you ready?', array('y','n'));
+				// E.g: $ready = CLI::prompt('Are you ready?', array('y','n'));
 				if (is_array($args[1]))
 				{
 					list($output, $options)=$args;
 				}
 
-				// E.g: $color = CLI::read('What is your favourite color?', 'white');
+				// E.g: $color = CLI::prompt('What is your favourite color?', 'white');
 				elseif (is_string($args[1]))
 				{
 					list($output, $default)=$args;
@@ -156,14 +187,14 @@ class Cli {
 			case 1:
 
 				// No question (probably been asked already) so just show options
-				// E.g: $ready = CLI::read(array('y','n'));
+				// E.g: $ready = CLI::prompt(array('y','n'));
 				if (is_array($args[0]))
 				{
 					$options = $args[0];
 				}
 
 				// Question without options
-				// E.g: $ready = CLI::read('What did you do today?');
+				// E.g: $ready = CLI::prompt('What did you do today?');
 				elseif (is_string($args[0]))
 				{
 					$output = $args[0];
@@ -191,7 +222,7 @@ class Cli {
 		}
 
 		// Read the input from keyboard.
-		$input = trim(fgets(STDIN)) ?: $default;
+		$input = trim(static::input()) ?: $default;
 
 		// No input provided and we require one (default will stop this being called)
 		if (empty($input) and $required === true)
@@ -199,7 +230,7 @@ class Cli {
 			static::write('This is required.');
 			static::new_line();
 
-			$input = forward_static_call_array(array(__CLASS__, 'read'), $args);
+			$input = forward_static_call_array(array(__CLASS__, 'prompt'), $args);
 		}
 
 		// If options are provided and the choice is not in the array, tell them to try again
@@ -208,7 +239,7 @@ class Cli {
 			static::write('This is not a valid option. Please try again.');
 			static::new_line();
 
-			$input = forward_static_call_array(array(__CLASS__, 'read'), $args);
+			$input = forward_static_call_array(array(__CLASS__, 'prompt'), $args);
 		}
 
 		return $input;
@@ -332,7 +363,6 @@ class Cli {
 	 */
 	public static function color($text, $foreground, $background = null)
 	{
-	
 		if (static::is_windows())
 		{
 			return $text;

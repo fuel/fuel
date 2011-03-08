@@ -44,7 +44,7 @@ class Migrate {
 
 			else
 			{
-				static::_update_version($result);
+				static::_update_version($version);
 				\Cli::write('Migrated to version: ' . $version .'.', 'green');
 			}
 		}
@@ -94,11 +94,11 @@ class Migrate {
 	{
 		$contents = '';
 		$path = '';
-		if (file_exists($path = APPPATH.'config'.DS.'migrate.php'))
+		if (file_exists($path = APPPATH.'config'.DS.'migrations.php'))
 		{
 			$contents = file_get_contents($path);
 		}
-		elseif (file_exists($core_path = COREPATH.'config'.DS.'migrate.php'))
+		elseif (file_exists($core_path = COREPATH.'config'.DS.'migrations.php'))
 		{
 			$contents = file_get_contents($core_path);
 		}

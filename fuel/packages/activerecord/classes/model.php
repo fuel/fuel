@@ -351,13 +351,12 @@ class Model {
 			{
 				$class_name = 'ActiveRecord\\'.Inflector::classify($type);
 
-				foreach ($this->{$type} as $assoc)
+				foreach ($this->{$type} as $key => $assoc)
 				{
 					/* handle association sent in as array with options */
 					if (is_array($assoc))
 					{
-						$key = key($assoc);
-						$this->{$key} = new $class_name($this, $key, current($assoc));
+						$this->{$key} = new $class_name($this, $key, $assoc);
 					}
 					else
 					{
@@ -926,7 +925,9 @@ class Model {
 					}
 					foreach ($cur_object->associations as $assoc_name => $assoc)
 					{
-						$assoc->populate_from_find($attributes);
+						if ($assoc_name == $table) {
+							$assoc->populate_from_find($attributes);
+						}
 					}
 				}
 			}

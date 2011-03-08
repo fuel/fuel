@@ -237,7 +237,8 @@ class Inflector {
 			$sep.'+' => $sep,   // multiple seperators => 1 seperator
 			$sep.'$' => '',	        // ending seperator => (nothing)
 			'^'.$sep => '',         // starting seperator => (nothing)
-			'\.+$' => ''             // ending dot => (nothing)
+			'\.+$' => '',            // ending dot => (nothing)
+			'\?' => ''                // question mark
 		);
 		
 		foreach ($trans as $key => $val)
