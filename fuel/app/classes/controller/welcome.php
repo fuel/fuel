@@ -4,9 +4,16 @@
  */
 class Controller_Welcome extends Controller {
 
-	public function action_index()
-	{
+	public function action_index() {
 		$this->render('welcome/index');
+	}
+	
+	public function action_sample()
+	{
+		$hello = Connector::input('get', 'hello', 'nobody');
+		$method = Connector::input('method');
+		
+		\Debug::dump($hello, $method);
 	}
 
 	public function action_404()
