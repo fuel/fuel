@@ -62,7 +62,13 @@ class Debug {
 		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 120% sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1>';
 		echo '<pre style="overflow:auto;font-size:100%;">';
 
-		var_dump($arguments);
+		$count = count($arguments);
+		for ($i = 1; $i <= $count; $i++)
+		{
+			echo '<strong>Variable #'.$i.':</strong>'.PHP_EOL;
+			var_dump($arguments[$i - 1]);
+			echo PHP_EOL.PHP_EOL;
+		}
 
 		echo "</pre>";
 		echo "</div>";
