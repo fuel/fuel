@@ -19,9 +19,9 @@ class Arr {
     /**
      * Find the average of an array
      *
-     * @access    public
-     * @param    array    The array containing the values
-     * @return    numeric    The average value
+     * @access  public
+     * @param   array    The array containing the values
+     * @return  numeric  The average value
      */
     function average($array)
     {
@@ -38,11 +38,11 @@ class Arr {
      * Flattens a multi-dimensional associative array down into a 1 dimensional
      * associative array.
      *
-     * @access    public
-     * @param    array    The array to flatten
-     * @param    string    What to glue the keys together with
-     * @param    bool    Whether to reset and start over on a new array
-     * @return    array
+     * @access  public
+     * @param   array   The array to flatten
+     * @param   string  What to glue the keys together with
+     * @param   bool    Whether to reset and start over on a new array
+     * @return  array
      */
     public static function flatten_assoc($array, $glue = ':', $reset = true)
     {
@@ -74,11 +74,11 @@ class Arr {
     /**
      * Filters an array on prefixed associative keys.
      *
-     * @access    public
-     * @param    array    The array to filter.
-     * @param    string    Prefix to filter on.
-     * @param    bool    Whether to remove the prefix.
-     * @return    array
+     * @access  public
+     * @param   array   The array to filter.
+     * @param   string  Prefix to filter on.
+     * @param   bool    Whether to remove the prefix.
+     * @return  array
      */
     public static function filter_prefixed($array, $prefix = 'prefix_', $remove_prefix = true)
     {
@@ -100,11 +100,11 @@ class Arr {
     /**
      * Returns the element of the given array or a default if it is not set.
      *
-     * @access    public
-     * @param    array    The array to fetch from
-     * @param    mixed    The key to fetch from the array
-     * @param    mixed    The value returned when not an array or invalid key
-     * @return    mixed
+     * @access  public
+     * @param   array    The array to fetch from
+     * @param   mixed    The key to fetch from the array
+     * @param   mixed    The value returned when not an array or invalid key
+     * @return  mixed
      */
     public static function element($array, $key, $default = false)
     {
@@ -136,11 +136,11 @@ class Arr {
      * Returns the elements of the given array or a default if it is not set.
      * WARNING: original array is edited by reference, only boolean success is returned
      *
-     * @access    public
-     * @param    array    The array to fetch from
-     * @param    array    The keys to fetch from the array
-     * @param    array    The value returned when not an array or invalid key
-     * @return    mixed
+     * @access  public
+     * @param   array    The array to fetch from
+     * @param   array    The keys to fetch from the array
+     * @param   array    The value returned when not an array or invalid key
+     * @return  mixed
      */
     public static function elements($array, $keys, $default = false)
     {
@@ -170,10 +170,10 @@ class Arr {
      * Insert value(s) into an array, mostly an array_splice alias
      * WARNING: original array is edited by reference, only boolean success is returned
      *
-     * @param    array        The original array (by reference)
-     * @param    array|mixed    The value(s) to insert, if you want to insert an array it needs to be in an array itself
-     * @param    int            The numeric position at which to insert, negative to count from the end backwards
-     * @return    bool        false when array shorter then $pos, otherwise true
+     * @param   array       The original array (by reference)
+     * @param   array|mixed The value(s) to insert, if you want to insert an array it needs to be in an array itself
+     * @param   int         The numeric position at which to insert, negative to count from the end backwards
+     * @return  bool        false when array shorter then $pos, otherwise true
      */
     public static function insert(Array &$original, $value, $pos)
     {
@@ -191,10 +191,10 @@ class Arr {
      * Insert value(s) into an array after a specific key
      * WARNING: original array is edited by reference, only boolean success is returned
      *
-     * @param    array        The original array (by reference)
-     * @param    array|mixed    The value(s) to insert, if you want to insert an array it needs to be in an array itself
-     * @param    string|int    The key after which to insert
-     * @return    bool        false when key isn't found in the array, otherwise true
+     * @param   array       The original array (by reference)
+     * @param   array|mixed The value(s) to insert, if you want to insert an array it needs to be in an array itself
+     * @param   string|int  The key after which to insert
+     * @return  bool        false when key isn't found in the array, otherwise true
      */
     public static function insert_after_key(Array &$original, $value, $key)
     {
@@ -211,10 +211,10 @@ class Arr {
     /**
      * Insert value(s) into an array after a specific value (first found in array)
      *
-     * @param    array        The original array (by reference)
-     * @param    array|mixed    The value(s) to insert, if you want to insert an array it needs to be in an array itself
-     * @param    string|int    The value after which to insert
-     * @return    bool        false when value isn't found in the array, otherwise true
+     * @paray   array       The original array (by reference)
+     * @param   array|mixed The value(s) to insert, if you want to insert an array it needs to be in an array itself
+     * @param   string|int  The value after which to insert
+     * @return  bool        false when value isn't found in the array, otherwise true
      */
     public static function insert_after_value(Array &$original, $value, $search)
     {
@@ -231,12 +231,12 @@ class Arr {
     /**
      * Sorts a multi-dimensional array by it's values.
      *
-     * @access    public
-     * @param    array    The array to fetch from
-     * @param    string    The key to sort by
-     * @param    string    The order (asc or desc)
-     * @param    int        The php sort type flag
-     * @return    array
+     * @access  public
+     * @param   array   The array to fetch from
+     * @param   string  The key to sort by
+     * @param   string  The order (asc or desc)
+     * @param   int     The php sort type flag
+     * @return  array
      */
     public static function sort($array, $key, $order = 'asc', $sort_flags = SORT_REGULAR)
     {
