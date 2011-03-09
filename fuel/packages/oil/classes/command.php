@@ -4,13 +4,13 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package     Fuel
+ * @version     1.0
+ * @author      Dan Horrigan <http://dhorrigan.com>
+ * @license     MIT License
+ * @copyright   2010 - 2011 Fuel Development Team
  */
+
 
 namespace Oil;
 
@@ -112,18 +112,26 @@ class Command
 
                 break;
 
-				case 't':
-				case 'test':
+                case 't':
+                case 'test':
+                
+                    $group = isset($args[2]) ? ' --group '.$args[2] : '';
 
-					// CD to the root of Fuel and call up phpunit with a path to our config
-					$command = 'cd '.DOCROOT.'; phpunit -c "'.COREPATH.'phpunit.xml"';
+                    passthru('cd '.DOCROOT.'; phpunit'.$group);
 
-					// Respect the group option
-					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
+//                    $action = isset($args[2]) ? $args[2]: '--help';
+//
+//                    switch ($action)
+//                    {
+//                        case '--help':
+//                            \Fuel\Octane\Tests::help();
+//                        break;
+//
+//                        default:
+//                            call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
+//                    }
 
-					passthru($command);
-				
-				break;
+                break;
  
                 default:
                     static::help();
