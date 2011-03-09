@@ -41,8 +41,6 @@ class Input {
 		if (is_null($index)) {
 			return $default;
 		}
-		
-		var_dump(strtoupper($name), $request->method, $using_connector, $args);
 
 		if (strtoupper($name) === $request->method && true === $using_connector) {
 			return isset($request->data[$index]) ? $request->data[$index] : $default;
