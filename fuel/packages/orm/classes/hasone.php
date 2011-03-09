@@ -46,7 +46,7 @@ class HasOne implements Relation {
 
 	public function get()
 	{
-		$query = $this->model_from::find();
+		$query = $this->model_from->find();
 		reset($this->key_to);
 		foreach ($this->key_from as $key)
 		{
@@ -58,7 +58,7 @@ class HasOne implements Relation {
 
 	public function select($table)
 	{
-		$props = $this->model_to::properties();
+		$props = $this->model_to->properties();
 		$i = 0;
 		$properties = array();
 		foreach ($props as $pk => $pv)
@@ -72,7 +72,7 @@ class HasOne implements Relation {
 	public function join($alias)
 	{
 		$join = array(
-			'table'	=> array($this->model_to::table(), $alias),
+			'table'	=> array($this->model_to->table(), $alias),
 			'type'	=> 'left',
 			'on'	=> array(),
 		);

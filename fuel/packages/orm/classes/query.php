@@ -71,7 +71,7 @@ class Query {
 	 */
 	protected $group_by = array();
 
-	protected function __construct($model, $options, $table_alias)
+	protected function __construct($model, $options, $table_alias = null)
 	{
 		$this->model = $model;
 
@@ -242,7 +242,7 @@ class Query {
 		$query = call_user_func_array('DB::select', $select);
 
 		// Set from table
-		$query->from($this->model::table());
+		$query->from($this->model->table());
 
 		// Get the limit
 		if ( ! is_null($this->limit))
