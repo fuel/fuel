@@ -27,79 +27,85 @@ namespace Fuel\Core;
  */
 class Debug {
 
-    protected static $js_displayed = false;
+	protected static $js_displayed = false;
 
-    protected static $files = array();
+	protected static $files = array();
 
-    /**
-     * Quick and nice way to output a mixed variable to the browser
-     *
-     * @static
-     * @access    public
-     * @return    string
-     */
-    public static function dump()
-    {
-        $backtrace = debug_backtrace();
+	/**
+	 * Quick and nice way to output a mixed variable to the browser
+	 *
+	 * @static
+	 * @access	public
+	 * @return	string
+	 */
+	public static function dump()
+	{
+		$backtrace = debug_backtrace();
 
-        // If being called from within, show the file above in the backtrack
-        if (strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE)
-        {
-            $callee = $backtrace[1];
-            $label = \Inflector::humanize($backtrace[1]['function']);
-        }
-        else
-        {
-            $callee = $backtrace[0];
-            $label = 'Debug';
-        }
+		// If being called from within, show the file above in the backtrack
+		if (strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE)
+		{
+			$callee = $backtrace[1];
+			$label = \Inflector::humanize($backtrace[1]['function']);
+		}
+		else
+		{
+			$callee = $backtrace[0];
+			$label = 'Debug';
+		}
 
-        $arguments = func_get_args();
-        $total_arguments = count($arguments);
+		$arguments = func_get_args();
+		$total_arguments = count($arguments);
 
-        $callee['file'] = \Fuel::clean_path($callee['file']);
+		$callee['file'] = \Fuel::clean_path($callee['file']);
 
-        echo '<div style="font-size: 13px;background: #EEE !important; border:1px solid #666; color: #000 !important; padding:10px;">';
-        echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 120% sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1>';
-        echo '<pre style="overflow:auto;font-size:100%;">';
+		echo '<div style="font-size: 13px;background: #EEE !important; border:1px solid #666; color: #000 !important; padding:10px;">';
+		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 120% sans-serif;">'.$callee['file'].' @ line: '.$callee['line'].'</h1>';
+		echo '<pre style="overflow:auto;font-size:100%;">';
 
-        var_dump($arguments);
+		$count = count($arguments);
+		for ($i = 1; $i <= $count; $i++)
+		{
+			echo '<strong>Variable #'.$i.':</strong>'.PHP_EOL;
+			var_dump($arguments[$i - 1]);
+			echo PHP_EOL.PHP_EOL;
+		}
 
-        echo "</pre>";
-        echo "</div>";
-    }
+		echo "</pre>";
+		echo "</div>";
+	}
 
-    /**
-     * Quick and nice way to output a mixed variable to the browser
-     *
-     * @static
-     * @access    public
-     * @return    string
-     */
-    public static function inspect()
-    {
-        $backtrace = debug_backtrace();
+	/**
+	 * Quick and nice way to output a mixed variable to the browser
+	 *
+	 * @static
+	 * @access	public
+	 * @return	string
+	 */
+	public static function inspect()
+	{
+		$backtrace = debug_backtrace();
 
-        // If being called from within, show the file above in the backtrack
-        if (strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE)
-        {
-            $callee = $backtrace[1];
-            $label = \Inflector::humanize($backtrace[1]['function']);
-        }
-        else
-        {
-            $callee = $backtrace[0];
-            $label = 'Debug';
-        }
+		// If being called from within, show the file above in the backtrack
+		if (strpos($backtrace[0]['file'], 'core/classes/debug.php') !== FALSE)
+		{
+			$callee = $backtrace[1];
+			$label = \Inflector::humanize($backtrace[1]['function']);
+		}
+		else
+		{
+			$callee = $backtrace[0];
+			$label = 'Debug';
+		}
 
-        $arguments = func_get_args();
-        $total_arguments = count($arguments);
+		$arguments = func_get_args();
+		$total_arguments = count($arguments);
 
-        $callee['file'] = \Fuel::clean_path($callee['file']);
+		$callee['file'] = \Fuel::clean_path($callee['file']);
 
-        if ( ! static::$js_displayed)
-        {
-            echo <<<JS
+		if ( ! static::$js_displayed)
+		{
+			echo <<<JS
 <script type="text/javascript">function fuel_debug_toggle(a){if(document.getElementById){if(document.getElementById(a).style.display=="none"){document.getElementById(a).style.display="block"}else{document.getElementById(a).style.display="none"}}else{if(document.layers){if(document.id.display=="none"){document.id.display="block"}else{document.id.display="none"}}else{if(document.all.id.style.display=="none"){document.all.id.style.display="block"}else{document.all.id.style.display="none"}}}};</script>
 JS;
             static::$js_displayed = true;
