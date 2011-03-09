@@ -138,6 +138,8 @@ Autoloader::add_classes(array(
 
 	'Fuel\\Core\\Str'  => COREPATH.'classes/str.php',
 
+	'Fuel\\Core\\TestCase'  => COREPATH.'classes/testcase.php',
+
 	'Fuel\\Core\\Uri'     => COREPATH.'classes/uri.php',
 	'Fuel\\Core\\Upload'  => COREPATH.'classes/upload.php',
 
