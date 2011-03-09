@@ -48,7 +48,9 @@ class Request extends \Fuel\Core\Request {
 	private static $_request_method = '';
 
 	/**
-	 * Create a request object
+	 * Creates the new Request object by getting a new URI object, then parsing
+     * the uri with the Route class. Once constructed we need to save the method 
+	 * and GET/POST/PUT or DELETE dataset
 	 * 
 	 * @param string $uri
 	 * @param boolean $route
@@ -58,11 +60,13 @@ class Request extends \Fuel\Core\Request {
 	public function __construct($uri, $route, $type = 'GET', $dataset = array()) {
 		parent::__construct($uri, $route);
 
+		/* store this construct method and data static-ly */
 		static::$_request_method = $type;
 		static::$_request_data = $dataset;
 	}
 	
 	/**
+	 * This executes the request and sets the output to be used later. 
 	 * Cleaning up our request after executing \Request::execute()
 	 * 
 	 * Usage:
@@ -73,21 +77,31 @@ class Request extends \Fuel\Core\Request {
 	 * @see \Request::execute()
 	 */
 	public function execute() {
+		/* Since this just a imitation of curl request, \Hybrid\Input need to know the 
+		 * request method and data available in the connection. 
+		 */
 		\Hybrid\Input::connect(static::$_request_method, static::$_request_data);
 		
-		$status = \Output::$status;
+		/* Keep a copy or current HTTP Response status */
+		$original_status = \Output::$status;
 
-		$execute = parent::execute();
+		$execute_object = parent::execute();
 
+		$execute_status = \Output::$status;
+		
+		/* Revert HTTP Response status to that value before this connection.
+		 * Sub-request response status shouldn't affect the original request.
+		 */
+		\Output::$status = $original_status;
+		
+		/* We need to clean-up any request object transfered to \Hybrid\Input so that
+		 * any following request to \Hybrid\Input will redirected to \Fuel\Core\Input
+		 */
+		\Hybrid\Input::disconnect();
 		static::$_request_method = '';
 		static::$_request_data = array();
 
-		$execute_status = \Output::$status;
-		\Output::$status = $status;
-		
-		\Hybrid\Input::disconnect();
-
-		return array($execute, $execute_status);
+		return array($execute_object, $execute_status);
 	}
 	
 	
