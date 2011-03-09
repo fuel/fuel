@@ -15,10 +15,10 @@
 namespace Fuel\Core;
 
 /**
- * Date class tests
+ * Inflector class tests
  *
  * @group Core
- * @group Date
+ * @group Inflector
  */
 class Tests_Inflector extends TestCase {
 
