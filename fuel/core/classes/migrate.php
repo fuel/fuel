@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Fuel\Core;
@@ -256,7 +256,7 @@ class Migrate
 	 * @param $schema_version integer	Schema version reached
 	 * @return	void					Outputs a report of the migration
 	 */
-	private function _update_schema_version($old_version, $version)
+	private static function _update_schema_version($old_version, $version)
 	{
 		\DB::update('migration')->set(array('current' => (int) $version))->where('current', '=', (int) $old_version)->execute();
 	}
