@@ -3,22 +3,22 @@
 class Autoloader {
 
     /**
-     * @var array    $classes    holds all the classes and paths
+     * @var array   $classes    holds all the classes and paths
      */
     protected static $classes = array();
 
     /**
-     * @var array    Holds all the namespace paths
+     * @var array   Holds all the namespace paths
      */
     protected static $namespaces = array();
 
     /**
-     * @var    array    List off namespaces of which classes will be aliased to global namespace
+     * @var array   List off namespaces of which classes will be aliased to global namespace
      */
     protected static $core_namespaces = array('Fuel\\Core');
 
     /**
-     * @var array    The default path to look in if the class is not in a package
+     * @var array   The default path to look in if the class is not in a package
      */
     protected static $default_path = null;
 
@@ -31,10 +31,10 @@ class Autoloader {
     /**
      * Adds a namespace and path
      *
-     * @access    public
-     * @param    string    the namespace
-     * @param    string    the path
-     * @return    void
+     * @access  public
+     * @param   string  the namespace
+     * @param   string  the path
+     * @return  void
      */
     public static function add_namespace($namespace, $path)
     {
@@ -44,9 +44,9 @@ class Autoloader {
     /**
      * Adds an array of namespaces
      *
-     * @access    public
-     * @param    array    the namespaces
-     * @return    void
+     * @access  public
+     * @param   array   the namespaces
+     * @return  void
      */
     public static function add_namespaces(array $namespaces, $prepend = false)
     {
@@ -63,8 +63,8 @@ class Autoloader {
     /**
      * Returns the namespace's path or false when it doesn't exist
      *
-     * @param    string
-     * @return    array|bool
+     * @param   string
+     * @return  array|bool
      */
     public static function namespace_path($namespace)
     {
@@ -79,8 +79,8 @@ class Autoloader {
     /**
      * Adds a class path
      *
-     * @param    string    $class    the class name
-     * @param    string    $path    the path to the class file
+     * @param   string  $class  the class name
+     * @param   string  $path   the path to the class file
      */
     public static function add_class($class, $path)
     {
@@ -90,7 +90,7 @@ class Autoloader {
     /**
      * Adds multiple class paths
      *
-     * @param    array    $classes    the class names and paths
+     * @param   array   $classes    the class names and paths
      */
     public static function add_classes($classes)
     {
@@ -103,8 +103,8 @@ class Autoloader {
     /**
      * Aliases a class to a namespace, the root by default
      *
-     * @param    string    $class        the class name
-     * @param    string    $namespace    the namespace to alias to
+     * @param   string  $class      the class name
+     * @param   string  $namespace  the namespace to alias to
      */
     public static function alias_to_namespace($class, $namespace = '')
     {
@@ -116,7 +116,7 @@ class Autoloader {
     /**
      * Register's the autoloader to the SPL autoload stack.
      *
-     * @return    void
+     * @return  void
      */
     public static function register()
     {
@@ -126,8 +126,8 @@ class Autoloader {
     /**
      * Returns the class with namespace prefix when available
      *
-     * @param    string
-     * @return    bool|string
+     * @param   string
+     * @return  bool|string
      */
     protected static function is_core_class($class)
     {
@@ -147,9 +147,9 @@ class Autoloader {
      * will be auto-aliased to the global namespace.
      * Prefixing the classes will overwrite core classes and previously added namespaces.
      *
-     * @param    string
-     * @param    bool
-     * @return    void
+     * @param   string
+     * @param   bool
+     * @return  void
      */
     public static function add_core_namespace($namespace, $prefix = true)
     {
@@ -240,7 +240,7 @@ class Autoloader {
      * Checks to see if the given class has a static _init() method.  If so then
      * it calls it.
      *
-     * @param    string    the class name
+     * @param   string  the class name
      */
     private static function _init_class($class)
     {
