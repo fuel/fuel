@@ -447,66 +447,66 @@ abstract class Controller_Rest extends \Controller {
 //			$headings = array_keys($data[0]);
 //		}
 //
-//		// Single array
-//		else
-//		{
-//			$headings = array_keys($data);
-//			$data = array($data);
-//		}
+//        // Single array
+//        else
+//        {
+//            $headings = array_keys($data);
+//            $data = array($data);
+//        }
 //
-//		self::load->library('table');
+//        self::load->library('table');
 //
-//		self::table->set_heading($headings);
+//        self::table->set_heading($headings);
 //
-//		foreach($data as &$row)
-//		{
-//			self::table->add_row($row);
-//		}
+//        foreach($data as &$row)
+//        {
+//            self::table->add_row($row);
+//        }
 //
-//		return self::table->generate();
-//	}
-	// Format HTML for output
-	private function _format_csv($data = array())
-	{
-		// Multi-dimentional array
-		if (isset($data[0]))
-		{
-			$headings = array_keys($data[0]);
-		}
+//        return self::table->generate();
+//    }
+    // Format HTML for output
+    private function _format_csv($data = array())
+    {
+        // Multi-dimentional array
+        if (isset($data[0]))
+        {
+            $headings = array_keys($data[0]);
+        }
 
-		// Single array
-		else
-		{
-			$headings = array_keys($data);
-			$data = array($data);
-		}
+        // Single array
+        else
+        {
+            $headings = array_keys($data);
+            $data = array($data);
+        }
 
-		$output = implode(',', $headings) . "\r\n";
-		foreach ($data as &$row)
-		{
-			$output .= '"' . implode('","', $row) . "\"\r\n";
-		}
+        $output = implode(',', $headings) . "\r\n";
+        foreach ($data as &$row)
+        {
+            $output .= '"' . implode('","', $row) . "\"\r\n";
+        }
 
-		return $output;
-	}
+        return $output;
+    }
 
-	// Encode as JSON
-	private function _format_json($data = array())
-	{
-		return json_encode($data);
-	}
+    // Encode as JSON
+    private function _format_json($data = array())
+    {
+        return json_encode($data);
+    }
 
-	// Encode as Serialized array
-	private function _format_serialize($data = array())
-	{
-		return serialize($data);
-	}
+    // Encode as Serialized array
+    private function _format_serialize($data = array())
+    {
+        return serialize($data);
+    }
 
-	// Encode raw PHP
-	private function _format_php($data = array())
-	{
-		return var_export($data, true);
-	}
+    // Encode raw PHP
+    private function _format_php($data = array())
+    {
+        return var_export($data, true);
+    }
 
 }
 

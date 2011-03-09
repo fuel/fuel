@@ -1,59 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Oil utility - Introduction - Fuel Documentation</title>
-	<link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
-	<script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="../../assets/js/nav.js"></script>
-	<script type="text/javascript" src="../../assets/js/highlight.pack.js"></script>
-	<script type="text/javascript">
-		$(function() {
-			show_nav('packages', '../../');
-		});
-		hljs.tabReplace = '    ';
-		hljs.initHighlightingOnLoad();
-	</script>
+    <meta charset="utf-8">
+    <title>Oil utility - Introduction - Fuel Documentation</title>
+    <link href="../../assets/css/main.css" media="screen" rel="stylesheet" />
+    <script type="text/javascript" src="../../assets/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../../assets/js/nav.js"></script>
+    <script type="text/javascript" src="../../assets/js/highlight.pack.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            show_nav('packages', '../../');
+        });
+        hljs.tabReplace = '    ';
+        hljs.initHighlightingOnLoad();
+    </script>
 </head>
 <body>
 
-	<header>
-		<h1>FUEL Documentation</h1>
-	</header>
+    <header>
+        <h1>FUEL Documentation</h1>
+    </header>
 
-	<div id="main-nav"></div>
+    <div id="main-nav"></div>
 
-	<section id="content">
-		<h2>Oil utility</h2>
+    <section id="content">
+        <h2>Oil utility</h2>
 
-		<p>The Oil utility is a special package command can be used in several ways to facilitate quick development, help with
-		testing your application and for running <a href="../../general/tasks.html">Tasks</a>.</p>
+        <p>The Oil utility is a special package command can be used in several ways to facilitate quick development, help with
+        testing your application and for running <a href="../../general/tasks.html">Tasks</a>.</p>
 
-		<section>
+        <section>
 
-			<p>Oil is an optional command line utility designed to help speed up development by providing several functions:</p>
+            <p>Oil is an optional command line utility designed to help speed up development by providing several functions:</p>
 
-			<ul>
-				<li><a href="../../packages/oil/generate.html">Generate</a> - Build MVC components, migrations and entire scaffolding.</li>
-				<li><a href="../../packages/oil/refine.html">Refine</a> - Run tasks such as migrate and your own custom ones.</li>
-				<li><a href="../../packages/oil/package.html">Package</a> - Install, update and remove packages.</li>
-				<li><a href="../../packages/oil/console.html">Console</a> - Test your code in real time using an interactive shell.</li>
-			</ul>
+            <ul>
+                <li><a href="../../packages/oil/generate.html">Generate</a> - Build MVC components, migrations and entire scaffolding.</li>
+                <li><a href="../../packages/oil/refine.html">Refine</a> - Run tasks such as migrate and your own custom ones.</li>
+                <li><a href="../../packages/oil/package.html">Package</a> - Install, update and remove packages.</li>
+                <li><a href="../../packages/oil/console.html">Console</a> - Test your code in real time using an interactive shell.</li>
+            </ul>
 
-			<p>
-				Each of these commands works in a different way to achieve different things, but before getting into them it's best to make sure
-				you are in the correct folder and oil is available and running.
-			</p>
+            <p>
+                Each of these commands works in a different way to achieve different things, but before getting into them it's best to make sure
+                you are in the correct folder and oil is available and running.
+            </p>
 
-			<pre class="cli">$ cd Sites/fuel
+            <pre class="cli">$ cd Sites/fuel
 $ php oil -v
 Fuel: 1.0.0-beta1</pre>
 
-			<h3>In-line help</h3>
+            <h3>In-line help</h3>
 
-			<p>Oil contains it's own basic documentation which can be found by typing the command:</p>
+            <p>Oil contains it's own basic documentation which can be found by typing the command:</p>
 
-			<pre class="cli">$ php oil help
+            <pre class="cli">$ php oil help
 
 Usage:
   php oil [console|generate|help|test|package]
@@ -71,20 +71,20 @@ Documentation:
   http://fuelphp.com/docs/packages/oil/intro.html
 </pre>
 
-			<p>Each of these commands has its own help section which can be found by typing:</p>
+            <p>Each of these commands has its own help section which can be found by typing:</p>
 
-			<pre class="cli">$ php oil generate help</pre>
+            <pre class="cli">$ php oil generate help</pre>
 
-		</section>
+        </section>
 
-	</section>
+    </section>
 
-	<section id="footer">
-		<p>
-			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
-			&copy; 2010 - 2011 Fuel Development Team
-		</p>
-	</section>
+    <section id="footer">
+        <p>
+            <a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+            &copy; 2010 - 2011 Fuel Development Team
+        </p>
+    </section>
 
 </body>
 </html>

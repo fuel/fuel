@@ -9,7 +9,7 @@
 
 Fuel is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a dime a dozen, We believe that Fuel will stand out in the crowd.  It will do this by combining all the things you love about the great frameworks out there, while getting rid of the bad.
 
-Let us know what you would like to see in Fuel at [http://community.fuelphp.com/fuelphp](http://community.fuelphp.com/fuelphp).
+Let us know what you would like to see in Fuel at [http://dev.fuelphp.com/fuelphp](http://dev.fuelphp.com/).
 
 ##Development Team
 
@@ -20,7 +20,7 @@ Let us know what you would like to see in Fuel at [http://community.fuelphp.com/
 
 ##Requirements
 
-The planned requirements for Fuel are as follows:
+Fuel Requirements are very simple.
 
 * PHP 5.3 or greater
 * Any web server
@@ -29,7 +29,7 @@ That's it! Nothing else.
 
 ##Roadmap
 
-Help define it by [submitting your ideas here](http://community.fuelphp.com/fuelphp).
+Help define it by [submitting your ideas here](http://dev.fuelphp.com/).
 
 ##Donate
 

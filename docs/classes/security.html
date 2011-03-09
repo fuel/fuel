@@ -1,253 +1,253 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Security Class - Fuel Documentation</title>
-	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
-	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="../assets/js/nav.js"></script>
-	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
-	<script type="text/javascript">
-		$(function() {
-			show_nav('classes', '../');
-		});
-		hljs.tabReplace = '    ';
-		hljs.initHighlightingOnLoad();
-	</script>
+    <meta charset="utf-8">
+    <title>Security Class - Fuel Documentation</title>
+    <link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+    <script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../assets/js/nav.js"></script>
+    <script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            show_nav('classes', '../');
+        });
+        hljs.tabReplace = '    ';
+        hljs.initHighlightingOnLoad();
+    </script>
 </head>
 <body>
 
-	<header>
-		<h1>FUEL Documentation</h1>
-	</header>
+    <header>
+        <h1>FUEL Documentation</h1>
+    </header>
 
-	<div id="main-nav"></div>
+    <div id="main-nav"></div>
 
-	<section id="content">
-		<h2>Security Class</h2>
+    <section id="content">
+        <h2>Security Class</h2>
 
-		<p>The security class allows you to have CSRF protection in your application.</p>
+        <p>The security class allows you to have CSRF protection in your application.</p>
 
-		<article>
-			<h4>check_token($value = null)</h4>
-			<p>The <strong>check_token</strong> method allows you to check the CSRF token.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th class="legend">Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>
-						<table class="parameters">
-							<tr>
-								<th>Param</th>
-								<th>Default</th>
-								<th class="description">Description</th>
-							</tr>
-							<tr>
-								<th><kbd>$value</kbd></th>
-								<td><pre class="php"><code>null</code></pre></td>
-								<td>CSRF token to be checked, checks value from POST when empty.</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td>boolean</td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>Security::check_token();</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
+        <article>
+            <h4>check_token($value = null)</h4>
+            <p>The <strong>check_token</strong> method allows you to check the CSRF token.</p>
+            <table class="method">
+                <tbody>
+                <tr>
+                    <th class="legend">Static</th>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <th>Parameters</th>
+                    <td>
+                        <table class="parameters">
+                            <tr>
+                                <th>Param</th>
+                                <th>Default</th>
+                                <th class="description">Description</th>
+                            </tr>
+                            <tr>
+                                <th><kbd>$value</kbd></th>
+                                <td><pre class="php"><code>null</code></pre></td>
+                                <td>CSRF token to be checked, checks value from POST when empty.</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Returns</th>
+                    <td>boolean</td>
+                </tr>
+                <tr>
+                    <th>Example</th>
+                    <td>
+                        <pre class="php"><code>Security::check_token();</code></pre>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
 
-		<article>
-			<h4>fetch_token()</h4>
-			<p>The <strong>fetch_token</strong> method allows you to fetch the CSRF token from the cookie.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th class="legend">Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>None</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td>string</td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>$csrf_token = Security::fetch_token();</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
+        <article>
+            <h4>fetch_token()</h4>
+            <p>The <strong>fetch_token</strong> method allows you to fetch the CSRF token from the cookie.</p>
+            <table class="method">
+                <tbody>
+                <tr>
+                    <th class="legend">Static</th>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <th>Parameters</th>
+                    <td>None</td>
+                </tr>
+                <tr>
+                    <th>Returns</th>
+                    <td>string</td>
+                </tr>
+                <tr>
+                    <th>Example</th>
+                    <td>
+                        <pre class="php"><code>$csrf_token = Security::fetch_token();</code></pre>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
 
-		<article>
-			<h4>js_fetch_token()</h4>
-			<p>The <strong>js_fetch_token</strong> method allows you to produce JavaScript fuel_csrf_token() function that will return the current CSRF token when called. Use to fill right field on form submit for AJAX operations.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th class="legend">Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>None</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td>string</td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>echo Security::js_fetch_token();</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
+        <article>
+            <h4>js_fetch_token()</h4>
+            <p>The <strong>js_fetch_token</strong> method allows you to produce JavaScript fuel_csrf_token() function that will return the current CSRF token when called. Use to fill right field on form submit for AJAX operations.</p>
+            <table class="method">
+                <tbody>
+                <tr>
+                    <th class="legend">Static</th>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <th>Parameters</th>
+                    <td>None</td>
+                </tr>
+                <tr>
+                    <th>Returns</th>
+                    <td>string</td>
+                </tr>
+                <tr>
+                    <th>Example</th>
+                    <td>
+                        <pre class="php"><code>echo Security::js_fetch_token();</code></pre>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
 
-		<article>
-			<h4>regenerate_token()</h4>
-			<p>The <strong>regenerate_token</strong> method allows you to generate a new token if the old one expired or was checked.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th class="legend">Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>None</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td>void</td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>Security::regenerate_token();</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
+        <article>
+            <h4>regenerate_token()</h4>
+            <p>The <strong>regenerate_token</strong> method allows you to generate a new token if the old one expired or was checked.</p>
+            <table class="method">
+                <tbody>
+                <tr>
+                    <th class="legend">Static</th>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <th>Parameters</th>
+                    <td>None</td>
+                </tr>
+                <tr>
+                    <th>Returns</th>
+                    <td>void</td>
+                </tr>
+                <tr>
+                    <th>Example</th>
+                    <td>
+                        <pre class="php"><code>Security::regenerate_token();</code></pre>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
 
-		<article>
-			<h4>strip_tags($value)</h4>
-			<p>The <strong>strip_tags</strong> method allows you to strip HTML and PHP tags from a string.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th class="legend">Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>
-						<table class="parameters">
-							<tr>
-								<th>Param</th>
-								<th>Default</th>
-								<th class="description">Description</th>
-							</tr>
-							<tr>
-								<th><kbd>$value</kbd></th>
-								<td><i>Required</i></td>
-								<td>The input string.</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td>string</td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>$text = '&lt;p&gt;Test paragraph.&lt;/p&gt;';
+        <article>
+            <h4>strip_tags($value)</h4>
+            <p>The <strong>strip_tags</strong> method allows you to strip HTML and PHP tags from a string.</p>
+            <table class="method">
+                <tbody>
+                <tr>
+                    <th class="legend">Static</th>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <th>Parameters</th>
+                    <td>
+                        <table class="parameters">
+                            <tr>
+                                <th>Param</th>
+                                <th>Default</th>
+                                <th class="description">Description</th>
+                            </tr>
+                            <tr>
+                                <th><kbd>$value</kbd></th>
+                                <td><i>Required</i></td>
+                                <td>The input string.</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Returns</th>
+                    <td>string</td>
+                </tr>
+                <tr>
+                    <th>Example</th>
+                    <td>
+                        <pre class="php"><code>$text = '&lt;p&gt;Test paragraph.&lt;/p&gt;';
 $text = Security::strip_tags($text);</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
 
-		<article>
-			<h4>clean($value, $filters)</h4>
-			<p>The <strong>clean</strong> method allows you clean data using the filters provided.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th class="legend">Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>
-						<table class="parameters">
-							<tr>
-								<th>Param</th>
-								<th>Default</th>
-								<th class="description">Description</th>
-							</tr>
-							<tr>
-								<th><kbd>$value</kbd></th>
-								<td><i>Required</i></td>
-								<td>The value to be cleaned. This can be a string value, or an array of string values.</td>
-							</tr>
-							<tr>
-								<th><kbd>$filters</kbd></th>
-								<td><i>Required</i></td>
-								<td>
-									The filters to be used to clean the string(s). A filter can be a single value, or an array of values. Each value must be a valid PHP callback.
-									You may specify functions ('htmlentities'), objects ($this), or static methods ('Classname::method').
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td>string</td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>// first strip tags, convert html entities in the remaining data, and finish it off using our special cleaning solution
+        <article>
+            <h4>clean($value, $filters)</h4>
+            <p>The <strong>clean</strong> method allows you clean data using the filters provided.</p>
+            <table class="method">
+                <tbody>
+                <tr>
+                    <th class="legend">Static</th>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <th>Parameters</th>
+                    <td>
+                        <table class="parameters">
+                            <tr>
+                                <th>Param</th>
+                                <th>Default</th>
+                                <th class="description">Description</th>
+                            </tr>
+                            <tr>
+                                <th><kbd>$value</kbd></th>
+                                <td><i>Required</i></td>
+                                <td>The value to be cleaned. This can be a string value, or an array of string values.</td>
+                            </tr>
+                            <tr>
+                                <th><kbd>$filters</kbd></th>
+                                <td><i>Required</i></td>
+                                <td>
+                                    The filters to be used to clean the string(s). A filter can be a single value, or an array of values. Each value must be a valid PHP callback.
+                                    You may specify functions ('htmlentities'), objects ($this), or static methods ('Classname::method').
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Returns</th>
+                    <td>string</td>
+                </tr>
+                <tr>
+                    <th>Example</th>
+                    <td>
+                        <pre class="php"><code>// first strip tags, convert html entities in the remaining data, and finish it off using our special cleaning solution
 $filters = array('strip_tags', 'html_entities', '\\cleaners\\soap::clean');
 $text = Security::clean($text, $filters);</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
 
-	</section>
+    </section>
 
-	<section id="footer">
-		<p>
-			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
-			&copy; 2010 - 2011 Fuel Development Team
-		</p>
-	</section>
+    <section id="footer">
+        <p>
+            <a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+            &copy; 2010 - 2011 Fuel Development Team
+        </p>
+    </section>
 
 </body>
 </html>

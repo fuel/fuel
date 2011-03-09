@@ -4,23 +4,23 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package     Fuel
+ * @version     1.0
+ * @author      Dan Horrigan <http://dhorrigan.com>
+ * @license     MIT License
+ * @copyright   2010 - 2011 Fuel Development Team
  */
+
 
 namespace Fuel\Core;
 
 /**
  * Migrate Class
  *
- * @package		Fuel
- * @category	Migrations
- * @author		Phil Sturgeon
- * @link		http://fuelphp.com/docs/classes/migrate.html
+ * @package        Fuel
+ * @category    Migrations
+ * @author        Phil Sturgeon
+ * @link        http://fuelphp.com/docs/classes/migrate.html
  */
 class Migrate
 {
