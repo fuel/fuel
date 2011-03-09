@@ -1,6 +1,6 @@
 <?php
 
-namespace Workflow;
+namespace Hybrid;
 
 class Request extends \Fuel\Core\Request {
 	/**
@@ -10,7 +10,7 @@ class Request extends \Fuel\Core\Request {
 	 *
 	 * Usage:
 	 *
-	 * <code>\Workflow\Request::connector('GET hello/world', array('hello' => 'world');</code>
+	 * <code>\Hybrid\Request::connector('GET controller/method?hello=world');</code>
 	 *
 	 * @access	public
 	 * @param	string	The URI of the request
@@ -47,6 +47,14 @@ class Request extends \Fuel\Core\Request {
 	private static $_request_data = array();
 	private static $_request_method = '';
 
+	/**
+	 * Create a request object
+	 * 
+	 * @param string $uri
+	 * @param boolean $route
+	 * @param string $type GET|POST|PUT|DELETE
+	 * @param array $dataset 
+	 */
 	public function __construct($uri, $route, $type = 'GET', $dataset = array()) {
 		parent::__construct($uri, $route);
 
@@ -54,21 +62,19 @@ class Request extends \Fuel\Core\Request {
 		static::$_request_data = $dataset;
 	}
 	
-	public function connection() {
-		return (object) array('method' => static::$_request_method, 'data' => static::$_request_data);
-	}
-	
 	/**
 	 * Cleaning up our request after executing \Request::execute()
 	 * 
 	 * Usage:
 	 * 
-	 * <code>list($data, $status) = Connector::factory('GET controller/model', array('hello' => 'world'))->execute();</code>
+	 * <code>list($data, $status) = \Hybrid\Request::connector('PUT controller/model?hello=world')->execute();</code>
 	 * 
-	 * @return array containing $data and request $status
+	 * @return array containing $data and HTTP Response $status
 	 * @see \Request::execute()
 	 */
 	public function execute() {
+		\Hybrid\Input::connect(static::$_request_method, static::$_request_data);
+		
 		$status = \Output::$status;
 
 		$execute = parent::execute();
@@ -78,6 +84,8 @@ class Request extends \Fuel\Core\Request {
 
 		$execute_status = \Output::$status;
 		\Output::$status = $status;
+		
+		\Hybrid\Input::disconnect();
 
 		return array($execute, $execute_status);
 	}
