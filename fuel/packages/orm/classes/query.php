@@ -79,7 +79,7 @@ class Query {
 		{
 			if (method_exists($this, $opt))
 			{
-				call_user_func_array(array($this, $opt), $val);
+				call_user_func_array(array($this, $opt), (array) $val);
 			}
 		}
 	}

@@ -96,7 +96,7 @@ class Model {
 	 *
 	 * @return array
 	 */
-	protected static function primary_key()
+	public static function primary_key()
 	{
 		return static::$_primary_key;
 	}
@@ -107,7 +107,7 @@ class Model {
 	 * @param	array
 	 * @return	string
 	 */
-	protected static function implode_pk($data)
+	public static function implode_pk($data)
 	{
 		$pk = '';
 		foreach(static::$_primary_key as $p)
