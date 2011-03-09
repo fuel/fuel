@@ -22,32 +22,32 @@ namespace Fuel\Core;
  * NOTE: This class has been taken from the CodeIgniter framework and slightly modified,
  * but on the whole all credit goes to them. Over time this will be worked on.
  *
- * @package        Fuel
+ * @package     Fuel
  * @category    Core
- * @author        ExpressionEngine Dev Team
+ * @author      ExpressionEngine Dev Team
  * @modified    Mike Branderhorst
- * @copyright    (c) 2008 - 2011 EllisLab, Inc.
- * @license        http://codeigniter.com/user_guide/license.html
+ * @copyright   (c) 2008 - 2011 EllisLab, Inc.
+ * @license     http://codeigniter.com/user_guide/license.html
  * @link        http://fuelphp.com/docs/classes/agent.html
  */
 class Agent {
 
-    protected static $is_browser = false;    // \Agent::is_browser()    or \Agent::is_browser('browsername')
-    protected static $is_robot    = false;    // \Agent::is_robot()    or \Agent::is_robot('robotname')
-    protected static $is_mobile    = false;    // \Agent::is_mobile()    or \Agent::is_mobile('mobilename')
+    protected static $is_browser = false;   // \Agent::is_browser()    or \Agent::is_browser('browsername')
+    protected static $is_robot   = false;   // \Agent::is_robot()    or \Agent::is_robot('robotname')
+    protected static $is_mobile  = false;   // \Agent::is_mobile()    or \Agent::is_mobile('mobilename')
 
-    protected static $agent        = null;        // \Agent::string()
-    protected static $platform    = null;        // \Agent::platform()
-    protected static $browser    = null;        // \Agent::browser()
-    protected static $version    = null;        // \Agent::version()
-    protected static $mobile    = null;        // \Agent::mobile()
-    protected static $robot        = null;        // \Agent::robot()
+    protected static $agent    = null;  // \Agent::string()
+    protected static $platform = null;  // \Agent::platform()
+    protected static $browser  = null;  // \Agent::browser()
+    protected static $version  = null;  // \Agent::version()
+    protected static $mobile   = null;  // \Agent::mobile()
+    protected static $robot    = null;  // \Agent::robot()
     
-    protected static $languages    = array();
-    protected static $charsets    = array();
-    protected static $platforms    = array();
-    protected static $browsers    = array();
-    protected static $mobiles    = array();
+    protected static $languages = array();
+    protected static $charsets  = array();
+    protected static $platforms = array();
+    protected static $browsers  = array();
+    protected static $mobiles   = array();
     protected static $robots    = array();
 
     // ---------------------------------------------------------------------
