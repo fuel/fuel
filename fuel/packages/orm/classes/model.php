@@ -49,7 +49,7 @@ class Model {
 	/**
 	 * @var	array	array of fetched objects
 	 */
-	protected static $_object_cache = array();
+	protected static $_cached_objects = array();
 
 	public static function factory($data, $new = true)
 	{
@@ -72,7 +72,7 @@ class Model {
 	 *
 	 * @return string
 	 */
-	protected static function table()
+	public static function table()
 	{
 		$class = get_called_class();
 
@@ -112,7 +112,7 @@ class Model {
 		$pk = '';
 		foreach(static::$_primary_key as $p)
 		{
-			$pk .= '['.(is_object($data) ? $data->{$p} : $data[$p]).']';
+			$pk .= '['.(is_object($data) ? $data->{$p} : (isset($data[$p]) ? $data[$p] : null)).']';
 		}
 
 		return $pk;
@@ -165,15 +165,21 @@ class Model {
 		{
 			return Query::factory(get_called_class(), $options)->find();
 		}
-		elseif ($id == 'first')
+		elseif ($id == 'first' || $id == 'last')
 		{
 			$options['limit'] = 1;
-			return Query::factory(get_called_class(), $options)->find();
+			$query = Query::factory(get_called_class(), $options);
+
+			foreach(static::primary_key() as $pk)
+			{
+				$query->order(current(static::primary_key()), $id == 'first' ? 'ASC' : 'DESC');
+			}
+			
+			return $query->find();
 		}
 		else
 		{
-			$where = array();
-			$cache_pk = array();
+			$cache_pk = $where = array();
 			$id = (array) $id;
 			foreach (static::primary_key() as $pk)
 			{
@@ -263,7 +269,7 @@ class Model {
 		{
 			return $this->{$property};
 		}
-		elseif (array_key_exists($property, static::$_relations))
+		elseif (isset(static::$_relations) and array_key_exists($property, static::$_relations))
 		{
 			if ( ! array_key_exists($property, $this->_loaded_relations))
 			{
@@ -273,7 +279,7 @@ class Model {
 		}
 		else
 		{
-			throw new UndefinedProperty('Property not found.');
+			throw new UndefinedProperty('Property "'.$property.'" not found for '.get_called_class().'.');
 		}
 	}
 
@@ -323,7 +329,9 @@ class Model {
 	/**
 	 * Save using UPDATE
 	 */
-	public function update() {}
+	public function update() {
+
+	}
 
 	/**
 	 * Delete current object

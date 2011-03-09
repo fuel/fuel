@@ -195,18 +195,30 @@ class Query {
 	 * @param	string|array
 	 * @param	string|null
 	 */
-	public function order_by($property, $direction = null)
+	public function order($property, $direction = 'ASC')
 	{
 		if (is_array($property))
 		{
 			foreach ($property as $p => $d)
 			{
-				$this->order_by($p, $d);
+				// Simple array of keys
+				if (is_int($p))
+				{
+					$this->order($d, $direction);
+				}
+
+				// Assoc array of orders
+				else
+				{
+					$this->order($p, $d);
+				}
 			}
 			return;
 		}
 
 		$this->order_by[$property] = $direction;
+
+		return $this;
 	}
 
 	/**
@@ -242,7 +254,7 @@ class Query {
 		$query = call_user_func_array('DB::select', $select);
 
 		// Set from table
-		$query->from($this->model->table());
+		$query->from(call_user_func($this->model.'::table'));
 
 		// Get the limit
 		if ( ! is_null($this->limit))
@@ -300,9 +312,9 @@ class Query {
 		}
 
 		// if there was a limit/offset on a join the query up till now will become a subquery
+		$joins = $relations = array();
 		if ( ! empty($this->relations) and ( ! empty($this->limit) or ! empty($this->offset)))
 		{
-			$relations = array();
 			$i = 1;
 			foreach ($this->relations as $name => $rel)
 			{
@@ -350,7 +362,7 @@ class Query {
 		{
 			foreach ($this->order_by as $column => $direction)
 			{
-				$query->order_by($column, $direction);
+				$query->order($column, $direction);
 			}
 		}
 
@@ -378,6 +390,8 @@ class Query {
 		{
 			$this->hydrate($row, $relations, $result);
 		}
+
+		\Debug::dump($result);
 
 		// It's all built, now lets execute and start hydration
 		return $result;
