@@ -6,7 +6,7 @@ namespace Fuel\Core;
 // Attempt to load PUPUnit.  If it fails, we are done.
 if ( ! @include_once('PHPUnit/Autoload.php'))
 {
-    die(PHP_EOL.'PHPUnit does not appear to be installed properly.'.PHP_EOL.PHP_EOL.'Please visit http://phpunit.de and re-install.'.PHP_EOL.PHP_EOL);
+	die(PHP_EOL.'PHPUnit does not appear to be installed properly.'.PHP_EOL.PHP_EOL.'Please visit http://phpunit.de and re-install.'.PHP_EOL.PHP_EOL);
 }
 
 // Extend from TestCase to allow flexibility in the future
@@ -18,9 +18,9 @@ class TestCase extends \PHPUnit_Framework_TestCase { }
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$app_path        = '../../'.trim($_SERVER['app_path'], '/').'/';
-$package_path    = '../../'.trim($_SERVER['package_path'], '/').'/';
-$core_path        = '../../'.trim($_SERVER['core_path'], '/').'/';
+$app_path		= trim($_SERVER['app_path'], '/').'/';
+$package_path	= trim($_SERVER['package_path'], '/').'/';
+$core_path		= trim($_SERVER['core_path'], '/').'/';
 
 /**
  * Website docroot

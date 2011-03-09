@@ -4,11 +4,11 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package        Fuel
- * @version        1.0
- * @author        Dan Horrigan <http://dhorrigan.com>
- * @license        MIT License
- * @copyright    2010 - 2011 Fuel Development Team
+ * @package		Fuel
+ * @version		1.0
+ * @author		Dan Horrigan <http://dhorrigan.com>
+ * @license		MIT License
+ * @copyright	2010 - 2011 Fuel Development Team
  */
 
 namespace Fuel\Core;
@@ -232,18 +232,19 @@ class Inflector {
         // Decode all entities to their simpler forms
         $str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
 
-        $trans = array(
-            '\s+' => $sep,        // one or more spaces => seperator
-            $sep.'+' => $sep,   // multiple seperators => 1 seperator
-            $sep.'$' => '',            // ending seperator => (nothing)
-            '^'.$sep => '',         // starting seperator => (nothing)
-            '\.+$' => ''             // ending dot => (nothing)
-        );
-        
-        foreach ($trans as $key => $val)
-        {
-            $str = preg_replace("#".$key."#i", $val, $str);
-        }
+		$trans = array(
+			'\s+' => $sep,        // one or more spaces => seperator
+			$sep.'+' => $sep,   // multiple seperators => 1 seperator
+			$sep.'$' => '',	        // ending seperator => (nothing)
+			'^'.$sep => '',         // starting seperator => (nothing)
+			'\.+$' => '',            // ending dot => (nothing)
+			'\?' => ''                // question mark
+		);
+		
+		foreach ($trans as $key => $val)
+		{
+			$str = preg_replace("#".$key."#i", $val, $str);
+		}
 
         // Only allow 7bit characters
         $str = static::ascii($str);
