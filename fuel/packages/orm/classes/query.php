@@ -96,6 +96,19 @@ class Query {
 
 		if (empty($fields))
 		{
+			if (empty($this->select))
+			{
+				$fields = array_keys(call_user_func($this->model.'::properties'));
+				if (empty($fields))
+				{
+					throw new Exception('No properties found in model.');
+				}
+				foreach ($fields as $field)
+				{
+					$this->select($field);
+				}
+			}
+
 			$out = array();
 			foreach($this->select as $k => $v)
 			{
@@ -237,7 +250,7 @@ class Query {
 			return;
 		}
 
-		$this->relations[] = $r;
+		$this->relations[] = $relation;
 	}
 
 	/**
@@ -391,8 +404,6 @@ class Query {
 			$this->hydrate($row, $relations, $result);
 		}
 
-		\Debug::dump($result);
-
 		// It's all built, now lets execute and start hydration
 		return $result;
 	}
@@ -402,9 +413,9 @@ class Query {
 		$model = is_null($model) ? $this->model : $model;
 		$select = is_null($select) ? $this->select() : $select;
 		$obj = array();
-		foreach ($select as $k => $v)
+		foreach ($select as $s)
 		{
-			$obj[$v] = $row[$k];
+			$obj[$s[0]] = $row[$s[1]];
 		}
 
 		if ( ! in_array($pk = $model::implode_pk($obj), $result))

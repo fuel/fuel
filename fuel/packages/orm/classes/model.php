@@ -11,7 +11,7 @@
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
- 
+
 namespace Orm;
 use \Inflector;
 
@@ -55,7 +55,7 @@ class Model {
 	{
 		return new static($data, $new);
 	}
-	
+
 	/**
 	 * First time the class is called staticly
 	 *
@@ -123,7 +123,7 @@ class Model {
 	 *
 	 * @return array
 	 */
-	protected static function properties()
+	public static function properties()
 	{
 		$class = get_called_class();
 
@@ -174,7 +174,7 @@ class Model {
 			{
 				$query->order(current(static::primary_key()), $id == 'first' ? 'ASC' : 'DESC');
 			}
-			
+
 			return $query->find();
 		}
 		else
@@ -188,7 +188,8 @@ class Model {
 				next($id);
 			}
 
-			if (array_key_exists(static::implode_pk($cache_pk), static::$_cached_objects[get_called_class()]))
+			if (array_key_exists(get_called_class(), static::$_cached_objects)
+			    and array_key_exists(static::implode_pk($cache_pk), static::$_cached_objects[get_called_class()]))
 			{
 				return static::$_cached_objects[get_called_class()][static::implode_pk($cache_pk)];
 			}
