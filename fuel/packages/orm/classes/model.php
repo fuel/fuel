@@ -55,6 +55,17 @@ class Model {
 	{
 		return new static($data, $new);
 	}
+	
+	/**
+	 * First time the class is called staticly
+	 *
+	 * @return string
+	 */
+	public static function _init()
+	{
+		// Define the properties we'll be working with
+		static::properties();
+	}
 
 	/**
 	 * Get the table name for this class
@@ -124,6 +135,7 @@ class Model {
 
 		// Fetch the properties if not
 		$properties = get_class_vars($class);
+
 		foreach ($properties as $k => $v)
 		{
 			if (substr($k, 0, 1) == '_')
@@ -283,13 +295,13 @@ class Model {
 			$this->{$property} = $value;
 			$this->_modified = true;
 		}
-		elseif (array_key_exists($property, static::$_relations))
+		elseif (isset(static::$_relations) and array_key_exists($property, static::$_relations))
 		{
 			$this->_loaded_relations[$property] = $value;
 		}
 		else
 		{
-			throw new UndefinedProperty('Property not found.');
+			throw new UndefinedProperty('Property "'.$property.'" not found for '.get_called_class().'.');
 		}
 	}
 

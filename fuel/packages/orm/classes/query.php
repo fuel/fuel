@@ -235,7 +235,6 @@ class Query {
 	 */
 	public function find()
 	{
-
 		// Get the columns
 		$select = $this->select();
 
