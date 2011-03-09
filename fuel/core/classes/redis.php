@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package        Fuel
+ * @version        1.0
+ * @author        Fuel Development Team
+ * @license        MIT License
+ * @copyright    2010 - 2011 Fuel Development Team
+ * @link        http://fuelphp.com
  */
 
 /**
@@ -31,140 +31,140 @@ namespace Fuel\Core;
  */
 class Redis {
 
-	protected static $instances = array();
+    protected static $instances = array();
 
-	public static function instance($name = 'default')
-	{
-		if (\array_key_exists($name, static::$instances))
-		{
-			return static::$instances[$name];
-		}
+    public static function instance($name = 'default')
+    {
+        if (\array_key_exists($name, static::$instances))
+        {
+            return static::$instances[$name];
+        }
 
-		if (empty(static::$instances))
-		{
-			\Config::load('db', true);
-		}
-		if ( ! ($config = \Config::get('db.redis.'.$name)))
-		{
-			throw new \Redis_Exception('Invalid instance name given.');
-		}
+        if (empty(static::$instances))
+        {
+            \Config::load('db', true);
+        }
+        if ( ! ($config = \Config::get('db.redis.'.$name)))
+        {
+            throw new \Redis_Exception('Invalid instance name given.');
+        }
 
-		static::$instances[$name] = new static($config);
+        static::$instances[$name] = new static($config);
 
-		return static::$instances[$name];
-	}
+        return static::$instances[$name];
+    }
 
-	protected $connection = false;
+    protected $connection = false;
 
-	public function  __construct(array $config = array())
-	{
-		$this->connection = @fsockopen($config['hostname'], $config['port'], $errno, $errstr);
+    public function  __construct(array $config = array())
+    {
+        $this->connection = @fsockopen($config['hostname'], $config['port'], $errno, $errstr);
 
-		if ( ! $this->connection)
-		{
-			throw new \Redis_Exception($errstr, $errno);
-		}
-	}
+        if ( ! $this->connection)
+        {
+            throw new \Redis_Exception($errstr, $errno);
+        }
+    }
 
-	public function  __destruct()
-	{
-		fclose($this->connection);
-	}
+    public function  __destruct()
+    {
+        fclose($this->connection);
+    }
 
-	public function __call($name, $args)
-	{
-		$response = null;
+    public function __call($name, $args)
+    {
+        $response = null;
 
-		$name = strtoupper($name);
+        $name = strtoupper($name);
 
-		$command = '*'.(count($args) + 1).CRLF;
-		$command .= '$'.strlen($name).CRLF;
-		$command .= $name.CRLF;
+        $command = '*'.(count($args) + 1).CRLF;
+        $command .= '$'.strlen($name).CRLF;
+        $command .= $name.CRLF;
 
-		foreach ($args as $arg)
-		{
-			$command .= '$'.strlen($arg).CRLF;
-			$command .= $arg.CRLF;
-		}
+        foreach ($args as $arg)
+        {
+            $command .= '$'.strlen($arg).CRLF;
+            $command .= $arg.CRLF;
+        }
 
-		fwrite($this->connection, $command);
+        fwrite($this->connection, $command);
 
-		$reply = trim(fgets($this->connection, 512));
+        $reply = trim(fgets($this->connection, 512));
 
-		switch (substr($reply, 0, 1))
-		{
-			// Error
-			case '-':
-				throw new \Redis_Exception(substr(trim($reply), 4));
-			break;
+        switch (substr($reply, 0, 1))
+        {
+            // Error
+            case '-':
+                throw new \Redis_Exception(substr(trim($reply), 4));
+            break;
 
-			// In-line reply
-			case '+':
-				$response = substr(trim($reply), 1);
-			break;
+            // In-line reply
+            case '+':
+                $response = substr(trim($reply), 1);
+            break;
 
-			// Bulk reply
-			case '$':
-				if ($reply == '$-1')
-				{
-					$response = null;
-					break;
-				}
-				$read = 0;
-				$size = substr($reply, 1);
-				do
-				{
-					$block_size = ($size - $read) > 1024 ? 1024 : ($size - $read);
-					$response .= fread($this->connection, $block_size);
-					$read += $block_size;
-				} while ($read < $size);
-				fread($this->connection, 2);
-			break;
+            // Bulk reply
+            case '$':
+                if ($reply == '$-1')
+                {
+                    $response = null;
+                    break;
+                }
+                $read = 0;
+                $size = substr($reply, 1);
+                do
+                {
+                    $block_size = ($size - $read) > 1024 ? 1024 : ($size - $read);
+                    $response .= fread($this->connection, $block_size);
+                    $read += $block_size;
+                } while ($read < $size);
+                fread($this->connection, 2);
+            break;
 
-			// Mult-Bulk reply
-			case '*':
-				$count = substr($reply, 1);
-				if ($count == '-1')
-				{
-					return null;
-				}
-				$response = array();
-				for ($i = 0; $i < $count; $i++)
-				{
-					$bulk_head = trim(fgets($this->connection, 512));
-					$size = substr($bulk_head, 1);
-					if ($size == '-1')
-					{
-						$response[] = null;
-					}
-					else
-					{
-						$read = 0;
-						$block = "";
-						do
-						{
-							$block_size = ($size - $read) > 1024 ? 1024 : ($size - $read);
-							$block .= fread($this->connection, $block_size);
-							$read += $block_size;
-						} while ($read < $size);
-						fread($this->connection, 2); /* discard crlf */
-						$response[] = $block;
-					}
-				}
-			break;
+            // Mult-Bulk reply
+            case '*':
+                $count = substr($reply, 1);
+                if ($count == '-1')
+                {
+                    return null;
+                }
+                $response = array();
+                for ($i = 0; $i < $count; $i++)
+                {
+                    $bulk_head = trim(fgets($this->connection, 512));
+                    $size = substr($bulk_head, 1);
+                    if ($size == '-1')
+                    {
+                        $response[] = null;
+                    }
+                    else
+                    {
+                        $read = 0;
+                        $block = "";
+                        do
+                        {
+                            $block_size = ($size - $read) > 1024 ? 1024 : ($size - $read);
+                            $block .= fread($this->connection, $block_size);
+                            $read += $block_size;
+                        } while ($read < $size);
+                        fread($this->connection, 2); /* discard crlf */
+                        $response[] = $block;
+                    }
+                }
+            break;
 
-			// Integer Reply
-			case ':':
-				$response = substr(trim($reply), 1);
-			break;
+            // Integer Reply
+            case ':':
+                $response = substr(trim($reply), 1);
+            break;
 
-			// Don't know what to do?  Throw it outta here
-			default:
-				throw new \Redis_Exception("invalid server response: {$reply}");
-			break;
-		}
+            // Don't know what to do?  Throw it outta here
+            default:
+                throw new \Redis_Exception("invalid server response: {$reply}");
+            break;
+        }
 
-		return $response;
-	}
+        return $response;
+    }
 
 }

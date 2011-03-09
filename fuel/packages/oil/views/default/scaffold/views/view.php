@@ -1,7 +1,7 @@
 <?php foreach ($fields as $field): ?>
 <p>
-	<strong><?php echo \Inflector::humanize($field['name']); ?>:</strong>
-	<?php echo '<?php'; ?> echo $<?php echo $singular.'->'.$field['name']; ?>; <?php echo '?>'; ?>
+    <strong><?php echo \Inflector::humanize($field['name']); ?>:</strong>
+    <?php echo '<?php'; ?> echo $<?php echo $singular.'->'.$field['name']; ?>; <?php echo '?>'; ?>
 </p>
 <?php endforeach; ?>
 

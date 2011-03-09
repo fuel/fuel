@@ -2,9 +2,9 @@
 /**
  * Set all the paths
  */
-$app_path		= './fuel/app/';
-$package_path	= './fuel/packages/';
-$core_path		= './fuel/core/';
+$app_path        = './fuel/app/';
+$package_path    = './fuel/packages/';
+$core_path        = './fuel/core/';
 
 /**
  * Set error reporting and display errors settings.  You will want to change these when in production.

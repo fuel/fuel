@@ -1,49 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Migrations - Fuel Documentation</title>
-	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
-	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="../assets/js/nav.js"></script>
-	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
-	<script type="text/javascript">
-		$(function() {
-			show_nav('general', '../');
-		});
-		hljs.tabReplace = '    ';
-		hljs.initHighlightingOnLoad();
-	</script>
+    <meta charset="utf-8">
+    <title>Migrations - Fuel Documentation</title>
+    <link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+    <script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../assets/js/nav.js"></script>
+    <script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            show_nav('general', '../');
+        });
+        hljs.tabReplace = '    ';
+        hljs.initHighlightingOnLoad();
+    </script>
 </head>
 <body>
 
-	<header>
-		<h1>FUEL Documentation</h1>
-	</header>
+    <header>
+        <h1>FUEL Documentation</h1>
+    </header>
 
-	<div id="main-nav"></div>
+    <div id="main-nav"></div>
 
-	<section id="content">
-		<h2>Migrations</h2>
+    <section id="content">
+        <h2>Migrations</h2>
 
-		<p>Migrations are a convenient way for you to alter your database in a structured and organized manner. You could edit fragments of SQL by hand but you would then be responsible for telling other developers that they need to go and run them. You’d also have to keep track of which changes need to be run against the production machines next time you deploy.</p>
+        <p>Migrations are a convenient way for you to alter your database in a structured and organized manner. You could edit fragments of SQL by hand but you would then be responsible for telling other developers that they need to go and run them. You’d also have to keep track of which changes need to be run against the production machines next time you deploy.</p>
 
-		<p>The database table `migration` tracks which migrations have already been run so all you have to do is update your application files and call <kbd>Migrate::current()</kbd> to work out which migrations should be run. The current version is found in core/config/migration.php so like any other config file you should copy this to app/config to make changes.</p>
+        <p>The database table `migration` tracks which migrations have already been run so all you have to do is update your application files and call <kbd>Migrate::current()</kbd> to work out which migrations should be run. The current version is found in core/config/migration.php so like any other config file you should copy this to app/config to make changes.</p>
 
-		<h3>Creating a Migration</h3>
+        <h3>Creating a Migration</h3>
 
-		<p>Create a file in the app/migrations folder. The prefix should be an incremental count starting at 001, do not skip numbers and do not have two numbers that match. The first would be something like <kbd>app/migrations/001_example.php</kbd>.
-		<pre><code>namespace Fuel\Migrations;
+        <p>Create a file in the app/migrations folder. The prefix should be an incremental count starting at 001, do not skip numbers and do not have two numbers that match. The first would be something like <kbd>app/migrations/001_example.php</kbd>.
+        <pre><code>namespace Fuel\Migrations;
 
 class Example {
 
     function up()
     {
         \DBUtil::create_table('posts', array(
-			'id' => array('type' => 'int', 'constraint' => 5),
-			'title' => array('type' => 'varchar', 'constraint' => 100),
-			'body' => array('type' => 'text'),
-		), array('id'));
+            'id' => array('type' => 'int', 'constraint' => 5),
+            'title' => array('type' => 'varchar', 'constraint' => 100),
+            'body' => array('type' => 'text'),
+        ), array('id'));
     }
 
     function down()
@@ -53,38 +53,38 @@ class Example {
 }
 </code></pre>
 
-	<h3>Run a Migration</h3>
+    <h3>Run a Migration</h3>
 
-	<p>A migration can be run in two ways:</p>
+    <p>A migration can be run in two ways:</p>
 
-	<ol>
-		<li><a href="../classes/migrate.html">Migrate class</a></li>
-		<li><a href="../packages/oil/refine.html">Oil Refine Command</a></li>
-	</ol>
+    <ol>
+        <li><a href="../classes/migrate.html">Migrate class</a></li>
+        <li><a href="../packages/oil/refine.html">Oil Refine Command</a></li>
+    </ol>
 
-	<p>The oil command there uses the Refine command to call the migrate <a href="tasks.html">task</a>.</p>
+    <p>The oil command there uses the Refine command to call the migrate <a href="tasks.html">task</a>.</p>
 
-	<pre class="cli">$ php oil refine migrate
+    <pre class="cli">$ php oil refine migrate
 $ php oil refine migrate:current
 $ php oil refine migrate:up
 $ php oil refine migrate:down
 $ php oil refine migrate --version=10</pre>
 
-	<p class="note">
-		<strong>Note: </strong>
-		The migrate:current task is to match your schema to the version listed in <kbd>fuel/[app|core]/config/migrate.php</kbd> as if you have just got
-		a copy of the application, the very latest migration not be the one considered stable. Using oil for migrations will modify this migration
-		config number so the current command will not be relevant in many situations.
-	</p>
-	
-	</section>
+    <p class="note">
+        <strong>Note: </strong>
+        The migrate:current task is to match your schema to the version listed in <kbd>fuel/[app|core]/config/migrate.php</kbd> as if you have just got
+        a copy of the application, the very latest migration not be the one considered stable. Using oil for migrations will modify this migration
+        config number so the current command will not be relevant in many situations.
+    </p>
+    
+    </section>
 
-	<section id="footer">
-		<p>
-			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
-			&copy; 2010 - 2011 Fuel Development Team
-		</p>
-	</section>
+    <section id="footer">
+        <p>
+            <a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+            &copy; 2010 - 2011 Fuel Development Team
+        </p>
+    </section>
 
 </body>
 </html>

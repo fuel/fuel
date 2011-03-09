@@ -8,26 +8,26 @@ ini_set('display_errors', 1);
 // Use an anonymous function to keep the global namespace clean
 call_user_func(function() {
 
-	/**
-	 * Set all the paths here
-	 */
-	$app_path		= '../fuel/app/';
-	$package_path	= '../fuel/packages/';
-	$core_path		= '../fuel/core/';
+    /**
+     * Set all the paths here
+     */
+    $app_path        = '../fuel/app/';
+    $package_path    = '../fuel/packages/';
+    $core_path        = '../fuel/core/';
 
 
-	/**
-	 * Website docroot
-	 */
-	define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
+    /**
+     * Website docroot
+     */
+    define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
 
-	( ! is_dir($app_path) and is_dir(DOCROOT.$app_path)) and $app_path = DOCROOT.$app_path;
-	( ! is_dir($core_path) and is_dir(DOCROOT.$core_path)) and $core_path = DOCROOT.$core_path;
-	( ! is_dir($package_path) and is_dir(DOCROOT.$package_path)) and $package_path = DOCROOT.$package_path;
+    ( ! is_dir($app_path) and is_dir(DOCROOT.$app_path)) and $app_path = DOCROOT.$app_path;
+    ( ! is_dir($core_path) and is_dir(DOCROOT.$core_path)) and $core_path = DOCROOT.$core_path;
+    ( ! is_dir($package_path) and is_dir(DOCROOT.$package_path)) and $package_path = DOCROOT.$package_path;
 
-	define('APPPATH', realpath($app_path).DIRECTORY_SEPARATOR);
-	define('PKGPATH', realpath($package_path).DIRECTORY_SEPARATOR);
-	define('COREPATH', realpath($core_path).DIRECTORY_SEPARATOR);
+    define('APPPATH', realpath($app_path).DIRECTORY_SEPARATOR);
+    define('PKGPATH', realpath($package_path).DIRECTORY_SEPARATOR);
+    define('COREPATH', realpath($core_path).DIRECTORY_SEPARATOR);
 
 });
 

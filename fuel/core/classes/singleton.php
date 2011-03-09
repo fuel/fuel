@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package        Fuel
+ * @version        1.0
+ * @author        Fuel Development Team
+ * @license        MIT License
+ * @copyright    2010 - 2011 Fuel Development Team
+ * @link        http://fuelphp.com
  */
 
 namespace Fuel\Core;
@@ -21,47 +21,47 @@ namespace Fuel\Core;
  */
 abstract class Singleton
 {
-	/**
-	 * The instances cache.
-	 *
-	 * @var array
-	 */
-	private static $instances = array();
+    /**
+     * The instances cache.
+     *
+     * @var array
+     */
+    private static $instances = array();
 
-	/**
-	 * Instantiates the Singleton class.
-	 *
-	 * @return object
-	 */
-	final public static function instance()
-	{
-		$class = get_called_class();
+    /**
+     * Instantiates the Singleton class.
+     *
+     * @return object
+     */
+    final public static function instance()
+    {
+        $class = get_called_class();
 
-		if ( ! isset(self::$instances[$class]))
-		{
-			self::$instances[$class] = new $class;
-		}
+        if ( ! isset(self::$instances[$class]))
+        {
+            self::$instances[$class] = new $class;
+        }
 
-		return self::$instances[$class];
-	}
+        return self::$instances[$class];
+    }
 
-	/**
-	 * Singleton objects should not be cloned.
-	 *
-	 * @return void
-	 */
-	final private function __clone() {}
+    /**
+     * Singleton objects should not be cloned.
+     *
+     * @return void
+     */
+    final private function __clone() {}
 
-	/**
-	 * Similar to a get_called_class() for a child class to invoke.
-	 *
-	 * @return string
-	 */
-	final protected function get_called_class()
-	{
-		$backtrace = debug_backtrace();
-    	return get_class($backtrace[2]['object']);
-	}
+    /**
+     * Similar to a get_called_class() for a child class to invoke.
+     *
+     * @return string
+     */
+    final protected function get_called_class()
+    {
+        $backtrace = debug_backtrace();
+        return get_class($backtrace[2]['object']);
+    }
 }
 
 /* End of file singleton.php */

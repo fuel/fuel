@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package        Fuel
+ * @version        1.0
+ * @author        Fuel Development Team
+ * @license        MIT License
+ * @copyright    2010 - 2011 Fuel Development Team
+ * @link        http://fuelphp.com
  */
 
 namespace Fuel\Core;
@@ -23,335 +23,335 @@ namespace Fuel\Core;
  *
  * Define a set of fields that can be used to generate a form or to validate input.
  *
- * @package		Fuel
- * @category	Core
- * @author		Jelmer Schreuder
+ * @package        Fuel
+ * @category    Core
+ * @author        Jelmer Schreuder
  */
 class Fieldset
 {
-	/**
-	 * @var	Fieldset
-	 */
-	protected static $_instance;
+    /**
+     * @var    Fieldset
+     */
+    protected static $_instance;
 
-	/**
-	 * @var	array	contains references to all instantiations of Fieldset
-	 */
-	protected static $_instances = array();
+    /**
+     * @var    array    contains references to all instantiations of Fieldset
+     */
+    protected static $_instances = array();
 
-	public static function factory($name = 'default', Array $config = array())
-	{
-		if ($exists = static::instance($name))
-		{
-			\Error::notice('Fieldset with this name exists already, cannot be overwritten.');
-			return $exists;
-		}
+    public static function factory($name = 'default', Array $config = array())
+    {
+        if ($exists = static::instance($name))
+        {
+            \Error::notice('Fieldset with this name exists already, cannot be overwritten.');
+            return $exists;
+        }
 
-		static::$_instances[$name] = new Fieldset($name, $config);
+        static::$_instances[$name] = new Fieldset($name, $config);
 
-		if ($name == 'default')
-		{
-			static::$_instance = static::$_instances[$name];
-		}
+        if ($name == 'default')
+        {
+            static::$_instance = static::$_instances[$name];
+        }
 
-		return static::$_instances[$name];
-	}
+        return static::$_instances[$name];
+    }
 
-	/**
-	 * Return a specific instance, or the default instance (is created if necessary)
-	 *
-	 * @param	string	driver id
-	 * @return	Auth_Login_Driver
-	 */
-	public static function instance($instance = null)
-	{
-		if ($instance !== null)
-		{
-			if ( ! array_key_exists($instance, static::$_instances))
-			{
-				return false;
-			}
+    /**
+     * Return a specific instance, or the default instance (is created if necessary)
+     *
+     * @param    string    driver id
+     * @return    Auth_Login_Driver
+     */
+    public static function instance($instance = null)
+    {
+        if ($instance !== null)
+        {
+            if ( ! array_key_exists($instance, static::$_instances))
+            {
+                return false;
+            }
 
-			return static::$_instances[$instance];
-		}
+            return static::$_instances[$instance];
+        }
 
-		if (static::$_instance === null)
-		{
-			static::$_instance = static::factory();
-		}
+        if (static::$_instance === null)
+        {
+            static::$_instance = static::factory();
+        }
 
-		return static::$_instance;
-	}
+        return static::$_instance;
+    }
 
-	/**
-	 * @var	string	instance id
-	 */
-	protected $name;
+    /**
+     * @var    string    instance id
+     */
+    protected $name;
 
-	/**
-	 * @var	array	array of Fieldset_Field objects
-	 */
-	protected $fields = array();
+    /**
+     * @var    array    array of Fieldset_Field objects
+     */
+    protected $fields = array();
 
-	/**
-	 * @var	Validation	instance of validation
-	 */
-	protected $validation;
+    /**
+     * @var    Validation    instance of validation
+     */
+    protected $validation;
 
-	/**
-	 * @var	Form	instance of form
-	 */
-	protected $form;
+    /**
+     * @var    Form    instance of form
+     */
+    protected $form;
 
-	/**
-	 * @var	array	configuration array
-	 */
-	protected $config = array();
+    /**
+     * @var    array    configuration array
+     */
+    protected $config = array();
 
-	/**
-	 * Class constructor
-	 *
-	 * @param	string
-	 * @param	array
-	 */
-	protected function __construct($name, Array $config = array())
-	{
-		$this->name = (string) $name;
-		$this->config = $config;
+    /**
+     * Class constructor
+     *
+     * @param    string
+     * @param    array
+     */
+    protected function __construct($name, Array $config = array())
+    {
+        $this->name = (string) $name;
+        $this->config = $config;
 
-		if (isset($config['validation_instance']) && $config['validation_instance'] instanceof Validation)
-		{
-			$this->validation = $config['validation_instance'];
-		}
-		if (isset($config['form_instance']) && $config['form_instance'] instanceof Form)
-		{
-			$this->validation = $config['form_instance'];
-		}
-	}
+        if (isset($config['validation_instance']) && $config['validation_instance'] instanceof Validation)
+        {
+            $this->validation = $config['validation_instance'];
+        }
+        if (isset($config['form_instance']) && $config['form_instance'] instanceof Form)
+        {
+            $this->validation = $config['form_instance'];
+        }
+    }
 
-	/**
-	 * Get related Validation instance or create it
-	 *
-	 * @return	Validation
-	 */
-	public function validation()
-	{
-		if (empty($this->validation))
-		{
-			$this->validation = Validation::factory($this);
-		}
+    /**
+     * Get related Validation instance or create it
+     *
+     * @return    Validation
+     */
+    public function validation()
+    {
+        if (empty($this->validation))
+        {
+            $this->validation = Validation::factory($this);
+        }
 
-		return $this->validation;
-	}
+        return $this->validation;
+    }
 
-	/**
-	 * Get related Form instance or create it
-	 *
-	 * @return	Form
-	 */
-	public function form()
-	{
-		if (empty($this->form))
-		{
-			$this->form = Form::factory($this);
-		}
+    /**
+     * Get related Form instance or create it
+     *
+     * @return    Form
+     */
+    public function form()
+    {
+        if (empty($this->form))
+        {
+            $this->form = Form::factory($this);
+        }
 
-		return $this->form;
-	}
+        return $this->form;
+    }
 
-	/**
-	 * Factory for Fieldset_Field objects
-	 *
-	 * @param	string
-	 * @param	string
-	 * @param	array
-	 * @param	array
-	 * @return	Fieldset_Field
-	 */
-	public function add($name, $label = '', array $attributes = array(), array $rules = array())
-	{
-		if (empty($name) || (is_array($name) && empty($name['name'])))
-		{
-			throw new \Fuel_Exception('Cannot create field without name.');
-		}
+    /**
+     * Factory for Fieldset_Field objects
+     *
+     * @param    string
+     * @param    string
+     * @param    array
+     * @param    array
+     * @return    Fieldset_Field
+     */
+    public function add($name, $label = '', array $attributes = array(), array $rules = array())
+    {
+        if (empty($name) || (is_array($name) && empty($name['name'])))
+        {
+            throw new \Fuel_Exception('Cannot create field without name.');
+        }
 
-		// Allow passing the whole config in an array, will overwrite other values if that's the case
-		if (is_array($name))
-		{
-			$attributes = $name;
-			$label = isset($name['label']) ? $name['label'] : '';
-			$rules = isset($name['rules']) ? $name['rules'] : array();
-			$name = $name['name'];
-		}
+        // Allow passing the whole config in an array, will overwrite other values if that's the case
+        if (is_array($name))
+        {
+            $attributes = $name;
+            $label = isset($name['label']) ? $name['label'] : '';
+            $rules = isset($name['rules']) ? $name['rules'] : array();
+            $name = $name['name'];
+        }
 
-		// Check if it exists already, if so: return and give notice
-		if ($field = static::field($name))
-		{
-			\Error::notice('Field with this name exists already, cannot be overwritten through add().');
-			return $field;
-		}
+        // Check if it exists already, if so: return and give notice
+        if ($field = static::field($name))
+        {
+            \Error::notice('Field with this name exists already, cannot be overwritten through add().');
+            return $field;
+        }
 
-		$field = new Fieldset_Field($name, $label, $attributes, $rules, $this);
-		$this->fields[$name] = $field;
+        $field = new Fieldset_Field($name, $label, $attributes, $rules, $this);
+        $this->fields[$name] = $field;
 
-		return $field;
-	}
+        return $field;
+    }
 
-	/**
-	 * Get Field instance
-	 *
-	 * @param	string					null to fetch an array of all
-	 * @return	Fieldset_Field|false	returns false when field wasn't found
-	 */
-	public function field($name = null)
-	{
-		if ($name === null)
-		{
-			return $this->fields;
-		}
+    /**
+     * Get Field instance
+     *
+     * @param    string                    null to fetch an array of all
+     * @return    Fieldset_Field|false    returns false when field wasn't found
+     */
+    public function field($name = null)
+    {
+        if ($name === null)
+        {
+            return $this->fields;
+        }
 
-		if ( ! array_key_exists($name, $this->fields))
-		{
-			return false;
-		}
+        if ( ! array_key_exists($name, $this->fields))
+        {
+            return false;
+        }
 
-		return $this->fields[$name];
-	}
+        return $this->fields[$name];
+    }
 
-	/**
-	 * Add a model's fields
-	 * The model must have a method "set_form_fields" that takes this Fieldset instance
-	 * and adds fields to it.
-	 *
-	 * @param	string|Object	either a full classname (including full namespace) or object instance
-	 * @param	array|Object	array or object that has the exactly same named properties to populate the fields
-	 * @param	string			method name to call on model for field fetching
-	 * @return	Fieldset		this, to allow chaining
-	 */
-	public function add_model($class, $instance = null, $method = 'set_form_fields')
-	{
-		if ((is_string($class) && is_callable($callback = array('\\'.$class, $method)))
-			|| is_callable($callback = array($class, $method)))
-		{
-			$instance ? call_user_func($callback, $this, $instance) : call_user_func($callback, $this);
-		}
+    /**
+     * Add a model's fields
+     * The model must have a method "set_form_fields" that takes this Fieldset instance
+     * and adds fields to it.
+     *
+     * @param    string|Object    either a full classname (including full namespace) or object instance
+     * @param    array|Object    array or object that has the exactly same named properties to populate the fields
+     * @param    string            method name to call on model for field fetching
+     * @return    Fieldset        this, to allow chaining
+     */
+    public function add_model($class, $instance = null, $method = 'set_form_fields')
+    {
+        if ((is_string($class) && is_callable($callback = array('\\'.$class, $method)))
+            || is_callable($callback = array($class, $method)))
+        {
+            $instance ? call_user_func($callback, $this, $instance) : call_user_func($callback, $this);
+        }
 
-		// Add model to validation callables for validation rules
-		$this->validation()->add_callable($class);
+        // Add model to validation callables for validation rules
+        $this->validation()->add_callable($class);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Sets a config value on the fieldset
-	 *
-	 * @param	string
-	 * @param	mixed
-	 * @return	Fieldset	this, to allow chaining
-	 */
-	public function set_config($config, $value = null)
-	{
-		$config = is_array($config) ? $config : array($config => $value);
-		foreach ($config as $key => $value)
-		{
-			$this->config[$key] = $value;
-		}
+    /**
+     * Sets a config value on the fieldset
+     *
+     * @param    string
+     * @param    mixed
+     * @return    Fieldset    this, to allow chaining
+     */
+    public function set_config($config, $value = null)
+    {
+        $config = is_array($config) ? $config : array($config => $value);
+        foreach ($config as $key => $value)
+        {
+            $this->config[$key] = $value;
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get a single or multiple config values by key
-	 *
-	 * @param	string|array	a single key or multiple in an array, empty to fetch all
-	 * @param	mixed			default output when config wasn't set
-	 * @return	mixed|array		a single config value or multiple in an array when $key input was an array
-	 */
-	public function get_config($key = null, $default = null)
-	{
-		if ($key === null)
-		{
-			return $this->config;
-		}
+    /**
+     * Get a single or multiple config values by key
+     *
+     * @param    string|array    a single key or multiple in an array, empty to fetch all
+     * @param    mixed            default output when config wasn't set
+     * @return    mixed|array        a single config value or multiple in an array when $key input was an array
+     */
+    public function get_config($key = null, $default = null)
+    {
+        if ($key === null)
+        {
+            return $this->config;
+        }
 
-		if (is_array($key))
-		{
-			$output = array();
-			foreach ($key as $k)
-			{
-				$output[$k] = array_key_exists($k, $this->config) ? $this->config[$k] : $default;
-			}
-			return $output;
-		}
+        if (is_array($key))
+        {
+            $output = array();
+            foreach ($key as $k)
+            {
+                $output[$k] = array_key_exists($k, $this->config) ? $this->config[$k] : $default;
+            }
+            return $output;
+        }
 
-		return array_key_exists($key, $this->config) ? $this->config[$key] : $default;
-	}
+        return array_key_exists($key, $this->config) ? $this->config[$key] : $default;
+    }
 
-	/**
-	 * Set all fields to the given and/or posted input
-	 *
-	 * @return Fieldset	this, to allow chaining
-	 */
-	public function repopulate()
-	{
-		foreach ($this->fields as $f)
-		{
-			if (($value = $this->input($f->name, null)) !== null)
-			$f->set_value($value);
-		}
+    /**
+     * Set all fields to the given and/or posted input
+     *
+     * @return Fieldset    this, to allow chaining
+     */
+    public function repopulate()
+    {
+        foreach ($this->fields as $f)
+        {
+            if (($value = $this->input($f->name, null)) !== null)
+            $f->set_value($value);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Magic method toString that will build this as a form
-	 *
-	 * @return	string
-	 */
-	public function __toString()
-	{
-		return $this->build();
-	}
+    /**
+     * Magic method toString that will build this as a form
+     *
+     * @return    string
+     */
+    public function __toString()
+    {
+        return $this->build();
+    }
 
-	/**
-	 * Alias for $this->form()->build() for this fieldset
-	 */
-	public function build()
-	{
-		return $this->form()->build();
-	}
+    /**
+     * Alias for $this->form()->build() for this fieldset
+     */
+    public function build()
+    {
+        return $this->form()->build();
+    }
 
-	/**
-	 * Alias for $this->validation()->input()
-	 */
-	public function input($field = null)
-	{
-		return $this->validation()->input($field);
-	}
+    /**
+     * Alias for $this->validation()->input()
+     */
+    public function input($field = null)
+    {
+        return $this->validation()->input($field);
+    }
 
-	/**
-	 * Alias for $this->validation()->validated()
-	 */
-	public function validated($field = null)
-	{
-		return $this->validation->validated($field);
-	}
+    /**
+     * Alias for $this->validation()->validated()
+     */
+    public function validated($field = null)
+    {
+        return $this->validation->validated($field);
+    }
 
-	/**
-	 * Alias for $this->validation()->error()
-	 */
-	public function error($field = null)
-	{
-		return $this->validation()->error($field);
-	}
+    /**
+     * Alias for $this->validation()->error()
+     */
+    public function error($field = null)
+    {
+        return $this->validation()->error($field);
+    }
 
-	/**
-	 * Alias for $this->validation()->show_errors()
-	 */
-	public function show_errors(Array $config = array())
-	{
-		return $this->validation()->show_errors($config);
-	}
+    /**
+     * Alias for $this->validation()->show_errors()
+     */
+    public function show_errors(Array $config = array())
+    {
+        return $this->validation()->show_errors($config);
+    }
 }
 
 /* End of file fieldset.php */
