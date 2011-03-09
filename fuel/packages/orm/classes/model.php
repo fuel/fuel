@@ -109,6 +109,12 @@ class Model {
 	 */
 	public static function implode_pk($data)
 	{
+		if (count(static::$_primary_key) == 1)
+		{
+			$p = reset(static::$_primary_key);
+			return (is_object($data) ? $data->{$p} : (isset($data[$p]) ? $data[$p] : null));
+		}
+
 		$pk = '';
 		foreach(static::$_primary_key as $p)
 		{
@@ -175,7 +181,7 @@ class Model {
 				$query->order(current(static::primary_key()), $id == 'first' ? 'ASC' : 'DESC');
 			}
 
-			return $query->find();
+			return reset($query->find());
 		}
 		else
 		{
@@ -195,7 +201,8 @@ class Model {
 			}
 
 			array_key_exists('where', $options) and $where = array_merge($options['where'], $where);
-			return Query::factory(get_called_class(), $options)->find();
+			$options['where'] = $where;
+			return reset(Query::factory(get_called_class(), $options)->find());
 		}
 	}
 
