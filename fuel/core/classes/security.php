@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Fuel\Core;
@@ -152,11 +152,11 @@ class Security {
 
 	public static function htmlentities($value)
 	{
-		if ( ! is_array($value))
+		if (is_string($value))
 		{
 			$value = htmlentities($value, ENT_COMPAT, \Fuel::$encoding, false);
 		}
-		else
+		elseif (is_array($value))
 		{
 			foreach ($value as $k => $v)
 			{

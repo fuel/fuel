@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Fuel\Core;
@@ -32,9 +32,11 @@ class Migrate
 	{
 		logger(Fuel::L_DEBUG, 'Migrate class initialized');
 
-		\Config::load('migrate', true);
+		\Config::load('migrations', true);
 
-		\DB::query('CREATE TABLE IF NOT EXISTS `migration` (`current` INT(11) NOT NULL DEFAULT "0");')->execute();
+		\DBUtil::create_table('migration', array(
+			'current' => array('type' => 'int', 'constraint' => 11, 'null' => false, 'default' => 0)
+		));
 
 		// Check if there is a version
 		$current = \DB::select('current')->from('migration')->execute()->get('current');
@@ -61,7 +63,7 @@ class Migrate
 	{
 		if ( ! $migrations = static::find_migrations())
 		{
-			throw new Exception('no_migrations_found');
+			throw new Fuel_Exception('no_migrations_found');
 			return false;
 		}
 
@@ -83,7 +85,7 @@ class Migrate
 	 */
 	public static function current()
 	{
-		return static::version(\Config::get('migrate.version'));
+		return static::version(\Config::get('migrations.version'));
 	}
 
 	// --------------------------------------------------------------------
@@ -129,12 +131,12 @@ class Migrate
 		// But first let's make sure that everything is the way it should be
 		for ($i = $start; $i != $stop; $i += $step)
 		{
-			$f = glob(sprintf(\Config::get('migrate.path') . '%03d_*.php', $i));
+			$f = glob(sprintf(\Config::get('migrations.path') . '%03d_*.php', $i));
 
 			// Only one migration per step is permitted
 			if (count($f) > 1)
 			{
-				throw new Exception('multiple_migrations_version');
+				throw new Fuel_Exception('multiple_migrations_version');
 				return false;
 			}
 
@@ -147,7 +149,7 @@ class Migrate
 
 				// If trying to migrate down but we're missing a step,
 				// something must definitely be wrong.
-				throw new Exception('migration_not_found');
+				throw new Fuel_Exception('migration_not_found');
 				return false;
 			}
 
@@ -162,7 +164,7 @@ class Migrate
 				// Cannot repeat a migration at different steps
 				if (in_array($match[1], $migrations))
 				{
-					throw new Exception('multiple_migrations_name');
+					throw new Fuel_Exception('multiple_migrations_name');
 					return false;
 				}
 
@@ -171,13 +173,13 @@ class Migrate
 
 				if ( ! class_exists($class))
 				{
-					throw new Exception('migration_class_doesnt_exist');
+					throw new Fuel_Exception('migration_class_doesnt_exist');
 					return false;
 				}
 
 				if ( ! is_callable(array($class, 'up')) || !is_callable(array($class, 'down')))
 				{
-					throw new Exception('wrong_migration_interface');
+					throw new Fuel_Exception('wrong_migration_interface');
 					return false;
 				}
 
@@ -185,7 +187,7 @@ class Migrate
 			}
 			else
 			{
-				throw new Exception('invalid_migration_filename');
+				throw new Fuel_Exception('invalid_migration_filename');
 				return false;
 			}
 		}
@@ -227,7 +229,7 @@ class Migrate
 	protected static function find_migrations()
 	{
 		// Load all *_*.php files in the migrations path
-		$files = glob(\Config::get('migrate.path') . '*_*.php');
+		$files = glob(\Config::get('migrations.path') . '*_*.php');
 		$file_count = count($files);
 
 		for ($i = 0; $i < $file_count; $i++)
@@ -254,7 +256,7 @@ class Migrate
 	 * @param $schema_version integer	Schema version reached
 	 * @return	void					Outputs a report of the migration
 	 */
-	private function _update_schema_version($old_version, $version)
+	private static function _update_schema_version($old_version, $version)
 	{
 		\DB::update('migration')->set(array('current' => (int) $version))->where('current', '=', (int) $old_version)->execute();
 	}

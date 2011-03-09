@@ -4,17 +4,17 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 
 Autoloader::add_classes(array(
-	'Oil\\Cli'						   	=> __DIR__.'/classes/cli.php',
+	'Oil\\Command'				   	=> __DIR__.'/classes/command.php',
 	'Oil\\Console'					   	=> __DIR__.'/classes/console.php',
 	'Oil\\Exception'				   	=> __DIR__.'/classes/exception.php',
 	'Oil\\Generate'						=> __DIR__.'/classes/generate.php',
