@@ -68,8 +68,8 @@ class Migrate {
 
 	public static function up()
 	{
-		\Config::load('migrate', true);
-		$version = \Config::get('migrate.version') + 1;
+		\Config::load('migrations', true);
+		$version = \Config::get('migrations.version') + 1;
 
 		if (\Migrate::version($version))
 		{
@@ -80,8 +80,8 @@ class Migrate {
 
 	public static function down()
 	{
-		\Config::load('migrate', true);
-		$version = \Config::get('migrate.version') - 1;
+		\Config::load('migrations', true);
+		$version = \Config::get('migrations.version') - 1;
 
 		if (\Migrate::version($version))
 		{
