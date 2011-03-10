@@ -139,16 +139,18 @@ class Model {
 			return static::$_properties_cached[$class];
 		}
 
-		// Fetch the properties if not
-		$properties = get_class_vars($class);
+		$properties = array_keys(\Database::instance()->list_columns(static::table()));
 
-		foreach ($properties as $k => $v)
-		{
-			if (substr($k, 0, 1) == '_')
-			{
-				unset($properties[$k]);
-			}
-		}
+		// Fetch the properties if not
+//		$properties = get_class_vars($class);
+//
+//		foreach ($properties as $k => $v)
+//		{
+//			if (substr($k, 0, 1) == '_')
+//			{
+//				unset($properties[$k]);
+//			}
+//		}
 		static::$_properties_cached[$class] = $properties;
 
 		return static::$_properties_cached[$class];
@@ -304,7 +306,12 @@ class Model {
 			throw new Exception('Object is frozen, no changes allowed.');
 		}
 
-		if (property_exists($this, $property))
+//		if (property_exists($this, $property))
+//		{
+//			$this->{$property} = $value;
+//			$this->_modified = true;
+//		}
+		if (in_array($property, static::properties()))
 		{
 			$this->{$property} = $value;
 			$this->_modified = true;
