@@ -26,6 +26,12 @@ class Database_MySQL extends \Database {
 
 	// MySQL uses a backtick for identifiers
 	protected $_identifier = '`';
+	
+	// Allows transactions
+	protected $_trans_enabled = FALSE;
+	
+	// transaction errors
+	public $trans_errors = FALSE;
 
 	// Know which kind of DB is used
 	public $_db_type = 'mysql';
@@ -176,9 +182,22 @@ class Database_MySQL extends \Database {
 				// This benchmark is worthless
 				Profiler::delete($benchmark);
 			}
-
-			throw new \Database_Exception(mysql_error($this->_connection).' [ '.$sql.' ]',
-				mysql_errno($this->_connection));
+			
+			if ($this->_trans_enabled) 
+			{
+				// If we are using transactions, throwing an exception would defeat the purpose
+				// We need to log the failures for transaction status
+				if ( ! is_array($this->trans_errors))
+				{
+					$this->trans_errors = array();
+				}
+				
+				$this->trans_errors[] = mysql_errno($this->_connection).': '.mysql_error($this->_connection).' [ '.$sql.' ]';
+			}
+			else
+			{
+				throw new \Database_Exception(mysql_error($this->_connection).' [ '.$sql.' ]', mysql_errno($this->_connection));
+			}
 		}
 
 		if (isset($benchmark))
@@ -374,6 +393,13 @@ class Database_MySQL extends \Database {
 
 		// SQL standard is to use single-quotes for all values
 		return "'$value'";
+	}
+	
+	public function transactional($use_trans = TRUE)
+	{
+		if (is_bool($use_trans)) {
+			$this->_trans_enabled = $use_trans;
+		}
 	}
 
 } // End Database_MySQL
