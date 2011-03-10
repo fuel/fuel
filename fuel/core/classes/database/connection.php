@@ -15,13 +15,7 @@ namespace Fuel\Core;
 
 
 
-abstract class Database {
-
-	// Query types
-	const SELECT =  1;
-	const INSERT =  2;
-	const UPDATE =  3;
-	const DELETE =  4;
+abstract class Database_Connection {
 
 	/**
 	 * @var  string  default instance name
@@ -71,7 +65,7 @@ abstract class Database {
 			}
 
 			// Set the driver class name
-			$driver = 'Fuel\\Core\\Database_'.ucfirst($config['type']);
+			$driver = 'Fuel\\Core\\Database_'.ucfirst($config['type']).'_Connection';
 
 			// Create the database connection instance
 			new $driver($name, $config);

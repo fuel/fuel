@@ -12,7 +12,7 @@
 namespace Fuel\Core;
 
 
-class Database_PDO extends \Database {
+class Database_PDO_Connection extends \Database_Connection {
 
 	// PDO uses no quoting for identifiers
 	protected $_identifier = '';
@@ -129,7 +129,7 @@ class Database_PDO extends \Database {
 		// Set the last query
 		$this->last_query = $sql;
 
-		if ($type === \Database::SELECT)
+		if ($type === \DB::SELECT)
 		{
 			// Convert the result into an array, as PDOStatement::rowCount is not reliable
 			if ($as_object === FALSE)
@@ -150,7 +150,7 @@ class Database_PDO extends \Database {
 			// Return an iterator of results
 			return new \Database_Result_Cached($result, $sql, $as_object);
 		}
-		elseif ($type === \Database::INSERT)
+		elseif ($type === \DB::INSERT)
 		{
 			// Return a list of insert id and rows created
 			return array(

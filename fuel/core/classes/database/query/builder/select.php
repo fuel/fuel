@@ -52,7 +52,7 @@ class Database_Query_Builder_Select extends \Database_Query_Builder_Where {
 		}
 
 		// Start the query with no actual SQL statement
-		parent::__construct(\Database::SELECT, '');
+		parent::__construct(\DB::SELECT, '');
 	}
 
 	/**
@@ -288,7 +288,7 @@ class Database_Query_Builder_Select extends \Database_Query_Builder_Where {
 	 * @param   object  Database instance
 	 * @return  string
 	 */
-	public function compile(Database $db)
+	public function compile(\Database_Connection$db)
 	{
 		// Callback to quote identifiers
 		$quote_ident = array($db, 'quote_identifier');

@@ -42,7 +42,7 @@ class Database_Transaction
 	*/
 	public function __construct()
 	{
-		$this->_db = Database::instance();
+		$this->_db = Database_Connection::instance();
 	}
 
 	/**

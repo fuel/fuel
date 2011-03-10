@@ -13,7 +13,7 @@ namespace Fuel\Core;
 
 
 
-class Database_MySQLi extends \Database {
+class Database_MySQLi_Connection extends \Database_Connection {
 
 	// Database in use by each connection
 	protected static $_current_databases = array();
@@ -202,12 +202,12 @@ class Database_MySQLi extends \Database {
 		// Set the last query
 		$this->last_query = $sql;
 
-		if ($type === \Database::SELECT)
+		if ($type === \DB::SELECT)
 		{
 			// Return an iterator of results
 			return new \Database_MySQLi_Result($result, $sql, $as_object);
 		}
-		elseif ($type === \Database::INSERT)
+		elseif ($type === \DB::INSERT)
 		{
 			// Return a list of insert id and rows created
 			return array(
@@ -274,12 +274,12 @@ class Database_MySQLi extends \Database {
 		if (is_string($like))
 		{
 			// Search for table names
-			$result = $this->query(\Database::SELECT, 'SHOW TABLES LIKE '.$this->quote($like), FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW TABLES LIKE '.$this->quote($like), FALSE);
 		}
 		else
 		{
 			// Find all table names
-			$result = $this->query(\Database::SELECT, 'SHOW TABLES', FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW TABLES', FALSE);
 		}
 
 		$tables = array();
@@ -299,12 +299,12 @@ class Database_MySQLi extends \Database {
 		if (is_string($like))
 		{
 			// Search for column names
-			$result = $this->query(\Database::SELECT, 'SHOW FULL COLUMNS FROM '.$table.' LIKE '.$this->quote($like), FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW FULL COLUMNS FROM '.$table.' LIKE '.$this->quote($like), FALSE);
 		}
 		else
 		{
 			// Find all column names
-			$result = $this->query(\Database::SELECT, 'SHOW FULL COLUMNS FROM '.$table, FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW FULL COLUMNS FROM '.$table, FALSE);
 		}
 
 		$count = 0;
