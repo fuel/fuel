@@ -15,13 +15,7 @@ namespace Fuel\Core;
 
 
 
-abstract class Database {
-
-	// Query types
-	const SELECT =  1;
-	const INSERT =  2;
-	const UPDATE =  3;
-	const DELETE =  4;
+abstract class Database_Connection {
 
 	/**
 	 * @var  string  default instance name
@@ -71,7 +65,7 @@ abstract class Database {
 			}
 
 			// Set the driver class name
-			$driver = 'Fuel\\Core\\Database_'.ucfirst($config['type']);
+			$driver = 'Fuel\\Core\\Database_'.ucfirst($config['type']).'_Connection';
 
 			// Create the database connection instance
 			new $driver($name, $config);
@@ -594,5 +588,45 @@ abstract class Database {
 	 * @return  string
 	 */
 	abstract public function escape($value);
+
+	/**
+	 * Sets the Database instance to use transactions
+	 * Transactions are OFF by default
+	 *
+	 *     $db->transactional();
+	 *     $db->transactional(TRUE);
+	 *     $db->transactional(FALSE);
+	 *
+	 * @param   bool   use tranactions TRUE/FALSE
+	 * @return  void
+	 */
+	abstract public function transactional($use_trans = TRUE);
+
+	/**
+	 * Begins a transaction on instance
+	 *
+	 *     $db->start_transaction();
+	 *
+	 * @return  void
+	 */
+	abstract public function start_transaction();
+
+	/**
+	 * Commits all pending transactional queries
+	 *
+	 *     $db->commit_transaction();
+	 *
+	 * @return  void
+	 */
+	abstract public function commit_transaction();
+
+	/**
+	 * Rollsback all pending transactional queries
+	 *
+	 *     $db->rollback_transaction();
+	 *
+	 * @return  void
+	 */
+	abstract public function rollback_transaction();
 
 } // End Database_Connection

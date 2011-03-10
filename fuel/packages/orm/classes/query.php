@@ -98,7 +98,8 @@ class Query {
 		{
 			if (empty($this->select))
 			{
-				$fields = array_keys(call_user_func($this->model.'::properties'));
+				$fields = call_user_func($this->model.'::properties');
+
 				if (empty($fields))
 				{
 					throw new Exception('No properties found in model.');

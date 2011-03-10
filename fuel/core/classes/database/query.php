@@ -33,7 +33,7 @@ class Database_Query {
 	/**
 	 * Creates a new SQL query of the specified type.
 	 *
-	 * @param   integer  query type: Database::SELECT, Database::INSERT, etc
+	 * @param   integer  query type: DB::SELECT, DB::INSERT, etc
 	 * @param   string   query string
 	 * @return  void
 	 */
@@ -53,7 +53,7 @@ class Database_Query {
 		try
 		{
 			// Return the SQL string
-			return $this->compile(\Database::instance());
+			return $this->compile(\Database_Connection::instance());
 		}
 		catch (Exception $e)
 		{
@@ -160,7 +160,7 @@ class Database_Query {
 	 * @param   object  Database instance
 	 * @return  string
 	 */
-	public function compile(Database $db)
+	public function compile(\Database_Connection$db)
 	{
 		// Import the SQL locally
 		$sql = $this->_sql;
@@ -190,16 +190,16 @@ class Database_Query {
 		if ( ! is_object($db))
 		{
 			// Get the database instance
-			$db = \Database::instance($db);
+			$db = \Database_Connection::instance($db);
 		}
 
 		// Compile the SQL query
 		$sql = $this->compile($db);
 
-/*		if ( ! empty($this->_lifetime) AND $this->_type === Database::SELECT)
+/*		if ( ! empty($this->_lifetime) AND $this->_type === DB::SELECT)
 		{
 			// Set the cache key based on the database instance name and SQL
-			$cache_key = 'Database::query("'.$db.'", "'.$sql.'")';
+			$cache_key = 'Database_Connection::query("'.$db.'", "'.$sql.'")';
 
 			if ($result = Kohana::cache($cache_key, NULL, $this->_lifetime))
 			{
@@ -212,11 +212,11 @@ class Database_Query {
 		switch(strtoupper(substr($sql, 0, 6)))
 		{
 			case 'SELECT':
-				$this->_type = \Database::SELECT;
+				$this->_type = \DB::SELECT;
 				break;
 			case 'INSERT':
 			case 'CREATE':
-				$this->_type = \Database::INSERT;
+				$this->_type = \DB::INSERT;
 				break;
 		}
 

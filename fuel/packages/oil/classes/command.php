@@ -115,6 +115,12 @@ class Command
 				case 't':
 				case 'test':
 
+					// Attempt to load PUPUnit.  If it fails, we are done.
+					if ( ! @include_once('PHPUnit/Autoload.php'))
+					{
+						die(PHP_EOL.'PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL.'Please visit http://phpunit.de and install.'.PHP_EOL.PHP_EOL);
+					}
+
 					// CD to the root of Fuel and call up phpunit with a path to our config
 					$command = 'cd '.DOCROOT.'; phpunit -c "'.COREPATH.'phpunit.xml"';
 

@@ -32,7 +32,7 @@ class DBUtil {
 	 */
 	public static function create_database($database)
 	{
-		return DB::query('CREATE DATABASE '.DB::quote_identifier($database), \Database::UPDATE)->execute();
+		return DB::query('CREATE DATABASE '.DB::quote_identifier($database), \DB::UPDATE)->execute();
 	}
 
 	/**
@@ -44,7 +44,7 @@ class DBUtil {
 	 */
 	public static function drop_database($database)
 	{
-		return DB::query('DROP DATABASE '.DB::quote_identifier($database), \Database::DELETE)->execute();
+		return DB::query('DROP DATABASE '.DB::quote_identifier($database), \DB::DELETE)->execute();
 	}
 
 	/**
@@ -56,7 +56,7 @@ class DBUtil {
 	 */
 	public static function drop_table($table)
 	{
-		return DB::query('DROP TABLE IF EXISTS '.DB::quote_identifier($table), \Database::DELETE)->execute();
+		return DB::query('DROP TABLE IF EXISTS '.DB::quote_identifier($table), \DB::DELETE)->execute();
 	}
 
 	/**
@@ -69,7 +69,7 @@ class DBUtil {
 	 */
 	public static function rename_table($table, $new_table_name)
 	{
-		return DB::query('RENAME TABLE '.DB::quote_identifier($table).' TO '.DB::quote_identifier($new_table_name),Database::UPDATE)->execute();
+		return DB::query('RENAME TABLE '.DB::quote_identifier($table).' TO '.DB::quote_identifier($new_table_name),DB::UPDATE)->execute();
 	}
 
 	public static function create_table($table, $fields, $primary_keys = array(), $if_not_exists = true)
@@ -88,7 +88,7 @@ class DBUtil {
 		}
 		$sql .= "\n);";
 
-		return DB::query($sql, Database::UPDATE)->execute();
+		return DB::query($sql, DB::UPDATE)->execute();
 	}
 
 	protected static function process_fields($fields)
@@ -122,6 +122,19 @@ class DBUtil {
 
 		return \implode(',', $sql_fields);
 	}
+
+	/**
+	 * Tuncates a table.
+	 *
+	 * @throws	Fuel\Database_Exception
+	 * @param	string	$table	the table name
+	 * @return	int		the number of affected rows
+	 */
+	public static function truncate_table($table)
+	{
+		return DB::query('TRUNCATE TABLE '.DB::quote_identifier($table), \DB::DELETE)->execute();
+	}
+
 }
 
 /* End of file dbutil.php */

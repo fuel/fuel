@@ -13,7 +13,7 @@ namespace Fuel\Core;
 
 
 
-class Database_MySQLi extends \Database {
+class Database_MySQLi_Connection extends \Database_Connection {
 
 	// Database in use by each connection
 	protected static $_current_databases = array();
@@ -177,7 +177,7 @@ class Database_MySQLi extends \Database {
 				Profiler::delete($benchmark);
 			}
 			
-			if ($this->_trans_enabled) 
+			if ($type !== \DB::SELECT && $this->_trans_enabled) 
 			{
 				// If we are using transactions, throwing an exception would defeat the purpose
 				// We need to log the failures for transaction status
@@ -202,12 +202,12 @@ class Database_MySQLi extends \Database {
 		// Set the last query
 		$this->last_query = $sql;
 
-		if ($type === \Database::SELECT)
+		if ($type === \DB::SELECT)
 		{
 			// Return an iterator of results
 			return new \Database_MySQLi_Result($result, $sql, $as_object);
 		}
-		elseif ($type === \Database::INSERT)
+		elseif ($type === \DB::INSERT)
 		{
 			// Return a list of insert id and rows created
 			return array(
@@ -274,12 +274,12 @@ class Database_MySQLi extends \Database {
 		if (is_string($like))
 		{
 			// Search for table names
-			$result = $this->query(\Database::SELECT, 'SHOW TABLES LIKE '.$this->quote($like), FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW TABLES LIKE '.$this->quote($like), FALSE);
 		}
 		else
 		{
 			// Find all table names
-			$result = $this->query(\Database::SELECT, 'SHOW TABLES', FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW TABLES', FALSE);
 		}
 
 		$tables = array();
@@ -299,12 +299,12 @@ class Database_MySQLi extends \Database {
 		if (is_string($like))
 		{
 			// Search for column names
-			$result = $this->query(\Database::SELECT, 'SHOW FULL COLUMNS FROM '.$table.' LIKE '.$this->quote($like), FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW FULL COLUMNS FROM '.$table.' LIKE '.$this->quote($like), FALSE);
 		}
 		else
 		{
 			// Find all column names
-			$result = $this->query(\Database::SELECT, 'SHOW FULL COLUMNS FROM '.$table, FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW FULL COLUMNS FROM '.$table, FALSE);
 		}
 
 		$count = 0;
@@ -394,6 +394,25 @@ class Database_MySQLi extends \Database {
 		if (is_bool($use_trans)) {
 			$this->_trans_enabled = $use_trans;
 		}
+	}
+	
+	public function start_transaction()
+	{
+		$this->transactional();
+		$this->query(0, 'SET AUTOCOMMIT=0', false);
+		$this->query(0, 'START TRANSACTION', false);
+	}
+
+	public function commit_transaction()
+	{
+		$this->query(0, 'COMMIT', false);
+		$this->query(0, 'SET AUTOCOMMIT=1', false);
+	}
+
+	public function rollback_transaction()
+	{
+		$this->query(0, 'ROLLBACK', false);
+		$this->query(0, 'SET AUTOCOMMIT=1', false);
 	}
 
 } // End Database_MySQLi

@@ -34,7 +34,7 @@ class Database_Query_Builder_Update extends \Database_Query_Builder_Where {
 		}
 
 		// Start the query with no SQL
-		return parent::__construct('', \Database::UPDATE);
+		return parent::__construct('', \DB::UPDATE);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class Database_Query_Builder_Update extends \Database_Query_Builder_Where {
 	 * @param   object  Database instance
 	 * @return  string
 	 */
-	public function compile(Database $db)
+	public function compile(\Database_Connection$db)
 	{
 		// Start an update query
 		$query = 'UPDATE '.$db->quote_table($this->_table);
