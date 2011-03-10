@@ -133,6 +133,7 @@ class Database_PDO extends \Database {
 				}
 				
 				$this->trans_errors[] = $e->getMessage().' with query: "'.$sql.'"';
+				return false;
 			}
 			else
 			{
@@ -210,6 +211,22 @@ class Database_PDO extends \Database {
 		if (is_bool($use_trans)) {
 			$this->_trans_enabled = $use_trans;
 		}
+	}
+	
+	public function start_transaction()
+	{
+		$this->transactional();
+		$this->_connection->beginTransaction();
+	}
+
+	public function commit_transaction()
+	{
+		$this->_connection->commit();
+	}
+
+	public function rollback_transaction()
+	{
+		$this->_connection->rollBack();
 	}
 
 } // End Database_PDO
