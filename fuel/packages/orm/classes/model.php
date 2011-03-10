@@ -139,21 +139,26 @@ class Model {
 			return static::$_properties_cached[$class];
 		}
 
-		$properties = array_keys(\DB::list_columns(static::table()));
+		// Try to grab the properties from the class...
+		$properties = get_class_vars($class);
+		foreach ($properties as $k => $v)
+		{
+			if (substr($k, 0, 1) == '_')
+			{
+				unset($properties[$k]);
+			}
+		}
 
-		// Fetch the properties if not
-//		$properties = get_class_vars($class);
-//
-//		foreach ($properties as $k => $v)
-//		{
-//			if (substr($k, 0, 1) == '_')
-//			{
-//				unset($properties[$k]);
-//			}
-//		}
+		// ...if the above failed, run DB query to fetch properties
+		if (empty($properties))
+		{
+			$properties = \DB::list_columns(static::table());
+		}
+
+		// cache the properties for next usage
 		static::$_properties_cached[$class] = $properties;
 
-		return static::$_properties_cached[$class];
+		return array_keys(static::$_properties_cached[$class]);
 	}
 
 	/**
@@ -258,7 +263,7 @@ class Model {
 		if ($new === false)
 		{
 			static::$_cached_objects[get_class($this)][static::implode_pk($data)] = $this;
-			$this->_is_new = $new;
+			$this->_is_new = false;
 		}
 	}
 
@@ -301,11 +306,6 @@ class Model {
 			throw new Exception('Object is frozen, no changes allowed.');
 		}
 
-//		if (property_exists($this, $property))
-//		{
-//			$this->{$property} = $value;
-//			$this->_modified = true;
-//		}
 		if (in_array($property, static::properties()))
 		{
 			$this->{$property} = $value;
@@ -356,18 +356,19 @@ class Model {
 		// Insert!
 		$id = $query->insert();
 
-		// update the original property on success
-		$this->_is_new = false;
-		foreach ($properties as $p)
-		{
-			$this->_original[$p] = $this->{$p};
-		}
-
 		// when there's one PK it might be auto-incremented, get it and set it
 		if (count($primary_key) == 1 and $id !== false)
 		{
 			$pk = reset($primary_key);
 			$this->{$pk} = $id;
+		}
+
+		// update the original properties on creation and cache object for future retrieval in this request
+		$this->_is_new = false;
+		static::$_cached_objects[get_class($this)][static::implode_pk($this)] = $this;
+		foreach ($properties as $p)
+		{
+			$this->_original[$p] = $this->{$p};
 		}
 
 		return $id !== false;
