@@ -122,6 +122,19 @@ class DBUtil {
 
 		return \implode(',', $sql_fields);
 	}
+
+	/**
+	 * Tuncates a table.
+	 *
+	 * @throws	Fuel\Database_Exception
+	 * @param	string	$table	the table name
+	 * @return	int		the number of affected rows
+	 */
+	public static function truncate_table($table)
+	{
+		return DB::query('TRUNCATE TABLE '.DB::quote_identifier($table), \Database::DELETE)->execute();
+	}
+
 }
 
 /* End of file dbutil.php */
