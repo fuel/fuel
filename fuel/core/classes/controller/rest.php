@@ -1,17 +1,4 @@
 <?php
-/**
- * Fuel
- *
- * Fuel is a fast, lightweight, community driven PHP5 framework.
- *
- * @package    Fuel
- * @version    1.0
- * @author     Fuel Development Team
- * @license    MIT License
- * @copyright  2010 - 2011 Fuel Development Team
- * @link       http://fuelphp.com
- */
-
 
 namespace Fuel\Core;
 
@@ -19,7 +6,6 @@ abstract class Controller_Rest extends \Controller {
 
 	protected $rest_format = null; // Set this in a controller to use a default format
 	protected $methods = array(); // contains a list of method properties such as limit, log and level
-	protected $set_content_type = true; // set the default content type using PHP Header
 
 	// List all supported methods, the first will be the default format
 	protected $_supported_formats = array(
@@ -104,11 +90,9 @@ abstract class Controller_Rest extends \Controller {
 		// If the format method exists, call and return the output in that format
 		if (method_exists('Controller_Rest', '_format_' . $this->request->format))
 		{
-			if ($this->set_content_type === true) {	
-				// Set the correct format header
-				\Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
-			}
-			
+			// Set the correct format header
+			\Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
+
 			$this->output = $this->{'_format_' . $this->request->format}($data);
 		}
 
@@ -460,66 +444,66 @@ abstract class Controller_Rest extends \Controller {
 //			$headings = array_keys($data[0]);
 //		}
 //
-//        // Single array
-//        else
-//        {
-//            $headings = array_keys($data);
-//            $data = array($data);
-//        }
+//		// Single array
+//		else
+//		{
+//			$headings = array_keys($data);
+//			$data = array($data);
+//		}
 //
-//        self::load->library('table');
+//		self::load->library('table');
 //
-//        self::table->set_heading($headings);
+//		self::table->set_heading($headings);
 //
-//        foreach($data as &$row)
-//        {
-//            self::table->add_row($row);
-//        }
+//		foreach($data as &$row)
+//		{
+//			self::table->add_row($row);
+//		}
 //
-//        return self::table->generate();
-//    }
-    // Format HTML for output
-    private function _format_csv($data = array())
-    {
-        // Multi-dimentional array
-        if (isset($data[0]))
-        {
-            $headings = array_keys($data[0]);
-        }
+//		return self::table->generate();
+//	}
+	// Format HTML for output
+	private function _format_csv($data = array())
+	{
+		// Multi-dimentional array
+		if (isset($data[0]))
+		{
+			$headings = array_keys($data[0]);
+		}
 
-        // Single array
-        else
-        {
-            $headings = array_keys($data);
-            $data = array($data);
-        }
+		// Single array
+		else
+		{
+			$headings = array_keys($data);
+			$data = array($data);
+		}
 
-        $output = implode(',', $headings) . "\r\n";
-        foreach ($data as &$row)
-        {
-            $output .= '"' . implode('","', $row) . "\"\r\n";
-        }
+		$output = implode(',', $headings) . "\r\n";
+		foreach ($data as &$row)
+		{
+			$output .= '"' . implode('","', $row) . "\"\r\n";
+		}
 
-        return $output;
-    }
+		return $output;
+	}
 
-    // Encode as JSON
-    private function _format_json($data = array())
-    {
-        return json_encode($data);
-    }
+	// Encode as JSON
+	private function _format_json($data = array())
+	{
+		return json_encode($data);
+	}
 
-    // Encode as Serialized array
-    private function _format_serialize($data = array())
-    {
-        return serialize($data);
-    }
+	// Encode as Serialized array
+	private function _format_serialize($data = array())
+	{
+		return serialize($data);
+	}
 
-    // Encode raw PHP
-    private function _format_php($data = array())
-    {
-        return var_export($data, true);
-    }
+	// Encode raw PHP
+	private function _format_php($data = array())
+	{
+		return var_export($data, true);
+	}
 
 }
 
