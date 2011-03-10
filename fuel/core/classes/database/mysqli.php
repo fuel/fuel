@@ -177,7 +177,7 @@ class Database_MySQLi extends \Database {
 				Profiler::delete($benchmark);
 			}
 			
-			if ($this->_trans_enabled) 
+			if ($type !== \Database::SELECT && $this->_trans_enabled) 
 			{
 				// If we are using transactions, throwing an exception would defeat the purpose
 				// We need to log the failures for transaction status
