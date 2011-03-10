@@ -71,6 +71,11 @@ class Query {
 	 */
 	protected $group_by = array();
 
+	/**
+	 * @var	array	values for insert or update
+	 */
+	protected $values = array();
+
 	protected function __construct($model, $options, $table_alias = null)
 	{
 		$this->model = $model;
@@ -252,6 +257,26 @@ class Query {
 		}
 
 		$this->relations[] = $relation;
+	}
+
+	/**
+	 * Set any properties for insert or update
+	 *
+	 * @param	string|array
+	 * @param	mixed
+	 */
+	public function set($property, $value = null)
+	{
+		if (is_array($property))
+		{
+			foreach ($property as $p => $v)
+			{
+				$this->set($p, $v);
+			}
+			return;
+		}
+
+		$this->values[$property] = $value;
 	}
 
 	/**
@@ -441,11 +466,40 @@ class Query {
 		return $obj;
 	}
 
-	public function count($distinct = false) {}
+	public function count($distinct = false)
+	{
+		// should work just like find but run a count query in the end
+		// $distinct must be given an existing column name if only a specific column is to be counted distinctly
+	}
 
-	public function max() {}
+	public function max($column)
+	{
+		// should work just like find but run a max query in the end
+		// $column must be given an existing column name to work
+	}
 
-	public function min() {}
+	public function min($column)
+	{
+		// should work just like find but run a min query in the end
+		// $column must be given an existing column name to work
+	}
+
+	public function insert()
+	{
+		// use set, run insert and return the ID that was returned by the QB
+	}
+
+	public function update()
+	{
+		// should work a lot like find but not allow joins of course
+		// use set, run update and return success (affected rows == 1)
+	}
+
+	public function delete()
+	{
+		// should work a lot like find but not allow joins of course
+		// just run delete, but prevent it happening with empty where() clause
+	}
 }
 
 /* End of file query.php */
