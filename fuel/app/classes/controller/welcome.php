@@ -10,24 +10,43 @@ class Controller_Welcome extends Controller {
 		$this->render('welcome/index');
 	}
 
-	public function action_image()
+	public function action_image($type = null)
 	{
-		echo "<div style='background: black; padding: 10px;'><img src='imageview' alt='' /></div>";
+		$image = 'C:/wamp/www/test.jpeg';
+		$watermark = 'C:/wamp/www/watermark.png';
+		$mask = 'C:/wamp/www/mask.png';
+		if ($type == 'im') {
+			Image::factory(array(
+				'driver' => 'imagemagick'
+			))->load($image)->preset('test1', $watermark, $mask);
+		} else if ($type == 'gd') {
+			Image::factory(array(
+				'driver' => 'gd'
+			))->load($image)->preset('test1', $watermark, $mask);
+		} else {
+			echo "<div style=\"background: #000;\">" .
+				"<img src='image/gd' style=\"margin: 10px;\" alt='' />" .
+				"<img src='image/im' style=\"margin: 10px;\" alt='' />".
+				"</div>";
+		}
 	}
 
-	public function action_imageview()
+	public function action_imagedebug($type = null)
 	{
-		Image::load('C:/wamp/www/test.png')
-				//->mask('C:/wamp/www/mask.png')
-				->crop('25%', '25%', '75%', '75%')
-				->resize('200%')
-				->border(20, '#FF0000')
-				->rounded(10, null, 1)
-				->rotate(90)
-				->watermark('C:/wamp/www/watermark.png', 'bottom left')
-				->output('png')
-		// ->save('C:/wamp/www/solidblock-modified.jpeg')
-		;
+		$image = 'C:/wamp/www/test.jpeg';
+		$watermark = 'C:/wamp/www/watermark.png';
+		$mask = 'C:/wamp/www/mask.png';
+		if ($type == 'im') {
+			Image::factory(array(
+				'driver' => 'imagemagick',
+				'debug' => true
+			))->load($image)->preset('test1', $watermark, $mask);
+		} else if ($type == 'gd') {
+			Image::factory(array(
+				'driver' => 'gd',
+				'debug' => true
+			))->load($image)->preset('test1', $watermark, $mask);
+		}
 	}
 
 	public function action_404()

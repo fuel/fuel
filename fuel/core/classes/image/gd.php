@@ -38,13 +38,11 @@ class Image_Gd extends Image_Driver {
 			$image = $this->create_transparent_image($sizes->width, $sizes->height, $tmpImage);
 			if (!$return_data)
 			{
-				$this->debug("load(): Override existing image.");
 				$this->image_data = $image;
 				$return = true;
 			}
 			else
 			{
-				$this->debug("load(): Returning image.");
 				$return = $image;
 			}
 		}
@@ -60,6 +58,7 @@ class Image_Gd extends Image_Driver {
 		extract(parent::_crop($x1, $y1, $x2, $y2));
 		$width = $x2 - $x1;
 		$height = $y2 - $y1;
+		$this->debug("Cropping image " . $width . "x" . $height . "+$x1+$y1 based on coords ($x1, $y1), ($x2, $y2)");
 		$image = $this->create_transparent_image($width, $height);
 		call_user_func($this->gdresizefunc, $image, $this->image_data, 0, 0, $x1, $y1, $width, $height, $width, $height);
 		$this->image_data = $image;
@@ -68,40 +67,9 @@ class Image_Gd extends Image_Driver {
 	protected function _resize($width, $height, $keepar, $pad)
 	{
 		extract(parent::_resize($width, $height, $keepar, $pad));
-		$origwidth = $this->convert_number($width, true);
-		$origheight = $this->convert_number($height, false);
-		$width = $origwidth;
-		$height = $origheight;
-		$sizes = $this->sizes();
-		if ($keepar)
-		{
-			// See which is the biggest ratio
-			$width_ratio = $width / $sizes->width;
-			$height_ratio = $height / $sizes->height;
-			if ($width_ratio < $height_ratio)
-			{
-				$width = floor($sizes->width * $height_ratio);
-			}
-			else
-			{
-				$height = floor($sizes->height * $width_ratio);
-			}
-		}
-		$x = 0;
-		$y = 0;
-		if ($pad)
-		{
-			$x = floor(($origwidth - $width) / 2);
-			$y = floor(($origheight - $height) / 2);
-		}
-		else
-		{
-			$origwidth = $width;
-			$origheight = $height;
-		}
 		$sizes = $this->sizes();
 		// Add the original image.
-		$image = $this->create_transparent_image($origwidth, $origheight);
+		$image = $this->create_transparent_image($cwidth, $cheight);
 		call_user_func($this->gdresizefunc, $image, $this->image_data, $x, $y, 0, 0, $width, $height, $sizes->width, $sizes->height);
 		$this->image_data = $image;
 	}
@@ -111,7 +79,7 @@ class Image_Gd extends Image_Driver {
 		extract(parent::_rotate($degrees));
 		$degrees = 360 - $degrees;
 		$color = $this->create_color($this->image_data, null, 0);
-		$this->image_data = imagerotate($this->image_data, $degrees, $color);
+		$this->image_data = imagerotate($this->image_data, $degrees, $color, true);
 	}
 
 	protected function _watermark($filename, $x, $y)
@@ -127,13 +95,10 @@ class Image_Gd extends Image_Driver {
 			$wsizes = $this->sizes($filename);
 			$sizes = $this->sizes();
 
-			$image = $this->create_transparent_image($sizes->width, $sizes->height, $this->image_data);
 			$watermark = $this->create_transparent_image($wsizes->width, $wsizes->height, $this->load($filename, true));
 			// Used as a workaround for lack of alpha support in imagecopymerge.
 
-			$this->image_merge($image, $watermark, $x, $y, $this->config['watermark_alpha'] * 1.27);
-
-			$this->image_data = $image;
+			$this->image_merge($this->image_data, $watermark, $x, $y, $this->config['watermark_alpha']);
 		}
 	}
 
@@ -167,6 +132,10 @@ class Image_Gd extends Image_Driver {
 		{
 			$maskim = $this->load($maskimage, true);
 		}
+		if ($masksizes->width > $sizes->width)
+			$masksizes->width = $sizes->width;
+		if ($masksizes->height > $sizes->width)
+			$masksizes->height = $sizes->height;
 		// Loop through all the pixels
 		for ($x = 0; $x < $masksizes->width; $x++)
 		{
@@ -175,7 +144,6 @@ class Image_Gd extends Image_Driver {
 				$maskcolor = imagecolorat($maskim, $x, $y);
 				$maskcolor = imagecolorsforindex($maskim, $maskcolor);
 				$maskalpha = 127 - floor(($maskcolor['red'] + $maskcolor['green'] + $maskcolor['blue']) / 6);
-				$this->debug("$maskcolor[red] + $maskcolor[green] + $maskcolor[blue] = $maskalpha");
 				if ($maskalpha == 127)
 					continue;
 				$ourcolor = imagecolorat($this->image_data, $x, $y);
@@ -212,18 +180,15 @@ class Image_Gd extends Image_Driver {
 		{
 			$width = imagesx($this->image_data);
 			$height = imagesy($this->image_data);
-			$this->debug("Sizes returned $width and $height from image_data resource.");
 		}
 		else if (is_resource($filename))
 		{
 			$width = imagesx($filename);
 			$height = imagesy($filename);
-			$this->debug("Sizes returned $width and $height from resource.");
 		}
 		else
 		{
 			list($width, $height) = getimagesize($filename);
-			$this->debug("Sizes returned $width and $height from file.");
 		}
 		return (object) array('width' => $width, 'height' => $height);
 	}
@@ -243,7 +208,7 @@ class Image_Gd extends Image_Driver {
 		}
 		if ($filetype == 'png')
 			$vars[] = floor(($this->config['quality'] / 100) * 9);
-		if (!$this->debugging)
+		if (!$this->config['debug'])
 			call_user_func_array('image' . $filetype, $vars);
 	}
 
@@ -269,7 +234,7 @@ class Image_Gd extends Image_Driver {
 		}
 		if ($filetype == 'png')
 			$vars[] = floor(($this->config['quality'] / 100) * 9);
-		if (!$this->debugging)
+		if (!$this->config['debug'])
 			call_user_func_array('image' . $filetype, $vars);
 	}
 
@@ -296,16 +261,19 @@ class Image_Gd extends Image_Driver {
 			if (substr($hex, 0, 1) == '#')
 				$hex = substr($hex, 1);
 			// Break apart the hex
-			if (strlen($hex) == 6) {
+			if (strlen($hex) == 6)
+			{
 				$red = hexdec(substr($hex, 0, 2));
 				$green = hexdec(substr($hex, 2, 2));
 				$blue = hexdec(substr($hex, 4, 2));
-			} else {
+			}
+			else
+			{
 				$red = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
 				$green = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
 				$blue = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
 			}
-				$alpha = 127 - floor($alpha * 1.27);
+			$alpha = 127 - floor($alpha * 1.27);
 		}
 		// Check if the transparency is allowed
 		return imagecolorallocatealpha($image, $red, $green, $blue, $alpha);
@@ -360,6 +328,7 @@ class Image_Gd extends Image_Driver {
 	 */
 	private function round_corner(&$image, $radius, $antialias, $top, $left)
 	{
+		$this->debug("Rounding " . ($top ? 'top' : 'bottom') . " " . ($left ? 'left' : 'right') . " corner with a radius of " . $radius . "px.");
 		$sX = $left ? -$radius : 0;
 		$sY = $top ? -$radius : 0;
 		$eX = $left ? 0 : $radius;

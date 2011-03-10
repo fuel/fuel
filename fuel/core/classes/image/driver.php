@@ -19,9 +19,8 @@ namespace Fuel\Core;
 
 abstract class Image_Driver {
 
-	protected $debugging = false;
 	protected $image_fullpath = null;
-	protected $image_driectory = null;
+	protected $image_directory = null;
 	protected $image_filename = null;
 	protected $image_extension = null;
 	protected $config = array();
@@ -71,15 +70,16 @@ abstract class Image_Driver {
 			$this->config = array_merge($this->config, $this->config['presets'][$name]);
 			foreach ($this->config['actions'] AS $action)
 			{
-				for ($i = 1; $i < count($action); $i++)
+				$func = $action[0];
+				array_shift($action);
+				for ($i = 0; $i < count($action); $i++)
 				{
-					for ($x = 0; $x < count($vars); $x++)
+					for ($x = count($vars) - 1; $x >= 0; $x--)
 					{
-						$action[$i] = $string = preg_replace('#\$' . ($x + 1) . '#', $vars[$x], $action[$i]);
+						$action[$i] = preg_replace('#\$' . $x . '#', $vars[$x], $action[$i]);
 					}
 				}
-				$vars = array_slice($action, 1);
-				call_user_func_array(array(&$this, $action[0]), $vars);
+				call_user_func_array(array(&$this, $func), $action);
 			}
 			$this->config = $old_config;
 		}
@@ -119,6 +119,9 @@ abstract class Image_Driver {
 		return $return_data ? $return : $this;
 	}
 
+	/**
+	 * Preforms driver specific actions for loading.
+	 */
 	abstract protected function _load($return);
 
 	/**
@@ -134,13 +137,24 @@ abstract class Image_Driver {
 	 * @param	integer	$y2	Y-Coordinate for second set.
 	 * @return	Image_Driver
 	 */
-	public function crop($x1, $y1 = null, $x2 = null, $y2 = null)
+	public function crop($x1, $y1, $x2, $y2)
 	{
 		$this->queue('crop', $x1, $y1, $x2, $y2);
 		return $this;
 	}
 
-	protected function _crop($x1, $y1 = null, $x2 = null, $y2 = null)
+	/**
+	 * Executes the crop event when the queue is ran.
+	 *
+	 * Formats the crop method input for use with driver specific methods
+	 *
+	 * @param	integer	$x1	X-Coordinate for first set.
+	 * @param	integer	$y1	Y-Coordinate for first set.
+	 * @param	integer	$x2	X-Coordinate for second set.
+	 * @param	integer	$y2	Y-Coordinate for second set.
+	 * @return	Array	An array of variables for the specific driver.
+	 */
+	protected function _crop($x1, $y1, $x2, $y2)
 	{
 		if ($y1 === null)
 			$y1 = $x1;
@@ -177,16 +191,113 @@ abstract class Image_Driver {
 		return $this;
 	}
 
+	/**
+	 * Executes the resize event when the queue is ran.
+	 *
+	 * Formats the resize method input for use with driver specific methods.
+	 *
+	 * @param	integer	$width	The new width of the image.
+	 * @param	integer	$height	The new height of the image.
+	 * @param	boolean	$keepar	If false, allows stretching of the image.
+	 * @param	boolean	$pad	Adds padding to the image when resizing.
+	 * @return	Array	An array of variables for the specific driver.
+	 */
 	protected function _resize($width, $height = null, $keepar = true, $pad = true)
 	{
-		if (empty($height))
-			$height = $width;
+		if ($height == null || $width == null)
+		{
+			if ($height == null && substr($width, -1) == '%')
+			{
+				$height = $width;
+			}
+			else if (substr($height, -1) == '%' && $width == null)
+			{
+				$width = $height;
+			}
+			else
+			{
+				$sizes = $this->sizes();
+				if ($height == null && $width != null)
+				{
+					$height = $width * ($sizes->width / $sizes->height);
+				}
+				else if ($height != null && $width == null)
+				{
+					$width = $height * ($sizes->height / $sizes->width);
+				}
+				else
+				{
+					$this->error("Width and height cannot be null.");
+				}
+			}
+		}
+		$origwidth = $this->convert_number($width, true);
+		$origheight = $this->convert_number($height, false);
+		$width = $origwidth;
+		$height = $origheight;
+		$sizes = $this->sizes();
+		$x = 0;
+		$y = 0;
+		if ($keepar)
+		{
+			// See which is the biggest ratio
+			$width_ratio = $width / $sizes->width;
+			$height_ratio = $height / $sizes->height;
+			if ($width_ratio < $height_ratio)
+			{
+				$width = floor($sizes->width * $height_ratio);
+			}
+			else
+			{
+				$height = floor($sizes->height * $width_ratio);
+			}
+		}
+		if ($pad)
+		{
+			$x = floor(($origwidth - $width) / 2);
+			$y = floor(($origheight - $height) / 2);
+		} else {
+			$origwidth = $width;
+			$origheight = $height;
+		}
 		return array(
 			'width' => $width,
 			'height' => $height,
-			'keepar' => $keepar,
-			'pad' => $pad
+			'cwidth' => $origwidth,
+			'cheight' => $origheight,
+			'x' => $x,
+			'y' => $y
 		);
+	}
+
+	public function crop_resize($width, $height = null)
+	{
+		$this->queue('crop_resize', $width, $height);
+		return $this;
+	}
+
+	protected function _crop_resize($width, $height)
+	{
+		// Determine the crop size
+		$sizes = $this->sizes();
+		$width = $this->convert_number($width, true);
+		$height = $this->convert_number($height, false);
+		$widthr = $sizes->width / $width;
+		$heightr = $sizes->height / $height;
+		$x = $y = 0;
+		if ($widthr < $heightr)
+		{
+			$this->_resize($width, null, true, false);
+		}
+		else
+		{
+			$this->_resize(null, $height, true, false);
+		}
+		$sizes = $this->sizes();
+		$y = floor(($sizes->height - $height) / 2);
+		$x = floor(($sizes->width - $width) / 2);
+		$this->debug("<u>$x $y $width $height</u>");
+		$this->_crop($x, $y, $x + $width, $y + $height);
 	}
 
 	/**
@@ -201,6 +312,14 @@ abstract class Image_Driver {
 		return $this;
 	}
 
+	/**
+	 * Executes the rotate event when the queue is ran.
+	 *
+	 * Formats the rotate method input for use with driver specific methods
+	 *
+	 * @param	integer	$degrees	The degrees to rotate, negatives integers allowed.
+	 * @return	Array	An array of variables for the specific driver.
+	 */
 	protected function _rotate($degrees)
 	{
 		$degrees %= 360;
@@ -208,7 +327,6 @@ abstract class Image_Driver {
 		{
 			$degrees = 360 + $degrees;
 		}
-		$this->debug("Image being rotated $degrees");
 		return array(
 			'degrees' => $degrees
 		);
@@ -228,6 +346,16 @@ abstract class Image_Driver {
 		return $this;
 	}
 
+	/**
+	 * Executes the watermark event when the queue is ran.
+	 *
+	 * Formats the watermark method input for use with driver specific methods
+	 *
+	 * @param	string	$filename	The filename of the watermark file to use.
+	 * @param	string	$position	The position of the watermark, ex: "bottom right", "center center", "top left"
+	 * @param	integer	$padding	The amount of padding (in pixels) from the position.
+	 * @return	Array	An array of variables for the specific driver.
+	 */
 	protected function _watermark($filename, $position, $padding = 5)
 	{
 		$filename = realpath($filename);
@@ -266,6 +394,7 @@ abstract class Image_Driver {
 					$y = $sizes->height - $wsizes->height - $padding;
 					break;
 			}
+			$this->debug("Watermark being placed at $x,$y");
 			$return = array(
 				'filename' => $filename,
 				'x' => $x,
@@ -288,6 +417,15 @@ abstract class Image_Driver {
 		return $this;
 	}
 
+	/**
+	 * Executes the border event when the queue is ran.
+	 *
+	 * Formats the border method input for use with driver specific methods
+	 *
+	 * @param	integer	$size	The side of the border, in pixels.
+	 * @param	string	$color	A hexidecimal color.
+	 * @return	Array	An array of variables for the specific driver.
+	 */
 	protected function _border($size, $color = null)
 	{
 		if (empty($color))
@@ -310,9 +448,16 @@ abstract class Image_Driver {
 		return $this;
 	}
 
+	/**
+	 * Executes the mask event when the queue is ran.
+	 *
+	 * Formats the mask method input for use with driver specific methods
+	 *
+	 * @param	string	$maskimage	The location of the image to use as the mask
+	 * @return	Array	An array of variables for the specific driver.
+	 */
 	protected function _mask($maskimage)
 	{
-
 		return array(
 			'maskimage' => $maskimage
 		);
@@ -332,6 +477,20 @@ abstract class Image_Driver {
 		return $this;
 	}
 
+	public function _round_border($radius, $borderwidth, $color) {
+		$this->rounded($radius);
+	}
+
+	/**
+	 * Executes the rounded event when the queue is ran.
+	 *
+	 * Formats the rounded method input for use with driver specific methods
+	 *
+	 * @param	integer	$radius
+	 * @param	integer	$sides	Accepts any combination of "tl tr bl br" seperated by spaces, or null for all sides
+	 * @param	integer	$antialias	Sets the antialias range.
+	 * @return	Array	An array of variables for the specific driver.
+	 */
 	protected function _rounded($radius, $sides, $antialias)
 	{
 		$tl = $tr = $bl = $br = $sides == null;
@@ -376,9 +535,24 @@ abstract class Image_Driver {
 				$this->error("Could not set permissions on the file.");
 		if (!$this->check_extension($filename, true))
 			$filename .= "." . $this->image_extension;
+		$this->debug("", "Saving image as <code>$filename</code>");
 		return Array(
 			'filename' => $filename
 		);
+	}
+
+	/**
+	 * Saves the file in the original location, adding the append and prepend to the filename.
+	 *
+	 * @param	string	$append	The string to append to the filename
+	 * @param	string	$prepend	The string to prepend to the filename
+	 * @param	integer	$permissions	The permissions to attempt to set on the file.
+	 */
+	public function save_pa($append, $prepend = null, $permissions = null)
+	{
+		$filename = substr($this->image_filename, 0, -(strlen($this->image_extension) + 1));
+		$fullpath = $this->image_directory . "/" . $append . $filename . $prepend . '.' . $this->image_extension;
+		$this->save($fullpath, $permissions);
 	}
 
 	/**
@@ -395,12 +569,13 @@ abstract class Image_Driver {
 				$filetype = $this->config['filetype'];
 		if ($this->check_extension($filetype, false))
 		{
-			if (!$this->debugging)
+			if (!$this->config['debug'])
 				header('Content-Type: image/' . $filetype);
 		} else
 		{
 			$this->error("Image extension $filetype is unsupported.");
 		}
+		$this->debug("", "Outputting image as $filetype");
 		return array(
 			'filetype' => $filetype
 		);
@@ -461,7 +636,6 @@ abstract class Image_Driver {
 		{
 			$input = $size + $input;
 		}
-		$this->debug("convert_number($orig, $x) => $input");
 		return $input;
 	}
 
@@ -473,7 +647,10 @@ abstract class Image_Driver {
 	protected function queue($function)
 	{
 		$func = func_get_args();
-		$this->debug("Queued " . implode(", ", $func) . "");
+		$tmpfunc = array();
+		for ($i = 0; $i < count($func); $i++)
+			$tmpfunc[$i] = var_export($func[$i], true);
+		$this->debug("Queued <code>" . implode(", ", $tmpfunc) . "</code>");
 		$this->queued_actions[] = $func;
 	}
 
@@ -484,11 +661,14 @@ abstract class Image_Driver {
 	 */
 	public function run_queue($clear = true)
 	{
-		foreach ($this->queued_actions AS $rawaction)
+		foreach ($this->queued_actions AS $action)
 		{
-			$action = $rawaction;
-			$this->debug("Executing " . implode(", ", $action) . "");
+			$tmpfunc = array();
+			for ($i = 0; $i < count($action); $i++)
+				$tmpfunc[$i] = var_export($action[$i], true);
+			$this->debug("", "<b>Executing <code>" . implode(", ", $tmpfunc) . "</code></b>");
 			call_user_func_array(array(&$this, '_' . $action[0]), array_slice($action, 1));
+			$this->debug("Finished executing.");
 		}
 		if ((bool) $clear)
 			$this->queued_actions = array();
@@ -501,9 +681,11 @@ abstract class Image_Driver {
 	 */
 	protected function debug($message)
 	{
-		if ($this->debugging)
+		if ($this->config['debug'])
 		{
-			echo '<div>' . $message . '</div>';
+			$messages = func_get_args();
+			foreach ($messages AS $message)
+				echo '<div>' . $message . '&nbsp;</div>';
 		}
 	}
 

@@ -52,6 +52,11 @@ return array(
 	 * Sets the default antialias.
 	 */
 	'antialias' => 1,
+
+	/**
+	 * Used to debug the class, defaults to false.
+	 */
+	'debug' => false,
 	
 	/**
 	 * These presets allow you to call controlled manipulations.
@@ -66,21 +71,22 @@ return array(
 		 *
 		 * Libraries cannot be changed in here. (TODO - Add this feature)
 		 */
-		'example' => array(
+		'test1' => array(
 			'quality' => 100,
-			'bgcolor' => '#FFFFFF',
-			'bgalpha' => 25,
+			'bgcolor' => null,
 			'actions' => array(
-				//array('rotate', -45),
-				//array('watermark', '/var/www/watermark.png', 'bottom right', 10),
-				//array('resize', '25%', null, true, false),
+				array('border', 20, "#f00"),
+				array('crop', 10, 10, -10, -10),
+				array('crop_resize', 200, 200),
+				array('rounded', 10),
 				/**
 				 * Variables passed to the preset function (such as $this->preset('example', '/www/public/images/image.png) )
 				 * can be used to set variables in the presets. In this function, the $1 would be replaced by
 				 * '/www/public/images/image.png'
 				 */
-				array('resize', 600),
-				array('border', 10, '#00FF00'),
+				array('watermark', '$1', 'bottom right'),
+				//array('rotate', 45),
+				// array('mask', '$2'),
 				array('output', 'png')
 			)
 		)
