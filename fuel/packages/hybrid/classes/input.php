@@ -17,14 +17,15 @@ class Input {
 	}
 	
 	public static function __callStatic($name, $args) {
+		\Debug::dump($name, static::$request);
 		// If $request is null, it's a request from \Fuel\Core\Request so all call to 
-		if (is_null(static::$request) || in_array($name, array('is_ajax', 'user_agent', 'real_ip', 'referrer', 'server'))) {
+		if (is_null(static::$request) || in_array(strtolower($name), array('is_ajax', 'user_agent', 'real_ip', 'referrer', 'server'))) {
 			return call_user_func(array('\\Input', $name), $args);
 		}
 		
-		$using_connector = ($request->method !== '' ? true : false);
+		$using_connector = (static::$request->method !== '' ? true : false);
 		
-		if (false === $using_connector) {
+		if (!$using_connector) {
 			return call_user_func(array('\\Input', $name), $args);
 		}
 		
@@ -40,7 +41,7 @@ class Input {
 		}
 		
 		if ($name === 'method') {
-			return $request->method;
+			return static::$request->method;
 		}
 		
 		// Reach this point but $index is null (which isn't be so we should just return the default value)
@@ -48,8 +49,8 @@ class Input {
 			return $default;
 		}
 
-		if (strtoupper($name) === $request->method && true === $using_connector) {
-			return isset($request->data[$index]) ? $request->data[$index] : $default;
+		if (strtoupper($name) === static::$request->method && true === $using_connector) {
+			return isset(static::$request->data[$index]) ? static::$request->data[$index] : $default;
 		} else {
 			return $default;
 		}

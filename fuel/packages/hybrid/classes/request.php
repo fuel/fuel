@@ -26,18 +26,26 @@ class Request extends \Fuel\Core\Request {
 			$type = $uri_segments[0];
 		}
 		
-		$query_string = parse_url($uri, \PHP_URI_QUERY);
-		parse_str($query_string, $query_dataset);
+		
+		
+		$query_dataset = array ();
+		$query_string = parse_url($uri);
+		
+		if (isset($query_string['query'])) {
+			$uri = $query_string['path'];
+			parse_str($query_string['query'], $query_dataset);
+		}
 		
 		$dataset = array_merge($query_dataset, $dataset);
+		\Debug::dump($uri, $type, $dataset);
 		
 
-		logger(Fuel::L_INFO, 'Creating a new Request with URI = "' . $uri . '"', __METHOD__);
+		logger(\Fuel::L_INFO, 'Creating a new Request with URI = "' . $uri . '"', __METHOD__);
 
 		static::$active = new static($uri, true, $type, $dataset);
 
 		if (!static::$main) {
-			logger(Fuel::L_INFO, 'Setting main Request', __METHOD__);
+			logger(\Fuel::L_INFO, 'Setting main Request', __METHOD__);
 			static::$main = static::$active;
 		}
 
@@ -63,6 +71,7 @@ class Request extends \Fuel\Core\Request {
 		/* store this construct method and data static-ly */
 		static::$_request_method = $type;
 		static::$_request_data = $dataset;
+		$this->output = NULL;
 	}
 	
 	/**
@@ -101,7 +110,7 @@ class Request extends \Fuel\Core\Request {
 		static::$_request_method = '';
 		static::$_request_data = array();
 
-		return array($execute_object, $execute_status);
+		return (object) array('response' => $execute_object, 'status' => $execute_status);
 	}
 	
 	
