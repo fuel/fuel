@@ -225,11 +225,6 @@ class Model {
 	private $_is_new = true;
 
 	/**
-	 * @var	bool	keeps track of whether the object was changed
-	 */
-	private $_modified = false;
-
-	/**
 	 * @var	bool	keeps to object frozen
 	 */
 	private $_frozen = false;
@@ -307,7 +302,6 @@ class Model {
 		if (property_exists($this, $property))
 		{
 			$this->{$property} = $value;
-			$this->_modified = true;
 		}
 		elseif (isset(static::$_relations) and array_key_exists($property, static::$_relations))
 		{
@@ -332,29 +326,173 @@ class Model {
 	/**
 	 * Save using INSERT
 	 */
-	public function create() {}
+	public function create()
+	{
+		// Only allow creation with new object, otherwise: clone first, create later
+		if ( ! $this->_is_new)
+		{
+			return false;
+		}
+
+		// Set all current values
+		$query = Query::factory(get_called_class());
+		$primary_key = static::primary_key();
+		$properties  = static::properties();
+		foreach (static::properties() as $p)
+		{
+			if ( ! (in_array($p, $primary_key) and is_null($this->{$p})))
+			{
+				$query->set($p, $this->{$p});
+			}
+		}
+
+		// Insert!
+		$id = $query->insert();
+
+		// update the original property on success
+		$this->_is_new = false;
+		foreach ($properties as $p)
+		{
+			$this->_original[$p] = $this->{$p};
+		}
+
+		// when there's one PK it might be auto-incremented, get it and set it
+		if (count($primary_key) == 1 and $id !== false)
+		{
+			$pk = reset($primary_key);
+			$this->{$pk} = $id;
+		}
+
+		return $id !== false;
+	}
 
 	/**
 	 * Save using UPDATE
 	 */
-	public function update() {
+	public function update()
+	{
+		// New objects can't be updated, neither can frozen
+		if ($this->_is_new or $this->_frozen)
+		{
+			return false;
+		}
 
+		// Non changed objects don't have to be saved, but return true anyway (no reason to fail)
+		if ( ! $this->is_changed())
+		{
+			return true;
+		}
+
+		// Create the query and limit to primary key(s)
+		$query       = Query::factory(get_called_class())->limit(1);
+		$primary_key = static::primary_key();
+		$properties  = static::properties();
+		foreach ($primary_key as $pk)
+		{
+			$query->where($pk, '=', $this->{$pk});
+		}
+
+		// Set all current values
+		foreach ($properties as $p)
+		{
+			if ( ! in_array($p, $primary_key))
+			{
+				$query->set($p, $this->{$p});
+			}
+		}
+
+		// Return false when update fails
+		if ( ! $query->update())
+		{
+			return false;
+		}
+
+		// update the original property on success
+		foreach ($properties as $p)
+		{
+			$this->_original[$p] = $this->{$p};
+		}
+
+		return true;
 	}
 
 	/**
 	 * Delete current object
 	 */
-	public function delete() {}
+	public function delete()
+	{
+		// New objects can't be deleted, neither can frozen
+		if ($this->_is_new or $this->_frozen)
+		{
+			return false;
+		}
+
+		// Create the query and limit to primary key(s)
+		$query = Query::factory(get_called_class())->limit(1);
+		$primary_key = static::primary_key();
+		foreach ($primary_key as $pk)
+		{
+			$query->where($pk, '=', $this->{$pk});
+		}
+
+		// Return success of update operation
+		if ( ! $query->delete())
+		{
+			return false;
+		}
+
+		return $this->_original;
+	}
 
 	/**
 	 * Reset values to those gotten from the database
 	 */
 	public function reset()
 	{
-		foreach ($this->_original as $key => $val)
+		foreach ($this->_original as $p => $val)
 		{
-			$this->{$key} = $val;
+			$this->{$p} = $val;
 		}
+	}
+
+	/**
+	 * Compare current state with the retrieved state
+	 *
+	 * @param	string|array $property
+	 * @return	bool
+	 */
+	public function is_changed($property = null)
+	{
+		$property = (array) $property ?: static::properties();
+		foreach ($property as $p)
+		{
+			if ($this->{$p} !== $this->_original[$p])
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Allow object cloning to new object
+	 */
+	public function __clone()
+	{
+		// Reset primary keys
+		foreach (static::$_primary_key as $pk)
+		{
+			$this->{$pk} = null;
+		}
+
+		// This is a new object
+		$this->_is_new = true;
+
+		// TODO
+		// hasone-belongsto cant be copied and has to be emptied
+		// hasmany-belongsto can be copied, ie no change
+		// many-many relationships should be copied, ie no change
 	}
 }
 
