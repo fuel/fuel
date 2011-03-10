@@ -25,114 +25,112 @@ namespace Oil;
  */
 class Command
 {
-    public static function init($args)
-    {
-        if (\Cli::option('v', \Cli::option('version')))
-        {
-            \Cli::write('Fuel: ' . \Fuel::VERSION);
-            exit;
-        }
+	public static function init($args)
+	{
+		if (\Cli::option('v', \Cli::option('version')))
+		{
+			\Cli::write('Fuel: ' . \Fuel::VERSION);
+			exit;
+		}
 
 
-        // Remove flag options from the main argument list
-        for ($i =0; $i < count($args); $i++)
-        {
-            if (strpos($args[$i], '-') === 0)
-            {
-                unset($args[$i]);
-            }
-        }
+		// Remove flag options from the main argument list
+		for ($i =0; $i < count($args); $i++)
+		{
+			if (strpos($args[$i], '-') === 0)
+			{
+				unset($args[$i]);
+			}
+		}
 
-        try
-        {
-            if ( ! isset($args[1]))
-            {
-                static::help();
-                return;
-            }
-            
-            switch ($args[1])
-            {
-                case 'g':
-                case 'generate':
+		try
+		{
+			if ( ! isset($args[1]))
+			{
+				static::help();
+				return;
+			}
+			
+			switch ($args[1])
+			{
+				case 'g':
+				case 'generate':
 
-                    $action = isset($args[2]) ? $args[2]: 'help';
-                    
-                    $subfolder = 'default';
-                    if (is_int(strpos($action, 'scaffold/')))
-                    {
-                        $subfolder = str_replace('scaffold/', '', $action);
-                        $action = 'scaffold';
-                    }
-                    
-                    switch ($action)
-                    {
-                        case 'controller':
-                        case 'model':
-                        case 'views':
-                        case 'migration':
-                            call_user_func('Oil\Generate::'.$action, array_slice($args, 3));
-                        break;
+					$action = isset($args[2]) ? $args[2]: 'help';
+					
+					$subfolder = 'default';
+					if (is_int(strpos($action, 'scaffold/')))
+					{
+						$subfolder = str_replace('scaffold/', '', $action);
+						$action = 'scaffold';
+					}
+					
+					switch ($action)
+					{
+						case 'controller':
+						case 'model':
+						case 'views':
+						case 'migration':
+							call_user_func('Oil\Generate::'.$action, array_slice($args, 3));
+						break;
 
-                        case 'scaffold':
-                            call_user_func('Oil\Scaffold::generate', array_slice($args, 3), $subfolder);
-                        break;
+						case 'scaffold':
+							call_user_func('Oil\Scaffold::generate', array_slice($args, 3), $subfolder);
+						break;
 
-                        default:
-                            Generate::help();
-                    }
+						default:
+							Generate::help();
+					}
 
-                break;
+				break;
 
-                case 'c':
-                case 'console':
-                    new Console;
+				case 'c':
+				case 'console':
+					new Console;
 
-                case 'r':
-                case 'refine':
-                    $task = isset($args[2]) ? $args[2] : null;
+				case 'r':
+				case 'refine':
+					$task = isset($args[2]) ? $args[2] : null;
 
-                    call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
-                break;
+					call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
+				break;
 
-                case 'p':
-                case 'package':
+				case 'p':
+				case 'package':
 
-                    $action = isset($args[2]) ? $args[2]: 'help';
-                    
-                    switch ($action)
-                    {
-                        case 'install':
-                        case 'uninstall':
-                            call_user_func_array('Oil\Package::'.$action, array_slice($args, 3));
-                        break;
+					$action = isset($args[2]) ? $args[2]: 'help';
+					
+					switch ($action)
+					{
+						case 'install':
+						case 'uninstall':
+							call_user_func_array('Oil\Package::'.$action, array_slice($args, 3));
+						break;
 
-                        default:
-                            Package::help();
-                    }
+						default:
+							Package::help();
+					}
 
-                break;
+				break;
 
-                case 't':
-                case 'test':
-                
-                    $group = isset($args[2]) ? ' --group '.$args[2] : '';
+				case 't':
+				case 'test':
 
-                    passthru('cd '.DOCROOT.'; phpunit'.$group);
+					// Attempt to load PUPUnit.  If it fails, we are done.
+					if ( ! @include_once('PHPUnit/Autoload.php'))
+					{
+						die(PHP_EOL.'PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL.'Please visit http://phpunit.de and install.'.PHP_EOL.PHP_EOL);
+					}
 
-//                    $action = isset($args[2]) ? $args[2]: '--help';
-//
-//                    switch ($action)
-//                    {
-//                        case '--help':
-//                            \Fuel\Octane\Tests::help();
-//                        break;
-//
-//                        default:
-//                            call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
-//                    }
+					// CD to the root of Fuel and call up phpunit with a path to our config
+					$command = 'cd '.DOCROOT.'; phpunit -c "'.COREPATH.'phpunit.xml"';
 
-                break;
+					// Respect the group option
+					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
+
+					passthru($command);
+				
+				break;
  
                 default:
                     static::help();
