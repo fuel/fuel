@@ -30,7 +30,7 @@ abstract class Database_Query_Builder_Where extends \Database_Query_Builder {
 	 * @param   mixed   column value
 	 * @return  $this
 	 */
-	public function where($column, $op, $value)
+	public function where($column, $op = null, $value = null)
 	{
 		return $this->and_where($column, $op, $value);
 	}
@@ -43,9 +43,26 @@ abstract class Database_Query_Builder_Where extends \Database_Query_Builder {
 	 * @param   mixed   column value
 	 * @return  $this
 	 */
-	public function and_where($column, $op, $value)
+	public function and_where($column, $op = null, $value = null)
 	{
-		$this->_where[] = array('AND' => array($column, $op, $value));
+		if (is_array($column))
+		{
+			foreach ($column as $key => $val)
+			{
+				if (is_array($val))
+				{
+					$this->and_where($val[0], $val[1], $val[2]);
+				}
+				else
+				{
+					$this->and_where($key, '=', $val);
+				}
+			}
+		}
+		else
+		{
+			$this->_where[] = array('AND' => array($column, $op, $value));
+		}
 
 		return $this;
 	}
@@ -58,10 +75,26 @@ abstract class Database_Query_Builder_Where extends \Database_Query_Builder {
 	 * @param   mixed   column value
 	 * @return  $this
 	 */
-	public function or_where($column, $op, $value)
+	public function or_where($column, $op = null, $value = null)
 	{
-		$this->_where[] = array('OR' => array($column, $op, $value));
-
+		if (is_array($column))
+		{
+			foreach ($column as $key => $val)
+			{
+				if (is_array($val))
+				{
+					$this->or_where($val[0], $val[1], $val[2]);
+				}
+				else
+				{
+					$this->or_where($key, '=', $val);
+				}
+			}
+		}
+		else
+		{
+			$this->_where[] = array('OR' => array($column, $op, $value));
+		}
 		return $this;
 	}
 
