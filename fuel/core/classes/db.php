@@ -313,4 +313,60 @@ class DB {
 		return \Database_Connection::instance($db)->set_charset($charset);
 	}
 
+	/**
+	 * Sets the Database instance to use transactions
+	 * Transactions are OFF by default
+	 *
+	 *     DB::transactional();
+	 *     DB::transactional(TRUE);
+	 *     DB::transactional(FALSE);
+	 *
+	 * @param   bool   use tranactions TRUE/FALSE
+	 * @param   string  db connection
+	 * @return  void
+	 */
+	public static function transactional($use_trans = true, $db = null)
+	{
+		return \Database_Connection::instance($db)->transactional($use_trans);
+	}
+
+	/**
+	 * Begins a transaction on instance
+	 *
+	 *     DB::start_transaction();
+	 *
+	 * @param   string  db connection
+	 * @return  void
+	 */
+	public static function start_transaction($db = null)
+	{
+		return \Database_Connection::instance($db)->start_transaction();
+	}
+
+	/**
+	 * Commits all pending transactional queries
+	 *
+	 *     DB::commit_transaction();
+	 *
+	 * @param   string  db connection
+	 * @return  void
+	 */
+	public static function commit_transaction($db = null)
+	{
+		return \Database_Connection::instance($db)->commit_transaction();
+	}
+
+	/**
+	 * Rollsback all pending transactional queries
+	 *
+	 *     DB::rollback_transaction();
+	 *
+	 * @param   string  db connection
+	 * @return  void
+	 */
+	public static function rollback_transaction($db = null)
+	{
+		return \Database_Connection::instance($db)->rollback_transaction();
+	}
+
 } // End DB
