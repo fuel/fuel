@@ -139,7 +139,7 @@ class Model {
 			return static::$_properties_cached[$class];
 		}
 
-		$properties = array_keys(\Database::instance()->list_columns(static::table()));
+		$properties = array_keys(\DB::list_columns(static::table()));
 
 		// Fetch the properties if not
 //		$properties = get_class_vars($class);
