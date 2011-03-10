@@ -16,6 +16,12 @@ class Database_PDO_Connection extends \Database_Connection {
 
 	// PDO uses no quoting for identifiers
 	protected $_identifier = '';
+	
+	// Allows transactions
+	protected $_trans_enabled = FALSE;
+	
+	// transaction errors
+	public $trans_errors = FALSE;
 
 	// Know which kind of DB is used
 	public $_db_type = '';
@@ -116,9 +122,24 @@ class Database_PDO_Connection extends \Database_Connection {
 				// This benchmark is worthless
 				Profiler::delete($benchmark);
 			}
-
-			// Convert the exception in a database exception
-			throw new \Database_Exception($e->getMessage().' with query: "'.$sql.'"');
+			
+			if ($type !== \Database::SELECT && $this->_trans_enabled) 
+			{
+				// If we are using transactions, throwing an exception would defeat the purpose
+				// We need to log the failures for transaction status
+				if ( ! is_array($this->trans_errors))
+				{
+					$this->trans_errors = array();
+				}
+				
+				$this->trans_errors[] = $e->getMessage().' with query: "'.$sql.'"';
+				return false;
+			}
+			else
+			{
+				// Convert the exception in a database exception
+				throw new \Database_Exception($e->getMessage().' with query: "'.$sql.'"');
+			}
 		}
 
 		if (isset($benchmark))
@@ -183,6 +204,29 @@ class Database_PDO_Connection extends \Database_Connection {
 		$this->_connection or $this->connect();
 
 		return $this->_connection->quote($value);
+	}
+	
+	public function transactional($use_trans = TRUE)
+	{
+		if (is_bool($use_trans)) {
+			$this->_trans_enabled = $use_trans;
+		}
+	}
+	
+	public function start_transaction()
+	{
+		$this->transactional();
+		$this->_connection->beginTransaction();
+	}
+
+	public function commit_transaction()
+	{
+		$this->_connection->commit();
+	}
+
+	public function rollback_transaction()
+	{
+		$this->_connection->rollBack();
 	}
 
 } // End Database_PDO

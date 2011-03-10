@@ -177,7 +177,7 @@ class Database_MySQLi_Connection extends \Database_Connection {
 				Profiler::delete($benchmark);
 			}
 			
-			if ($this->_trans_enabled) 
+			if ($type !== \Database::SELECT && $this->_trans_enabled) 
 			{
 				// If we are using transactions, throwing an exception would defeat the purpose
 				// We need to log the failures for transaction status
@@ -394,6 +394,25 @@ class Database_MySQLi_Connection extends \Database_Connection {
 		if (is_bool($use_trans)) {
 			$this->_trans_enabled = $use_trans;
 		}
+	}
+	
+	public function start_transaction()
+	{
+		$this->transactional();
+		$this->query(0, 'SET AUTOCOMMIT=0', false);
+		$this->query(0, 'START TRANSACTION', false);
+	}
+
+	public function commit_transaction()
+	{
+		$this->query(0, 'COMMIT', false);
+		$this->query(0, 'SET AUTOCOMMIT=1', false);
+	}
+
+	public function rollback_transaction()
+	{
+		$this->query(0, 'ROLLBACK', false);
+		$this->query(0, 'SET AUTOCOMMIT=1', false);
 	}
 
 } // End Database_MySQLi
