@@ -516,6 +516,8 @@ class Query {
 	}
 
 	/**
+	 * Count the result of a query
+	 *
 	 * @param	bool	false for random selected column or specific column, only works for main model currently
 	 * @return	int		number of rows OR false
 	 */
@@ -540,10 +542,16 @@ class Query {
 		return (int) $count;
 	}
 
+	/**
+	 * Get the maximum of a column for the current query
+	 *
+	 * @param	string	column
+	 * @return	mixed	maximum value OR false
+	 */
 	public function max($column)
 	{
 		// Get the columns
-		$columns = DB::expr('MAX('.$this->alias.'.'.($column ?: key($this->select)).') AS max_result');
+		$columns = DB::expr('MAX('.$this->alias.'.'.$column.') AS max_result');
 
 		// Remove the current select and
 		$query = call_user_func_array('DB::select', $columns);
@@ -561,10 +569,16 @@ class Query {
 		return $max;
 	}
 
+	/**
+	 * Get the minimum of a column for the current query
+	 *
+	 * @param	string	column
+	 * @return	mixed	minimum value OR false
+	 */
 	public function min($column)
 	{
 		// Get the columns
-		$columns = DB::expr('MIN('.$this->alias.'.'.($column ?: key($this->select)).') AS min_result');
+		$columns = DB::expr('MIN('.$this->alias.'.'.$column.') AS min_result');
 
 		// Remove the current select and
 		$query = call_user_func_array('DB::select', $columns);
@@ -582,21 +596,79 @@ class Query {
 		return $min;
 	}
 
+	/**
+	 * Run INSERT with the current values
+	 *
+	 * @return	mixed	last inserted ID or false on failure
+	 * @todo	work with relations
+	 */
 	public function insert()
 	{
-		// use set, run insert and return the ID that was returned by the QB
+		$res = DB::insert(call_user_func($this->model.'::table'), array_keys($this->values))
+			->values(array_values($this->values))
+			->execute();
+
+		// Failed to save the new record
+		if ($res[0] === 0)
+		{
+			return false;
+		}
+
+		return $res[0];
 	}
 
+	/**
+	 * Run UPDATE with the current values
+	 *
+	 * @return	bool	success of update operation
+	 * @todo	work with relations
+	 */
 	public function update()
 	{
-		// should work a lot like find but not allow joins of course
-		// use set, run update and return success (affected rows == 1)
+		// temporary disable relations and group_by
+		$tmp_relations   = $this->relations;
+		$this->relations = array();
+		$tmp_group_by    = $this->group_by;
+		$this->group_by  = array();
+
+		// Build query and execute update
+		$query = DB::update(call_user_func($this->model.'::table'));
+		$tmp   = $this->build_query($query);
+		$query = $tmp['query'];
+		$res = $query->set($this->values)->execute();
+
+		// put back any relations/group_by settings
+		$this->relations = $tmp_relations;
+		$this->group_by  = $tmp_group_by;
+
+		return $res > 0;
 	}
 
+	/**
+	 * Run DELETE with the current values
+	 *
+	 * @return	bool	success of delete operation
+	 * @todo	cascade option and for relations and make sure they're removed
+	 */
 	public function delete()
 	{
-		// should work a lot like find but not allow joins of course
-		// just run delete, but prevent it happening with empty where() clause
+		// temporary disable relations and group_by
+		$tmp_relations   = $this->relations;
+		$this->relations = array();
+		$tmp_group_by    = $this->group_by;
+		$this->group_by  = array();
+
+		// Build query and execute update
+		$query = DB::delete(call_user_func($this->model.'::table'));
+		$tmp   = $this->build_query($query);
+		$query = $tmp['query'];
+		$res = $query->execute();
+
+		// put back any relations/group_by settings
+		$this->relations = $tmp_relations;
+		$this->group_by  = $tmp_group_by;
+
+		return $res > 0;
 	}
 }
 
