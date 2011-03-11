@@ -113,13 +113,13 @@ class Request {
 
 		\Output::$status = 404;
 
-		if (\Config::get('routes.404') === null)
+		if (\Config::get('routes._404_') === null)
 		{
 			static::active()->output = \View::factory('404');
 		}
 		else
 		{
-			list($controller, $action) = array_pad(explode('/', \Config::get('routes.404')), 2, false);
+			list($controller, $action) = array_pad(explode('/', \Config::get('routes._404_')), 2, false);
 
 			$action or $action = 'index';
 
@@ -282,7 +282,7 @@ class Request {
 			// set the new controller to directory or module when applicable
 			$controller = $this->directory ?: $this->module;
 			// ... or to the default controller if it was in neither
-			$controller = $controller ?: preg_replace('#/([a-z0-9/_]*)$#uiD', '', \Route::$routes['#']);
+			$controller = $controller ?: preg_replace('#/([a-z0-9/_]*)$#uiD', '', \Config::get('routes._root_'));
 
 			// try again with new controller if it differs from the previous attempt
 			if ($controller != $this->controller)
