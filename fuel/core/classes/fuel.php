@@ -114,6 +114,9 @@ class Fuel {
 		static::$_paths = array(APPPATH, COREPATH);
 		array_splice(static::$_paths, 1, 0, \Config::get('module_paths', array()));
 
+		// Load in the routes
+		\Config::load('routes', true);
+
 		\Router::add(\Config::get('routes'));
 
 		\View::$auto_encode = \Config::get('security.auto_encode_view_data');

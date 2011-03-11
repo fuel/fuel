@@ -49,7 +49,7 @@ class Router {
 				break;
 			}
 		}
-		
+
 		if ( ! $match)
 		{
 			// Since we didn't find a match, we will create a new route.

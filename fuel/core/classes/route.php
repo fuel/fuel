@@ -53,8 +53,15 @@ class Route {
 
 	protected function compile()
 	{
-		$this->search = str_replace(array(':any', ':segment'), array('.+', '[^/]+([^/]*)'), $this->path);
-		$this->search = preg_replace('|:([a-z\_]+)|uD', '(?P<$1>.+)', $this->search);
+		if ($this->path === '_root_')
+		{
+			$this->search = '';
+		}
+		else
+		{
+			$this->search = str_replace(array(':any', ':segment'), array('.+', '[^/]+([^/]*)'), $this->path);
+			$this->search = preg_replace('|:([a-z\_]+)|uD', '(?P<$1>.+)', $this->search);
+		}
 	}
 
 	/**
@@ -68,7 +75,7 @@ class Route {
 	{
 		$uri = $request->uri->get();
 
-		if ($uri === '' and $uri === $this->path)
+		if ($uri === '' and $this->path === '_root_')
 		{
 			return $this->matched();
 		}
