@@ -280,18 +280,14 @@ class Query {
 	}
 
 	/**
-	 * Build the query and return it hydrated
+	 * Build a select, delete or update query
 	 *
-	 * @return	Model
+	 * @param	Database_Query
+	 * @param	string|select	either array for select query or string update, delete, insert
+	 * @return	array			with keys query and relations
 	 */
-	public function find()
+	public function build_query($query, $columns = array())
 	{
-		// Get the columns
-		$select = $this->select();
-
-		// Start building the query
-		$query = call_user_func_array('DB::select', $select);
-
 		// Set from table
 		$query->from(call_user_func($this->model.'::table'));
 
@@ -350,27 +346,40 @@ class Query {
 			}
 		}
 
-		// if there was a limit/offset on a join the query up till now will become a subquery
-		$joins = $relations = array();
-		if ( ! empty($this->relations) and ( ! empty($this->limit) or ! empty($this->offset)))
+		$relations = array(); // keeps all the relationship objects
+		$joins = array();     // keeps all the join table arrays
+		$i = 1;
+		foreach ($this->relations as $name => $rel)
 		{
-			$i = 1;
-			foreach ($this->relations as $name => $rel)
-			{
-				$table = 't'.$i++;
-				$relations[$name] = array($rel, $rel->select($table));
-				$joins[] = $rel->join($table);
-			}
+			$table = 't'.$i++;
+			$relations[$name] = array($rel, $rel->select($table));
+			$joins[] = $rel->join($table);
+		}
+
+		if ($this->use_subquery())
+		{
+			// Get the columns for final select
+			$columns = $columns;
 			foreach ($relations as $properties)
 			{
 				foreach ($properties[1] as $p => $a)
 				{
-					$select[] = array($table.'.'.$a, $p);
+					$columns[] = array($table.'.'.$a, $p);
 				}
 			}
 
-			$new_query = call_user_func_array('DB::select', $select);
+			$new_query = call_user_func_array('DB::select', $columns);
 			$query = $new_query->from($query);
+		}
+		else
+		{
+			foreach ($relations as $properties)
+			{
+				foreach ($properties[1] as $p => $a)
+				{
+					$query->select(array($table.'.'.$a, $p));
+				}
+			}
 		}
 
 		foreach ($joins as $join)
@@ -423,17 +432,28 @@ class Query {
 			}
 		}
 
-		$rows = $query->execute()->as_array();
-		$result = array();
-		foreach ($rows as $row)
-		{
-			$this->hydrate($row, $relations, $result);
-		}
-
-		// It's all built, now lets execute and start hydration
-		return $result;
+		return array('query' => $query, 'relations' => $relations);
 	}
 
+	/**
+	 * Determines whether a subquery is needed, is the case if there was a limit/offset on a join
+	 *
+	 * @return	bool
+	 */
+	public function use_subquery()
+	{
+		return ( ! empty($this->relations) and ( ! empty($this->limit) or ! empty($this->offset)));
+	}
+
+	/**
+	 * Hydrate model instances with retrieved data
+	 *
+	 * @param	array	row from the database
+	 * @param	array	relations to be expected
+	 * @param	array	current result array (by reference)
+	 * @param	string	model classname to hydrate
+	 * @param	array	columns to use
+	 */
 	public function hydrate($row, $relations, &$result, $model = null, $select = null)
 	{
 		$model = is_null($model) ? $this->model : $model;
@@ -466,22 +486,100 @@ class Query {
 		return $obj;
 	}
 
+	/**
+	 * Build the query and return it hydrated
+	 *
+	 * @return	Model
+	 */
+	public function find()
+	{
+		// Get the columns
+		$columns = $this->select();
+
+		// Start building the query
+		$query = call_user_func_array('DB::select', $this->use_subquery() ? array(array_keys($columns)) : $columns);
+
+		// Build the query further
+		$tmp       = $this->build_query($query, $columns);
+		$query     = $tmp['query'];
+		$relations = $tmp['relations'];
+
+		$rows = $query->execute()->as_array();
+		$result = array();
+		foreach ($rows as $row)
+		{
+			$this->hydrate($row, $relations, $result);
+		}
+
+		// It's all built, now lets execute and start hydration
+		return $result;
+	}
+
+	/**
+	 * @param	bool	false for random selected column or specific column, only works for main model currently
+	 * @return	int		number of rows OR false
+	 */
 	public function count($distinct = false)
 	{
-		// should work just like find but run a count query in the end
-		// $distinct must be given an existing column name if only a specific column is to be counted distinctly
+		// Get the columns
+		$columns = DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: key($this->select)).') AS count_result');
+
+		// Remove the current select and
+		$query = call_user_func_array('DB::select', $columns);
+
+		$tmp   = $this->build_query($query, $columns);
+		$query = $tmp['query'];
+		$count = $query->execute()->get('count_result');
+
+		// Database_Result::get('count_result') returns a string | null
+		if ($count === null)
+		{
+			return false;
+		}
+
+		return (int) $count;
 	}
 
 	public function max($column)
 	{
-		// should work just like find but run a max query in the end
-		// $column must be given an existing column name to work
+		// Get the columns
+		$columns = DB::expr('MAX('.$this->alias.'.'.($column ?: key($this->select)).') AS max_result');
+
+		// Remove the current select and
+		$query = call_user_func_array('DB::select', $columns);
+
+		$tmp   = $this->build_query($query, $columns);
+		$query = $tmp['query'];
+		$max   = $query->execute()->get('max_result');
+
+		// Database_Result::get('max_result') returns a string | null
+		if ($max === null)
+		{
+			return false;
+		}
+
+		return $max;
 	}
 
 	public function min($column)
 	{
-		// should work just like find but run a min query in the end
-		// $column must be given an existing column name to work
+		// Get the columns
+		$columns = DB::expr('MIN('.$this->alias.'.'.($column ?: key($this->select)).') AS min_result');
+
+		// Remove the current select and
+		$query = call_user_func_array('DB::select', $columns);
+
+		$tmp   = $this->build_query($query, $columns);
+		$query = $tmp['query'];
+		$min   = $query->execute()->get('min_result');
+
+		// Database_Result::get('min_result') returns a string | null
+		if ($min === null)
+		{
+			return false;
+		}
+
+		return $min;
 	}
 
 	public function insert()
