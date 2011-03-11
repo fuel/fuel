@@ -171,16 +171,6 @@ return array(
 		'language'	=> array(),
 	),
 
-	/**************************************************************************/
-	/* Routes                                                                 */
-	/**************************************************************************/
-
-	'routes'	=> array(
-		// This is the default route.  We use a "#" here so that we do not have any
-		// reserved routes.
-		'#'		=> 'welcome',
-		'404'	=> 'welcome/404',
-	),
 );
 
 /* End of file config.php */

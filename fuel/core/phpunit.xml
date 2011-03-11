@@ -4,7 +4,7 @@
 	<php>
 		<server name="app_path" value="../app"/>
 		<server name="core_path" value="../core"/>
-		<server name="package_path" value="../package"/>
+		<server name="package_path" value="../packages"/>
 	</php>
 	<testsuites>
 		<testsuite name="core">

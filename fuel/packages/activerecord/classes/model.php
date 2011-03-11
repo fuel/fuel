@@ -16,7 +16,6 @@ namespace ActiveRecord;
 
 
 use \DB;
-use \Database;
 use \Inflector;
 
 class Model {
@@ -336,7 +335,7 @@ class Model {
 			$this->table_name = Inflector::tableize($this->class_name);
 		}
 
-		$this->prefixed_table_name = \Database::instance()->table_prefix($this->table_name);
+		$this->prefixed_table_name = \DB::table_prefix($this->table_name);
 
 		//don't process associacions when instance was created by static::count() 
 		if ($params === self::IS_COUNT)
@@ -369,7 +368,7 @@ class Model {
 
 		if (empty($this->columns))
 		{
-			$this->columns = array_keys(Database::instance()->list_columns($this->table_name));
+			$this->columns = array_keys(\DB::list_columns($this->table_name));
 		}
 
 		if (is_array($params))

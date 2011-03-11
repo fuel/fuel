@@ -1,6 +1,6 @@
 <?php
 /**
- * Transactions for MySQL/MySQLi InnoDB
+ * Interact with Database Transactions
  *
  * @package    Fuel/Database
  * @category   Database
@@ -42,7 +42,7 @@ class Database_Transaction
 	*/
 	public function __construct()
 	{
-		$this->_db = Database::instance();
+		$this->_db = Database_Connection::instance();
 	}
 
 	/**
@@ -50,9 +50,7 @@ class Database_Transaction
 	*/
 	public function start()
 	{		
-		$this->_db->transactional();
-		$this->_db->query(0, 'SET AUTOCOMMIT=0', false);
-		$this->_db->query(0, 'START TRANSACTION', false);
+		$this->_db->start_transaction();
 	}
 
 	/**
@@ -88,8 +86,7 @@ class Database_Transaction
 	*/
 	public function commit()
 	{
-		$this->_db->query(0, 'COMMIT', false);
-		$this->_db->query(0, 'SET AUTOCOMMIT=1', false);
+		$this->_db->commit_transaction();
 	}
 	
 	/**
@@ -99,8 +96,7 @@ class Database_Transaction
 	*/
 	public function rollback()
 	{
-		$this->_db->query(0, 'ROLLBACK', false);
-		$this->_db->query(0, 'SET AUTOCOMMIT=1', false);
+		$this->_db->rollback_transaction();
 	}
 	
 	/**
