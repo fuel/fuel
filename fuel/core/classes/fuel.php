@@ -247,14 +247,13 @@ class Fuel {
 	}
 
 	/**
-	 * Finds a file in the given directory.  It allows for a cascading filesystem.
+	 * Gets a list of all the files in a given directory inside all of the
+	 * loaded search paths (e.g. the cascading file system).  This is useful
+	 * for things like finding all the config files in all the search paths.
 	 *
-	 * @access	public
-	 * @param	string	The directory to look in.
-	 * @param	string	The file extension
-	 * @param	boolean	if true return an array of all files found
-	 * @param	boolean	if false do not cache the result
-	 * @return	string	The path to the file
+	 * @param   string  The directory to look in
+	 * @param   string  The file filter
+	 * @return  array   the array of files
 	 */
 	public static function list_files($directory = null, $filter = '*.php')
 	{
