@@ -207,11 +207,6 @@ class Validation {
 	 */
 	public function run($input = null, $allow_partial = false)
 	{
-		if (empty($input) && empty($_POST))
-		{
-			return false;
-		}
-
 		$this->validated = array();
 		$this->errors = array();
 		$this->input = $input ?: array();
@@ -237,6 +232,11 @@ class Validation {
 			{
 				$this->errors[$field->name] = $v;
 			}
+		}
+		
+		if (empty($input) && empty($_POST))
+		{
+			return false;
 		}
 
 		return empty($this->errors);
