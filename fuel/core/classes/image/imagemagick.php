@@ -31,66 +31,66 @@ class Image_Imagemagick extends Image_Driver {
 		{
 			do
 			{
-				$this->image_temp = substr($this->config['temp_dir'] . $this->config['temp_append'] . md5(time() * microtime()), 0, 32) . '.png';
+				$this->image_temp = substr($this->config['temp_dir'].$this->config['temp_append'].md5(time() * microtime()), 0, 32).'.png';
 			}
 			while (file_exists($this->image_temp));
 		}
-		$this->exec('convert', '"' . $image_fullpath . '" "' . $this->image_temp . '"');
+		$this->exec('convert', '"'.$image_fullpath.'" "'.$this->image_temp.'"');
 		return $this;
 	}
 
 	protected function _crop($x1, $y1, $x2, $y2)
 	{
 		extract(parent::_crop($x1, $y1, $x2, $y2));
-		$image = '"' . $this->image_temp . '"';
-		$this->exec('convert', $image . ' -crop ' . ($x2 - $x1) . 'x' . ($y2 - $y1) . '+' . $x1 . '+' . $y1 . ' +repage ' . $image);
+		$image = '"'.$this->image_temp.'"';
+		$this->exec('convert', $image.' -crop '.($x2 - $x1).'x'.($y2 - $y1).'+'.$x1.'+'.$y1.' +repage '.$image);
 		$this->clear_sizes();
 	}
 
 	protected function _resize($width, $height = null, $keepar = true, $pad = true)
 	{
 		extract(parent::_resize($width, $height, $keepar, $pad));
-		$image = '"' . $this->image_temp . '"';
+		$image = '"'.$this->image_temp.'"';
 		$modifier = !$keepar ? '!' : $pad ? '' : '';
-		$this->exec('convert', "-define png:size=". $cwidth . "x" . $cheight . " " . $image . " " . 
-				"-background none " .
-				"-resize \"" . ($pad ? $width : $cwidth) . "x" . ($pad ? $height : $cheight) . "!\" " .
-				"-gravity center " .
-				"-extent " . $cwidth . "x" . $cheight . " " . $image);
+		$this->exec('convert', "-define png:size=".$cwidth."x".$cheight." ".$image." ".
+				"-background none ".
+				"-resize \"".($pad ? $width : $cwidth)."x".($pad ? $height : $cheight)."!\" ".
+				"-gravity center ".
+				"-extent ".$cwidth."x".$cheight." ".$image);
 		$this->clear_sizes();
 	}
 
 	protected function _rotate($degrees)
 	{
 		extract(parent::_rotate($degrees));
-		$image = '"' . $this->image_temp . '"';
-		$this->exec('convert', $image . " -background none -virtual-pixel background +distort ScaleRotateTranslate " . $degrees . " +repage " . $image);
+		$image = '"'.$this->image_temp.'"';
+		$this->exec('convert', $image." -background none -virtual-pixel background +distort ScaleRotateTranslate ".$degrees." +repage ".$image);
 		$this->clear_sizes();
 	}
 
 	protected function _watermark($filename, $x, $y)
 	{
 		extract(parent::_watermark($filename, $x, $y));
-		$image = '"' . $this->image_temp . '"';
-		$filename = '"' . $filename . '"';
+		$image = '"'.$this->image_temp.'"';
+		$filename = '"'.$filename.'"';
 		if ($x >= 0)
-			$x = '+' . $x;
+			$x = '+'.$x;
 		if ($y >= 0)
-			$y = '+' . $y;
+			$y = '+'.$y;
 		$this->exec(
 				'composite',
-				'-compose atop -geometry ' . $x . $y . ' ' .
-				'-dissolve ' . $this->config['watermark_alpha'] . '% ' .
-				$filename . ' ' . $image . ' ' . $image
+				'-compose atop -geometry '.$x.$y.' '.
+				'-dissolve '.$this->config['watermark_alpha'].'% '.
+				$filename.' '.$image.' '.$image
 		);
 	}
 
 	protected function _border($size, $color)
 	{
 		extract(parent::_border($size, $color));
-		$image = '"' . $this->image_temp . '"';
+		$image = '"'.$this->image_temp.'"';
 		$color = $this->create_color($color, 100);
-		$command = $image . ' -compose copy -bordercolor ' . $color . ' -border ' . $size . 'x' . $size . ' ' . $image;
+		$command = $image.' -compose copy -bordercolor '.$color.' -border '.$size.'x'.$size.' '.$image;
 		$this->exec('convert', $command);
 		$this->clear_sizes();
 	}
@@ -98,9 +98,9 @@ class Image_Imagemagick extends Image_Driver {
 	protected function _mask($maskimage)
 	{
 		extract(parent::_mask($maskimage));
-		$mimage = '"' . $maskimage . '"';
-		$image = '"' . $this->image_temp . '"';
-		$command = $image . ' ' . $mimage . ' +matte  -compose copy-opacity -composite ' . $image;
+		$mimage = '"'.$maskimage.'"';
+		$image = '"'.$this->image_temp.'"';
+		$command = $image.' '.$mimage.' +matte  -compose copy-opacity -composite '.$image;
 		$this->exec('convert', $command);
 	}
 
@@ -114,15 +114,15 @@ class Image_Imagemagick extends Image_Driver {
 	protected function _rounded($radius, $sides)
 	{
 		extract(parent::_rounded($radius, $sides, null));
-		$image = '"' . $this->image_temp . '"';
+		$image = '"'.$this->image_temp.'"';
 		$sizes = $this->sizes();
 		$r = $radius;
-		$command = $image . " ( +clone -alpha extract " .
-					(!$tr ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ") . "-flip " .
-					(!$br ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ") . "-flop " .
-					(!$bl ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ") . "-flip " .
-					(!$tl ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ") .
-				') -alpha off -compose CopyOpacity -composite ' . $image;
+		$command = $image." ( +clone -alpha extract ".
+				(!$tr ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ")."-flip ".
+				(!$br ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ")."-flop ".
+				(!$bl ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ")."-flip ".
+				(!$tl ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ").
+				') -alpha off -compose CopyOpacity -composite '.$image;
 		$this->exec('convert', $command);
 	}
 
@@ -130,23 +130,25 @@ class Image_Imagemagick extends Image_Driver {
 	{
 		$return = false;
 		$isLoadedFile = $filename == null;
-		if (!$isLoadedFile || $this->sizes_cache == null || !$usecache) {
+		if (!$isLoadedFile || $this->sizes_cache == null || !$usecache)
+		{
 			$reason = ($filename != null ? "filename" : ($this->size_cache == null ? 'cache' : 'option'));
 			$this->debug("Generating size of image... (triggered by $reason)");
 			if ($isLoadedFile && !empty($this->image_temp))
 				$filename = $this->image_temp;
 			$width = null;
 			$height = null;
-			$output = $this->exec('identify', '-format "%[fx:w] %[fx:h]" "' . $filename . '"');
+			$output = $this->exec('identify', '-format "%[fx:w] %[fx:h]" "'.$filename.'"');
 			list($width, $height) = explode(" ", $output[0]);
 			$return = (object) array(
-				'width' => $width,
-				'height' => $height
+						'width' => $width,
+						'height' => $height
 			);
 			if ($isLoadedFile)
 				$this->sizes_cache = $return;
-			$this->debug("Sizes " . (!$isLoadedFile ? "for <code>$filename</code> " : "") . "are now $width and $height");
-		} else {
+			$this->debug("Sizes ".(!$isLoadedFile ? "for <code>$filename</code> " : "")."are now $width and $height");
+		} else
+		{
 			$return = $this->sizes_cache;
 		}
 		return $return;
@@ -156,9 +158,9 @@ class Image_Imagemagick extends Image_Driver {
 	{
 		extract(parent::output($filename, $permissions));
 		$this->run_queue();
-		$old = '"' . $this->image_temp . '"';
-		$new = '"' . $filename . '"';
-		$this->exec('convert', $old . ' ' . $new);
+		$old = '"'.$this->image_temp.'"';
+		$new = '"'.$filename.'"';
+		$this->exec('convert', $old.' '.$new);
 	}
 
 	public function output($filetype = null)
@@ -168,9 +170,9 @@ class Image_Imagemagick extends Image_Driver {
 		$this->add_background();
 		if (substr($this->image_fullpath, -1 * strlen($filetype)) != $filetype)
 		{
-			$old = '"' . $this->image_temp . '"';
+			$old = '"'.$this->image_temp.'"';
 			if (!$this->config['debug'])
-				$this->exec('convert', $old . ' ' . strtolower($filetype) . ':-', true);
+				$this->exec('convert', $old.' '.strtolower($filetype).':-', true);
 		}
 		else
 		{
@@ -182,19 +184,20 @@ class Image_Imagemagick extends Image_Driver {
 	/**
 	 * Cleared the currently loaded sizes, used to removed cached sizes.
 	 */
-	protected function clear_sizes() {
+	protected function clear_sizes()
+	{
 		$this->sizes_cache = null;
 	}
-	
+
 	protected function add_background()
 	{
 		if ($this->config['bgcolor'] != null)
 		{
-			$image = '"' . $this->image_temp . '"';
+			$image = '"'.$this->image_temp.'"';
 			$color = $this->create_color($this->config['bgcolor'], 100);
 			$sizes = $this->sizes();
-			$command = '-size ' . $sizes->width . 'x' . $sizes->height . ' ' . 'canvas:' . $color . ' ' .
-					$image . ' -composite ' . $image;
+			$command = '-size '.$sizes->width.'x'.$sizes->height.' '.'canvas:'.$color.' '.
+					$image.' -composite '.$image;
 			$this->exec('convert', $command);
 		}
 	}
@@ -209,7 +212,7 @@ class Image_Imagemagick extends Image_Driver {
 	 */
 	private function exec($program, $params, $passthru = false)
 	{
-		$command = realpath($this->config['imagemagick_dir'] . $program . ".exe") . " " . $params;
+		$command = realpath($this->config['imagemagick_dir'].$program.".exe")." ".$params;
 		$this->debug("Running command: <code>$command</code>");
 		$code = 0;
 		if (!$passthru)
@@ -219,9 +222,9 @@ class Image_Imagemagick extends Image_Driver {
 		if ($code != 0)
 		{
 			// Try to come up with a common error?
-			if (!file_exists(realpath($this->config['imagemagick_dir'] . $program . ".exe")))
+			if (!file_exists(realpath($this->config['imagemagick_dir'].$program.".exe")))
 			{
-				throw new \Fuel_Exception("imagemagick executable not found in " . $this->config['imagemagick_dir']);
+				throw new \Fuel_Exception("imagemagick executable not found in ".$this->config['imagemagick_dir']);
 			}
 			else
 			{
@@ -252,17 +255,20 @@ class Image_Imagemagick extends Image_Driver {
 			if (substr($hex, 0, 1) == '#')
 				$hex = substr($hex, 1);
 			// Break apart the hex
-			if (strlen($hex) == 6) {
+			if (strlen($hex) == 6)
+			{
 				$red = hexdec(substr($hex, 0, 2));
 				$green = hexdec(substr($hex, 2, 2));
 				$blue = hexdec(substr($hex, 4, 2));
-			} else {
-				$red = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
-				$green = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
-				$blue = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+			}
+			else
+			{
+				$red = hexdec(substr($hex, 0, 1).substr($hex, 0, 1));
+				$green = hexdec(substr($hex, 1, 1).substr($hex, 1, 1));
+				$blue = hexdec(substr($hex, 2, 1).substr($hex, 2, 1));
 			}
 		}
-		return "\"rgba(" . $red . ", " . $green . ", " . $blue . ", " . round($alpha / 100, 2) . ")\"";
+		return "\"rgba(".$red.", ".$green.", ".$blue.", ".round($alpha / 100, 2).")\"";
 	}
 
 	public function __destruct()

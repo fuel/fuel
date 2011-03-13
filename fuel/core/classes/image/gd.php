@@ -30,12 +30,12 @@ class Image_Gd extends Image_Driver {
 		if ($image_extension == 'jpg')
 			$image_extension = 'jpeg';
 		// Check if the function exists
-		if (function_exists('imagecreatefrom' . $image_extension))
+		if (function_exists('imagecreatefrom'.$image_extension))
 		{
 			// Create a new transparent image.
 			$sizes = $this->sizes($image_fullpath);
-			$this->debug("Loading <code>" . $image_fullpath . "</code> with size of " . $sizes->width . "x" . $sizes->height);
-			$tmpImage = call_user_func('imagecreatefrom' . $image_extension, $image_fullpath);
+			$this->debug("Loading <code>".$image_fullpath."</code> with size of ".$sizes->width."x".$sizes->height);
+			$tmpImage = call_user_func('imagecreatefrom'.$image_extension, $image_fullpath);
 			$image = $this->create_transparent_image($sizes->width, $sizes->height, $tmpImage);
 			if (!$return_data)
 			{
@@ -49,7 +49,7 @@ class Image_Gd extends Image_Driver {
 		}
 		else
 		{
-			throw new \Fuel_Exception("Function imagecreatefrom" . $image_extension . "() does not exist (Missing GD?)");
+			throw new \Fuel_Exception("Function imagecreatefrom".$image_extension."() does not exist (Missing GD?)");
 		}
 		return $return_data ? $return : $this;
 	}
@@ -59,7 +59,7 @@ class Image_Gd extends Image_Driver {
 		extract(parent::_crop($x1, $y1, $x2, $y2));
 		$width = $x2 - $x1;
 		$height = $y2 - $y1;
-		$this->debug("Cropping image " . $width . "x" . $height . "+$x1+$y1 based on coords ($x1, $y1), ($x2, $y2)");
+		$this->debug("Cropping image ".$width."x".$height."+$x1+$y1 based on coords ($x1, $y1), ($x2, $y2)");
 		$image = $this->create_transparent_image($width, $height);
 		imagecopy($image, $this->image_data, 0, 0, $x1, $y1, $width, $height);
 		$this->image_data = $image;
@@ -173,14 +173,17 @@ class Image_Gd extends Image_Driver {
 				if ($maskalpha == 127)
 					continue;
 				$ourcolor = null;
-				if ($maskalpha == 0) {
+				if ($maskalpha == 0)
+				{
 					$ourcolor = array(
 						'red' => 0,
 						'green' => 0,
 						'blue' => 0,
 						'alpha' => 0
 					);
-				} else {
+				}
+				else
+				{
 					$ourcolor = imagecolorat($this->image_data, $x, $y);
 					$ourcolor = imagecolorsforindex($this->image_data, $ourcolor);
 				}
@@ -247,7 +250,7 @@ class Image_Gd extends Image_Driver {
 		if ($filetype == 'png')
 			$vars[] = floor(($this->config['quality'] / 100) * 9);
 		if (!$this->config['debug'])
-			call_user_func_array('image' . $filetype, $vars);
+			call_user_func_array('image'.$filetype, $vars);
 	}
 
 	public function output($filetype = null)
@@ -273,7 +276,7 @@ class Image_Gd extends Image_Driver {
 		if ($filetype == 'png')
 			$vars[] = floor(($this->config['quality'] / 100) * 9);
 		//if (!$this->config['debug'])
-		call_user_func_array('image' . $filetype, $vars);
+		call_user_func_array('image'.$filetype, $vars);
 	}
 
 	/**
@@ -307,9 +310,9 @@ class Image_Gd extends Image_Driver {
 			}
 			else
 			{
-				$red = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
-				$green = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
-				$blue = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+				$red = hexdec(substr($hex, 0, 1).substr($hex, 0, 1));
+				$green = hexdec(substr($hex, 1, 1).substr($hex, 1, 1));
+				$blue = hexdec(substr($hex, 2, 1).substr($hex, 2, 1));
 			}
 			$alpha = 127 - floor($alpha * 1.27);
 		}
@@ -363,7 +366,7 @@ class Image_Gd extends Image_Driver {
 	 */
 	private function round_corner(&$image, $radius, $antialias, $top, $left)
 	{
-		$this->debug("Rounding " . ($top ? 'top' : 'bottom') . " " . ($left ? 'left' : 'right') . " corner with a radius of " . $radius . "px.");
+		$this->debug("Rounding ".($top ? 'top' : 'bottom')." ".($left ? 'left' : 'right')." corner with a radius of ".$radius."px.");
 		$sX = $left ? -$radius : 0;
 		$sY = $top ? -$radius : 0;
 		$eX = $left ? 0 : $radius;
