@@ -44,7 +44,7 @@ class Database_Query_Builder_Insert extends \Database_Query_Builder {
 		}
 
 		// Start the query with no SQL
-		return parent::__construct('', \Database::INSERT);
+		return parent::__construct('', \DB::INSERT);
 	}
 
 	/**
@@ -117,7 +117,7 @@ class Database_Query_Builder_Insert extends \Database_Query_Builder {
 	 */
 	public function select(Database_Query $query)
 	{
-		if ($query->type() !== \Database::SELECT)
+		if ($query->type() !== \DB::SELECT)
 		{
 			throw new \Fuel_Exception('Only SELECT queries can be combined with INSERT queries');
 		}
@@ -133,7 +133,7 @@ class Database_Query_Builder_Insert extends \Database_Query_Builder {
 	 * @param   object  Database instance
 	 * @return  string
 	 */
-	public function compile(Database $db)
+	public function compile(\Database_Connection$db)
 	{
 		// Start an insertion query
 		$query = 'INSERT INTO '.$db->quote_table($this->_table);

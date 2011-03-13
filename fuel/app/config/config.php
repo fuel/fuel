@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 return array(
@@ -94,10 +94,12 @@ return array(
 		 * WARNING: Using xss_clean will cause a performance hit.  How much is
 		 * dependant on how much input data there is.
 		 */
-		'input_filter'			=> array(
-			// 'xss_clean',
-			'htmlentities'
-		),
+		'input_filter'			=> array(),
+		
+		/**
+		 * Whether to automatically encode (htmlentities) view data
+		 */
+		'auto_encode_view_data'	=> true,
 	),
 
 	/**
@@ -169,16 +171,6 @@ return array(
 		'language'	=> array(),
 	),
 
-	/**************************************************************************/
-	/* Routes                                                                 */
-	/**************************************************************************/
-
-	'routes'	=> array(
-		// This is the default route.  We use a "#" here so that we do not have any
-		// reserved routes.
-		'#'		=> 'welcome',
-		'404'	=> 'welcome/404',
-	),
 );
 
 /* End of file config.php */

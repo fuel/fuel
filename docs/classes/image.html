@@ -30,6 +30,137 @@
 			The Image class is used to easily add common manipulations to an image such as resizing, cropping, and so on.
 		</p>
 
+		<h5>Limitations</h5>
+
+		<p>
+			The Image class has a few limitations that should be made aware of. First off, the GD library handles transparency quite badly.
+			Due to this, <strong>Image::rotate()</strong> can not use transparent background. The rounding image in <strong>imagemagick</strong>
+			is also flawed as images with transparent corners will get opaque circles in the corners.
+		</p>
+		<p>
+			Using multiple transformations in GD can result in abnormal results.
+		</p>
+
+		<h5>Configuration</h5>
+
+		<p>The Image class accepts the following configuration options. Copy the file from <strong>fuel/core/config/image.php</strong> to <strong>app/config/image.png</strong></p>
+		<table class="config">
+			<tbody>
+				<tr class="header">
+					<th>Param</th>
+					<th>Type</th>
+					<th>Default</th>
+					<th>Description</th>
+
+				</tr>
+				<tr>
+					<th>driver</th>
+					<td>string</td>
+					<td><pre class="php"><code>'gd'</code></pre></td>
+					<td>
+						Can be any name of a valid library, currently only <strong>'gd'</strong> or <strong>'imagemagick'</strong>
+					</td>
+				</tr>
+				<tr>
+					<th>bgcolor</th>
+					<td>string</td>
+					<td><pre class="php"><code>null</code></pre></td>
+					<td>
+						Background in hex for (Ex: #ff0, #4f32de). Set to <strong>null</strong> for a transparent background.
+					</td>
+				</tr>
+				<tr>
+					<th>watermark_alpha</th>
+					<td>integer</td>
+					<td><pre class="php"><code>75</code></pre></td>
+					<td>
+						The transparency of any watermarks applied to the image. Ranges from <strong>0-100</strong>.
+					</td>
+				</tr>
+				<tr>
+					<th>quality</th>
+					<td>integer</td>
+					<td><pre class="php"><code>100</code></pre></td>
+					<td>
+						Used for the quality in jpeg images and pngs.
+					</td>
+				</tr>
+				<tr>
+					<th>filetype</th>
+					<td>string</td>
+					<td><pre class="php"><code>null</code></pre></td>
+					<td>
+						Defines an override default image type if no extension is given. If set to <strong>null</strong>, it inherits the original extension instead.
+					</td>
+				</tr>
+				<tr>
+					<th>imagemagick_dir</th>
+					<td>string</td>
+					<td><pre class="php"><code>'/usr/bin/'</code></pre></td>
+					<td>
+						Where the imagemagick executables are stored. Must add leading slash.
+					</td>
+				</tr>
+				<tr>
+					<th>temp_dir</th>
+					<td>string</td>
+					<td><pre class="php"><code>'/tmp/'</code></pre></td>
+					<td>
+						Temporary directory to store image files that are being edited.
+					</td>
+				</tr>
+				<tr>
+					<th>temp_append</th>
+					<td>string</td>
+					<td><pre class="php"><code>'fuel_image'</code></pre></td>
+					<td>
+						The string to append to the temp images, as to avoid conflicts.
+					</td>
+				</tr>
+				<tr>
+					<th>debug</th>
+					<td>boolean</td>
+					<td><pre class="php"><code>false</code></pre></td>
+					<td>
+						Turns on debug mode, which skips setting header and outputs debug information on an image.
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h5>Presets</h5>
+
+		<p>
+			Presets are a feature in the Image class that allow defining of a sets of tasks in the config, and call that preset. An example is:
+		</p>
+		<p>
+			In <strong>app/config/image.php</strong>
+		</p>
+		<pre class="php"><code>
+/**
+ * These presets allow you to call controlled manipulations.
+ */
+'presets' => array(
+	'mypreset' => array(
+		'bgcolor' => '#f00', // Set the background color red
+		'filetype' => 'jpg', // Output as jpeg.
+		'quality' => 75,
+		'actions' => array(
+			array('crop_resize', 200, 200),
+			array('watermark', '$1'), // Note the $1 is a variable.
+			array('output', 'png')
+		)
+	)
+)
+		</code></pre>
+		<p>
+			In your controller:
+		</p>
+		<pre class="php"><code>
+// 'watermark.gif' here replaces the $1 in array('watermark', '$1')
+Image::load('filename.gif')->preset('mypreset', 'watermark.gif');
+		</code></pre>
+
 		<article>
 			<h4>factory($config = array())</h4>
 			<p>The <strong>factory</strong> method creates a new Image_Driver instance.</p>
@@ -78,8 +209,62 @@ $image
 			</table>
 		</article>
 
+
+
 		<article>
-			<h4>load($filename)</h4>
+			<h4>config($index, $value)</h4>
+			<p>Changes the value of a configuration option.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+
+							<tr>
+								<th><kbd>$filename</kbd></th>
+								<td><i>Required</i></td>
+								<td>The path to the image file to be loaded.</td>
+							</tr>
+
+							<tr>
+								<th><kbd>$return_data</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>Determines whether to return image data, and only works with GD.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Image_Driver</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>
+// Resize an image, and change the background.
+Image::load('filename.gif')
+	->config('bgcolor', '#f00')
+	->resize(100, 100, true, true);
+						</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>load($filename, $return_data)</h4>
 			<p>The <strong>load</strong> method attempts to load an image for editing.</p>
 			<table class="method">
 				<tbody>
@@ -101,6 +286,12 @@ $image
 								<th><kbd>$filename</kbd></th>
 								<td><i>Required</i></td>
 								<td>The path to the image file to be loaded.</td>
+							</tr>
+
+							<tr>
+								<th><kbd>$return_data</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>Determines whether to return image data, and only works with GD.</td>
 							</tr>
 						</table>
 					</td>
@@ -193,7 +384,7 @@ Image::load('filename.gif')
 		</article>
 
 		<article>
-			<h4>resize($width, $height, $keepar = true)</h4>
+			<h4>resize($width, $height = null, $keepar = true, $pad = false)</h4>
 			<p>Resizes the image. If the width or height is null, it will resize retaining the original aspect ratio.</p>
 			<table class="method">
 				<tbody>
@@ -219,7 +410,7 @@ Image::load('filename.gif')
 
 							<tr>
 								<th><kbd>$height</kbd></th>
-								<td><i>Required</i></td>
+								<td><pre class="php"><code>null</code></pre></td>
 								<td>The new height of the image</td>
 							</tr>
 
@@ -227,6 +418,12 @@ Image::load('filename.gif')
 								<th><kbd>$keepar</kbd></th>
 								<td><pre class="php"><code>true</code></pre></td>
 								<td>If set to true, will keep the Aspect Ratio of the image identical to the original.</td>
+							</tr>
+
+							<tr>
+								<th><kbd>$pad</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>If set to true and $keepar is true, it will pad the image with the configured bgcolor.</td>
 							</tr>
 						</table>
 					</td>
@@ -246,6 +443,64 @@ Image::load('filename.gif')
 // Resize using percentages
 Image::load('filename.gif')
 	->resize('50%', '50%');
+
+// Stretch the image to fit
+Image::load('filename.gif')
+	->resize(100, 100, false);
+
+// Pad image as to keep input size and AR.
+Image::load('filename.gif')
+	->resize(100, 200, true, true);
+						</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		<article>
+			<h4>crop_resize($width, $height = null)</h4>
+			<p>Resizes the image and crops it to fit the given width and height.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+
+							<tr>
+								<th><kbd>$width</kbd></th>
+								<td><i>Required</i></td>
+								<td>The new width of the image.</td>
+							</tr>
+
+							<tr>
+								<th><kbd>$height</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The new height of the image</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Image_Driver</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>
+// Example usage, crop a 300x200 image to 200x200 would remove 50px on the top and bottom
+Image::load('filename.gif')
+	->crop_resize(200, 200);
 						</code></pre>
 					</td>
 				</tr>
@@ -591,6 +846,63 @@ Image::load('filename.gif')
 // Saves to filename2.ext while attempting to apply permissions
 Image::load('filename.gif')
 	->save('filename2', 755);
+						</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>save_pa($prepend, $append = null, $permissions = null)</h4>
+			<p>Saves the image to the same location with a prepended and/or appended filename, and optionally attempts to set permissions.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+
+							<tr>
+								<th><kbd>$append</kbd></th>
+								<td><i>Required</i></td>
+								<td>The string to add to the beginning of the filename.</td>
+							</tr>
+
+							<tr>
+								<th><kbd>$prepend</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The string to add to the end of the filename, and before the extension.</td>
+							</tr>
+
+							<tr>
+								<th><kbd>$permissions</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>Accepts a unix-style permissions (Ex: 755), or null to not set permissions</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>
+// Saves to prepend_filename2_append.gif
+Image::load('filename.gif')
+	->save_pa('prepend', 'append');
 						</code></pre>
 					</td>
 				</tr>

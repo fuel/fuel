@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Oil;
@@ -24,7 +24,7 @@ namespace Oil;
  */
 class Package
 {
-	protected static $protected = array('auth', 'activerecord', 'octane', 'oil');
+	protected static $protected = array('auth', 'activerecord', 'oil', 'orm');
 
 	protected static $git = 'git';
 
@@ -177,7 +177,7 @@ HELP;
 		{
 			$path = str_replace($tmp_package_folder, $package_folder, $file);
 			chmod($path, octdec(755));
-			\Cli::write("\t" . \Fuel::clean_path($path));
+			\Cli::write("\t" . $path);
 		}
 	}
 

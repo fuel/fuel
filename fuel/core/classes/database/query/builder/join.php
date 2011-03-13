@@ -63,7 +63,7 @@ class Database_Query_Builder_Join extends \Database_Query_Builder {
 	 * @param   object  Database instance
 	 * @return  string
 	 */
-	public function compile(Database $db)
+	public function compile(\Database_Connection$db)
 	{
 		if ($this->_type)
 		{

@@ -23,18 +23,19 @@ class Image_Gd extends Image_Driver {
 	protected $accepted_extensions = array('png', 'gif', 'jpg', 'jpeg');
 	protected $gdresizefunc = "imagecopyresampled";
 
-	protected function _load($return_data)
+	public function load($filename, $return_data = false)
 	{
+		extract(parent::load($filename, $return_data));
 		$return = false;
-		$extension = $this->image_extension;
-		if ($extension == 'jpg')
-			$extension = 'jpeg';
+		if ($image_extension == 'jpg')
+			$image_extension = 'jpeg';
 		// Check if the function exists
-		if (function_exists('imagecreatefrom' . $extension))
+		if (function_exists('imagecreatefrom' . $image_extension))
 		{
 			// Create a new transparent image.
-			$sizes = $this->sizes($this->image_fullpath);
-			$tmpImage = call_user_func('imagecreatefrom' . $extension, $this->image_fullpath);
+			$sizes = $this->sizes($image_fullpath);
+			$this->debug("Loading <code>" . $image_fullpath . "</code> with size of " . $sizes->width . "x" . $sizes->height);
+			$tmpImage = call_user_func('imagecreatefrom' . $image_extension, $image_fullpath);
 			$image = $this->create_transparent_image($sizes->width, $sizes->height, $tmpImage);
 			if (!$return_data)
 			{
@@ -48,9 +49,9 @@ class Image_Gd extends Image_Driver {
 		}
 		else
 		{
-			throw new \Fuel_Exception("Function imagecreatefrom" . $extension . "() does not exist (Missing GD?)");
+			throw new \Fuel_Exception("Function imagecreatefrom" . $image_extension . "() does not exist (Missing GD?)");
 		}
-		return $return;
+		return $return_data ? $return : $this;
 	}
 
 	protected function _crop($x1, $y1, $x2, $y2)
@@ -60,7 +61,7 @@ class Image_Gd extends Image_Driver {
 		$height = $y2 - $y1;
 		$this->debug("Cropping image " . $width . "x" . $height . "+$x1+$y1 based on coords ($x1, $y1), ($x2, $y2)");
 		$image = $this->create_transparent_image($width, $height);
-		call_user_func($this->gdresizefunc, $image, $this->image_data, 0, 0, $x1, $y1, $width, $height, $width, $height);
+		imagecopy($image, $this->image_data, 0, 0, $x1, $y1, $width, $height);
 		$this->image_data = $image;
 	}
 
@@ -78,8 +79,8 @@ class Image_Gd extends Image_Driver {
 	{
 		extract(parent::_rotate($degrees));
 		$degrees = 360 - $degrees;
-		$color = $this->create_color($this->image_data, null, 0);
-		$this->image_data = imagerotate($this->image_data, $degrees, $color, true);
+		$color = $this->create_color($this->image_data, $this->config['bgcolor'], 1000);
+		$this->image_data = imagerotate($this->image_data, $degrees, $color, false);
 	}
 
 	protected function _watermark($filename, $x, $y)
@@ -87,7 +88,7 @@ class Image_Gd extends Image_Driver {
 		$values = parent::_watermark($filename, $x, $y);
 		if ($values == false)
 		{
-			$this->error("Watermark image not found or invalid filetype.");
+			throw new \Fuel_Exception("Watermark image not found or invalid filetype.");
 		}
 		else
 		{
@@ -95,9 +96,34 @@ class Image_Gd extends Image_Driver {
 			$wsizes = $this->sizes($filename);
 			$sizes = $this->sizes();
 
-			$watermark = $this->create_transparent_image($wsizes->width, $wsizes->height, $this->load($filename, true));
-			// Used as a workaround for lack of alpha support in imagecopymerge.
+			// Load the watermark preserving transparency
+			$watermark = $this->load($filename, true);
 
+			// Below is to prevent glitch in GD with negative  $x coords
+			if ($x < 0 || $y < 0)
+			{
+				$this->debug("Modifying watermark to remove negative coords.");
+				// Generate a new width and height for the watermark.
+				$newwidth = ($x < 0 ? $wsizes->width + $x : $wsizes->width);
+				$newheight = ($y < 0 ? $wsizes->height + $y : $wsizes->height);
+				// Create a transparent image the size of the new watermark.
+				$tmpwatermark = $this->create_transparent_image($newwidth, $newheight);
+				$this->debug("New size is $newwidth x $newheight and coords are $x , $y");
+				// Call the resize function based on image format
+				imagecopy(
+						$tmpwatermark, $watermark, // Copy the new image into the tmp watermark
+						0, 0,
+						$x < 0 ? abs($x) : 0,
+						$y < 0 ? abs($y) : 0,
+						$newwidth, $newheight
+				);
+				// Set the variables for the image_merge
+				$watermark = $tmpwatermark;
+				$x = $x < 0 ? 0 : $x;
+				$y = $y < 0 ? 0 : $y;
+			}
+			// Used as a workaround for lack of alpha support in imagecopymerge.
+			$this->debug("Coords for watermark are $x , $y");
 			$this->image_merge($this->image_data, $watermark, $x, $y, $this->config['watermark_alpha']);
 		}
 	}
@@ -146,9 +172,21 @@ class Image_Gd extends Image_Driver {
 				$maskalpha = 127 - floor(($maskcolor['red'] + $maskcolor['green'] + $maskcolor['blue']) / 6);
 				if ($maskalpha == 127)
 					continue;
-				$ourcolor = imagecolorat($this->image_data, $x, $y);
-				$ourcolor = imagecolorsforindex($this->image_data, $ourcolor);
+				$ourcolor = null;
+				if ($maskalpha == 0) {
+					$ourcolor = array(
+						'red' => 0,
+						'green' => 0,
+						'blue' => 0,
+						'alpha' => 0
+					);
+				} else {
+					$ourcolor = imagecolorat($this->image_data, $x, $y);
+					$ourcolor = imagecolorsforindex($this->image_data, $ourcolor);
+				}
 				$ouralpha = 127 - $ourcolor['alpha'];
+				if ($ouralpha == 0)
+					continue;
 				$newalpha = floor($ouralpha - (($maskalpha / 127) * $ouralpha));
 				$newcolor = imagecolorallocatealpha($image, $ourcolor['red'], $ourcolor['green'], $ourcolor['blue'], 127 - $newalpha);
 				imagesetpixel($image, $x, $y, $newcolor);
@@ -234,17 +272,17 @@ class Image_Gd extends Image_Driver {
 		}
 		if ($filetype == 'png')
 			$vars[] = floor(($this->config['quality'] / 100) * 9);
-		if (!$this->config['debug'])
-			call_user_func_array('image' . $filetype, $vars);
+		//if (!$this->config['debug'])
+		call_user_func_array('image' . $filetype, $vars);
 	}
 
 	/**
 	 * Creates a new color usable by GD.
 	 *
-	 * @param	resource	$image	The image to create the color from
-	 * @param	string	$hex	The hex code of the color
-	 * @param	integer	$alpha	The alpha of the color, 0 (trans) to 100 (opaque)
-	 * @return	integer	The color
+	 * @param  resource  $image  The image to create the color from
+	 * @param  string    $hex    The hex code of the color
+	 * @param  integer   $alpha  The alpha of the color, 0 (trans) to 100 (opaque)
+	 * @return integer   The color
 	 */
 	protected function create_color(&$image, $hex, $alpha)
 	{
@@ -279,10 +317,7 @@ class Image_Gd extends Image_Driver {
 		return imagecolorallocatealpha($image, $red, $green, $blue, $alpha);
 	}
 
-	/**
-	 * Adds a background to the image, used after running the queue
-	 */
-	private function add_background()
+	protected function add_background()
 	{
 		if ($this->config['bgcolor'] != null)
 		{
@@ -296,18 +331,18 @@ class Image_Gd extends Image_Driver {
 	}
 
 	/**
+	 * Creates a new transparent image.
 	 *
-	 * @param	integer	$width	The width of the image.
-	 * @param	integer	$height	The height of the image.
-	 * @param	resource	$resource	Optionally add an image to the new transparent image.
-	 * @return	resource	Returns the image in resource form.
+	 * @param  integer   $width     The width of the image.
+	 * @param  integer   $height    The height of the image.
+	 * @param  resource  $resource  Optionally add an image to the new transparent image.
+	 * @return resource  Returns the image in resource form.
 	 */
 	private function create_transparent_image($width, $height, $resource = null)
 	{
 		$image = imagecreatetruecolor($width, $height);
 		$color = $this->create_color($image, null, 0);
 		imagesavealpha($image, true);
-		imagecolortransparent($image, $color);
 		// Set the blending mode to false, add the bgcolor, then switch it back.
 		imagealphablending($image, false);
 		imagefilledrectangle($image, 0, 0, $width, $height, $color);
@@ -320,11 +355,11 @@ class Image_Gd extends Image_Driver {
 	/**
 	 * Creates a rounded corner on the image.
 	 *
-	 * @param	resource	$image
-	 * @param	integer	$radius
-	 * @param	integer	$antialias
-	 * @param	boolean	$top
-	 * @param	boolean	$left
+	 * @param  resource  $image
+	 * @param  integer   $radius
+	 * @param  integer   $antialias
+	 * @param  boolean   $top
+	 * @param  boolean   $left
 	 */
 	private function round_corner(&$image, $radius, $antialias, $top, $left)
 	{
@@ -386,11 +421,11 @@ class Image_Gd extends Image_Driver {
 	/**
 	 * Merges to images together, using a fix for transparency
 	 *
-	 * @param	resource	$image	The bottom image
-	 * @param	resource	$watermark	The image to be placed on top
-	 * @param	integer	$x	The position of the watermark on the X-axis
-	 * @param	integer	$y	The position of the watermark on the Y-axis
-	 * @param	integer	$alpha	The transparency of the watermark, 0 (trans) to 100 (opaque)
+	 * @param  resource  $image      The bottom image
+	 * @param  resource  $watermark  The image to be placed on top
+	 * @param  integer   $x          The position of the watermark on the X-axis
+	 * @param  integer   $y          The position of the watermark on the Y-axis
+	 * @param  integer   $alpha      The transparency of the watermark, 0 (trans) to 100 (opaque)
 	 */
 	private function image_merge(&$image, $watermark, $x, $y, $alpha)
 	{

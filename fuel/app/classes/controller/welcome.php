@@ -18,13 +18,17 @@ class Controller_Welcome extends Controller {
 		if ($type == 'im') {
 			Image::factory(array(
 				'driver' => 'imagemagick'
-			))->load($image)->preset('test1', $watermark, $mask);
+			))->load($image)->preset('example', $watermark, $mask);
 		} else if ($type == 'gd') {
 			Image::factory(array(
 				'driver' => 'gd'
-			))->load($image)->preset('test1', $watermark, $mask);
+			))->load($image)->preset('example', $watermark, $mask);
 		} else {
 			echo "<div style=\"background: #000;\">" .
+				"<img src='image/gd' style=\"margin: 10px;\" alt='' />" .
+				"<img src='image/im' style=\"margin: 10px;\" alt='' />".
+				"</div>";
+			echo "<div style=\"background: #ccc;\">" .
 				"<img src='image/gd' style=\"margin: 10px;\" alt='' />" .
 				"<img src='image/im' style=\"margin: 10px;\" alt='' />".
 				"</div>";
@@ -40,12 +44,12 @@ class Controller_Welcome extends Controller {
 			Image::factory(array(
 				'driver' => 'imagemagick',
 				'debug' => true
-			))->load($image)->preset('test1', $watermark, $mask);
+			))->load($image)->preset('example', $watermark, $mask);
 		} else if ($type == 'gd') {
 			Image::factory(array(
 				'driver' => 'gd',
 				'debug' => true
-			))->load($image)->preset('test1', $watermark, $mask);
+			))->load($image)->preset('example', $watermark, $mask);
 		}
 	}
 

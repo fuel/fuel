@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Fuel\Core;
@@ -85,14 +85,9 @@ class Controller {
 		return $this->request->named_params;
 	}
 
-	public function render($view, $data = array(), $return = false)
+	public function render($view, $data = array(), $auto_encode = null)
 	{
-		if ( ! $return)
-		{
-			$this->output .= \View::factory($view, $data);
-			return;
-		}
-		return \View::factory($view, $data);
+		$this->output .= \View::factory($view, $data, $auto_encode);
 	}
 }
 

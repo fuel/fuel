@@ -29,7 +29,7 @@ abstract class Image_Driver {
 
 	public function __construct($config)
 	{
-		$this->init($config);
+		$this->initialize($config);
 	}
 
 	/**
@@ -37,7 +37,7 @@ abstract class Image_Driver {
 	 *
 	 * @param	array	$options
 	 */
-	public function init($options)
+	public function initialize($options)
 	{
 		if (is_array($options))
 		{
@@ -83,6 +83,10 @@ abstract class Image_Driver {
 			}
 			$this->config = $old_config;
 		}
+		else
+		{
+			throw new \Fuel_Exception("Could not load preset $name, you sure it exists?");
+		}
 	}
 
 	/**
@@ -96,33 +100,40 @@ abstract class Image_Driver {
 	{
 		// First check if the filename exists
 		$filename = realpath($filename);
-		$return = null;
+		$return = array(
+			'filename' => $filename, 
+			'return_data' => $return_data
+		);
 		if (file_exists($filename))
 		{
-			// Set the directory, filename, and extension.
-			$this->image_fullpath = $filename;
-			$this->image_directory = dirname($filename);
-			$this->image_filename = basename($filename);
-			if ($this->check_extension($filename) !== false)
+			// Check the extension
+			$ext = $this->check_extension($filename);;
+			if ($ext !== false)
 			{
-				$return = $this->_load($return_data);
+				$return = array_merge($return, array(
+					'image_fullpath' => $filename,
+					'image_directory' => dirname($filename),
+					'image_filename' => basename($filename),
+					'image_extension' => $ext
+				));
+				if (!$return_data) {
+					$this->image_fullpath = $filename;
+					$this->image_directory = dirname($filename);
+					$this->image_filename = basename($filename);
+					$this->image_extension = $ext;
+				}
 			}
 			else
 			{
-				$this->error("The library does not support this filetype for <i>$filename</i>.");
+				throw new \Fuel_Exception("The library does not support this filetype for <i>$filename</i>.");
 			}
 		}
 		else
 		{
-			$this->error("Image file <i>$filename</i> does not exist.");
+			throw new \Fuel_Exception("Image file <i>$filename</i> does not exist.");
 		}
-		return $return_data ? $return : $this;
+		return $return;
 	}
-
-	/**
-	 * Preforms driver specific actions for loading.
-	 */
-	abstract protected function _load($return);
 
 	/**
 	 * Crops the image using coordinates or percentages.
@@ -185,7 +196,7 @@ abstract class Image_Driver {
 	 * @param	boolean	$pad	Adds padding to the image when resizing.
 	 * @return	Image_Driver
 	 */
-	public function resize($width, $height = null, $keepar = true, $pad = true)
+	public function resize($width, $height = null, $keepar = true, $pad = false)
 	{
 		$this->queue('resize', $width, $height, $keepar, $pad);
 		return $this;
@@ -227,7 +238,7 @@ abstract class Image_Driver {
 				}
 				else
 				{
-					$this->error("Width and height cannot be null.");
+					throw new \Fuel_Exception("Width and height cannot be null.");
 				}
 			}
 		}
@@ -398,7 +409,8 @@ abstract class Image_Driver {
 			$return = array(
 				'filename' => $filename,
 				'x' => $x,
-				'y' => $y
+				'y' => $y,
+				'padding' => $padding
 			);
 		}
 		return $return;
@@ -493,6 +505,8 @@ abstract class Image_Driver {
 	 */
 	protected function _rounded($radius, $sides, $antialias)
 	{
+		if ($radius < 0)
+			$radius = 0;
 		$tl = $tr = $bl = $br = $sides == null;
 		if ($sides != null)
 		{
@@ -504,7 +518,7 @@ abstract class Image_Driver {
 			}
 		}
 		if ($antialias == null)
-			$antialias = $this->config['antialias'];
+			$antialias = 1;
 		return Array(
 			'radius' => $radius,
 			'tl' => $tl,
@@ -525,14 +539,14 @@ abstract class Image_Driver {
 	{
 		$directory = dirname($filename);
 		if (!is_dir($directory))
-			$this->error("Could not find directory \"$directory\"");
+			throw new \Fuel_Exception("Could not find directory \"$directory\"");
 		// Touch the file
 		if (!touch($filename))
-			$this->error("Do not have permission to write to \"$filename\"");
+			throw new \Fuel_Exception("Do not have permission to write to \"$filename\"");
 		// Set the new permissions
 		if ($permissions != null)
 			if (!chmod($filename, $permissions))
-				$this->error("Could not set permissions on the file.");
+				throw new \Fuel_Exception("Could not set permissions on the file.");
 		if (!$this->check_extension($filename, true))
 			$filename .= "." . $this->image_extension;
 		$this->debug("", "Saving image as <code>$filename</code>");
@@ -573,7 +587,7 @@ abstract class Image_Driver {
 				header('Content-Type: image/' . $filetype);
 		} else
 		{
-			$this->error("Image extension $filetype is unsupported.");
+			throw new \Fuel_Exception("Image extension $filetype is unsupported.");
 		}
 		$this->debug("", "Outputting image as $filetype");
 		return array(
@@ -588,6 +602,11 @@ abstract class Image_Driver {
 	 * @return	object	An object containing width and height variables.
 	 */
 	abstract public function sizes($filename = null);
+
+	/**
+	 * Adds a background to the image using the 'bgcolor' config option.
+	 */
+	abstract protected function add_background();
 
 	/**
 	 * Checks if the extension is accepted by this library, and if its valid sets the $this->image_extension variable.
@@ -605,7 +624,7 @@ abstract class Image_Driver {
 			{
 				if ($writevar)
 					$this->image_extension = $ext;
-				$return = true;
+				$return = $ext;
 			}
 		}
 		return $return;
@@ -668,7 +687,6 @@ abstract class Image_Driver {
 				$tmpfunc[$i] = var_export($action[$i], true);
 			$this->debug("", "<b>Executing <code>" . implode(", ", $tmpfunc) . "</code></b>");
 			call_user_func_array(array(&$this, '_' . $action[0]), array_slice($action, 1));
-			$this->debug("Finished executing.");
 		}
 		if ((bool) $clear)
 			$this->queued_actions = array();
@@ -687,16 +705,6 @@ abstract class Image_Driver {
 			foreach ($messages AS $message)
 				echo '<div>' . $message . '&nbsp;</div>';
 		}
-	}
-
-	/**
-	 * Handles errors for the image class.
-	 *
-	 * @param	string	$message	The message to send along with the error.
-	 */
-	protected function error($message)
-	{
-		throw new \Fuel_Exception($message);
 	}
 
 }

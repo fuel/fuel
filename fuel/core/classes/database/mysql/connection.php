@@ -13,7 +13,7 @@ namespace Fuel\Core;
 
 
 
-class Database_MySQL extends \Database {
+class Database_MySQL_Connection extends \Database_Connection {
 
 	// Database in use by each connection
 	protected static $_current_databases = array();
@@ -26,6 +26,12 @@ class Database_MySQL extends \Database {
 
 	// MySQL uses a backtick for identifiers
 	protected $_identifier = '`';
+	
+	// Allows transactions
+	protected $_trans_enabled = FALSE;
+	
+	// transaction errors
+	public $trans_errors = FALSE;
 
 	// Know which kind of DB is used
 	public $_db_type = 'mysql';
@@ -176,9 +182,22 @@ class Database_MySQL extends \Database {
 				// This benchmark is worthless
 				Profiler::delete($benchmark);
 			}
-
-			throw new \Database_Exception(mysql_error($this->_connection).' [ '.$sql.' ]',
-				mysql_errno($this->_connection));
+			
+			if ($type !== \DB::SELECT && $this->_trans_enabled) 
+			{
+				// If we are using transactions, throwing an exception would defeat the purpose
+				// We need to log the failures for transaction status
+				if ( ! is_array($this->trans_errors))
+				{
+					$this->trans_errors = array();
+				}
+				
+				$this->trans_errors[] = mysql_errno($this->_connection).': '.mysql_error($this->_connection).' [ '.$sql.' ]';
+			}
+			else
+			{
+				throw new \Database_Exception(mysql_error($this->_connection).' [ '.$sql.' ]', mysql_errno($this->_connection));
+			}
 		}
 
 		if (isset($benchmark))
@@ -189,12 +208,12 @@ class Database_MySQL extends \Database {
 		// Set the last query
 		$this->last_query = $sql;
 
-		if ($type === \Database::SELECT)
+		if ($type === \DB::SELECT)
 		{
 			// Return an iterator of results
 			return new \Database_MySQL_Result($result, $sql, $as_object);
 		}
-		elseif ($type === \Database::INSERT)
+		elseif ($type === \DB::INSERT)
 		{
 			// Return a list of insert id and rows created
 			return array(
@@ -261,12 +280,12 @@ class Database_MySQL extends \Database {
 		if (is_string($like))
 		{
 			// Search for table names
-			$result = $this->query(\Database::SELECT, 'SHOW TABLES LIKE '.$this->quote($like), FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW TABLES LIKE '.$this->quote($like), FALSE);
 		}
 		else
 		{
 			// Find all table names
-			$result = $this->query(\Database::SELECT, 'SHOW TABLES', FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW TABLES', FALSE);
 		}
 
 		$tables = array();
@@ -286,12 +305,12 @@ class Database_MySQL extends \Database {
 		if (is_string($like))
 		{
 			// Search for column names
-			$result = $this->query(\Database::SELECT, 'SHOW FULL COLUMNS FROM '.$table.' LIKE '.$this->quote($like), FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW FULL COLUMNS FROM '.$table.' LIKE '.$this->quote($like), FALSE);
 		}
 		else
 		{
 			// Find all column names
-			$result = $this->query(\Database::SELECT, 'SHOW FULL COLUMNS FROM '.$table, FALSE);
+			$result = $this->query(\DB::SELECT, 'SHOW FULL COLUMNS FROM '.$table, FALSE);
 		}
 
 		$count = 0;
@@ -374,6 +393,32 @@ class Database_MySQL extends \Database {
 
 		// SQL standard is to use single-quotes for all values
 		return "'$value'";
+	}
+	
+	public function transactional($use_trans = TRUE)
+	{
+		if (is_bool($use_trans)) {
+			$this->_trans_enabled = $use_trans;
+		}
+	}
+	
+	public function start_transaction()
+	{
+		$this->transactional();
+		$this->query(0, 'SET AUTOCOMMIT=0', false);
+		$this->query(0, 'START TRANSACTION', false);
+	}
+
+	public function commit_transaction()
+	{
+		$this->query(0, 'COMMIT', false);
+		$this->query(0, 'SET AUTOCOMMIT=1', false);
+	}
+
+	public function rollback_transaction()
+	{
+		$this->query(0, 'ROLLBACK', false);
+		$this->query(0, 'SET AUTOCOMMIT=1', false);
 	}
 
 } // End Database_MySQL

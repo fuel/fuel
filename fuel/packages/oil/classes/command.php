@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Oil;
@@ -22,10 +22,26 @@ namespace Oil;
  * @category	Core
  * @author		Phil Sturgeon
  */
-class Cli
+class Command
 {
 	public static function init($args)
 	{
+		if (\Cli::option('v', \Cli::option('version')))
+		{
+			\Cli::write('Fuel: ' . \Fuel::VERSION);
+			exit;
+		}
+
+
+		// Remove flag options from the main argument list
+		for ($i =0; $i < count($args); $i++)
+		{
+			if (strpos($args[$i], '-') === 0)
+			{
+				unset($args[$i]);
+			}
+		}
+
 		try
 		{
 			if ( ! isset($args[1]))
@@ -98,27 +114,23 @@ class Cli
 
 				case 't':
 				case 'test':
-					\Fuel::add_package('octane');
-					
-					$action = isset($args[2]) ? $args[2]: '--help';
-					
-					switch ($action)
+
+					// Attempt to load PUPUnit.  If it fails, we are done.
+					if ( ! @include_once('PHPUnit/Autoload.php'))
 					{
-						case '--help':
-							\Fuel\Octane\Tests::help();
-						break;
-						
-						default:
-							call_user_func('\\Fuel\\Octane\\Tests::run_'.$action, array_slice($args, 3));
+						die(PHP_EOL.'PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL.'Please visit http://phpunit.de and install.'.PHP_EOL.PHP_EOL);
 					}
 
+					// CD to the root of Fuel and call up phpunit with a path to our config
+					$command = 'cd '.DOCROOT.'; phpunit -c "'.COREPATH.'phpunit.xml"';
+
+					// Respect the group option
+					\Cli::option('group') and $command .= ' --group '.\Cli::option('group');
+
+					passthru($command);
+				
 				break;
  
-				case '-v':
-				case '--version':
-					\Cli::write('Fuel: ' . \Fuel::VERSION);
-				break;
-
 				default:
 					static::help();
 			}
@@ -126,7 +138,7 @@ class Cli
 
 		catch (Exception $e)
 		{
-			\Cli::color('Error: ' . $e->getMessage(), 'light_red');
+			\Cli::write('Error: ' . $e->getMessage(), 'light_red');
 			\Cli::beep();
 		}
 	}
@@ -143,11 +155,8 @@ Runtime options:
   -s, [--skip]     # Skip files that already exist
   -q, [--quiet]    # Supress status output
 
-Fuel options:
-  -v, [--version]  # Show Fuel version number and quit
-
 Description:
-  The 'oil' command can be used in serveral ways to facilitate quick development, help with
+  The 'oil' command can be used in several ways to facilitate quick development, help with
   testing your application and for running Tasks.
 
 Documentation:

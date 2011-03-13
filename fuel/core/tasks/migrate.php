@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Fuel\Tasks;
@@ -44,7 +44,7 @@ class Migrate {
 
 			else
 			{
-				static::_update_version($result);
+				static::_update_version($version);
 				\Cli::write('Migrated to version: ' . $version .'.', 'green');
 			}
 		}
@@ -68,8 +68,8 @@ class Migrate {
 
 	public static function up()
 	{
-		\Config::load('migrate', true);
-		$version = \Config::get('migrate.version') + 1;
+		\Config::load('migrations', true);
+		$version = \Config::get('migrations.version') + 1;
 
 		if (\Migrate::version($version))
 		{
@@ -80,8 +80,8 @@ class Migrate {
 
 	public static function down()
 	{
-		\Config::load('migrate', true);
-		$version = \Config::get('migrate.version') - 1;
+		\Config::load('migrations', true);
+		$version = \Config::get('migrations.version') - 1;
 
 		if (\Migrate::version($version))
 		{

@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Phil Sturgeon
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Oil;
@@ -36,9 +36,9 @@ class Console {
 
 		while (ob_get_level ())
 		{
-			ob_end_clean();
+			 ob_end_clean();
 		}
-
+		
 		ob_implicit_flush(true);
 
 		// And, go!
@@ -47,21 +47,24 @@ class Console {
 
 	private function main()
 	{
-		echo sprintf(
+		\Cli::write(sprintf(
 			'Fuel %s - PHP %s (%s) (%s) [%s]',
 			\Fuel::VERSION,
 			phpversion(),
 			php_sapi_name(),
 			self::build_date(),
 			PHP_OS
-		) . PHP_EOL;
+		));
 
 		// Loop until they break it
 		while (TRUE)
 		{
-			echo ">>> ";
+			if (\Cli::$readline_support)
+			{
+				readline_completion_function(array(__CLASS__, 'tab_complete'));
+			}
 
-			if ( ! $__line = rtrim(trim(trim(fgets(STDIN)), PHP_EOL), ';'))
+			if ( ! $__line = rtrim(trim(trim(\Cli::input('>>> ')), PHP_EOL), ';'))
 			{
 				continue;
 			}
@@ -69,6 +72,13 @@ class Console {
 			if ($__line == 'quit')
 			{
 				break;
+			}
+
+			// Add this line to history
+			//$this->history[] = array_slice($this->history, 0, -99) + array($line);
+			if (\Cli::$readline_support)
+			{
+				readline_add_history($__line);
 			}
 
 			if (self::is_immediate($__line))
@@ -92,13 +102,13 @@ class Console {
 			{
 				if (is_bool($ret))
 				{
-					echo ($ret ? "true" : "false");
+					echo $ret ? 'true' : 'false';
 				}
-				else if (is_string($ret))
+				elseif (is_string($ret))
 				{
 					echo addcslashes($ret, "\0..\37\177..\377");
 				}
-				else if ( ! is_null($ret))
+				elseif ( ! is_null($ret))
 				{
 					var_export($ret);
 				}
@@ -118,7 +128,7 @@ class Console {
 		}
 	}
 
-	private function is_immediate($line)
+	private static function is_immediate($line)
 	{
 		$skip = array(
 			'class', 'declare', 'die', 'echo', 'exit', 'for',
@@ -140,12 +150,12 @@ class Console {
 			{
 				$sq = !$sq;
 			}
-			else if ($c == '"')
+			elseif ($c == '"')
 			{
 				$dq = !$dq;
 			}
 
-			else if ( ($sq) || ($dq) && $c == "\\")
+			elseif ( ($sq) || ($dq) && $c == "\\")
 			{
 				++$i;
 			}
@@ -161,7 +171,7 @@ class Console {
 			return false;
 		}
 
-		$kw = preg_split("[^A-Za-z0-9_]", $code);
+		$kw = preg_split("[^a-z0-9_]i", $code);
 		foreach ($kw as $i)
 		{
 			if (in_array($i, $skip))
@@ -173,7 +183,22 @@ class Console {
 		return true;
 	}
 
-	private function build_date()
+	public static function tab_complete($line, $pos, $cursor)
+	{
+		$const = array_keys(get_defined_constants());
+		$var = array_keys($GLOBALS);
+		$func = get_defined_functions();
+
+		foreach ($func["user"] as $i)
+		{
+				$func["internal"][] = $i;
+		}
+		$func = $func["internal"];
+
+		return array_merge($const, $var, $func);
+	}
+
+	private static function build_date()
 	{
 		ob_start();
 		phpinfo(INFO_GENERAL);

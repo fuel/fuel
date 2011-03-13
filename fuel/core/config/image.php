@@ -49,11 +49,6 @@ return array(
 	'temp_append' => 'fuelimage_',
 
 	/**
-	 * Sets the default antialias.
-	 */
-	'antialias' => 1,
-
-	/**
 	 * Used to debug the class, defaults to false.
 	 */
 	'debug' => false,
@@ -71,22 +66,13 @@ return array(
 		 *
 		 * Libraries cannot be changed in here. (TODO - Add this feature)
 		 */
-		'test1' => array(
+		'example' => array(
 			'quality' => 100,
 			'bgcolor' => null,
 			'actions' => array(
-				array('border', 20, "#f00"),
-				array('crop', 10, 10, -10, -10),
 				array('crop_resize', 200, 200),
+				array('border', 20, "#f00"),
 				array('rounded', 10),
-				/**
-				 * Variables passed to the preset function (such as $this->preset('example', '/www/public/images/image.png) )
-				 * can be used to set variables in the presets. In this function, the $1 would be replaced by
-				 * '/www/public/images/image.png'
-				 */
-				array('watermark', '$1', 'bottom right'),
-				//array('rotate', 45),
-				// array('mask', '$2'),
 				array('output', 'png')
 			)
 		)

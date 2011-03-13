@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Fuel\Core;
@@ -67,6 +67,32 @@ class Arr {
 				$return[implode($glue, $curr_key)] = $val;
 			}
 			array_pop($curr_key);
+		}
+		return $return;
+	}
+	
+	/**
+	 * Filters an array on prefixed associative keys.
+	 *
+	 * @access	public
+	 * @param	array	The array to filter.
+	 * @param	string	Prefix to filter on.
+	 * @param	bool	Whether to remove the prefix.
+	 * @return	array
+	 */
+	public static function filter_prefixed($array, $prefix = 'prefix_', $remove_prefix = true)
+	{
+		$return = array();
+		foreach ($array as $key => $val)
+		{
+			if(preg_match('/^'.$prefix.'/', $key))
+			{
+				if($remove_prefix === true)
+				{
+					$key = preg_replace('/^'.$prefix.'/','',$key);
+				}
+				$return[$key] = $val;
+			}
 		}
 		return $return;
 	}

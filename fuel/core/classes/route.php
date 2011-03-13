@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 namespace Fuel\Core;
@@ -22,7 +22,7 @@ class Route {
 
 	public static function load_routes($reload = false)
 	{
-		if (\Config::load('config', null, $reload))
+		if (\Config::load('routes', true, $reload))
 		{
 			static::$routes = \Config::get('routes');
 		}
@@ -46,14 +46,14 @@ class Route {
 		// This handles the default route
 		if ($uri->uri == '')
 		{
-			if ( ! isset(static::$routes['#']) || static::$routes['#'] == '')
+			if ( ! isset(static::$routes['_root_']) || static::$routes['_root_'] == '')
 			{
 				// TODO: write logic to deal with missing default route.
 				return false;
 			}
 			else
 			{
-				return static::parse_match(static::$routes['#']);
+				return static::parse_match(static::$routes['_root_']);
 			}
 		}
 

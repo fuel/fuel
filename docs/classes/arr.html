@@ -90,7 +90,7 @@
 							<tr>
 								<th><kbd>$array</kbd></th>
 								<td><i>Required</i></td>
-								<td>The key in the $_COOKIE array.</td>
+								<td>The array to flatten.</td>
 							</tr>
 							<tr>
 								<th><kbd>$glue</kbd></th>
@@ -128,10 +128,10 @@ print_r( Arr::flatten_assoc($people) );
 // Returns
 Array
 (
-    [0:name] => Jack
-    [0:age] => 21
-    [1:name] => Jill
-    [1:age] => 23
+	[0:name] => Jack
+	[0:age] => 21
+	[1:name] => Jill
+	[1:age] => 23
 )
 
 // Let's flatten another array on top
@@ -140,10 +140,85 @@ print_r( Arr::flatten_assoc( array( array( "name" => "Humpty", "age" => 11 ) ) ,
 // Returns
 Array
 (
-    [0:name] => Humpty
-    [0:age] => 11
-    [1:name] => Jill
-    [1:age] => 23
+	[0:name] => Humpty
+	[0:age] => 11
+	[1:name] => Jill
+	[1:age] => 23
+)
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article>
+			<h4>filter_prefixed($array, $prefix = 'prefix_', $remove_prefix = true)</h4>
+			<p>The <strong>filter_prefixed</strong> method filters the array on a prefix. It returns an array where the key starts with the specified prefix.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$array</kbd></th>
+								<td><i>Required</i></td>
+								<td>The array to filter.</td>
+							</tr>
+							<tr>
+								<th><kbd>$prefix</kbd></th>
+								<td><pre class="php"><code>prefix_</code></pre></td>
+								<td>The string used to filter on</td>
+							</tr>
+							<tr>
+								<th><kbd>$remove_prefix</kbd></th>
+								<td><pre class="php"><code>true</code></pre></td>
+								<td>Remove or keep the profix in the array key?</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$arr = array(
+	"user_name" => "John",
+	"user_surname" => "Lastname",
+	"project_name" => "FuelPHP",
+	"project_type" => "Framework",
+);
+
+print_r( Arr::filter_prefixed($arr, "user_"));
+
+// Returns
+Array
+(
+	[name] => Frank
+	[surname] => de Jonge
+)
+
+// Let's keep the prefix
+print_r( Arr::filter_prefixed($arr, "project_", false);
+
+// Returns
+Array
+(
+	[project_name] => FuelPHP
+	[project_type] => Framework
 )
 </code></pre>
 					</td>
@@ -202,7 +277,7 @@ Array
 		"city" => "Pittsburgh",
 		"state" => "PA",
 		"country" => "US"
-	)		
+	)		 
 );
 
 echo Arr::element($person, "name", "Unknown Name");
@@ -272,9 +347,9 @@ print_r( $people );
 // Returns 
 Array
 (
-    [0] => Humpty
-    [1] => Jack
-    [2] => Jill
+	[0] => Humpty
+	[1] => Jack
+	[2] => Jill
 )
 
 // Add multiple values
@@ -283,11 +358,11 @@ print_r( $people );
 // Returns
 Array
 (
-    [0] => Humpty
-    [1] => Hansel
-    [2] => Gretel
-    [3] => Jack
-    [4] => Jill
+	[0] => Humpty
+	[1] => Hansel
+	[2] => Gretel
+	[3] => Jack
+	[4] => Jill
 )
 
 // Add an array
@@ -297,17 +372,17 @@ print_r( $people );
 // Returns
 Array
 (
-    [0] => Array
-        (
-            [name] => Wolf
-            [teeth] => sharp
-        )
+	[0] => Array
+		(
+			[name] => Wolf
+			[teeth] => sharp
+		)
 
-    [1] => Humpty
-    [2] => Hansel
-    [3] => Gretel
-    [4] => Jack
-    [5] => Jill
+	[1] => Humpty
+	[2] => Hansel
+	[3] => Gretel
+	[4] => Jack
+	[5] => Jill
 )
 
 </code></pre>
@@ -369,9 +444,9 @@ print_r( $people );
 // Returns
 Array
 (
-    [0] => Jack
-    [1] => Jill
-    [2] => Humpty
+	[0] => Jack
+	[1] => Jill
+	[2] => Humpty
 )
 </code></pre>
 					</td>
@@ -432,9 +507,9 @@ print_r( $people );
 // Returns
 Array
 (
-    [0] => Jack
-    [1] => Humpty
-    [2] => Jill
+	[0] => Jack
+	[1] => Humpty
+	[2] => Jill
 )
 </code></pre>
 					</td>

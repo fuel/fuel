@@ -23,8 +23,9 @@ class Image_Imagemagick extends Image_Driver {
 	protected $accepted_extensions = array('png', 'gif', 'jpg', 'jpeg');
 	private $size_cache = null;
 
-	protected function _load($return_data)
+	public function load($filename)
 	{
+		extract(parent::load($filename));
 		$this->clear_sizes();
 		if (empty($this->image_temp))
 		{
@@ -34,7 +35,8 @@ class Image_Imagemagick extends Image_Driver {
 			}
 			while (file_exists($this->image_temp));
 		}
-		$this->exec('convert', '"' . $this->image_fullpath . '" "' . $this->image_temp . '"');
+		$this->exec('convert', '"' . $image_fullpath . '" "' . $this->image_temp . '"');
+		return $this;
 	}
 
 	protected function _crop($x1, $y1, $x2, $y2)
@@ -103,16 +105,15 @@ class Image_Imagemagick extends Image_Driver {
 	}
 
 	/**
-	 * Credit to Leif Åstrand <leif@sitelogic.fi> for the rounded corners command
+	 * Credit to Leif Åstrand <leif@sitelogic.fi> for the base of the round corners.
 	 *
-	 * @link	http://www.imagemagick.org/Usage/thumbnails/#rounded
-	 * @param	<type>	$radius
-	 * @param	<type>	$sides
-	 * @param	<type>	$antialias
+	 * Note there is a defect with this, as non-transparent corners get opaque circles of color. Maybe mask it with auto-generated corners?
+	 *
+	 * @link  http://www.imagemagick.org/Usage/thumbnails/#rounded
 	 */
-	protected function _rounded($radius, $sides, $antialias)
+	protected function _rounded($radius, $sides)
 	{
-		extract(parent::_rounded($radius, $sides, $antialias));
+		extract(parent::_rounded($radius, $sides, null));
 		$image = '"' . $this->image_temp . '"';
 		$sizes = $this->sizes();
 		$r = $radius;
@@ -121,8 +122,6 @@ class Image_Imagemagick extends Image_Driver {
 					(!$br ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ") . "-flop " .
 					(!$bl ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ") . "-flip " .
 					(!$tl ? '' : "-draw \"fill black polygon 0,0 0,$r $r,0 fill white circle $r,$r $r,0\" ") .
-//				'( +clone -flip ) -compose Multiply -composite ' .
-//				'( +clone -flop ) -compose Multiply -composite ' .
 				') -alpha off -compose CopyOpacity -composite ' . $image;
 		$this->exec('convert', $command);
 	}
@@ -153,10 +152,6 @@ class Image_Imagemagick extends Image_Driver {
 		return $return;
 	}
 
-	protected function clear_sizes() {
-		$this->sizes_cache = null;
-	}
-
 	public function save($filename, $permissions = null)
 	{
 		extract(parent::output($filename, $permissions));
@@ -184,7 +179,14 @@ class Image_Imagemagick extends Image_Driver {
 		}
 	}
 
-	private function add_background()
+	/**
+	 * Cleared the currently loaded sizes, used to removed cached sizes.
+	 */
+	protected function clear_sizes() {
+		$this->sizes_cache = null;
+	}
+	
+	protected function add_background()
 	{
 		if ($this->config['bgcolor'] != null)
 		{
@@ -197,7 +199,15 @@ class Image_Imagemagick extends Image_Driver {
 		}
 	}
 
-	public function exec($program, $params, $passthru = false)
+	/**
+	 * Executes the specified imagemagick executable and returns the output.
+	 *
+	 * @param  string   $program   The name of the executable.
+	 * @param  string   $params    The parameters of the executable.
+	 * @param  boolean  $passthru  Returns the output if false or pass it to browser.
+	 * @return mixed    Either returns the output or returns nothing.
+	 */
+	private function exec($program, $params, $passthru = false)
 	{
 		$command = realpath($this->config['imagemagick_dir'] . $program . ".exe") . " " . $params;
 		$this->debug("Running command: <code>$command</code>");
@@ -211,16 +221,23 @@ class Image_Imagemagick extends Image_Driver {
 			// Try to come up with a common error?
 			if (!file_exists(realpath($this->config['imagemagick_dir'] . $program . ".exe")))
 			{
-				$this->error("imagemagick executable not found in " . $this->config['imagemagick_dir']);
+				throw new \Fuel_Exception("imagemagick executable not found in " . $this->config['imagemagick_dir']);
 			}
 			else
 			{
-				$this->error("imagemagick failed to edit the image. Returned with $code.");
+				throw new \Fuel_Exception("imagemagick failed to edit the image. Returned with $code.");
 			}
 		}
 		return $output;
 	}
 
+	/**
+	 * Creates a new color usable by ImageMagick.
+	 *
+	 * @param  string   $hex    The hex code of the color
+	 * @param  integer  $alpha  The alpha of the color, 0 (trans) to 100 (opaque)
+	 * @return string   rgba representation of the hex and alpha values.
+	 */
 	protected function create_color($hex, $alpha)
 	{
 		if ($hex == null)

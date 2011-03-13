@@ -4,12 +4,12 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package		Fuel
- * @version		1.0
- * @author		Fuel Development Team
- * @license		MIT License
- * @copyright	2010 - 2011 Fuel Development Team
- * @link		http://fuelphp.com
+ * @package    Fuel
+ * @version    1.0
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2011 Fuel Development Team
+ * @link       http://fuelphp.com
  */
 
 /**
@@ -159,6 +159,21 @@ if ( ! function_exists('__'))
 		return \Lang::line($string, $params);
 	}
 }
+
+/**
+ * Encodes the given string.  This is just a wrapper function for Security::htmlentities()
+ *
+ * @param	mixed	The string to encode
+ * @return	string
+ */
+if ( ! function_exists('e'))
+{
+	function e($string)
+	{
+		return Security::htmlentities($string);
+	}
+}
+
 
 if ( ! function_exists('fuel_shutdown_handler'))
 {
