@@ -383,27 +383,27 @@ abstract class Image_Driver {
 			{
 				case 'left':
 					$x = $padding;
-					break;
+				break;
 				case 'middle':
 				case 'center':
 					$x = ($sizes->width / 2) - ($wsizes->width / 2);
-					break;
+				break;
 				case 'right':
 					$x = $sizes->width - $wsizes->width - $padding;
-					break;
+				break;
 			}
 			switch ($ypos)
 			{
 				case 'top':
 					$y = $padding;
-					break;
+				break;
 				case 'middle':
 				case 'center':
 					$y = ($sizes->height / 2) - ($wsizes->height / 2);
-					break;
+				break;
 				case 'bottom':
 					$y = $sizes->height - $wsizes->height - $padding;
-					break;
+				break;
 			}
 			$this->debug("Watermark being placed at $x,$y");
 			$return = array(
