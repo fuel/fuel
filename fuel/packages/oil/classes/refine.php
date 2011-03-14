@@ -39,12 +39,31 @@ class Refine
 
         $task = ucfirst(strtolower($task));
 
-        // Find the task
-        if ( ! $file = \Fuel::find_file('tasks', $task))
-        {
-            throw new Exception(sprintf('Task "%s" does not exist.', $task));
-            return;
-        }
+		// Find the task
+		if ( ! $file = \Fuel::find_file('tasks', $task))
+		{
+			$files = \Fuel::list_files('tasks');
+			$possibilities = array();
+			foreach($files as $file)
+			{
+				$possible_task = pathinfo($file, \PATHINFO_FILENAME);
+				$difference = levenshtein($possible_task, $task);
+				$possibilities[$difference] = $possible_task;
+			}
+
+			ksort($possibilities);
+			
+			if ($possibilities and current($possibilities) <= 5)
+			{
+				throw new Exception(sprintf('Task "%s" does not exist. Did you mean "%s"?', strtolower($task), current($possibilities)));
+			}
+			else
+			{
+				throw new Exception(sprintf('Task "%s" does not exist.', strtolower($task)));
+			}
+			
+			return;
+		}
 
         require $file;
 

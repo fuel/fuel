@@ -28,15 +28,29 @@
 
         <p>Fuel's routing can range from simple static routes, to advanced routes using HTTP verb based routing.</p>
 
-        <p>Routes are set in <kbd>fuel/app/config/config.php</kbd> in the <kbd>routes</kbd> array.</p>
+		<p>Routes are set in <kbd>fuel/app/config/routes.php</kbd>.</p>
 
-        <h3>Basic Routing</h3>
+		<h3>Reserved Routes</h3>
 
-        <p>The route on the left is matched the request URI and if it is matched then the request is routed to the URI on the right.</p>
+		<p>In Fuel there are 2 reserved routes.	 They are <kbd>_root_</kbd> and <kbd>_404_</kbd>.</p>
+		
+		<ul>
+			<li><kbd>_root_</kbd> - The default route when no URI is specified.</li>
+			<li><kbd>_404_</kbd> - The route used when no controller or action can be found.</li>
+		</ul>
 
-        <p>This allows you do do things like the following:</p>
+		<pre><code>array(
+    '_root_'  => 'welcome/index',
+    '_404_'   => 'welcome/404',
+),</code></pre>
+		
+		<h3>Basic Routing</h3>
 
-        <pre><code>'routes' => array(
+		<p>The route on the left is matched the request URI and if it is matched then the request is routed to the URI on the right.</p>
+
+		<p>This allows you do do things like the following:</p>
+
+		<pre><code>array(
     'about'   => 'site/about',
     'contact' => 'contact/form',
     'admin'   => 'admin/login',
@@ -44,61 +58,61 @@
 
 
 
-        <h3>Slightly Advanced Routing</h3>
+		<h3>Slightly Advanced Routing</h3>
 
-        <p>You can include any regex into your routes.  The left side is matched against the
-        requests URI, and the right side is the replacement for the left, so you can use
-        backreferences in the right side from the regex on the left.  There are also a few
-        special statements that allow you match anything, or just a segment:</p>
+		<p>You can include any regex into your routes.	The left side is matched against the
+		requests URI, and the right side is the replacement for the left, so you can use
+		backreferences in the right side from the regex on the left.  There are also a few
+		special statements that allow you match anything, or just a segment:</p>
 
-        <ul>
-            <li>:any - This matches anything from that point on in the URI</li>
-            <li>:segment - This matches only 1 segment in the URI, but that segment can be anything</li>
-        </ul>
+		<ul>
+			<li>:any - This matches anything from that point on in the URI</li>
+			<li>:segment - This matches only 1 segment in the URI, but that segment can be anything</li>
+		</ul>
 
-        <p>Here are some examples:</p>
+		<p>Here are some examples:</p>
 
-        <pre><code>'routes' => array(
+		<pre><code>'routes' => array(
     'blog/(:any)'      => 'blog/entry/$1', // Routes /blog/entry_name to /blog/entry/entry_name
     '(:segment)/about' => 'site/about/$1', // Routes /en/about to /site/about/en
 ),</code></pre>
 
 
-        <h3>Advanced Routing</h3>
+		<h3>Advanced Routing</h3>
 
-        <p>You can also have named parameters in your routes.  This allows you to give your URI segments
-        names, which can then be accessed from within your actions.</p>
+		<p>You can also have named parameters in your routes.  This allows you to give your URI segments
+		names, which can then be accessed from within your actions.</p>
 
-        <p>Example:</p>
+		<p>Example:</p>
 
-        <pre><code>'routes' => array(
+		<pre><code>array(
     'blog/:year/:month/:id' => 'blog/entry', // Routes /blog/2010/11/entry_name to /blog/entry
 ),</code></pre>
 
-        <p>In the above example it would catch the following <kbd>/blog/2010/11/entry_name</kbd>.  It would then
-        route that request to your 'entry' action in your 'blog' controller.  There, the named params
-        will be available like this:</p>
+		<p>In the above example it would catch the following <kbd>/blog/2010/11/entry_name</kbd>.  It would then
+		route that request to your 'entry' action in your 'blog' controller.  There, the named params
+		will be available like this:</p>
 
-        <pre><code>    $this->param('year');
-    $this->param('month');
-    $this->param('id');</code></pre>
+		<pre><code>$this->param('year');
+$this->param('month');
+$this->param('id');</code></pre>
 
 
-        <h3>HTTP verb based routing</h3>
+		<h3>HTTP verb based routing</h3>
 
-        <p>You can route your URLs to controllers and actions based on the HTTP verb used to call them.
-        This makes it quick and easy to make RESTful controllers.</p>
+		<p>You can route your URLs to controllers and actions based on the HTTP verb used to call them.
+		This makes it quick and easy to make RESTful controllers.</p>
 
-        <p>Example:</p>
+		<p>Example:</p>
 
-        <pre><code>'routes' => array(
+		<pre><code>array(
     // Routes GET /blog to /blog/all and POST /blog to /blog/create
     'blog' => array(array('GET', 'blog/all'), array('POST', 'blog/create')),
 ),</code></pre>
 
-        <p>You can use named parameters and regexes within your URL just like normal:</p>
+		<p>You can use named parameters and regexes within your URL just like normal:</p>
 
-        <pre><code>'routes' => array(
+		<pre><code>array(
     'blog/(:any)' => array(array('GET', 'blog/show/$1')),
 ),</code></pre>
 
