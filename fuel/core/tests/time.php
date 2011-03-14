@@ -402,34 +402,34 @@ class Tests_Time extends TestCase {
 			array(
 				$time - 30,
 				$time,
-				'seconds',
+				array('seconds'),
 				30
 			),
 			// Random tests
 			array(
 				$time - 30,
 				$time,
-				'years,months,weeks,days,hours,minutes,seconds',
+				array('years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'),
 				array('years' => 0, 'months' => 0, 'weeks' => 0, 'days' => 0, 'hours' => 0, 'minutes' => 0, 'seconds' => 30),
 			),
 			array(
 				$time - (60 * 60 * 24 * 782) + (60 * 25),
 				$time,
-				'years,months,weeks,days,hours,minutes,seconds',
+				array('years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'),
 				array('years' => 2, 'months' => 1, 'weeks' => 3, 'days' => 0, 'hours' => 1, 'minutes' => 28, 'seconds' => 24),
 			),
 			// Should be able to compare with the future & that it only uses formats specified
 			array(
 				$time + (60 * 60 * 24 * 15) + (60 * 5),
 				$time,
-				'weeks,days,hours,minutes,seconds',
+				array('weeks', 'days', 'hours', 'minutes', 'seconds'),
 				array('weeks' => 2, 'days' => 1, 'hours' => 0, 'minutes' => 5, 'seconds' => 0),
 			),
 			array(
 				// Add a bit of extra time to account for phpunit processing
 				$time + (14 * 31 * 24* 60 * 60) + (79 * 80),
 				NULL,
-				'months,years',
+				array('months', 'years'),
 				array('months' => 2, 'years' => 1),
 			),
 		);

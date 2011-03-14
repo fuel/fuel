@@ -347,34 +347,28 @@ class Time {
 	 * If the second timestamp is not given, the current time will be used.
 	 * Also consider using [Time::fuzzy_span] when displaying a span.
 	 *
-	 *     $span = Time::span(60, 182, 'minutes,seconds'); // array('minutes' => 2, 'seconds' => 2)
-	 *     $span = Time::span(60, 182, 'minutes'); // 2
+	 *     $span = Time::span(60, 182, array('minutes','seconds')); // array('minutes' => 2, 'seconds' => 2)
+	 *     $span = Time::span(60, 182, array('minutes')); // 2
 	 *
 	 * @param   integer  timestamp to find the span of
 	 * @param   integer  timestamp to use as the baseline
-	 * @param   string   formatting string
+	 * @param   array    formatting array
 	 * @return  string   when only a single output is requested
 	 * @return  array    associative list of all outputs requested
 	 */
-	public static function span($remote, $local = NULL, $output = 'years,months,weeks,days,hours,minutes,seconds')
+	public static function span($remote, $local = NULL, $output = NULL)
 	{
-		// Normalize output
-		$output = trim(strtolower( (string) $output));
-
-		if ( ! $output)
+		if ($output === NULL)
 		{
-			// Invalid output
+			$output = array('years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds');
+		}
+		else if (is_array($output) === FALSE)
+		{
 			return FALSE;
 		}
 
-		// Array with the output formats
-		$output = preg_split('/[^a-z]+/', $output);
-
-		// Convert the list of outputs to an associative array
-		$output = array_combine($output, array_fill(0, count($output), 0));
-
 		// Make the output values into keys
-		extract(array_flip($output), EXTR_SKIP);
+		$output = array_flip($output);
 
 		if ($local === NULL)
 		{

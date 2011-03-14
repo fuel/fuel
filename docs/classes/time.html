@@ -461,7 +461,7 @@ Or Time::MONTHS_SHORT
 		</article>
 
 	<article>
-			<h4>span($remote, $local = NULL, $output = 'years,months,weeks,days,hours,minutes,seconds')</h4>
+			<h4>span($remote, $local = NULL, $output = NULL)</h4>
 			<p>The <strong>span</strong> method returns a new date object.</p>
 			<table class="method">
 				<tbody>
@@ -490,7 +490,7 @@ Or Time::MONTHS_SHORT
 							</tr>
 							<tr>
 								<th><kbd>$output</kbd></th>
-								<td><pre class="php"><code>years,months,weeks,days,hours,minutes,seconds</code></pre></td>
+								<td><pre class="php"><code>null</code></pre></td>
 								<td>formatting string</td>
 							</tr>
 						</table>
@@ -606,7 +606,7 @@ $span = Time::fuzzy_span(time() + 20); // "in moments"</code></pre>
 			<h4>dos2unix($timestamp = NULL)</h4>
 			<p>The <strong>dos2unix</strong> Converts a DOS timestamp to UNIX format.There are very few cases where
 				this is needed, but some binary formats use it (eg: zip files.)
-			< /p>
+			</p>
 			<table class="method">
 				<tbody>
 				<tr>
