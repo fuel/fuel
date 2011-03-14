@@ -131,7 +131,7 @@
 		<h5>Presets</h5>
 
 		<p>
-			Presets are a feature in the Image class that allow defining of a sets of tasks in the config, and call that preset. An example is:
+			Presets are a feature in the Image class that allow defining of a set of tasks in the config, and call that preset. An example is:
 		</p>
 		<p>
 			In <strong>app/config/image.php</strong>
@@ -212,7 +212,7 @@ $image
 
 
 		<article>
-			<h4>config($index, $value)</h4>
+			<h4>config($index, $value = null)</h4>
 			<p>Changes the value of a configuration option.</p>
 			<table class="method">
 				<tbody>
@@ -231,15 +231,15 @@ $image
 							</tr>
 
 							<tr>
-								<th><kbd>$filename</kbd></th>
+								<th><kbd>$index</kbd></th>
 								<td><i>Required</i></td>
-								<td>The path to the image file to be loaded.</td>
+								<td>The index to be set, or an array of configuration options.</td>
 							</tr>
 
 							<tr>
-								<th><kbd>$return_data</kbd></th>
-								<td><pre class="php"><code>false</code></pre></td>
-								<td>Determines whether to return image data, and only works with GD.</td>
+								<th><kbd>$value</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The value to be set if $index is not an array.</td>
 							</tr>
 						</table>
 					</td>
@@ -264,7 +264,7 @@ Image::load('filename.gif')
 		</article>
 
 		<article>
-			<h4>load($filename, $return_data)</h4>
+			<h4>load($filename, $return_data = false)</h4>
 			<p>The <strong>load</strong> method attempts to load an image for editing.</p>
 			<table class="method">
 				<tbody>
@@ -854,7 +854,7 @@ Image::load('filename.gif')
 		</article>
 
 		<article>
-			<h4>save_pa($prepend, $append = null, $permissions = null)</h4>
+			<h4>save_pa($prepend, $append = null, $extension = null, $permissions = null)</h4>
 			<p>Saves the image to the same location with a prepended and/or appended filename, and optionally attempts to set permissions.</p>
 			<table class="method">
 				<tbody>
@@ -882,6 +882,12 @@ Image::load('filename.gif')
 								<th><kbd>$prepend</kbd></th>
 								<td><pre class="php"><code>null</code></pre></td>
 								<td>The string to add to the end of the filename, and before the extension.</td>
+							</tr>
+
+							<tr>
+								<th><kbd>$extension</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>Can set the new images extension, defaults to the loaded images extension if null.</td>
 							</tr>
 
 							<tr>

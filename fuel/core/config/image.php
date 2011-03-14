@@ -49,6 +49,11 @@ return array(
 	'temp_append' => 'fuelimage_',
 
 	/**
+	 * Sets if the queue should be cleared after a save(), save_pa(), or output().
+	 */
+	'clear_queue' => false,
+
+	/**
 	 * Used to debug the class, defaults to false.
 	 */
 	'debug' => false,

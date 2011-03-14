@@ -161,6 +161,7 @@ class Image_Imagemagick extends Image_Driver {
 		$old = '"'.$this->image_temp.'"';
 		$new = '"'.$filename.'"';
 		$this->exec('convert', $old.' '.$new);
+		return $this;
 	}
 
 	public function output($filetype = null)
@@ -179,6 +180,7 @@ class Image_Imagemagick extends Image_Driver {
 			if (!$this->config['debug'])
 				echo file_get_contents($this->image_temp);
 		}
+		return $this;
 	}
 
 	/**

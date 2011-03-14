@@ -21,7 +21,12 @@ class Image {
 
 	protected static $_instance = null;
 
-	public static function instance()
+	/**
+	 * Creates a new instance for static use of the class.
+	 *
+	 * @return  Image_Driver
+	 */
+	protected static function instance()
 	{
 		if (Image::$_instance == null)
 		{
@@ -36,33 +41,29 @@ class Image {
 	 * @param  array   $config
 	 * @return Image_Driver
 	 */
-	public static function factory($config = array())
+	public static function factory($config = array(), $filename = null)
 	{
-		$initconfig = Config::load('image');
-
-		if (is_array($config) && is_array($initconfig))
-		{
-			$config = array_merge($initconfig, $config);
-		}
-
 		$protocol = ucfirst(!empty($config['driver']) ? $config['driver'] : 'gd');
-		$class = 'Image_' . $protocol;
+		$class = 'Image_'.$protocol;
 		if ($protocol == 'Driver' || !class_exists($class))
 		{
-			throw new \Fuel_Exception('Protocol ' . $protocol . ' is not a valid protocol for emailing.');
+			throw new \Fuel_Exception('Protocol '.$protocol.' is not a valid protocol for emailing.');
 		}
-		return new $class($config);
+		$return = new $class($config);
+		if ($filename !== null)
+			$return->load($filename);
+		return $return;
 	}
 
 	/**
-	 * Used to set class information.
+	 * Used to set configuration options.
 	 *
 	 * @param  array   $config   An array of configuration settings.
 	 * @return Image_Driver
 	 */
-	public static function initialize($config = array())
+	public static function config($config = array())
 	{
-		return Image::instance()->initialize($config);
+		return Image::instance()->config($config);
 	}
 
 	/**
@@ -149,7 +150,8 @@ class Image {
 	 * @param  string   $color  A hexidecimal color.
 	 * @param  Image_Driver
 	 */
-	public static function border($size, $color = null) {
+	public static function border($size, $color = null)
+	{
 		return Image::instance()->border($size, $color);
 	}
 
@@ -159,7 +161,8 @@ class Image {
 	 * @param  string  $maskimage  The location of the image to use as the mask
 	 * @return Image_Driver
 	 */
-	public static function mask($maskimage) {
+	public static function mask($maskimage)
+	{
 		return Image::instance()->mask($maskimage);
 	}
 

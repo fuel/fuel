@@ -29,30 +29,25 @@ abstract class Image_Driver {
 
 	public function __construct($config)
 	{
-		$this->initialize($config);
+		$this->config = Config::load('image');
+		$this->config($config);
 	}
-
 	/**
-	 * Sets the configuration options for the class, using an array.
+	 * Accepts configuration in either an array (as $index) or a pairing using $index and $value
 	 *
-	 * @param	array	$options
+	 * @param  string  $index  The index to be set, or an array of configuration options.
+	 * @param  mixed   $value  The value to be set if $index is not an array.
 	 */
-	public function initialize($options)
+	public function config($index = null, $value = null)
 	{
-		if (is_array($options))
+		if (is_array($index))
 		{
-			$this->config = array_merge($this->config, $options);
+			$this->config = array_merge($this->config, $index);
 		}
-	}
-
-	/**
-	 *
-	 * @param	string	$index	The option to set.
-	 * @param	mixed	$value	The value to set the option to.
-	 */
-	public function config($index, $value)
-	{
-		$this->config[$index] = $value;
+		else if ($index != null)
+		{
+			$this->config[$index] = $value;
+		}
 		return $this;
 	}
 
@@ -307,7 +302,6 @@ abstract class Image_Driver {
 		$sizes = $this->sizes();
 		$y = floor(($sizes->height - $height) / 2);
 		$x = floor(($sizes->width - $width) / 2);
-		$this->debug("<u>$x $y $width $height</u>");
 		$this->_crop($x, $y, $x + $width, $y + $height);
 	}
 
@@ -558,15 +552,17 @@ abstract class Image_Driver {
 	/**
 	 * Saves the file in the original location, adding the append and prepend to the filename.
 	 *
-	 * @param	string	$append	The string to append to the filename
-	 * @param	string	$prepend	The string to prepend to the filename
-	 * @param	integer	$permissions	The permissions to attempt to set on the file.
+	 * @param  string   $append       The string to append to the filename
+	 * @param  string   $prepend      The string to prepend to the filename
+	 * @param  string   $extension    The extension to save the image as, null defaults to the loaded images extension.
+	 * @param  integer  $permissions  The permissions to attempt to set on the file.
 	 */
-	public function save_pa($append, $prepend = null, $permissions = null)
+	public function save_pa($append, $prepend = null, $extension = null, $permissions = null)
 	{
 		$filename = substr($this->image_filename, 0, -(strlen($this->image_extension) + 1));
-		$fullpath = $this->image_directory . "/" . $append . $filename . $prepend . '.' . $this->image_extension;
+		$fullpath = $this->image_directory . "/" . $append . $filename . $prepend . '.' . ($extension !== null ? $extension : $this->image_extension);
 		$this->save($fullpath, $permissions);
+		return $this;
 	}
 
 	/**
@@ -678,7 +674,7 @@ abstract class Image_Driver {
 	 *
 	 * @param	boolean	$clear	Decides if the queue should be cleared once completed.
 	 */
-	public function run_queue($clear = true)
+	public function run_queue($clear = null)
 	{
 		foreach ($this->queued_actions AS $action)
 		{
@@ -688,7 +684,7 @@ abstract class Image_Driver {
 			$this->debug("", "<b>Executing <code>" . implode(", ", $tmpfunc) . "</code></b>");
 			call_user_func_array(array(&$this, '_' . $action[0]), array_slice($action, 1));
 		}
-		if ((bool) $clear)
+		if (($clear === null && $this->config['clear_queue']) || $clear === true)
 			$this->queued_actions = array();
 	}
 
