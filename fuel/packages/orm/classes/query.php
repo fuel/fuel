@@ -139,6 +139,8 @@ class Query {
 	public function limit($limit)
 	{
 		$this->limit = intval($limit);
+
+		return $this;
 	}
 
 	/**
@@ -149,6 +151,8 @@ class Query {
 	public function offset($offset)
 	{
 		$this->offset = intval($offset);
+
+		return $this;
 	}
 
 	/**
@@ -191,7 +195,7 @@ class Query {
 			{
 				$this->_where($c, $type);
 			}
-			return;
+			return $this;
 		}
 
 		if (count($condition) == 2)
@@ -206,6 +210,8 @@ class Query {
 		{
 			throw new Exception('Invalid param count for where condition.');
 		}
+
+		return $this;
 	}
 
 	/**
@@ -257,6 +263,8 @@ class Query {
 		}
 
 		$this->relations[] = $relation;
+
+		return $this;
 	}
 
 	/**
@@ -273,10 +281,12 @@ class Query {
 			{
 				$this->set($p, $v);
 			}
-			return;
+			return $this;
 		}
 
 		$this->values[$property] = $value;
+
+		return $this;
 	}
 
 	/**
