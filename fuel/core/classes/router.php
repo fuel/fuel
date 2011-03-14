@@ -105,6 +105,12 @@ class Router {
 				$match->controller = $segments[0];
 				array_shift($segments);
 			}
+			elseif ($controller_path = \Fuel::find_file('classes'.DS.'controller'.DS.$segments[0], $segments[0]))
+			{
+				$match->directory = $segments[0];
+				$match->controller = $segments[0];
+				array_shift($segments);
+			}
 		}
 
 		if ($match->controller !== null)
