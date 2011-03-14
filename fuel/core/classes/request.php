@@ -158,6 +158,16 @@ class Request {
 		}
 	}
 
+	public static function reset_request()
+	{
+		// Let's make the previous Request active since we are don't executing this one.
+		if (static::$previous)
+		{
+			static::$active = static::$previous;
+		}
+	}
+
+
 	/**
 	 * @var	string	Holds the response of the request.
 	 */
@@ -258,6 +268,7 @@ class Request {
 		if ( ! $this->route)
 		{
 			$this->output = static::show_404(true);
+			static::reset_request();
 			return $this;
 		}
 
@@ -271,6 +282,7 @@ class Request {
 		if ( ! class_exists($class))
 		{
 			$this->output = static::show_404(true);
+			static::reset_request();
 			return $this;
 		}
 
@@ -314,12 +326,7 @@ class Request {
 			$this->output = static::show_404(true);
 		}
 
-		// Let's make the previous Request active since we are don't executing this one.
-		if (static::$previous)
-		{
-			static::$active = static::$previous;
-		}
-
+		static::reset_request();
 		return $this;
 	}
 
