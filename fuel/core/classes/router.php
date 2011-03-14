@@ -108,7 +108,7 @@ class Router {
 		}
 
 		// Check for the controller
-		if ($match->controller === null && count($segments) > 1)
+		if ($match->controller === null)
 		{
 			if ($controller_path = \Fuel::find_file('classes'.DS.'controller', $segments[0]))
 			{
