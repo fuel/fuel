@@ -189,9 +189,9 @@ class Autoloader {
 		elseif ( ! $namespaced)
 		{
 			$file_path = str_replace('_', DS, $class);
-			$file_path = \Fuel::find_file('classes', $file_path);
+			$file_path = APPPATH.'classes/'.strtolower($file_path).'.php';
 
-			if ($file_path !== false)
+			if (file_exists($file_path))
 			{
 				require $file_path;
 				if ( ! class_exists($class, false) && class_exists($class_name = 'Fuel\\Core\\'.$class, false))
