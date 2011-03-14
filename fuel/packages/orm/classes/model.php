@@ -136,16 +136,20 @@ class Model {
 		// If already determined
 		if (array_key_exists($class, static::$_properties_cached))
 		{
-			return static::$_properties_cached[$class];
+			return array_keys(static::$_properties_cached[$class]);
 		}
 
 		// Try to grab the properties from the class...
-		$properties = get_class_vars($class);
-		foreach ($properties as $k => $v)
+		if (property_exists($class, '_properties'))
 		{
-			if (substr($k, 0, 1) == '_')
+			$properties = static::$_properties;
+			foreach ($properties as $key => $p)
 			{
-				unset($properties[$k]);
+				if (is_string($p))
+				{
+					unset($properties[$key]);
+					$properties[$p] = array();
+				}
 			}
 		}
 
@@ -237,6 +241,11 @@ class Model {
 	private $_frozen = false;
 
 	/**
+	 * @var	array	keeps the current state of the object
+	 */
+	private $_data = array();
+
+	/**
 	 * @var	array	keeps a copy of the object as it was retrieved from the database
 	 */
 	private $_original = array();
@@ -257,7 +266,7 @@ class Model {
 		$this->_original = $data;
 		foreach ($data as $key => $val)
 		{
-			$this->{$key} = $val;
+			$this->_data[$key] = $val;
 		}
 
 		if ($new === false)
@@ -277,7 +286,7 @@ class Model {
 	{
 		if (property_exists($this, $property))
 		{
-			return $this->{$property};
+			return $this->_data[$property];
 		}
 		elseif (isset(static::$_relations) and array_key_exists($property, static::$_relations))
 		{
@@ -308,7 +317,7 @@ class Model {
 
 		if (in_array($property, static::properties()))
 		{
-			$this->{$property} = $value;
+			$this->_data[$property] = $value;
 		}
 		elseif (isset(static::$_relations) and array_key_exists($property, static::$_relations))
 		{
