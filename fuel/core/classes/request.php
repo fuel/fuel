@@ -47,11 +47,11 @@ class Request {
 	 * @param	bool	if true use routes to process the URI
 	 * @return	object	The new request
 	 */
-	public static function factory($uri = null)
+	public static function factory($uri = null, $route = true)
 	{
 		logger(Fuel::L_INFO, 'Creating a new Request with URI = "'.$uri.'"', __METHOD__);
 
-		static::$active = new static($uri);
+		static::$active = new static($uri, $route);
 
 		if ( ! static::$main)
 		{
@@ -207,11 +207,11 @@ class Request {
 	 * @param	bool	whether or not to route the URI
 	 * @return	void
 	 */
-	public function __construct($uri)
+	public function __construct($uri, $route = true)
 	{
 		$this->uri = new \URI($uri);
 
-		$this->route = \Router::process($this);
+		$this->route = \Router::process($this, $route);
 
 		if ( ! $this->route)
 		{

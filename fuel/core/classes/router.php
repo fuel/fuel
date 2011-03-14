@@ -36,20 +36,24 @@ class Router {
 	 * Processes the given request using the defined routes
 	 * 
 	 * @param	Request		the given Request object
+	 * @param	bool		whether to use the defined routes or not
 	 * @return	mixed		the match array or false
 	 */
-	public static function process(\Request $request)
+	public static function process(\Request $request, $route = true)
 	{
 		$match = false;
 
-		foreach (static::$routes as $route)
+		if ($route)
 		{
-			if ($match = $route->parse($request))
+			foreach (static::$routes as $route)
 			{
-				break;
+				if ($match = $route->parse($request))
+				{
+					break;
+				}
 			}
 		}
-
+		
 		if ( ! $match)
 		{
 			// Since we didn't find a match, we will create a new route.
