@@ -242,11 +242,11 @@ class Time {
 	 * @param   integer  number of year to check month, defaults to the current year
 	 * @return  array    A mirrored (foo => foo) array of the days.
 	 */
-	public static function days($month, $year = FALSE)
+	public static function days($month, $year = NULL)
 	{
 		static $months;
 
-		if ($year === FALSE)
+		if ($year === NULL)
 		{
 			// Use the current year by default
 			$year = date('Y');
@@ -326,11 +326,11 @@ class Time {
 	 * @param   integer  ending year (default is current year + 5)
 	 * @return  array
 	 */
-	public static function years($start = FALSE, $end = FALSE)
+	public static function years($start = NULL, $end = NULL)
 	{
 		// Default values
-		$start = ($start === FALSE) ? (date('Y') - 5) : (int) $start;
-		$end   = ($end   === FALSE) ? (date('Y') + 5) : (int) $end;
+		$start = ($start === NULL) ? (date('Y') - 5) : (int) $start;
+		$end   = ($end   === NULL) ? (date('Y') + 5) : (int) $end;
 
 		$years = array();
 
@@ -556,9 +556,9 @@ class Time {
 	 * @param   integer  UNIX timestamp
 	 * @return  integer
 	 */
-	public static function unix2dos($timestamp = FALSE)
+	public static function unix2dos($timestamp = NULL)
 	{
-		$timestamp = ($timestamp === FALSE) ? getdate() : getdate($timestamp);
+		$timestamp = ($timestamp === NULL) ? getdate() : getdate($timestamp);
 
 		if ($timestamp['year'] < 1980)
 		{
@@ -584,7 +584,7 @@ class Time {
 	 * @param   integer  DOS timestamp
 	 * @return  integer
 	 */
-	public static function dos2unix($timestamp = FALSE)
+	public static function dos2unix($timestamp = NULL)
 	{
 		$sec  = 2 * ($timestamp & 0x1f);
 		$min  = ($timestamp >>  5) & 0x3f;

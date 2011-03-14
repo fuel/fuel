@@ -311,7 +311,7 @@
 		</article>
 
 	<article>
-			<h4>days($month, $year = FALSE)</h4>
+			<h4>days($month, $year = NULL)</h4>
 			<p>The <strong>days</strong> method returns the number of days in a given month and year. Typically used as a shortcut
 				for generating a list that can be used in a form.
 			</p>
@@ -337,7 +337,7 @@
 							</tr>
 							<tr>
 								<th><kbd>$year</kbd></th>
-								<td><pre class="php"><code>false</code></pre></td>
+								<td><pre class="php"><code>null</code></pre></td>
 								<td>number of year to check month, defaults to the current year</td>
 							</tr>
 						</table>
@@ -413,7 +413,7 @@ Or Time::MONTHS_SHORT
 		</article>
 
 	<article>
-			<h4>years($start = FALSE, $end = FALSE)</h4>
+			<h4>years($start = NULL, $end = NULL)</h4>
 			<p>The <strong>years</strong> method returns an array of years between a starting and ending year. By default,
 				 the the current year - 5 and current year + 5 will be used. Typically used
 				as a shortcut for generating a list that can be used in a form.
@@ -435,12 +435,12 @@ Or Time::MONTHS_SHORT
 							</tr>
 							<tr>
 								<th><kbd>$start</kbd></th>
-								<td><i><pre class="php"><code>false</code></pre></i></td>
+								<td><i><pre class="php"><code>null</code></pre></i></td>
 								<td>starting year (default is current year - 5)</td>
 							</tr>
 							<tr>
 								<th><kbd>$end</kbd></th>
-								<td><pre class="php"><code>false</code></pre></td>
+								<td><pre class="php"><code>null</code></pre></td>
 								<td>ending year (default is current year + 5)</td>
 							</tr>
 						</table>
@@ -561,7 +561,7 @@ $span = Time::fuzzy_span(time() + 20); // "in moments"</code></pre>
 		</article>
 
 	<article>
-			<h4>unix2dos($timestamp = FALSE)</h4>
+			<h4>unix2dos($timestamp = NULL)</h4>
 			<p>The <strong>unix2dos</strong> converts a UNIX timestamp to DOS format. There are very few cases where
 				this is needed, but some binary formats use it (eg: zip files.)
 			</p>
@@ -582,7 +582,7 @@ $span = Time::fuzzy_span(time() + 20); // "in moments"</code></pre>
 							</tr>
 							<tr>
 								<th><kbd>$unix</kbd></th>
-								<td><i><pre class="php"><code></code></pre></i></td>
+								<td><i><pre class="php"><code>null</code></pre></i></td>
 								<td>UNIX timestamp</td>
 							</tr>
 						</table>
@@ -603,7 +603,7 @@ $span = Time::fuzzy_span(time() + 20); // "in moments"</code></pre>
 		</article>
 
 	<article>
-			<h4>dos2unix($timestamp = FALSE)</h4>
+			<h4>dos2unix($timestamp = NULL)</h4>
 			<p>The <strong>dos2unix</strong> Converts a DOS timestamp to UNIX format.There are very few cases where
 				this is needed, but some binary formats use it (eg: zip files.)
 			< /p>
@@ -624,7 +624,7 @@ $span = Time::fuzzy_span(time() + 20); // "in moments"</code></pre>
 							</tr>
 							<tr>
 								<th><kbd>$timestamp</kbd></th>
-								<td><i><pre class="php"><code>false</code></pre></i></td>
+								<td><i><pre class="php"><code>null</code></pre></i></td>
 								<td>DOS timestamp</td>
 							</tr>
 						</table>
