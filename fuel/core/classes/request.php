@@ -29,6 +29,11 @@ class Request {
 	protected static $active = false;
 
 	/**
+	 * @var	object	Holds the previous request;
+	 */
+	protected static $previous = false;
+
+	/**
 	 * @var	array	search paths for the current active request
 	 */
 	public $paths = array();
@@ -50,6 +55,11 @@ class Request {
 	public static function factory($uri = null, $route = true)
 	{
 		logger(Fuel::L_INFO, 'Creating a new Request with URI = "'.$uri.'"', __METHOD__);
+
+		if (static::$active)
+		{
+			static::$previous = static::$active;
+		}
 
 		static::$active = new static($uri, $route);
 
@@ -302,6 +312,12 @@ class Request {
 		else
 		{
 			$this->output = static::show_404(true);
+		}
+
+		// Let's make the previous Request active since we are don't executing this one.
+		if (static::$previous)
+		{
+			static::$active = static::$previous;
 		}
 
 		return $this;
