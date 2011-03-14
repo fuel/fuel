@@ -94,7 +94,7 @@ class Console {
 			// Error was returned
 			if ($ret === false)
 			{
-				\Cli::write(\Cli::color('Parse Error - ' . $__line, 'light_red'));
+				\Cli::error('Parse Error - ' . $__line);
 				\Cli::beep();
 			}
 
