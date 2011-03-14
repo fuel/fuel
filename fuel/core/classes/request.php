@@ -277,7 +277,7 @@ class Request {
 			$this->method_params = array($this->action, $this->method_params);
 		}
 
-		if (method_exists($controller, $method))
+		if (is_callable(array($controller, $method)))
 		{
 			// Call the before method if it exists
 			if (method_exists($controller, 'before'))
