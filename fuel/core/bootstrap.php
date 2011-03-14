@@ -96,6 +96,7 @@ Autoloader::add_classes(array(
 	'Fuel\\Core\\Fuel_Exception'  => COREPATH.'classes/fuel/exception.php',
 
 	'Fuel\\Core\\Date'    => COREPATH.'classes/date.php',
+	'Fuel\\Core\\Time'    => COREPATH.'classes/time.php',
 	'Fuel\\Core\\Debug'   => COREPATH.'classes/debug.php',
 	'Fuel\\Core\\Cli'     => COREPATH.'classes/cli.php',
 	'Fuel\\Core\\Crypt'   => COREPATH.'classes/crypt.php',

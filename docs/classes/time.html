@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Date Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Time Class</h2>
+
+		<p>The Time class is a set of helper functions for generating and managing time related operations..</p>
+
+		<article>
+			<h4>offset($remote, $local = NULL, $now = NULL)</h4>
+
+			<p>The <strong>offset</strong> method returns the offset (in seconds) between two time zones. Use this to
+				display dates to users in different time zones.
+			</p>
+			
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$remote</kbd></th>
+								<td><i><pre class="php"><code></code></pre></i></td>
+								<td>Timezone that to find the offset of</td>
+							</tr>
+							<tr>
+								<th><kbd>$local</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>Timezone used as the baseline</td>
+							</tr>
+							<tr>
+								<th><kbd>$now</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>UNIX timestamp or date string</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>integer</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$seconds = Time::offset('America/Chicago', 'GMT');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>seconds($step = 1, $start = 0, $end = 60)</h4>
+			<p>The <strong>seconds</strong> method returns the number of seconds in a minute, incrementing by a step.
+				Typically used as a shortcut for generating a list that can used in a form.
+			</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$step</kbd></th>
+								<td><i><pre class="php"><code>1</code></pre></i></td>
+								<td>Amount to increment each step by, 1 to 30</td>
+							</tr>
+							<tr>
+								<th><kbd>$start</kbd></th>
+								<td><pre class="php"><code>0</code></pre></td>
+								<td>Start value</td>
+							</tr>
+							<tr>
+								<th><kbd>$end</kbd></th>
+								<td><pre class="php"><code>60</code></pre></td>
+								<td>End value</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$seconds = Time::seconds();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>minutes($step = 5)</h4>
+			<p>The <strong>minutes</strong> method returns the number of minutes in an hour, incrementing by a step. Typically used as
+	 * a shortcut for generating a list that can be used in a form.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$step</kbd></th>
+								<td><i><pre class="php"><code>5</code></pre></i></td>
+								<td>Integer  amount to increment each step by, 1 to 30</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$minutes = Time::minutes();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>hours($step = 1, $long = FALSE, $start = NULL)</h4>
+			<p>The <strong>hours</strong> method returns a new date object.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$step</kbd></th>
+								<td><i><pre class="php"><code>1</code></pre></i></td>
+								<td>Amount to increment each step by</td>
+							</tr>
+							<tr>
+								<th><kbd>$long</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>Use 24-hour time</td>
+							</tr>
+							<tr>
+								<th><kbd>$start</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The hour to start at</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$hours = Time::hours();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>ampm($hour)</h4>
+			<p>The <strong>ampm</strong> Returns AM or PM, based on a given hour (in 24 hour format).</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$hour</kbd></th>
+								<td><i><pre class="php"><code></code></pre></i></td>
+								<td>number of the hour</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$type = Time::ampm(12); // PM</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>adjust($hour, $ampm)</h4>
+			<p>The <strong>adjust</strong> method adjusts a non-24-hour number into a 24-hour number.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$hour</kbd></th>
+								<td><i><pre class="php"><code></code></pre></i></td>
+								<td>hour to adjust</td>
+							</tr>
+							<tr>
+								<th><kbd>$ampm</kbd></th>
+								<td><pre class="php"><code></code></pre></td>
+								<td>AM or PM</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$hour = Time::adjust(3, 'pm'); // 15</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>days($month, $year = FALSE)</h4>
+			<p>The <strong>days</strong> method returns the number of days in a given month and year. Typically used as a shortcut
+				for generating a list that can be used in a form.
+			</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$month</kbd></th>
+								<td><i><pre class="php"><code></code></pre></i></td>
+								<td>number of month</td>
+							</tr>
+							<tr>
+								<th><kbd>$year</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>number of year to check month, defaults to the current year</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$days = Time::days(4, 2010);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>months($format = NULL)</h4>
+			<p>The <strong>months</strong> method returns the Number of months in a year. Typically used as a shortcut for generating
+	 * a list that can be used in a form.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$format</kbd></th>
+								<td><i><pre class="php"><code>null</code></pre></i></td>
+								<td>The format to use for months</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>By default a mirrored array of $month_number => $month_number is returned
+
+	$months = Time::months();
+	// aray(1 => 1, 2 => 2, 3 => 3, ..., 12 => 12)
+
+But you can customise this by passing in either Time::MONTHS_LONG
+
+	$months = Time::months(Time::MONTHS_LONG);
+	// array(1 => 'January', 2 => 'February', ..., 12 => 'December')
+
+Or Time::MONTHS_SHORT
+
+	$months = Time::months(Time::MONTHS_SHORT);
+	// array(1 => 'Jan', 2 => 'Feb', ..., 12 => 'Dec')
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>years($start = FALSE, $end = FALSE)</h4>
+			<p>The <strong>years</strong> method returns an array of years between a starting and ending year. By default,
+				 the the current year - 5 and current year + 5 will be used. Typically used
+				as a shortcut for generating a list that can be used in a form.
+			</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$start</kbd></th>
+								<td><i><pre class="php"><code>false</code></pre></i></td>
+								<td>starting year (default is current year - 5)</td>
+							</tr>
+							<tr>
+								<th><kbd>$end</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>ending year (default is current year + 5)</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$years = Time::years(2000, 2010);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>span($remote, $local = NULL, $output = 'years,months,weeks,days,hours,minutes,seconds')</h4>
+			<p>The <strong>span</strong> method returns a new date object.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$remote</kbd></th>
+								<td><i><pre class="php"><code></code></pre></i></td>
+								<td>timestamp to find the span of</td>
+							</tr>
+							<tr>
+								<th><kbd>$local</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>timestamp to use as the baseline</td>
+							</tr>
+							<tr>
+								<th><kbd>$output</kbd></th>
+								<td><pre class="php"><code>years,months,weeks,days,hours,minutes,seconds</code></pre></td>
+								<td>formatting string</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string   when only a single output is requested<br />array    associative list of all outputs requested</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$span = Time::span(60, 182, 'minutes'); // 2
+$span = Time::span(60, 182, 'minutes,seconds'); // array('minutes' => 2, 'seconds' => 2)
+</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>fuzzy_span($timestamp, $local_timestamp = NULL)</h4>
+			<p>The <strong>fuzzy_span</strong> method returns the difference between a time and now in a "fuzzy" way.
+				Displaying a fuzzy time instead of a date is usually faster to read and understand.
+			</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$timestamp</kbd></th>
+								<td><i><pre class="php"><code></code></pre></i></td>
+								<td>"remote" timestamp</td>
+							</tr>
+							<tr>
+								<th><kbd>$local_timestamp</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>"local" timestamp, defaults to time()</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$span = Time::fuzzy_span(time() - 10); // "moments ago"
+$span = Time::fuzzy_span(time() + 20); // "in moments"</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>unix2dos($timestamp = FALSE)</h4>
+			<p>The <strong>unix2dos</strong> converts a UNIX timestamp to DOS format. There are very few cases where
+				this is needed, but some binary formats use it (eg: zip files.)
+			</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$unix</kbd></th>
+								<td><i><pre class="php"><code></code></pre></i></td>
+								<td>UNIX timestamp</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>integer</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$dos = Time::unix2dos($unix);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>dos2unix($timestamp = FALSE)</h4>
+			<p>The <strong>dos2unix</strong> Converts a DOS timestamp to UNIX format.There are very few cases where
+				this is needed, but some binary formats use it (eg: zip files.)
+			< /p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$timestamp</kbd></th>
+								<td><i><pre class="php"><code>false</code></pre></i></td>
+								<td>DOS timestamp</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>integer</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$unix = Time::dos2unix($dos);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	<article>
+			<h4>formatted_time($datetime_str = 'now', $timestamp_format = NULL, $timezone = NULL)</h4>
+			<p>The <strong>formatted_time</strong> method a date/time string with the specified timestamp format</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$datetime_str</kbd></th>
+								<td><i><pre class="php"><code>now</code></pre></i></td>
+								<td>Datetime string</td>
+							</tr>
+							<tr>
+								<th><kbd>$timestamp_format</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>Timestamp format</td>
+							</tr>
+							<tr>
+								<th><kbd>$timezone</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The timezone in which the time is set</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>$time = Time::formatted_time('5 minutes ago');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>
