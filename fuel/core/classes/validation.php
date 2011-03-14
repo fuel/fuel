@@ -207,7 +207,7 @@ class Validation {
 	 */
 	public function run($input = null, $allow_partial = false)
 	{
-		if (empty($input) && empty($_POST))
+		if (empty($input) && \Input::method() != 'POST')
 		{
 			return false;
 		}
