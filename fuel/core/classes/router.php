@@ -87,14 +87,8 @@ class Router {
 	
 	protected static function find_controller( & $match, $segments)
 	{
-		// Check for the controller
-		if ($controller_path = \Fuel::find_file('classes'.DS.'controller', $segments[0]))
-		{
-			$match->controller = $segments[0];
-			array_shift($segments);
-		}
-
-		// If the controller is not found yet and there are at least 2 segments then it may be in a directory
+		// We first want to check if the controller is in a directory.  This way directories
+		// can have the same name as a base controller and still work.
 		if ($match->controller === null && count($segments) > 1)
 		{
 			if ($controller_path = \Fuel::find_file('classes'.DS.'controller'.DS.$segments[0], $segments[1]))
@@ -113,6 +107,16 @@ class Router {
 			}
 		}
 
+		// Check for the controller
+		if ($match->controller === null && count($segments) > 1)
+		{
+			if ($controller_path = \Fuel::find_file('classes'.DS.'controller', $segments[0]))
+			{
+				$match->controller = $segments[0];
+				array_shift($segments);
+			}
+		}
+	
 		if ($match->controller !== null)
 		{
 			// Since we found a controller lets see if there is an action defined
