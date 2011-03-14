@@ -111,6 +111,16 @@ class Request {
 	{
 		logger(Fuel::L_INFO, 'Called', __METHOD__);
 
+		// This ensures that show_404 is only called once.
+		static $call_count = 0;
+		$call_count++;
+		
+		if ($call_count > 1)
+		{
+			throw new \Fuel_Exception('It appears your _404_ route is incorrect.  Multiple Recursion has happened.');
+		}
+		
+
 		\Output::$status = 404;
 
 		if (\Config::get('routes._404_') === null)
@@ -127,50 +137,14 @@ class Request {
 		}
 		else
 		{
-			list($controller, $action) = array_pad(explode('/', \Config::get('routes._404_')), 2, false);
+			$request = \Request::factory(\Config::get('routes._404_'))->execute();
 
-			$action or $action = 'index';
-
-			$class = '\\Controller_'.ucfirst($controller);
-			$method = 'action_'.$action;
-
-			if (class_exists($class))
+			if ($return)
 			{
-				$controller = new $class(static::active());
-				if (method_exists($controller, $method))
-				{
-					// Call the before method if it exists
-					if (method_exists($controller, 'before'))
-					{
-						$controller->before();
-					}
-
-					$controller->{$method}();
-
-					// Call the after method if it exists
-					if (method_exists($controller, 'after'))
-					{
-						$controller->after();
-					}
-
-					// Get the controller's output
-					if ($return)
-					{
-						return $controller->output;
-					}
-
-					\Output::send_headers();
-					exit($controller->output);
-				}
-				else
-				{
-					throw new \Fuel_Exception('404 Action not found.');
-				}
+				return $request->output();
 			}
-			else
-			{
-				throw new \Fuel_Exception('404 Controller not found.');
-			}
+
+			exit($request->send_headers()->output());
 		}
 	}
 
