@@ -170,8 +170,8 @@ $(function()
 		'queueSizeLimit' : 3,
 		'simUploadLimit' : 3,
 		'removeCompleted': false,
-		'onSelectOnce'   : function(event,data)
 		'scriptData'     : {'fuelcid': getCookie('fuelcid')},
+		'onSelectOnce'   : function(event,data)
 		{
 			$('#status-message').text(data.filesSelected + ' files have been added to the queue.');
 		},
