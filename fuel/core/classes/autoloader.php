@@ -165,6 +165,7 @@ class Autoloader {
 
 	public static function load($class)
 	{
+		$loaded = false;
 		$class = ltrim($class, '\\');
 		$namespaced = ($pos = strripos($class, '\\')) !== false;
 
@@ -176,14 +177,14 @@ class Autoloader {
 		{
 			include str_replace('/', DS, static::$classes[$class]);
 			static::_init_class($class);
-			return true;
+			$loaded = true;
 		}
 		elseif ( ! $namespaced and $class_name = static::is_core_class($class))
 		{
 			! class_exists($class_name, false) and include str_replace('/', DS, static::$classes[$class_name]);
 			static::alias_to_namespace($class_name);
 			static::_init_class($class);
-			return true;
+			$loaded = true;
 		}
 		elseif ( ! $namespaced)
 		{
@@ -198,7 +199,7 @@ class Autoloader {
 					static::alias_to_namespace($class_name);
 				}
 				static::_init_class($class);
-				return true;
+				$loaded = true;
 			}
 		}
 
@@ -221,7 +222,8 @@ class Autoloader {
 						// Fuel::$paths_changed = true;
 						require $file_path;
 						static::_init_class($class);
-						return true;
+						$loaded = true;
+						break;
 					}
 				}
 			}
@@ -233,7 +235,7 @@ class Autoloader {
 			static::$auto_initialize = null;
 		}
 
-		return false;
+		return $loaded;
 	}
 
 	/**
