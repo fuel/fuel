@@ -163,44 +163,45 @@ class Autoloader {
         }
     }
 
-    public static function load($class)
-    {
-        $class = ltrim($class, '\\');
-        $namespaced = ($pos = strripos($class, '\\')) !== false;
+	public static function load($class)
+	{
+		$loaded = false;
+		$class = ltrim($class, '\\');
+		$namespaced = ($pos = strripos($class, '\\')) !== false;
 
-        if (empty(static::$auto_initialize))
-        {
-            static::$auto_initialize = $class;
-        }
-        if (array_key_exists($class, static::$classes))
-        {
-            include str_replace('/', DS, static::$classes[$class]);
-            static::_init_class($class);
-            return true;
-        }
-        elseif ( ! $namespaced and $class_name = static::is_core_class($class))
-        {
-            ! class_exists($class_name, false) and include str_replace('/', DS, static::$classes[$class_name]);
-            static::alias_to_namespace($class_name);
-            static::_init_class($class);
-            return true;
-        }
-        elseif ( ! $namespaced)
-        {
-            $file_path = str_replace('_', DS, $class);
-            $file_path = \Fuel::find_file('classes', $file_path);
+		if (empty(static::$auto_initialize))
+		{
+			static::$auto_initialize = $class;
+		}
+		if (array_key_exists($class, static::$classes))
+		{
+			include str_replace('/', DS, static::$classes[$class]);
+			static::_init_class($class);
+			$loaded = true;
+		}
+		elseif ( ! $namespaced and $class_name = static::is_core_class($class))
+		{
+			! class_exists($class_name, false) and include str_replace('/', DS, static::$classes[$class_name]);
+			static::alias_to_namespace($class_name);
+			static::_init_class($class);
+			$loaded = true;
+		}
+		elseif ( ! $namespaced)
+		{
+			$file_path = str_replace('_', DS, $class);
+			$file_path = APPPATH.'classes/'.strtolower($file_path).'.php';
 
-            if ($file_path !== false)
-            {
-                require $file_path;
-                if ( ! class_exists($class, false) && class_exists($class_name = 'Fuel\\Core\\'.$class, false))
-                {
-                    static::alias_to_namespace($class_name);
-                }
-                static::_init_class($class);
-                return true;
-            }
-        }
+			if (file_exists($file_path))
+			{
+				require $file_path;
+				if ( ! class_exists($class, false) && class_exists($class_name = 'Fuel\\Core\\'.$class, false))
+				{
+					static::alias_to_namespace($class_name);
+				}
+				static::_init_class($class);
+				$loaded = true;
+			}
+		}
 
         // This handles a namespaces class that a path does not exist for
         else
@@ -214,18 +215,19 @@ class Autoloader {
                 {
                     $class_no_ns = substr($class, $pos + 1);
 
-                    $file_path = strtolower($path.substr($namespace, strlen($ns) + 1).DS.str_replace('_', DS, $class_no_ns).'.php');
-                    if (is_file($file_path))
-                    {
-                        // Fuel::$path_cache[$class] = $file_path;
-                        // Fuel::$paths_changed = true;
-                        require $file_path;
-                        static::_init_class($class);
-                        return true;
-                    }
-                }
-            }
-        }
+					$file_path = strtolower($path.substr($namespace, strlen($ns) + 1).DS.str_replace('_', DS, $class_no_ns).'.php');
+					if (is_file($file_path))
+					{
+						// Fuel::$path_cache[$class] = $file_path;
+						// Fuel::$paths_changed = true;
+						require $file_path;
+						static::_init_class($class);
+						$loaded = true;
+						break;
+					}
+				}
+			}
+		}
 
         // Prevent failed load from keeping other classes from initializing
         if (static::$auto_initialize == $class)
@@ -233,8 +235,8 @@ class Autoloader {
             static::$auto_initialize = null;
         }
 
-        return false;
-    }
+		return $loaded;
+	}
 
     /**
      * Checks to see if the given class has a static _init() method.  If so then

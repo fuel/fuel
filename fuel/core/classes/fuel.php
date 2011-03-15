@@ -112,7 +112,13 @@ class Fuel {
 
 		\Config::load($config);
 
-		static::$_paths = array_merge(\Config::get('module_paths', array()), array(APPPATH, COREPATH));
+		static::$_paths = array(APPPATH, COREPATH);
+		array_splice(static::$_paths, 1, 0, \Config::get('module_paths', array()));
+
+		// Load in the routes
+		\Config::load('routes', true);
+
+		\Router::add(\Config::get('routes'));
 
 		\View::$auto_encode = \Config::get('security.auto_encode_view_data');
 
@@ -240,8 +246,11 @@ class Fuel {
 			}
 		}
 
-		$cache and static::$path_cache[$path] = $found;
-		static::$paths_changed = true;
+		if ( ! empty($found))
+		{
+			$cache and static::$path_cache[$path] = $found;
+			static::$paths_changed = true;
+		}
 
 		return $found;
 	}
@@ -404,6 +413,7 @@ class Fuel {
 				if (is_dir($mod_check_path = $modpath.strtolower($name).DS))
 				{
 					$path = $mod_check_path;
+					static::add_path($path);
 					$ns = '\\'.ucfirst($name);
 					\Autoloader::add_namespaces(array(
 						$ns					=> $path.'classes'.DS,
@@ -432,6 +442,26 @@ class Fuel {
 		}
 
 		return $path;
+	}
+
+	/**
+	 * Checks to see if a module exists or not.
+	 * 
+	 * @param	string	the module name
+	 * @return	bool	whether it exists or not
+	 */
+	public static function module_exists($module)
+	{
+		$paths = \Config::get('module_paths', array());
+		
+		foreach ($paths as $path)
+		{
+			if (is_dir($path.$module))
+			{
+				return $path.$module.DS;
+			}
+		}
+		return false;
 	}
 
 	/**
