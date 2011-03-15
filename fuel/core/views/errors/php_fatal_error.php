@@ -62,6 +62,27 @@
 		<?php endforeach; ?>
 		</ol>
 
+<?php if (count($non_fatal) > 0): ?>
+		<h2>Prior Non-Fatal Errors</h2>
+		<ol>
+		<?php
+		$id = 0;
+		foreach($non_fatal as $err): 
+			$id++;
+			extract($err);
+			$debug_lines = \Debug::file_lines($orig_filepath, $error_line);
+		?>
+			<li>
+				<a href="#" onclick="javascript:fuel_toggle('non_fatal_<?php echo $id; ?>')"><?php echo $severity; ?>: <?php echo $message; ?> in <?php echo $filepath; ?> @ line <?php echo $error_line; ?></a>
+				<div id="non_fatal_<?php echo $id; ?>" class="backtrace_block">
+<pre class="fuel_debug_source"><?php foreach ($debug_lines as $line_num => $line_content): ?>
+<span<?php echo ($line_num == $error_line) ? ' class="fuel_line fuel_current_line"' : ' class="fuel_line"'; ?>><span class="fuel_line_number"><?php echo str_pad($line_num, (strlen(count($debug_lines))), ' ', STR_PAD_LEFT); ?></span><span class="fuel_line_content"><?php echo $line_content . PHP_EOL; ?>
+</span></span><?php endforeach; ?></pre>
+				</div>
+			</li>
+		<?php endforeach; ?>
+		</ol>
+<?php endif; ?>
 		<p class="footer">
 			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.
 		</p>

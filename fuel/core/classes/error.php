@@ -38,6 +38,8 @@ class Error {
 
 	public static $count = 0;
 
+	public static $non_fatal_cache = array();
+
 	/**
 	 * Native PHP shutdown handler
 	 *
@@ -131,19 +133,16 @@ class Error {
 		
 		$fatal = (bool)( ! in_array($e->getCode(), \Config::get('errors.continue_on')));
 
+		$data = static::prepare_exception($e, $fatal);
+
 		if ($fatal)
 		{
 			ob_end_clean();
 		}
-
-		$data['type']		= get_class($e);
-		$data['severity']	= $e->getCode();
-		$data['message']	= $e->getMessage();
-		$data['filepath']	= $e->getFile();
-		$data['error_line']	= $e->getLine();
-		$data['backtrace']	= $e->getTrace();
-
-		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
+		else
+		{
+			static::$non_fatal_cache[] = $data;
+		}
 
 		if (\Fuel::$is_cli)
 		{
@@ -151,34 +150,9 @@ class Error {
 			return;
 		}
 
-		$debug_lines = array();
-
-		foreach ($data['backtrace'] as $key => $trace)
-		{
-			if ( ! isset($trace['file']))
-			{
-				unset($data['backtrace'][$key]);
-			}
-			elseif ($trace['file'] == COREPATH.'classes/error.php')
-			{
-				unset($data['backtrace'][$key]);
-			}
-		}
-
-		$debug_lines = array(
-			'file'	=> $data['filepath'],
-			'line'	=> $data['error_line']
-		);
-
-		$data['debug_lines'] = \Debug::file_lines($debug_lines['file'], $debug_lines['line'], $fatal);
-
-		$data['filepath'] = \Fuel::clean_path($debug_lines['file']);
-
-		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
-		$data['error_line'] = $debug_lines['line'];
-
 		if ($fatal)
 		{
+			$data['non_fatal'] = static::$non_fatal_cache;
 			exit(\View::factory('errors'.DS.'php_fatal_error', $data, false));
 		}
 
@@ -222,6 +196,39 @@ class Error {
 	public static function show_production_error()
 	{
 		exit(\View::factory('errors'.DS.'production'));
+	}
+	
+	protected static function prepare_exception(\Exception $e, $fatal = true)
+	{
+		$data = array();
+		$data['type']		= get_class($e);
+		$data['severity']	= $e->getCode();
+		$data['message']	= $e->getMessage();
+		$data['filepath']	= $e->getFile();
+		$data['error_line']	= $e->getLine();
+		$data['backtrace']	= $e->getTrace();
+
+		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
+		
+		foreach ($data['backtrace'] as $key => $trace)
+		{
+			if ( ! isset($trace['file']))
+			{
+				unset($data['backtrace'][$key]);
+			}
+			elseif ($trace['file'] == COREPATH.'classes/error.php')
+			{
+				unset($data['backtrace'][$key]);
+			}
+		}
+
+		$data['debug_lines'] = \Debug::file_lines($data['filepath'], $data['error_line'], $fatal);
+		$data['orig_filepath'] = $data['filepath'];
+		$data['filepath'] = \Fuel::clean_path($data['filepath']);
+
+		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
+
+		return $data;
 	}
 
 }
