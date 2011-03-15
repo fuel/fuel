@@ -155,6 +155,18 @@ class Model {
 	}
 
 	/**
+	 * Get the class's relations
+	 *
+	 * @return array
+	 */
+	public static function relations($specific = false)
+	{
+		// Should parse the $_relations array into an array of relation objects
+
+		return false;
+	}
+
+	/**
 	 * Find one or more entries
 	 *
 	 * @param	mixed
@@ -282,11 +294,11 @@ class Model {
 
 			return $this->_data[$property];
 		}
-		elseif (isset(static::$_relations) and array_key_exists($property, static::$_relations))
+		elseif ($rel = static::relations($property))
 		{
 			if ( ! array_key_exists($property, $this->_loaded_relations))
 			{
-				$this->_loaded_relations[$property] = static::$_relations[$property]->get();
+				$this->_loaded_relations[$property] = $rel->get();
 			}
 			return $this->_loaded_relations[$property];
 		}
