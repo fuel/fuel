@@ -23,7 +23,7 @@
 </head>
 <body>
 	<div id="wrapper">
-		<h1>Page Not Found</h1>
+		<h1>Aw, crap!</h1>
 		
 		<p class="intro">The page you are looking for cannot be found.</p>
 		
