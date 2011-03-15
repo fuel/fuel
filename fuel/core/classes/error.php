@@ -61,7 +61,7 @@ class Error {
 			}
 			else
 			{
-				echo 'An unrecoverable error occurred.';
+				static::show_production_error();
 			}
 
 			exit(1);
@@ -79,7 +79,7 @@ class Error {
 		}
 		else
 		{
-			echo 'An unrecoverable exception was thrown.';
+			static::show_production_error();
 		}
 	}
 
@@ -183,6 +183,11 @@ class Error {
 		$data['function']	= $trace['function'];
 
 		echo \View::factory('errors'.DS.'php_short', $data, false);
+	}
+
+	public static function show_production_error()
+	{
+		exit(\View::factory('errors'.DS.'production'));
 	}
 
 }
