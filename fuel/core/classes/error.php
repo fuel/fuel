@@ -41,9 +41,7 @@ class Error {
 	/**
 	 * Native PHP shutdown handler
 	 *
-	 * @access	public
-	 * @param	object	the exception object
-	 * @return	string
+	 * @return  string
 	 */
 	public static function shutdown_handler()
 	{
@@ -68,6 +66,12 @@ class Error {
 		}
 	}
 
+	/**
+	 * PHP Exception handler
+	 * 
+	 * @param   Exception  $e  the exception
+	 * @return  bool
+	 */
 	public static function exception_handler(\Exception $e)
 	{
 		$severity = ( ! isset(static::$levels[$e->getCode()])) ? $e->getCode() : static::$levels[$e->getCode()];
@@ -83,6 +87,15 @@ class Error {
 		}
 	}
 
+	/**
+	 * PHP Error handler
+	 * 
+	 * @param   int     $severity  the severity code
+	 * @param   string  $message   the error message
+	 * @param   string  $filepath  the path to the file throwing the error
+	 * @param   int     $line      the line number of the error
+	 * @return  bool    whether to continue with execution
+	 */
 	public static function error_handler($severity, $message, $filepath, $line)
 	{
 		if (static::$count <= Config::get('errors.throttling', 10))
@@ -106,6 +119,13 @@ class Error {
 		return true;
 	}
 
+	/**
+	 * Shows an error.  It will stop script execution if the error code is not
+	 * in the errors.continue_on whitelist.
+	 * 
+	 * @param   Exception  $e  the exception to show
+	 * @return  void
+	 */
 	public static function show_php_error(\Exception $e)
 	{
 		
@@ -165,6 +185,14 @@ class Error {
 		echo \View::factory('errors'.DS.'php_error', $data, false);
 	}
 
+	/**
+	 * Shows a small notice error, only when not in production or when forced.
+	 * This is used by several libraries to notify the developer of certain things.
+	 * 
+	 * @param   string  $msg          the message to display
+	 * @param   bool    $always_show  whether to force display the notice or not
+	 * @return  void
+	 */
 	public static function notice($msg, $always_show = false)
 	{
 		if ( ! $always_show && (\Fuel::$env == \Fuel::PRODUCTION || \Config::get('errors.notices', true) === false))
@@ -185,6 +213,12 @@ class Error {
 		echo \View::factory('errors'.DS.'php_short', $data, false);
 	}
 
+	/**
+	 * Shows the errors/production view and exits.  This only gets
+	 * called when an error occurs in production mode.
+	 * 
+	 * @return  void
+	 */
 	public static function show_production_error()
 	{
 		exit(\View::factory('errors'.DS.'production'));
