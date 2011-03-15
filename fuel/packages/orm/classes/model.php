@@ -82,7 +82,7 @@ class Model {
 		// Table name unknown
 		if ( ! array_key_exists($class, static::$_table_names_cached))
 		{
-			static::$_table_names_cached[$class] = Inflector::tableize($class);
+			static::$_table_names_cached[$class] = \Inflector::tableize($class);
 		}
 
 		return static::$_table_names_cached[$class];
