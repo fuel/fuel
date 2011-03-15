@@ -267,6 +267,26 @@ class Cli {
 	}
 
 	/**
+	 * Outputs an error to the CLI using STDERR instead of STDOUT
+	 *
+	 * @param	string|array	$text	the text to output, or array of errors
+	 */
+	public static function error($text = '', $foreground = 'light_red', $background = null)
+	{
+		if (is_array($text))
+		{
+			$text = implode(PHP_EOL, $text);
+		}
+
+		if ($foreground OR $background)
+		{
+			$text = static::color($text, $foreground, $background);
+		}
+
+		fwrite(STDERR, $text.PHP_EOL);
+	}
+
+	/**
 	 * Beeps a certain number of times.
 	 *
 	 * @param	int $num	the number of times to beep
