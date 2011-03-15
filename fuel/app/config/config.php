@@ -37,22 +37,16 @@ return array(
 	'cache_dir'			=> APPPATH.'cache/',
 	'cache_lifetime'	=> 3600, // In Seconds
 
-	/**
-	 * Show notices
-	 *
-	 * Some helper functions return false instead of an expected return type on invalid input,
-	 * do you want Fuel to show notices explaining why false was returned?
-	 * Even when true, only shows when environment is not PRODUCTION
-	 */
-	'show_notices'	=> true,
+	'errors'  => array(
 
-	/**
-	 * Error throttling
-	 *
-	 * Limits the number of errors that receive full reporting and/or logging to prevent
-	 * out-of-memory crashes.
-	 */
-	'error_throttling'	=> 10,
+		// Which errors should we show, but continue execution?
+		'continue_on'  => array(E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT),
+
+		// How many errors should we show before we stop showing them? (prevents out-of-memory errors)
+		'throttle'     => 10,
+		
+		'notices'      => true,
+	),
 
 	'language'		=> 'en',
 

@@ -19,18 +19,19 @@ namespace Fuel\Core;
 class Error {
 
 	public static $levels = array(
-		E_ERROR				=>	'Error',
-		E_WARNING			=>	'Warning',
-		E_PARSE				=>	'Parsing Error',
-		E_NOTICE			=>	'Notice',
-		E_CORE_ERROR		=>	'Core Error',
-		E_CORE_WARNING		=>	'Core Warning',
-		E_COMPILE_ERROR		=>	'Compile Error',
-		E_COMPILE_WARNING	=>	'Compile Warning',
-		E_USER_ERROR		=>	'User Error',
-		E_USER_WARNING		=>	'User Warning',
-		E_USER_NOTICE		=>	'User Notice',
-		E_STRICT			=>	'Runtime Notice'
+		0                  => 'Error',
+		E_ERROR            => 'Error',
+		E_WARNING          => 'Warning',
+		E_PARSE            => 'Parsing Error',
+		E_NOTICE           => 'Notice',
+		E_CORE_ERROR       => 'Core Error',
+		E_CORE_WARNING     => 'Core Warning',
+		E_COMPILE_ERROR    => 'Compile Error',
+		E_COMPILE_WARNING  => 'Compile Warning',
+		E_USER_ERROR       => 'User Error',
+		E_USER_WARNING     => 'User Warning',
+		E_USER_NOTICE      => 'User Notice',
+		E_STRICT           => 'Runtime Notice'
 	);
 
 	public static $fatal_levels = array(E_PARSE, E_ERROR, E_USER_ERROR, E_COMPILE_ERROR);
@@ -84,7 +85,7 @@ class Error {
 
 	public static function error_handler($severity, $message, $filepath, $line)
 	{
-		if (static::$count <= Config::get('error_throttling', 10))
+		if (static::$count <= Config::get('errors.throttling', 10))
 		{
 			logger(Fuel::L_ERROR, $severity.' - '.$message.' in '.$filepath.' on line '.$line);
 
@@ -107,6 +108,14 @@ class Error {
 
 	public static function show_php_error(\Exception $e)
 	{
+		
+		$fatal = (bool)( ! in_array($e->getCode(), \Config::get('errors.continue_on')));
+
+		if ($fatal)
+		{
+			ob_end_clean();
+		}
+
 		$data['type']		= get_class($e);
 		$data['severity']	= $e->getCode();
 		$data['message']	= $e->getMessage();
@@ -141,21 +150,24 @@ class Error {
 			'line'	=> $data['error_line']
 		);
 
-		$data['severity'] = ( ! isset(static::$levels[$data['severity']])) ? $data['severity'] : static::$levels[$data['severity']];
-
-		$data['debug_lines'] = \Debug::file_lines($debug_lines['file'], $debug_lines['line']);
+		$data['debug_lines'] = \Debug::file_lines($debug_lines['file'], $debug_lines['line'], $fatal);
 
 		$data['filepath'] = \Fuel::clean_path($debug_lines['file']);
 
 		$data['filepath'] = str_replace("\\", "/", $data['filepath']);
 		$data['error_line'] = $debug_lines['line'];
 
+		if ($fatal)
+		{
+			exit(\View::factory('errors'.DS.'php_fatal_error', $data, false));
+		}
+
 		echo \View::factory('errors'.DS.'php_error', $data, false);
 	}
 
 	public static function notice($msg, $always_show = false)
 	{
-		if ( ! $always_show && (\Fuel::$env == \Fuel::PRODUCTION || \Config::get('show_notices', true) === false))
+		if ( ! $always_show && (\Fuel::$env == \Fuel::PRODUCTION || \Config::get('errors.notices', true) === false))
 		{
 			return;
 		}
