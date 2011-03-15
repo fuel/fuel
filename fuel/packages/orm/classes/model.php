@@ -266,7 +266,7 @@ class Model {
 		$this->_original = $data;
 		foreach ($data as $key => $val)
 		{
-			$this->_data[$key] = $val;
+			$this->{$key} = $val;
 		}
 
 		if ($new === false)
@@ -284,7 +284,7 @@ class Model {
 	 */
 	public function & __get($property)
 	{
-		if (property_exists($this, $property))
+		if (in_array($property, static::properties()))
 		{
 			return $this->_data[$property];
 		}

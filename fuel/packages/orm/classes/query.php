@@ -298,9 +298,6 @@ class Query {
 	 */
 	public function build_query($query, $columns = array())
 	{
-		// Set from table
-		$query->from(call_user_func($this->model.'::table'));
-
 		// Get the limit
 		if ( ! is_null($this->limit))
 		{
@@ -509,6 +506,9 @@ class Query {
 		// Start building the query
 		$query = call_user_func_array('DB::select', $this->use_subquery() ? array(array_keys($columns)) : $columns);
 
+		// Set from table
+		$query->from(call_user_func($this->model.'::table'));
+
 		// Build the query further
 		$tmp       = $this->build_query($query, $columns);
 		$query     = $tmp['query'];
@@ -534,10 +534,13 @@ class Query {
 	public function count($distinct = false)
 	{
 		// Get the columns
-		$columns = DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: key($this->select)).') AS count_result');
+		$columns = \DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: key($this->select)).') AS count_result');
 
 		// Remove the current select and
 		$query = call_user_func_array('DB::select', $columns);
+
+		// Set from table
+		$query->from(call_user_func($this->model.'::table'));
 
 		$tmp   = $this->build_query($query, $columns);
 		$query = $tmp['query'];
@@ -561,10 +564,13 @@ class Query {
 	public function max($column)
 	{
 		// Get the columns
-		$columns = DB::expr('MAX('.$this->alias.'.'.$column.') AS max_result');
+		$columns = \DB::expr('MAX('.$this->alias.'.'.$column.') AS max_result');
 
 		// Remove the current select and
 		$query = call_user_func_array('DB::select', $columns);
+
+		// Set from table
+		$query->from(call_user_func($this->model.'::table'));
 
 		$tmp   = $this->build_query($query, $columns);
 		$query = $tmp['query'];
@@ -588,10 +594,13 @@ class Query {
 	public function min($column)
 	{
 		// Get the columns
-		$columns = DB::expr('MIN('.$this->alias.'.'.$column.') AS min_result');
+		$columns = \DB::expr('MIN('.$this->alias.'.'.$column.') AS min_result');
 
 		// Remove the current select and
 		$query = call_user_func_array('DB::select', $columns);
+
+		// Set from table
+		$query->from(call_user_func($this->model.'::table'));
 
 		$tmp   = $this->build_query($query, $columns);
 		$query = $tmp['query'];
@@ -614,7 +623,7 @@ class Query {
 	 */
 	public function insert()
 	{
-		$res = DB::insert(call_user_func($this->model.'::table'), array_keys($this->values))
+		$res = \DB::insert(call_user_func($this->model.'::table'), array_keys($this->values))
 			->values(array_values($this->values))
 			->execute();
 
@@ -642,7 +651,7 @@ class Query {
 		$this->group_by  = array();
 
 		// Build query and execute update
-		$query = DB::update(call_user_func($this->model.'::table'));
+		$query = \DB::update(call_user_func($this->model.'::table'));
 		$tmp   = $this->build_query($query);
 		$query = $tmp['query'];
 		$res = $query->set($this->values)->execute();
@@ -669,7 +678,7 @@ class Query {
 		$this->group_by  = array();
 
 		// Build query and execute update
-		$query = DB::delete(call_user_func($this->model.'::table'));
+		$query = \DB::delete(call_user_func($this->model.'::table'));
 		$tmp   = $this->build_query($query);
 		$query = $tmp['query'];
 		$res = $query->execute();
