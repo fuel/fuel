@@ -131,6 +131,47 @@ Cli::write($message);</code></pre>
 
 
 		<article>
+			<h4>error($text)</h4>
+			<p>The <strong>error</strong> method will write a line of text to the command line as an error (similar to <strong>write</strong> but uses STDERR instead of STDOUT.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$text</kbd></th>
+								<td><i>empty string</i></td>
+								<td>Text to output to STDERR for the output.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre><code>Cli::error('Failure: You hit the wrong key with your chubby hands, try using a stick to poke the keyboard.');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
 			<h4>prompt($question = null, $options = array())</h4>
 			<p>The <strong>read</strong> method prompts the user for input.</p>
 			<table class="method">
@@ -187,7 +228,7 @@ $ready = Cli::prompt('Are you ready?', array('y','n'));</code></pre>
 
 
 		<article>
-			<h4>option($name, $default = array())</h4>
+			<h4>option($name, null)</h4>
 			<p>The <strong>option</strong> accepts an option from the initial command.</p>
 			<table class="method">
 				<tbody>
@@ -270,8 +311,8 @@ $ready = Cli::prompt('Are you ready?', array('y','n'));</code></pre>
 				<tr>
 					<th>Example</th>
 					<td>
-<pre><code>\Cli::write('Loading...');
-\Cli::wait(5, true);</code></pre>
+<pre><code>Cli::write('Loading...');
+Cli::wait(5, true);</code></pre>
 					</td>
 				</tr>
 				</tbody>

@@ -474,7 +474,6 @@ HELP;
 
 	private static function _update_current_version($version)
 	{
-		$contents = '';
 		if (file_exists($app_path = APPPATH.'config'.DS.'migrations.php'))
 		{
 			$contents = file_get_contents($app_path);
@@ -486,6 +485,7 @@ HELP;
 		else
 		{
 			throw new Exception('Config file core/config/migrations.php');
+			exit;
 		}
 
 		$contents = preg_replace("#('version'[ \t]+=>)[ \t]+([0-9]+),#i", "$1 $version,", $contents);

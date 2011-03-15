@@ -142,6 +142,7 @@ Autoloader::add_classes(array(
 	'Fuel\\Core\\TestCase'  => COREPATH.'classes/testcase.php',
 
 	'Fuel\\Core\\Uri'     => COREPATH.'classes/uri.php',
+	'Fuel\\Core\\Unzip'     => COREPATH.'classes/unzip.php',
 	'Fuel\\Core\\Upload'  => COREPATH.'classes/upload.php',
 
 	'Fuel\\Core\\Validation'        => COREPATH.'classes/validation.php',

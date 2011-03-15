@@ -81,11 +81,11 @@ class Format {
 
 		$array = array();
 
-		foreach ((array) $this->_data as $key => $value)
+		foreach ((array) $data as $key => $value)
 		{
 			if (is_object($value) or is_array($value))
 			{
-				$array[$key] = static::to_array($value);
+				$array[$key] = $this->to_array($value);
 			}
 
 			else
@@ -225,11 +225,30 @@ class Format {
 		return serialize($this->_data);
 	}
 
+	public function to_yaml()
+	{
+		if ( ! function_exists('spyc_load'))
+		{
+			import('spyc/spyc', 'vendor');
+		}
+		
+		return \Spyc::YAMLDump($this->_data);
+	}
 
 	// Format XML for output
 	protected function _from_xml($string)
 	{
-		return (array) simplexml_load_string($string);
+		return (array) simplexml_load_string($string, 'SimpleXMLElement', LIBXML_NOCDATA);
+	}
+
+	protected function _from_yaml($string)
+	{
+		if ( ! function_exists('spyc_load'))
+		{
+			import('spyc/spyc', 'vendor');
+		}
+
+		return \Spyc::YAMLLoadString($string);
 	}
 
 	// Format HTML for output

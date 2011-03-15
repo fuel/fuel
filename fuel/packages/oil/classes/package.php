@@ -52,7 +52,7 @@ class Package
 		{
 			$zip_url = 'http://' . rtrim($source, '/').'/fuel-'.$package.'/zipball/'.$version;
 
-			if ($fp = @fopen($zip_url, 'r'))
+			if ($fp = fopen($zip_url, 'r'))
 			{
 				// We don't actually need this, just checking the file is there
 				fclose($fp);
