@@ -130,44 +130,85 @@ Cli::write($message);</code></pre>
         </article>
 
 
-        <article>
-            <h4>prompt($question = null, $options = array())</h4>
-            <p>The <strong>read</strong> method prompts the user for input.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$question</kbd></th>
-                                <td><i>null</i></td>
-                                <td>Ask the user a question and wait for input.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$options</kbd></th>
-                                <td><i>array()</i></td>
-                                <td>An array of options for the user to select from.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>string</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
+		<article>
+			<h4>error($text)</h4>
+			<p>The <strong>error</strong> method will write a line of text to the command line as an error (similar to <strong>write</strong> but uses STDERR instead of STDOUT.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$text</kbd></th>
+								<td><i>empty string</i></td>
+								<td>Text to output to STDERR for the output.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre><code>Cli::error('Failure: You hit the wrong key with your chubby hands, try using a stick to poke the keyboard.');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
+			<h4>prompt($question = null, $options = array())</h4>
+			<p>The <strong>read</strong> method prompts the user for input.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$question</kbd></th>
+								<td><i>null</i></td>
+								<td>Ask the user a question and wait for input.</td>
+							</tr>
+							<tr>
+								<th><kbd>$options</kbd></th>
+								<td><i>array()</i></td>
+								<td>An array of options for the user to select from.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
 <pre><code>// Waits for any key press
 Cli::prompt();
 
@@ -186,97 +227,97 @@ $ready = Cli::prompt('Are you ready?', array('y','n'));</code></pre>
         </article>
 
 
-        <article>
-            <h4>option($name, $default = array())</h4>
-            <p>The <strong>option</strong> accepts an option from the initial command.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$name</kbd></th>
-                                <td><i>Required</i></td>
-                                <td>Name of the option.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$default</kbd></th>
-                                <td><i>null</i></td>
-                                <td>A default value in case the option is not provided.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>string</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre>$ php index.php user -v --v -name=John --name=John</pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+		<article>
+			<h4>option($name, null)</h4>
+			<p>The <strong>option</strong> accepts an option from the initial command.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$name</kbd></th>
+								<td><i>Required</i></td>
+								<td>Name of the option.</td>
+							</tr>
+							<tr>
+								<th><kbd>$default</kbd></th>
+								<td><i>null</i></td>
+								<td>A default value in case the option is not provided.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre>$ php index.php user -v --v -name=John --name=John</pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
 
-        <article>
-            <h4>wait($seconds = 0, $countdown = false)</h4>
-            <p>The <strong>wait</strong> method will make the cli output wait for a given number of seconds and optionally show a countdown.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$seconds</kbd></th>
-                                <td><i>0</i></td>
-                                <td>Number of seconds to wait.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$countdown</kbd></th>
-                                <td><i>false</i></td>
-                                <td>Show the countdown in the output.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>void</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-<pre><code>\Cli::write('Loading...');
-\Cli::wait(5, true);</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+		<article>
+			<h4>wait($seconds = 0, $countdown = false)</h4>
+			<p>The <strong>wait</strong> method will make the cli output wait for a given number of seconds and optionally show a countdown.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$seconds</kbd></th>
+								<td><i>0</i></td>
+								<td>Number of seconds to wait.</td>
+							</tr>
+							<tr>
+								<th><kbd>$countdown</kbd></th>
+								<td><i>false</i></td>
+								<td>Show the countdown in the output.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre><code>Cli::write('Loading...');
+Cli::wait(5, true);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
 
         <article>

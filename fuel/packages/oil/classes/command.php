@@ -27,13 +27,6 @@ class Command
 {
 	public static function init($args)
 	{
-		if (\Cli::option('v', \Cli::option('version')))
-		{
-			\Cli::write('Fuel: ' . \Fuel::VERSION);
-			exit;
-		}
-
-
 		// Remove flag options from the main argument list
 		for ($i =0; $i < count($args); $i++)
 		{
@@ -47,6 +40,12 @@ class Command
 		{
 			if ( ! isset($args[1]))
 			{
+				if (\Cli::option('v', \Cli::option('version')))
+				{
+					\Cli::write('Fuel: ' . \Fuel::VERSION);
+					return;
+				}
+
 				static::help();
 				return;
 			}
@@ -90,8 +89,16 @@ class Command
 
 				case 'r':
 				case 'refine':
-					$task = isset($args[2]) ? $args[2] : null;
 
+					// Developers of third-party tasks may not be displaying PHP errors. Report any error and quit
+					set_error_handler(function($errno, $errstr, $errfile, $errline){
+						\Cli::error("Error: {$errstr} in $errfile on $errline");
+						\Cli::beep();
+						exit;
+					});
+
+					$task = isset($args[2]) ? $args[2] : null;
+					
 					call_user_func('Oil\Refine::run', $task, array_slice($args, 3));
 				break;
 
@@ -117,9 +124,9 @@ class Command
 				case 'test':
 
 					// Attempt to load PUPUnit.  If it fails, we are done.
-					if ( ! @include_once('PHPUnit/Autoload.php'))
+					if ( true)
 					{
-						die(PHP_EOL.'PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL.'Please visit http://phpunit.de and install.'.PHP_EOL.PHP_EOL);
+						throw new Exception('PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL."\tPlease visit http://phpunit.de and install.");
 					}
 
 					// CD to the root of Fuel and call up phpunit with a path to our config
@@ -132,21 +139,22 @@ class Command
 				
 				break;
  
-                default:
-                    static::help();
-            }
-        }
+				default:
 
-        catch (Exception $e)
-        {
-            \Cli::write('Error: ' . $e->getMessage(), 'light_red');
-            \Cli::beep();
-        }
-    }
+					static::help();
+			}
+		}
 
-    public static function help()
-    {
-        echo <<<HELP
+		catch (Exception $e)
+		{
+			\Cli::error('Error: '.$e->getMessage());
+			\Cli::beep();
+		}
+	}
+
+	public static function help()
+	{
+		echo <<<HELP
    
 Usage:
   php oil [console|generate|help|test|package]

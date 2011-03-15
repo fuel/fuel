@@ -198,13 +198,13 @@ class Migrate
 		// If there is nothing to do, bitch and quit
 		if ($migrations === array())
 		{
-			return true;
+			return false;
 		}
 
 		// Loop through the migrations
-		foreach ($migrations AS $migration)
+		foreach ($migrations as $migration)
 		{
-			logger(Fuel::L_INFO, 'Migrating to: ' . static::$version + $step);
+			logger(Fuel::L_INFO, 'Migrating to: '.static::$version + $step);
 
 			$class = static::$prefix . ucfirst($migration);
 			call_user_func(array(new $class, $method));

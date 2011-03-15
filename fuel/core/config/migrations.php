@@ -31,4 +31,4 @@ return array(
 
 );
 
-/* End of file config/asset.php */
+/* End of file config/migrations.php */

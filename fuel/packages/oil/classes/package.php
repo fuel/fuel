@@ -25,87 +25,87 @@ namespace Oil;
  */
 class Package
 {
-    protected static $protected = array('auth', 'activerecord', 'oil', 'orm');
+	protected static $protected = array('auth', 'activerecord', 'oil', 'orm');
 
-    protected static $git = 'git';
+	protected static $git = 'git';
 
-    public static function install($package = null)
-    {
-        // Make sure something is set
-        if ($package === null)
-        {
-            static::help();
-            return;
-        }
+	public static function install($package = null)
+	{
+		// Make sure something is set
+		if ($package === null)
+		{
+			static::help();
+			return;
+		}
 
-        $config = \Config::load('package');
+		$config = \Config::load('package');
 
-        $version = \Cli::option('version', 'master');
+		$version = \Cli::option('version', 'master');
 
-        // Check to see if this package is already installed
-        if (is_dir(PKGPATH . $package))
-        {
-            throw new Exception('Package "' . $package . '" is already installed.');
-            return;
-        }
+		// Check to see if this package is already installed
+		if (is_dir(PKGPATH . $package))
+		{
+			throw new Exception('Package "' . $package . '" is already installed.');
+			return;
+		}
 
-        foreach ($config['sources'] as $source)
-        {
-            $zip_url = 'http://' . rtrim($source, '/').'/fuel-'.$package.'/zipball/'.$version;
+		foreach ($config['sources'] as $source)
+		{
+			$zip_url = 'http://' . rtrim($source, '/').'/fuel-'.$package.'/zipball/'.$version;
 
-            if ($fp = @fopen($zip_url, 'r'))
-            {
-                // We don't actually need this, just checking the file is there
-                fclose($fp);
+			if ($fp = fopen($zip_url, 'r'))
+			{
+				// We don't actually need this, just checking the file is there
+				fclose($fp);
 
-                // Now, lets get this package
+				// Now, lets get this package
 
-                // If a direct download is requested, or git is unavailable, download it!
-                if (\Cli::option('direct') OR static::_use_git() === false)
-                {
-                    static::_download_package_zip($zip_url, $package, $version);
-                }
+				// If a direct download is requested, or git is unavailable, download it!
+				if (\Cli::option('direct') OR static::_use_git() === false)
+				{
+					static::_download_package_zip($zip_url, $package, $version);
+				}
 
-                // Otherwise, get your clone on baby!
-                else
-                {
-                    static::_clone_package_repo($source, $package, $version);
-                }
-                
-                exit;
-            }
-        }
+				// Otherwise, get your clone on baby!
+				else
+				{
+					static::_clone_package_repo($source, $package, $version);
+				}
+				
+				exit;
+			}
+		}
 
-        throw new Exception('Could not find package "' . $package . '".');
-    }
+		throw new Exception('Could not find package "' . $package . '".');
+	}
 
 
-    public static function uninstall($package)
-    {
-        $package_folder = PKGPATH . $package;
+	public static function uninstall($package)
+	{
+		$package_folder = PKGPATH . $package;
 
-        // Check to see if this package is already installed
-        if (in_array($package, static::$protected))
-        {
-            throw new Exception('Package "' . $package . '" cannot be uninstalled.');
-            return false;
-        }
+		// Check to see if this package is already installed
+		if (in_array($package, static::$protected))
+		{
+			throw new Exception('Package "' . $package . '" cannot be uninstalled.');
+			return false;
+		}
 
-        // Check to see if this package is already installed
-        if ( ! is_dir($package_folder))
-        {
-            throw new Exception('Package "' . $package . '" is not installed.');
-            return false;
-        }
+		// Check to see if this package is already installed
+		if ( ! is_dir($package_folder))
+		{
+			throw new Exception('Package "' . $package . '" is not installed.');
+			return false;
+		}
 
-        \Cli::write('Package "' . $package . '" was uninstalled.', 'yellow');
+		\Cli::write('Package "' . $package . '" was uninstalled.', 'yellow');
 
-        \File::delete_dir($package_folder);
-    }
+		\File::delete_dir($package_folder);
+	}
 
-    public static function help()
-    {
-        $output = <<<HELP
+	public static function help()
+	{
+		$output = <<<HELP
 
 Usage:
   php oil [p|package] <packagename>

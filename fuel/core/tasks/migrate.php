@@ -30,17 +30,34 @@ class Migrate {
 
 	public static function run()
 	{
+		\Config::load('migrations', true);
+		$current_version = \Config::get('migrations.version');
+
 		// -v or --version
 		$version = \Cli::option('v', \Cli::option('version'));
 
+		// version is used as a flag, so show it
+		if ($version === true)
+		{
+			\Cli::write('Currently on migration: ' . $current_version .'.', 'green');
+			return;
+		}
+
+		// Not a lot of point in this
+		if ($version === $current_version)
+		{
+			throw new \Oil\Exception('Migration: ' . $version .' already in use.');
+			return;
+		}
+
 		$run = false;
 
-		// Spoecific version
+		// Specific version
 		if ($version > 0)
 		{
 			if (\Migrate::version($version) === false)
 			{
-				throw new \Oil\Exception('Already on migration: ' . $version .'.');
+				throw new \Oil\Exception('Migration ' . $version .' could not be found.');
 			}
 
 			else
@@ -55,7 +72,7 @@ class Migrate {
 		{
 			if (($result = \Migrate::latest()) === false)
 			{
-				throw new \Oil\Exception('Already on latest migration.');
+				throw new \Oil\Exception("Could not migrate to latest version, still using {$current_version}.");
 			}
 
 			else
@@ -72,29 +89,39 @@ class Migrate {
 		\Config::load('migrations', true);
 		$version = \Config::get('migrations.version') + 1;
 
-		if (\Migrate::version($version))
+		if ($foo = \Migrate::version($version))
 		{
 			static::_update_version($version);
 			\Cli::write('Migrated to version: ' . $version .'.', 'green');
+		}
+		else
+		{
+			throw new \Oil\Exception('Already on latest migration.');
 		}
 	}
 
 	public static function down()
 	{
 		\Config::load('migrations', true);
-		$version = \Config::get('migrations.version') - 1;
+		
+		if (($version = \Config::get('migrations.version') - 1) === 0)
+		{
+			throw new \Oil\Exception('You are already on the first migration.');
+		}
 
 		if (\Migrate::version($version))
 		{
 			static::_update_version($version);
-			\Cli::write('Migrated to version: ' . $version .'.', 'green');
+			\Cli::write("Migrated to version: {$version}.", 'green');
+		}
+		else
+		{
+			throw new \Oil\Exception("Migration {$version} does not exist. How did you get here?");
 		}
 	}
 
 	private static function _update_version($version)
 	{
-		$contents = '';
-		$path = '';
 		if (file_exists($path = APPPATH.'config'.DS.'migrations.php'))
 		{
 			$contents = file_get_contents($path);
@@ -102,6 +129,11 @@ class Migrate {
 		elseif (file_exists($core_path = COREPATH.'config'.DS.'migrations.php'))
 		{
 			$contents = file_get_contents($core_path);
+		}
+		else
+		{
+			throw new Exception('Config file core/config/migrations.php is missing.');
+			exit;
 		}
 
 		$contents = preg_replace("#('version'[ \t]+=>)[ \t]+([0-9]+),#i", "$1 $version,", $contents);

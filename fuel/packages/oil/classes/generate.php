@@ -390,126 +390,126 @@ Documentation:
   http://fuelphp.com/docs/packages/oil/generate.html
 HELP;
 
-        \Cli::write($output);
-    }
+		\Cli::write($output);
+	}
 
 
-    public static function create($filepath, $contents, $type = 'file')
-    {
-        // Final check for stupid characters
-        if (in_array($type, array('controller', 'model')))
-        {
-            $filepath = str_replace(array('_', '-'), '/', $filepath);
-        }
+	public static function create($filepath, $contents, $type = 'file')
+	{
+		// Final check for stupid characters
+		if (in_array($type, array('controller', 'model')))
+		{
+			$filepath = str_replace(array('_', '-'), '/', $filepath);
+		}
 
-        $directory = dirname($filepath);
-        is_dir($directory) or static::$create_folders[] = $directory;
+		$directory = dirname($filepath);
+		is_dir($directory) or static::$create_folders[] = $directory;
 
-        // Check if a file exists then work out how to react
-        if (file_exists($filepath))
-        {
-            // Don't override a file
-            if (\Cli::option('s', \Cli::option('skip')) === true)
-            {
-                // Don't bother trying to make this, carry on camping
-                return;
-            }
+		// Check if a file exists then work out how to react
+		if (file_exists($filepath))
+		{
+			// Don't override a file
+			if (\Cli::option('s', \Cli::option('skip')) === true)
+			{
+				// Don't bother trying to make this, carry on camping
+				return;
+			}
 
-            // If we aren't skipping it, tell em to use -f
-            if (\Cli::option('f', \Cli::option('force')) === null)
-            {
-                throw new Exception($filepath .' already exists, use -f or --force to override.');
-                exit;
-            }
-        }
+			// If we aren't skipping it, tell em to use -f
+			if (\Cli::option('f', \Cli::option('force')) === null)
+			{
+				throw new Exception($filepath .' already exists, use -f or --force to override.');
+				exit;
+			}
+		}
 
-        static::$create_files[] = array(
-            'path' => $filepath,
-            'contents' => $contents,
-            'type' => $type
-        );
-    }
+		static::$create_files[] = array(
+			'path' => $filepath,
+			'contents' => $contents,
+			'type' => $type
+		);
+	}
 
 
-    public static function build()
-    {
-        foreach (static::$create_folders as $folder)
-        {
-            is_dir($folder) or mkdir($folder, 0755, TRUE);
-        }
+	public static function build()
+	{
+		foreach (static::$create_folders as $folder)
+		{
+			is_dir($folder) or mkdir($folder, 0755, TRUE);
+		}
 
-        foreach (static::$create_files as $file)
-        {
-            \Cli::write("\tCreating {$file['type']}: {$file['path']}", 'green');
+		foreach (static::$create_files as $file)
+		{
+			\Cli::write("\tCreating {$file['type']}: {$file['path']}", 'green');
 
-            if ( ! $handle = @fopen($file['path'], 'w+'))
-            {
-                throw new Exception('Cannot open file: '. $file['path']);
-            }
+			if ( ! $handle = @fopen($file['path'], 'w+'))
+			{
+				throw new Exception('Cannot open file: '. $file['path']);
+			}
 
-            $result = @fwrite($handle, $file['contents']);
+			$result = @fwrite($handle, $file['contents']);
 
-            // Write $somecontent to our opened file.
-            if ($result === FALSE)
-            {
-                throw new Exception('Cannot write to file: '. $file['path']);
-            }
+			// Write $somecontent to our opened file.
+			if ($result === FALSE)
+			{
+				throw new Exception('Cannot write to file: '. $file['path']);
+			}
 
-            @fclose($handle);
+			@fclose($handle);
 
-            @chmod($file['path'], 0666);
-        }
+			@chmod($file['path'], 0666);
+		}
 
-        return $result;
-    }
+		return $result;
+	}
 
-    public static function class_name($name)
-    {
-        return str_replace(array(' ', '-'), '_', ucwords(str_replace('_', ' ', $name)));
-    }
+	public static function class_name($name)
+	{
+		return str_replace(array(' ', '-'), '_', ucwords(str_replace('_', ' ', $name)));
+	}
 
-    // Helper methods
+	// Helper methods
 
-    private static function _find_migration_number()
-    {
-        list($last) = explode('_', basename(end(glob(APPPATH .'migrations/*_*.php'))));
+	private static function _find_migration_number()
+	{
+		list($last) = explode('_', basename(end(glob(APPPATH .'migrations/*_*.php'))));
 
-        return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
-    }
+		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
+	}
 
-    private static function _update_current_version($version)
-    {
-        $contents = '';
-        if (file_exists($app_path = APPPATH.'config'.DS.'migrations.php'))
-        {
-            $contents = file_get_contents($app_path);
-        }
-        elseif (file_exists($core_path = COREPATH.'config'.DS.'migrations.php'))
-        {
-            $contents = file_get_contents($core_path);
-        }
-        else
-        {
-            throw new Exception('Config file core/config/migrations.php');
-        }
+	private static function _update_current_version($version)
+	{
+		if (file_exists($app_path = APPPATH.'config'.DS.'migrations.php'))
+		{
+			$contents = file_get_contents($app_path);
+		}
+		elseif (file_exists($core_path = COREPATH.'config'.DS.'migrations.php'))
+		{
+			$contents = file_get_contents($core_path);
+		}
+		else
+		{
+			throw new Exception('Config file core/config/migrations.php');
+			exit;
+		}
 
-        $contents = preg_replace("#('version'[ \t]+=>)[ \t]+([0-9]+),#i", "$1 $version,", $contents);
+		$contents = preg_replace("#('version'[ \t]+=>)[ \t]+([0-9]+),#i", "$1 $version,", $contents);
 
-        static::create($app_path, $contents, 'config');
-    }
+		static::create($app_path, $contents, 'config');
+	}
 
-    private static function _clear_args($actions = array())
-    {
-         foreach ($actions as $key => $action)
-        {
-            if (substr($action, 0, 1) === '-')
-            {
-                unset($actions[$key]);
-            }
-        }
+	private static function _clear_args($actions = array())
+	{
+ 		foreach ($actions as $key => $action)
+		{
+			if (substr($action, 0, 1) === '-')
+			{
+				unset($actions[$key]);
+			}
+		}
 
-        return $actions;
-    }
+		return $actions;
+	}
 }
 
 /* End of file oil/classes/generate.php */
