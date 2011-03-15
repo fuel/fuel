@@ -9,10 +9,13 @@ class Controller_Welcome extends Controller {
         $this->render('welcome/index');
     }
 
-    public function action_404()
-    {
-        // Set a HTTP 404 output header
-        Output::$status = 404;
-        $this->render('welcome/404');
-    }
+	public function action_404()
+	{
+		$messages = array('Aw, crap!', 'Bloody Hell!', 'Uh Oh!', 'Nope, not here.', 'Huh?');
+		$data['title'] = $messages[array_rand($messages)];
+
+		// Set a HTTP 404 output header
+		Output::$status = 404;
+		$this->render('welcome/404', $data);
+	}
 }
