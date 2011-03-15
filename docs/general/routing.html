@@ -57,7 +57,6 @@
 ),</code></pre>
 
 
-
 		<h3>Slightly Advanced Routing</h3>
 
 		<p>You can include any regex into your routes.	The left side is matched against the
@@ -107,13 +106,13 @@ $this->param('id');</code></pre>
 
 		<pre><code>array(
     // Routes GET /blog to /blog/all and POST /blog to /blog/create
-    'blog' => array(array('GET', 'blog/all'), array('POST', 'blog/create')),
+    'blog' => array(array('GET', new Route('blog/all')), array('POST', new Route('blog/create'))),
 ),</code></pre>
 
 		<p>You can use named parameters and regexes within your URL just like normal:</p>
 
-		<pre><code>array(
-    'blog/(:any)' => array(array('GET', 'blog/show/$1')),
+        <pre><code>'routes' => array(
+    'blog/(:any)' => array(array('GET', new Route('blog/show/$1'))),
 ),</code></pre>
 
 

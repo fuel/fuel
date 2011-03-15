@@ -14,21 +14,53 @@
 
 namespace Fuel\Core;
 
-
-
 class Route {
 
-	public static $routes = array();
+	public $segments = array();
 
-	public static function load_routes($reload = false)
+	public $named_params = array();
+
+	public $method_params = array();
+
+	public $path = '';
+	
+	public $module = null;
+
+	public $directory = null;
+
+	public $controller = null;
+
+	public $action = 'index';
+	
+	public $translation = null;
+
+	protected $search = null;
+
+	public function __construct($path, $translation = null)
 	{
-		if (\Config::load('routes', true, $reload))
+		if ($translation === null)
 		{
-			static::$routes = \Config::get('routes');
+			$this->path = $path;
+			$this->translation = $path;
 		}
-		elseif ( ! $reload)
+		else
 		{
-			static::$routes = \Config::get('routes');
+			$this->path = $path;
+			$this->translation = $translation;
+			$this->compile();
+		}
+	}
+
+	protected function compile()
+	{
+		if ($this->path === '_root_')
+		{
+			$this->search = '';
+		}
+		else
+		{
+			$this->search = str_replace(array(':any', ':segment'), array('.+', '[^/]+([^/]*)'), $this->path);
+			$this->search = preg_replace('|:([a-z\_]+)|uD', '(?P<$1>.+)', $this->search);
 		}
 	}
 
@@ -39,77 +71,42 @@ class Route {
 	 * @param	object	The URI object
 	 * @return	array
 	 */
-	public static function parse($uri, $reload = false)
+	public function parse(\Request $request)
 	{
-		static::load_routes($reload);
+		$uri = $request->uri->get();
 
-		// This handles the default route
-		if ($uri->uri == '')
+		if ($uri === '' and $this->path === '_root_')
 		{
-			if ( ! isset(static::$routes['_root_']) || static::$routes['_root_'] == '')
-			{
-				// TODO: write logic to deal with missing default route.
-				return false;
-			}
-			else
-			{
-				return static::parse_match(static::$routes['_root_']);
-			}
+			return $this->matched();
 		}
 
-		foreach (static::$routes as $search => $route)
-		{
-			$result = static::_parse_search($uri, $search, $route);
+		$result = $this->_parse_search($uri);
 
-			if ($result)
-			{
-				return $result;
-			}
+		if ($result)
+		{
+			return $result;
 		}
 
-		return static::parse_match($uri->uri);
-	}
-
-	/**
-	 * Parse module routes
-	 *
-	 * This first adds the given routes to the current loaded routes and then
-	 * reparses the given uri.
-	 *
-	 * @param	string	current module name
-	 * @param	array	new routes
-	 * @param	string	uri to reparse
-	 * @return	array	parsed routing info
-	 */
-	public static function parse_module($module, Array $routes, $current_uri)
-	{
-		// Load module routes and add to router
-		foreach ($routes as $uri => $route)
-		{
-			$prefix = in_array($uri, array('404')) ? '' : $module.'/';
-			static::$routes[$prefix.$uri] = $prefix.$route;
-		}
-
-		// Reroute with module routes
-		$route = static::parse($current_uri);
-		// Remove first segment, that's the module
-		array_shift($route['segments']);
-
-		return $route;
+		return false;
 	}
 
 	/**
 	 * Parses a route match and returns the controller, action and params.
 	 *
-	 * @access	protected
+	 * @access	public
 	 * @param	string	The matched route
 	 * @return	array
 	 */
-	public static function parse_match($route, $named_params = array())
+	public function matched($uri = '', $named_params = array())
 	{
-		$method_params = array();
+		$path = $this->translation;
 
-		$segments = explode('/', $route);
+		if ($uri != '')
+		{
+			$path = preg_replace('@^'.$this->search.'$@uD', $this->translation, $uri);
+		}
+
+		$method_params = array();
 
 		// Clean out all the non-named stuff out of $named_params
 		foreach($named_params as $key => $val)
@@ -120,11 +117,10 @@ class Route {
 			}
 		}
 
-		return array(
-			'uri'			=> $route,
-			'segments'		=> $segments,
-			'named_params'	=> $named_params,
-		);
+		$this->named_params = $named_params;
+		$this->segments = explode('/', trim($path, '/'));
+
+		return $this;
 	}
 
 	/**
@@ -132,25 +128,25 @@ class Route {
 	 *
 	 * @access private
 	 * @param string The URI object
-	 * @param string The search string
-	 * @param string The route to check for routing to
 	 * @return array OR boolean
 	 */
-	private static function _parse_search($uri, $search, $route)
+	private function _parse_search($uri, $route = null)
 	{
-		$search = str_replace(array(':any', ':segment'), array('.+', '[^/]+([^/]*)'), $search);
-		$search = preg_replace('|:([a-z\_]+)|uD', '(?P<$1>.+)', $search);
-
-		if (is_array($route))
+		if ($route === null)
 		{
-			foreach ($route as $r)
+			$route =& $this;
+		}
+
+		if (is_array($route->translation))
+		{
+			foreach ($route->translation as $r)
 			{
 				$verb = $r[0];
-				$forward = $r[1];
 
 				if (\Input::method() == strtoupper($verb))
 				{
-					$result = static::_parse_search($uri, $search, $forward);
+					$r[1]->search = $route->search;
+					$result = $route->_parse_search($uri, $r[1]);
 
 					if ($result)
 					{
@@ -162,11 +158,9 @@ class Route {
 			return false;
 		}
 
-		if (preg_match('@^'.$search.'$@uD', $uri->uri, $params) != false)
+		if (preg_match('@^'.$route->search.'$@uD', $uri, $params) != false)
 		{
-			$route = preg_replace('@^'.$search.'$@uD', $route, $uri->uri);
-
-			return static::parse_match($route, $params);
+			return $route->matched($uri, $params);
 		}
 		else
 		{

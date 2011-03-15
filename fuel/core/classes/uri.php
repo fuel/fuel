@@ -116,12 +116,7 @@ class Uri {
 	 */
 	public static function segment($segment, $default = null)
 	{
-		if (isset(\Request::active()->uri->segments[$segment - 1]))
-		{
-			return \Request::active()->uri->segments[$segment - 1];
-		}
-
-		return $default;
+		return \Request::active()->uri->get_segment($segment, $default);
 	}
 
 	/**
@@ -131,7 +126,7 @@ class Uri {
 	 */
 	public static function segments()
 	{
-		return \Request::active()->uri->segments;
+		return \Request::active()->uri->get_segments();
 	}
 
 	/**
@@ -141,7 +136,7 @@ class Uri {
 	 */
 	public static function string()
 	{
-		return \Request::active()->uri->uri;
+		return \Request::active()->uri->get();
 	}
 
 	/**
@@ -227,9 +222,29 @@ class Uri {
 		$this->segments = explode('/', $this->uri);
 	}
 
-	public function __toString()
+	public function get()
 	{
 		return $this->uri;
+	}
+
+	public function get_segments()
+	{
+		return $this->segments;
+	}
+
+	public function get_segment($segment, $default = null)
+	{
+		if (isset($this->segments[$segment - 1]))
+		{
+			return $this->segments[$segment - 1];
+		}
+
+		return $default;
+	}
+
+	public function __toString()
+	{
+		return $this->get();
 	}
 }
 
