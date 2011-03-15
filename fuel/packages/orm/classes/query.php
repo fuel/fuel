@@ -103,7 +103,7 @@ class Query {
 		{
 			if (empty($this->select))
 			{
-				$fields = call_user_func($this->model.'::properties');
+				$fields = array_keys(call_user_func($this->model.'::properties'));
 
 				if (empty($fields))
 				{

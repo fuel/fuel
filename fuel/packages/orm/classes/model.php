@@ -57,17 +57,6 @@ class Model {
 	}
 
 	/**
-	 * First time the class is called staticly
-	 *
-	 * @return string
-	 */
-	public static function _init()
-	{
-		// Define the properties we'll be working with
-		static::properties();
-	}
-
-	/**
 	 * Get the table name for this class
 	 *
 	 * @return string
@@ -136,7 +125,7 @@ class Model {
 		// If already determined
 		if (array_key_exists($class, static::$_properties_cached))
 		{
-			return array_keys(static::$_properties_cached[$class]);
+			return static::$_properties_cached[$class];
 		}
 
 		// Try to grab the properties from the class...
@@ -162,7 +151,7 @@ class Model {
 		// cache the properties for next usage
 		static::$_properties_cached[$class] = $properties;
 
-		return array_keys(static::$_properties_cached[$class]);
+		return static::$_properties_cached[$class];
 	}
 
 	/**
@@ -284,7 +273,7 @@ class Model {
 	 */
 	public function & __get($property)
 	{
-		if (in_array($property, static::properties()))
+		if (array_key_exists($property, static::properties()))
 		{
 			return $this->_data[$property];
 		}
@@ -315,7 +304,7 @@ class Model {
 			throw new Exception('Object is frozen, no changes allowed.');
 		}
 
-		if (in_array($property, static::properties()))
+		if (array_key_exists($property, static::properties()))
 		{
 			$this->_data[$property] = $value;
 		}
@@ -353,8 +342,8 @@ class Model {
 		// Set all current values
 		$query = Query::factory(get_called_class());
 		$primary_key = static::primary_key();
-		$properties  = static::properties();
-		foreach (static::properties() as $p)
+		$properties  = array_keys(static::properties());
+		foreach ($properties as $p)
 		{
 			if ( ! (in_array($p, $primary_key) and is_null($this->{$p})))
 			{
@@ -403,7 +392,7 @@ class Model {
 		// Create the query and limit to primary key(s)
 		$query       = Query::factory(get_called_class())->limit(1);
 		$primary_key = static::primary_key();
-		$properties  = static::properties();
+		$properties  = array_keys(static::properties());
 		foreach ($primary_key as $pk)
 		{
 			$query->where($pk, '=', $this->{$pk});
@@ -486,7 +475,7 @@ class Model {
 	 */
 	public function is_changed($property = null)
 	{
-		$property = (array) $property ?: static::properties();
+		$property = (array) $property ?: array_keys(static::properties());
 		foreach ($property as $p)
 		{
 			if ($this->{$p} !== $this->_original[$p])
