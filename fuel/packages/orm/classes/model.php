@@ -27,9 +27,12 @@ class Model {
 	// protected static $_table_name;
 
 	/**
-	 * @var	string	relationships
+	 * @var	array	relationship properties
 	 */
-	// protected static $_relations;
+	// protected static $_hasone;
+	// protected static $_belongsto;
+	// protected static $_hasmany;
+	// protected static $_manymany;
 
 	/**
 	 * @var	array	name or names of the primary keys
@@ -45,6 +48,11 @@ class Model {
 	 * @var	array	cached properties
 	 */
 	protected static $_properties_cached = array();
+
+	/**
+	 * @var	string	relationships
+	 */
+	protected static $_relations_cached = array();
 
 	/**
 	 * @var	array	array of fetched objects
@@ -157,13 +165,69 @@ class Model {
 	/**
 	 * Get the class's relations
 	 *
+	 * @param  string
 	 * @return array
 	 */
-	public static function relations($specific = false)
+	public static function relations($specific = null)
 	{
-		// Should parse the $_relations array into an array of relation objects
+		$class = get_called_class();
 
-		return false;
+		if ( ! array_key_exists($class, static::$_relations_cached))
+		{
+			$relations = array();
+			if (property_exists($class, '_hasone'))
+			{
+				foreach (static::$_hasone as $key => $settings)
+				{
+					$name = is_string($settings) ? $settings : $key;
+					$settings = is_array($settings) ? $settings : array();
+					$relations[$name] = new HasOne($class, $name, $settings);
+				}
+			}
+			if (property_exists($class, '_belongsto'))
+			{
+				foreach (static::$_belongsto as $key => $settings)
+				{
+					$name = is_string($settings) ? $settings : $key;
+					$settings = is_array($settings) ? $settings : array();
+					$relations[$name] = new BelongsTo($class, $name, $settings);
+				}
+			}
+			if (property_exists($class, '_hasmany'))
+			{
+				foreach (static::$_hasmany as $key => $settings)
+				{
+					$name = is_string($settings) ? $settings : $key;
+					$settings = is_array($settings) ? $settings : array();
+					$relations[$name] = new HasMany($class, $name, $settings);
+				}
+			}
+			if (property_exists($class, '_manymany'))
+			{
+				foreach (static::$_manymany as $key => $settings)
+				{
+					$name = is_string($settings) ? $settings : $key;
+					$settings = is_array($settings) ? $settings : array();
+					$relations[$name] = new ManyMany($class, $name, $settings);
+				}
+			}
+
+			static::$_relations_cached[$class] = $relations;
+		}
+
+		if ($specific === null)
+		{
+			return static::$_relations_cached[$class];
+		}
+		else
+		{
+			if ( ! array_key_exists($specific, static::$_relations_cached[$class]))
+			{
+				return false;
+			}
+
+			return static::$_relations_cached[$class][$specific];
+		}
 	}
 
 	/**
@@ -190,7 +254,7 @@ class Model {
 
 			foreach(static::primary_key() as $pk)
 			{
-				$query->order(current(static::primary_key()), $id == 'first' ? 'ASC' : 'DESC');
+				$query->order($pk, $id == 'first' ? 'ASC' : 'DESC');
 			}
 
 			return reset($query->find());

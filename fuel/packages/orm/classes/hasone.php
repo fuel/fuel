@@ -17,7 +17,7 @@ namespace Orm;
 class HasOne implements Relation {
 
 	/**
-	 * @var	Model	reference to the parent model
+	 * @var	Model	classname of the parent model
 	 */
 	protected $model_from;
 
@@ -44,13 +44,13 @@ class HasOne implements Relation {
 		$this->key_to	= array_key_exists('key_to', $config) ? (array) $config['key_to'] : (array) \Inflector::foreign_key($this->model_to);
 	}
 
-	public function get()
+	public function get(Model $from)
 	{
-		$query = $this->model_from->find();
+		$query = call_user_func(array($this->model_from, 'find'));
 		reset($this->key_to);
 		foreach ($this->key_from as $key)
 		{
-			$query->where(current($this->key_to), $this->model_from->{$key});
+			$query->where(current($this->key_to), $from->{$key});
 			next($this->key_to);
 		}
 		return $query->find();

@@ -27,9 +27,10 @@ interface Relation {
 	/**
 	 * Should get the objects related to the given object by this relation
 	 *
+	 * @param	Model
 	 * @return	object|array
 	 */
-	public function get();
+	public function get(Model $from);
 
 	/**
 	 * Should get the properties as associative array with alias => property, the table alias is
