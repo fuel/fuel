@@ -275,6 +275,11 @@ class Model {
 	{
 		if (array_key_exists($property, static::properties()))
 		{
+			if ( ! array_key_exists($property, $this->_data))
+			{
+				$this->_data[$property] = null;
+			}
+
 			return $this->_data[$property];
 		}
 		elseif (isset(static::$_relations) and array_key_exists($property, static::$_relations))
@@ -304,6 +309,10 @@ class Model {
 			throw new Exception('Object is frozen, no changes allowed.');
 		}
 
+		if (in_array($property, static::primary_key()) and $this->{$property} !== null)
+		{
+			throw new Exception('Primary key cannot be changed.');
+		}
 		if (array_key_exists($property, static::properties()))
 		{
 			$this->_data[$property] = $value;
