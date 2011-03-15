@@ -51,7 +51,7 @@ class Model {
 	 */
 	protected static $_cached_objects = array();
 
-	public static function factory($data, $new = true)
+	public static function factory($data = array(), $new = true)
 	{
 		return new static($data, $new);
 	}
@@ -456,6 +456,12 @@ class Model {
 		if ( ! $query->delete())
 		{
 			return false;
+		}
+
+		if (array_key_exists(get_called_class(), static::$_cached_objects)
+			and array_key_exists(static::implode_pk($this), static::$_cached_objects[get_called_class()]))
+		{
+			unset(static::$_cached_objects[get_called_class()][static::implode_pk($this)]);
 		}
 
 		return $this->_original;
