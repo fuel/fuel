@@ -19,16 +19,17 @@ interface Relation {
 	/**
 	 * Configures the relationship
 	 *
-	 * @param	Model	the model that initiates the relationship
-	 * @param	array	config values like model_to classname, key_from & key_to
+	 * @param  string  the model that initiates the relationship
+	 * @param  string  name of the relationship
+	 * @param  array   config values like model_to classname, key_from & key_to
 	 */
-	public function __construct(Model $from, $name, array $config);
+	public function __construct($from, $name, array $config);
 
 	/**
 	 * Should get the objects related to the given object by this relation
 	 *
-	 * @param	Model
-	 * @return	object|array
+	 * @param   Model
+	 * @return  object|array
 	 */
 	public function get(Model $from);
 
@@ -36,16 +37,16 @@ interface Relation {
 	 * Should get the properties as associative array with alias => property, the table alias is
 	 * given to be included with the property
 	 *
-	 * @param	string
-	 * @return	array
+	 * @param   string
+	 * @return  array
 	 */
 	public function select($table);
 
 	/**
 	 * Returns tables to join and fields to select with optional additional settings like order/where
 	 *
-	 * @param	string	alias for the table
-	 * @return	array
+	 * @param   string  alias for the table
+	 * @return  array
 	 */
 	public function join($alias);
 }

@@ -22,57 +22,57 @@ class Query {
 	}
 
 	/**
-	 * @var	string	classname of the model
+	 * @var  string  classname of the model
 	 */
 	protected $model;
 
 	/**
-	 * @var	string	table alias
+	 * @var  string  table alias
 	 */
 	protected $alias = 't0';
 
 	/**
-	 * @var	array	relations to join on
+	 * @var  array  relations to join on
 	 */
 	protected $relations = array();
 
 	/**
-	 * @var	array	fields to select
+	 * @var  array  fields to select
 	 */
 	protected $select = array();
 
 	/**
-	 * @var	int		max number of returned rows
+	 * @var  int  max number of returned rows
 	 */
 	protected $limit;
 
 	/**
-	 * @var	int		offset
+	 * @var  int  offset
 	 */
 	protected $offset;
 
 	/**
-	 * @var	array	where conditions
+	 * @var  array  where conditions
 	 */
 	protected $where = array();
 
 	/**
-	 * @var	array	or where conditions
+	 * @var  array  or where conditions
 	 */
 	protected $or_where = array();
 
 	/**
-	 * @var	array	order by clauses
+	 * @var  array  order by clauses
 	 */
 	protected $order_by = array();
 
 	/**
-	 * @var	array	group by clauses
+	 * @var  array  group by clauses
 	 */
 	protected $group_by = array();
 
 	/**
-	 * @var	array	values for insert or update
+	 * @var  array  values for insert or update
 	 */
 	protected $values = array();
 
@@ -93,7 +93,7 @@ class Query {
 	 * Select which properties are included, each as its own param. Or don't give input to retrieve
 	 * the current selection.
 	 *
-	 * @return void|array
+	 * @return  void|array
 	 */
 	public function select()
 	{
@@ -127,14 +127,14 @@ class Query {
 		foreach ($fields as $val)
 		{
 			strpos($val, '.') === false ? 't0.'.$val : $val;
-			$this->select[$this->alias.'_c'.$i++] = $val;
+			$this->select[$this->alias.'_c'.$i++] = $this->alias.'.'.$val;
 		}
 	}
 
 	/**
 	 * Set the limit
 	 *
-	 * @param	int
+	 * @param  int
 	 */
 	public function limit($limit)
 	{
@@ -146,7 +146,7 @@ class Query {
 	/**
 	 * Set the offset
 	 *
-	 * @param	int
+	 * @param  int
 	 */
 	public function offset($offset)
 	{
@@ -171,9 +171,9 @@ class Query {
 	/**
 	 * Set or_where condition
 	 *
-	 * @param	string	property
-	 * @param	string	comparison type (can be omitted)
-	 * @param	string	comparison value
+	 * @param  string  property
+	 * @param  string  comparison type (can be omitted)
+	 * @param  string  comparison value
 	 */
 	public function or_where()
 	{
@@ -184,8 +184,8 @@ class Query {
 	/**
 	 * Does the work for where() and or_where()
 	 *
-	 * @param	array
-	 * @param	string
+	 * @param  array
+	 * @param  string
 	 */
 	public function _where($condition, $type = 'where')
 	{
@@ -217,8 +217,8 @@ class Query {
 	/**
 	 * Set the order_by
 	 *
-	 * @param	string|array
-	 * @param	string|null
+	 * @param  string|array
+	 * @param  string|null
 	 */
 	public function order($property, $direction = 'ASC')
 	{
@@ -249,7 +249,7 @@ class Query {
 	/**
 	 * Set a relation to include
 	 *
-	 * @param	string
+	 * @param  string
 	 */
 	public function related($relation)
 	{
@@ -262,7 +262,11 @@ class Query {
 			return;
 		}
 
-		$this->relations[] = $relation;
+		$rel = call_user_func(array($this->model, 'relations'), $relation);
+		if ( ! empty($rel))
+		{
+			$this->relations[$relation] = $rel;
+		}
 
 		return $this;
 	}
@@ -270,8 +274,8 @@ class Query {
 	/**
 	 * Set any properties for insert or update
 	 *
-	 * @param	string|array
-	 * @param	mixed
+	 * @param  string|array
+	 * @param  mixed
 	 */
 	public function set($property, $value = null)
 	{
@@ -292,9 +296,9 @@ class Query {
 	/**
 	 * Build a select, delete or update query
 	 *
-	 * @param	Database_Query
-	 * @param	string|select	either array for select query or string update, delete, insert
-	 * @return	array			with keys query and relations
+	 * @param   Database_Query
+	 * @param   string|select  either array for select query or string update, delete, insert
+	 * @return  array          with keys query and relations
 	 */
 	public function build_query($query, $columns = array())
 	{
@@ -315,7 +319,7 @@ class Query {
 		{
 			foreach ($this->order_by as $property => $direction)
 			{
-				if (strpos($property, '.') === false or strpos($property, $this->table_name.'.') === 0)
+				if (strpos($property, '.') === false or strpos($property, $this->alias.'.') === 0)
 				{
 					$query->order_by($property, $direction);
 					unset($this->order_by[$property]);
@@ -333,7 +337,7 @@ class Query {
 		{
 			foreach ($this->where as $key => $conditional)
 			{
-				if (strpos($conditional[0], '.') === false or strpos($conditional[0], $this->table_name.'.') === 0)
+				if (strpos($conditional[0], '.') === false or strpos($conditional[0], $this->alias.'.') === 0)
 				{
 					$query->where($conditional[0], $conditional[1], $conditional[2]);
 					unset($this->where[$key]);
@@ -345,7 +349,7 @@ class Query {
 		{
 			foreach ($this->or_where as $key => $conditional)
 			{
-				if (strpos($conditional[0], '.') === false or strpos($conditional[0], $this->table_name.'.') === 0)
+				if (strpos($conditional[0], '.') === false or strpos($conditional[0], $this->alias.'.') === 0)
 				{
 					$query->or_where($conditional[0], $conditional[1], $conditional[2]);
 					unset($this->or_where[$key]);
@@ -398,7 +402,7 @@ class Query {
 					$join_query = $query->join($j['table'], $j['type']);
 					foreach	($j['on'] as $on)
 					{
-						$join_query->on($on['on'][0], $on['on'][1], $on['on'][2]);
+						$join_query->on($on[0], $on[1], $on[2]);
 					}
 				}
 			}
@@ -407,7 +411,7 @@ class Query {
 				$join_query = $query->join($join['table'], $join['type']);
 				foreach	($join['on'] as $on)
 				{
-					$join_query->on($on['on'][0], $on['on'][1], $on['on'][2]);
+					$join_query->on($on[0], $on[1], $on[2]);
 				}
 			}
 		}
@@ -445,7 +449,7 @@ class Query {
 	/**
 	 * Determines whether a subquery is needed, is the case if there was a limit/offset on a join
 	 *
-	 * @return	bool
+	 * @return  bool
 	 */
 	public function use_subquery()
 	{
@@ -455,11 +459,11 @@ class Query {
 	/**
 	 * Hydrate model instances with retrieved data
 	 *
-	 * @param	array	row from the database
-	 * @param	array	relations to be expected
-	 * @param	array	current result array (by reference)
-	 * @param	string	model classname to hydrate
-	 * @param	array	columns to use
+	 * @param  array   row from the database
+	 * @param  array   relations to be expected
+	 * @param  array   current result array (by reference)
+	 * @param  string  model classname to hydrate
+	 * @param  array   columns to use
 	 */
 	public function hydrate($row, $relations, &$result, $model = null, $select = null)
 	{
@@ -468,7 +472,7 @@ class Query {
 		$obj = array();
 		foreach ($select as $s)
 		{
-			$obj[$s[0]] = $row[$s[1]];
+			$obj[preg_replace('/^t[0-9]+\\./uiD', '', $s[0])] = $row[$s[1]];
 		}
 
 		if ( ! in_array($pk = $model::implode_pk($obj), $result))
@@ -496,7 +500,7 @@ class Query {
 	/**
 	 * Build the query and return it hydrated
 	 *
-	 * @return	Model
+	 * @return  Model
 	 */
 	public function find()
 	{
@@ -507,7 +511,7 @@ class Query {
 		$query = call_user_func_array('DB::select', $this->use_subquery() ? array(array_keys($columns)) : $columns);
 
 		// Set from table
-		$query->from(call_user_func($this->model.'::table'));
+		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
 
 		// Build the query further
 		$tmp       = $this->build_query($query, $columns);
@@ -528,8 +532,8 @@ class Query {
 	/**
 	 * Count the result of a query
 	 *
-	 * @param	bool	false for random selected column or specific column, only works for main model currently
-	 * @return	int		number of rows OR false
+	 * @param   bool  false for random selected column or specific column, only works for main model currently
+	 * @return  int   number of rows OR false
 	 */
 	public function count($distinct = false)
 	{
@@ -540,7 +544,7 @@ class Query {
 		$query = call_user_func_array('DB::select', $columns);
 
 		// Set from table
-		$query->from(call_user_func($this->model.'::table'));
+		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
 
 		$tmp   = $this->build_query($query, $columns);
 		$query = $tmp['query'];
@@ -558,8 +562,8 @@ class Query {
 	/**
 	 * Get the maximum of a column for the current query
 	 *
-	 * @param	string	column
-	 * @return	mixed	maximum value OR false
+	 * @param   string  column
+	 * @return  mixed   maximum value OR false
 	 */
 	public function max($column)
 	{
@@ -570,7 +574,7 @@ class Query {
 		$query = call_user_func_array('DB::select', $columns);
 
 		// Set from table
-		$query->from(call_user_func($this->model.'::table'));
+		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
 
 		$tmp   = $this->build_query($query, $columns);
 		$query = $tmp['query'];
@@ -588,8 +592,8 @@ class Query {
 	/**
 	 * Get the minimum of a column for the current query
 	 *
-	 * @param	string	column
-	 * @return	mixed	minimum value OR false
+	 * @param   string  column
+	 * @return  mixed   minimum value OR false
 	 */
 	public function min($column)
 	{
@@ -600,7 +604,7 @@ class Query {
 		$query = call_user_func_array('DB::select', $columns);
 
 		// Set from table
-		$query->from(call_user_func($this->model.'::table'));
+		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
 
 		$tmp   = $this->build_query($query, $columns);
 		$query = $tmp['query'];
@@ -618,8 +622,8 @@ class Query {
 	/**
 	 * Run INSERT with the current values
 	 *
-	 * @return	mixed	last inserted ID or false on failure
-	 * @todo	work with relations
+	 * @return  mixed  last inserted ID or false on failure
+	 * @todo    work with relations
 	 */
 	public function insert()
 	{
@@ -639,8 +643,8 @@ class Query {
 	/**
 	 * Run UPDATE with the current values
 	 *
-	 * @return	bool	success of update operation
-	 * @todo	work with relations
+	 * @return  bool  success of update operation
+	 * @todo    work with relations
 	 */
 	public function update()
 	{
@@ -666,8 +670,8 @@ class Query {
 	/**
 	 * Run DELETE with the current values
 	 *
-	 * @return	bool	success of delete operation
-	 * @todo	cascade option and for relations and make sure they're removed
+	 * @return  bool  success of delete operation
+	 * @todo    cascade option and for relations and make sure they're removed
 	 */
 	public function delete()
 	{

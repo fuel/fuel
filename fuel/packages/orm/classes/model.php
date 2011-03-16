@@ -22,12 +22,12 @@ class Model {
 	 * --------------------------------------------------------------------------- */
 
 	/**
-	 * @var	string	table name to overwrite assumption
+	 * @var  string  table name to overwrite assumption
 	 */
 	// protected static $_table_name;
 
 	/**
-	 * @var	array	relationship properties
+	 * @var  array  relationship properties
 	 */
 	// protected static $_hasone;
 	// protected static $_belongsto;
@@ -35,27 +35,27 @@ class Model {
 	// protected static $_manymany;
 
 	/**
-	 * @var	array	name or names of the primary keys
+	 * @var  array  name or names of the primary keys
 	 */
 	protected static $_primary_key = array('id');
 
 	/**
-	 * @var	array	cached tables
+	 * @var  array  cached tables
 	 */
 	protected static $_table_names_cached = array();
 
 	/**
-	 * @var	array	cached properties
+	 * @var  array  cached properties
 	 */
 	protected static $_properties_cached = array();
 
 	/**
-	 * @var	string	relationships
+	 * @var  string  relationships
 	 */
 	protected static $_relations_cached = array();
 
 	/**
-	 * @var	array	array of fetched objects
+	 * @var  array  array of fetched objects
 	 */
 	protected static $_cached_objects = array();
 
@@ -67,7 +67,7 @@ class Model {
 	/**
 	 * Get the table name for this class
 	 *
-	 * @return string
+	 * @return  string
 	 */
 	public static function table()
 	{
@@ -91,7 +91,7 @@ class Model {
 	/**
 	 * Get the primary key(s) of this class
 	 *
-	 * @return array
+	 * @return  array
 	 */
 	public static function primary_key()
 	{
@@ -101,8 +101,8 @@ class Model {
 	/**
 	 * Implode the primary keys within the data into a string
 	 *
-	 * @param	array
-	 * @return	string
+	 * @param   array
+	 * @return  string
 	 */
 	public static function implode_pk($data)
 	{
@@ -124,7 +124,7 @@ class Model {
 	/**
 	 * Get the class's properties
 	 *
-	 * @return array
+	 * @return  array
 	 */
 	public static function properties()
 	{
@@ -165,10 +165,10 @@ class Model {
 	/**
 	 * Get the class's relations
 	 *
-	 * @param  string
-	 * @return array
+	 * @param   string
+	 * @return  array
 	 */
-	public static function relations($specific = null)
+	public static function relations($specific = false)
 	{
 		$class = get_called_class();
 
@@ -215,7 +215,7 @@ class Model {
 			static::$_relations_cached[$class] = $relations;
 		}
 
-		if ($specific === null)
+		if ($specific === false)
 		{
 			return static::$_relations_cached[$class];
 		}
@@ -233,9 +233,9 @@ class Model {
 	/**
 	 * Find one or more entries
 	 *
-	 * @param	mixed
-	 * @param	array
-	 * @return	object|array
+	 * @param   mixed
+	 * @param   array
+	 * @return  object|array
 	 */
 	public static function find($id = null, array $options = array())
 	{
@@ -265,7 +265,7 @@ class Model {
 			$id = (array) $id;
 			foreach (static::primary_key() as $pk)
 			{
-				$where[] = array($pk, '=', current($id));
+				$where[] = array('t0.'.$pk, '=', current($id));
 				$cache_pk[$pk] = current($id);
 				next($id);
 			}
@@ -296,35 +296,35 @@ class Model {
 	 * --------------------------------------------------------------------------- */
 
 	/**
-	 * @var	bool	keeps track of whether it's a new object
+	 * @var  bool  keeps track of whether it's a new object
 	 */
 	private $_is_new = true;
 
 	/**
-	 * @var	bool	keeps to object frozen
+	 * @var  bool  keeps to object frozen
 	 */
 	private $_frozen = false;
 
 	/**
-	 * @var	array	keeps the current state of the object
+	 * @var  array  keeps the current state of the object
 	 */
 	private $_data = array();
 
 	/**
-	 * @var	array	keeps a copy of the object as it was retrieved from the database
+	 * @var  array  keeps a copy of the object as it was retrieved from the database
 	 */
 	private $_original = array();
 
 	/**
-	 * @var	array
+	 * @var  array
 	 */
 	private $_loaded_relations = array();
 
 	/**
 	 * Constructor
 	 *
-	 * @param	array
-	 * @param	bool
+	 * @param  array
+	 * @param  bool
 	 */
 	protected function __construct(array $data, $new = true)
 	{
@@ -344,8 +344,8 @@ class Model {
 	/**
 	 * Fetch a property or relation
 	 *
-	 * @param	string
-	 * @return	mixed
+	 * @param   string
+	 * @return  mixed
 	 */
 	public function & __get($property)
 	{
@@ -362,7 +362,7 @@ class Model {
 		{
 			if ( ! array_key_exists($property, $this->_loaded_relations))
 			{
-				$this->_loaded_relations[$property] = $rel->get();
+				$this->_loaded_relations[$property] = $rel->get($this);
 			}
 			return $this->_loaded_relations[$property];
 		}
@@ -375,8 +375,8 @@ class Model {
 	/**
 	 * Set a property or relation
 	 *
-	 * @param	string
-	 * @param	mixed
+	 * @param  string
+	 * @param  mixed
 	 */
 	public function __set($property, $value)
 	{
@@ -555,8 +555,8 @@ class Model {
 	/**
 	 * Compare current state with the retrieved state
 	 *
-	 * @param	string|array $property
-	 * @return	bool
+	 * @param   string|array $property
+	 * @return  bool
 	 */
 	public function is_changed($property = null)
 	{
