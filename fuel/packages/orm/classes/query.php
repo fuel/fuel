@@ -373,9 +373,9 @@ class Query {
 			$columns = $columns;
 			foreach ($relations as $properties)
 			{
-				foreach ($properties[1] as $p => $a)
+				foreach ($properties[1] as $p)
 				{
-					$columns[] = array($table.'.'.$a, $p);
+					$columns[] = $p;
 				}
 			}
 
@@ -386,9 +386,9 @@ class Query {
 		{
 			foreach ($relations as $properties)
 			{
-				foreach ($properties[1] as $p => $a)
+				foreach ($properties[1] as $p)
 				{
-					$query->select(array($table.'.'.$a, $p));
+					$query->select($p);
 				}
 			}
 		}
@@ -475,24 +475,29 @@ class Query {
 			$obj[preg_replace('/^t[0-9]+\\./uiD', '', $s[0])] = $row[$s[1]];
 		}
 
+		foreach ($model::primary_key() as $pk)
+		{
+			if (is_null($obj[$pk]))
+			{
+				return false;
+			}
+		}
+
 		if ( ! in_array($pk = $model::implode_pk($obj), $result))
 		{
 			$obj = $model::factory($obj, false);
 			$result[$pk] = $obj;
 		}
 
+		$rel_objs = $obj->_relate();
 		foreach ($relations as $rel_name => $rel)
 		{
+			! array_key_exists($rel_name, $rel_objs) and $rel_objs[$rel_name] = array();
+
 			list($rel, $rel_select) = $rel;
-			if ($rel instanceof HasMany or $rel instanceof ManyMany)
-			{
-				$this->hydrate($row, array(), $obj->{$rel_name}, $rel->model_to, $rel_select);
-			}
-			else
-			{
-				$obj->{$rel_name} = $this->hydrate($row, array(), array(), $rel->model_to, $rel_select);
-			}
+			$this->hydrate($row, array(), $rel_objs[$rel_name], $rel->model_to, $rel_select);
 		}
+		$obj->_relate($rel_objs);
 
 		return $obj;
 	}

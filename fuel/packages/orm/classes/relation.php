@@ -14,7 +14,27 @@
 
 namespace Orm;
 
-interface Relation {
+abstract class Relation {
+
+	/**
+	 * @var  Model  classname of the parent model
+	 */
+	protected $model_from;
+
+	/**
+	 * @var  string  classname of the related model
+	 */
+	protected $model_to;
+
+	/**
+	 * @var  string  primary key of parent model
+	 */
+	protected $key_from = array('id');
+
+	/**
+	 * @var  string  foreign key in related model
+	 */
+	protected $key_to = array();
 
 	/**
 	 * Configures the relationship
@@ -23,7 +43,7 @@ interface Relation {
 	 * @param  string  name of the relationship
 	 * @param  array   config values like model_to classname, key_from & key_to
 	 */
-	public function __construct($from, $name, array $config);
+	abstract public function __construct($from, $name, array $config);
 
 	/**
 	 * Should get the objects related to the given object by this relation
@@ -31,7 +51,7 @@ interface Relation {
 	 * @param   Model
 	 * @return  object|array
 	 */
-	public function get(Model $from);
+	abstract public function get(Model $from);
 
 	/**
 	 * Should get the properties as associative array with alias => property, the table alias is
@@ -40,7 +60,7 @@ interface Relation {
 	 * @param   string
 	 * @return  array
 	 */
-	public function select($table);
+	abstract public function select($table);
 
 	/**
 	 * Returns tables to join and fields to select with optional additional settings like order/where
@@ -48,7 +68,22 @@ interface Relation {
 	 * @param   string  alias for the table
 	 * @return  array
 	 */
-	public function join($alias);
+	abstract public function join($alias);
+
+	/**
+	 * Allow outside access to protected properties
+	 *
+	 * @param  $property
+	 */
+	public function __get($property)
+	{
+		if ( ! property_exists($this, $property))
+		{
+			throw new Exception('Invalid relation property.');
+		}
+
+		return $this->{$property};
+	}
 }
 
 /* End of file relation.php */

@@ -14,27 +14,7 @@
 
 namespace Orm;
 
-class HasOne implements Relation {
-
-	/**
-	 * @var  Model  classname of the parent model
-	 */
-	protected $model_from;
-
-	/**
-	 * @var  string  classname of the related model
-	 */
-	protected $model_to;
-
-	/**
-	 * @var  string  primary key of parent model
-	 */
-	protected $key_from = array('id');
-
-	/**
-	 * @var  string  foreign key in related model
-	 */
-	protected $key_to = array();
+class HasOne extends Relation {
 
 	public function __construct($from, $name, array $config)
 	{
@@ -63,7 +43,7 @@ class HasOne implements Relation {
 		$properties = array();
 		foreach ($props as $pk => $pv)
 		{
-			$properties[$table.'_c'.$i] = $pk;
+			$properties[] = array($table.'.'.$pk, $table.'_c'.$i);
 			$i++;
 		}
 		return $properties;

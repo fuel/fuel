@@ -341,6 +341,18 @@ class Model {
 		}
 	}
 
+	public function _relate($rels = null)
+	{
+		if (is_null($rels))
+		{
+			return $this->_loaded_relations;
+		}
+		else
+		{
+			$this->_loaded_relations = $rels;
+		}
+	}
+
 	/**
 	 * Fetch a property or relation
 	 *
