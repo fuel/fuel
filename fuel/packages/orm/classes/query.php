@@ -485,14 +485,32 @@ class Query {
 			}
 		}
 
-		if (is_array($result) and ! array_key_exists($pk = $model::implode_pk($obj), $result))
+		$cached_obj = $model::cached_object($obj);
+		$pk         = $model::implode_pk($obj);
+		if (is_array($result) and ! array_key_exists($pk, $result))
 		{
-			$obj = $model::factory($obj, false);
+			if ($cached_obj)
+			{
+				$cached_obj->_update_original($obj);
+				$obj = $cached_obj;
+			}
+			else
+			{
+				$obj = $model::factory($obj, false);
+			}
 			$result[$pk] = $obj;
 		}
 		elseif ( ! is_array($result) and empty($result))
 		{
-			$obj = $model::factory($obj, false);
+			if ($cached_obj)
+			{
+				$cached_obj->_update_original($obj);
+				$obj = $cached_obj;
+			}
+			else
+			{
+				$obj = $model::factory($obj, false);
+			}
 			$result = $obj;
 		}
 		else

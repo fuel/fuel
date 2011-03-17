@@ -89,6 +89,21 @@ class Model {
 	}
 
 	/**
+	 * Attempt to retrieve an earlier loaded object
+	 *
+	 * @param   array|Model  $obj
+	 * @param   null|string  $class
+	 * @return  Model|false
+	 */
+	public static function cached_object($obj, $class = null)
+	{
+		$class = $class ?: get_called_class();
+		$id    = static::implode_pk($obj);
+
+		return ( ! empty(static::$_cached_objects[$class][$id])) ? static::$_cached_objects[$class][$id] : false;
+	}
+
+	/**
 	 * Get the primary key(s) of this class
 	 *
 	 * @return  array
@@ -331,7 +346,7 @@ class Model {
 	 */
 	protected function __construct(array $data, $new = true)
 	{
-		$this->_original = $data;
+		$this->_update_original($data);
 		foreach ($data as $key => $val)
 		{
 			$this->{$key} = $val;
@@ -344,6 +359,26 @@ class Model {
 		}
 	}
 
+	/**
+	 * Update the original setting for this object
+	 *
+	 * @param  array|null  $original
+	 */
+	public function _update_original($original = null)
+	{
+		$original = is_null($original) ? $this->_data : $original;
+		foreach ($original as $key => $val)
+		{
+			$this->_original[$key] = $val;
+		}
+	}
+
+	/**
+	 * Fetch or set relations on this object
+	 *
+	 * @param   array|null  $rels
+	 * @return  void|array
+	 */
 	public function _relate($rels = null)
 	{
 		if (is_null($rels))
@@ -464,10 +499,7 @@ class Model {
 		// update the original properties on creation and cache object for future retrieval in this request
 		$this->_is_new = false;
 		static::$_cached_objects[get_class($this)][static::implode_pk($this)] = $this;
-		foreach ($properties as $p)
-		{
-			$this->_original[$p] = $this->{$p};
-		}
+		$this->_update_original();
 
 		return $id !== false;
 	}
@@ -514,10 +546,7 @@ class Model {
 		}
 
 		// update the original property on success
-		foreach ($properties as $p)
-		{
-			$this->_original[$p] = $this->{$p};
-		}
+		$this->_update_original();
 
 		return true;
 	}
