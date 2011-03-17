@@ -483,19 +483,36 @@ class Query {
 			}
 		}
 
-		if ( ! in_array($pk = $model::implode_pk($obj), $result))
+		if (is_array($result) and ! in_array($pk = $model::implode_pk($obj), $result))
 		{
 			$obj = $model::factory($obj, false);
 			$result[$pk] = $obj;
+		}
+		elseif ( ! is_array($result) and empty($result))
+		{
+			$obj = $model::factory($obj, false);
+			$result = $obj;
+		}
+		else
+		{
+			return is_array($result) ? $result[$pk] : $result;
 		}
 
 		$rel_objs = $obj->_relate();
 		foreach ($relations as $rel_name => $rel)
 		{
-			! array_key_exists($rel_name, $rel_objs) and $rel_objs[$rel_name] = array();
-
 			list($rel, $rel_select) = $rel;
-			$this->hydrate($row, array(), $rel_objs[$rel_name], $rel->model_to, $rel_select);
+
+			if ( ! array_key_exists($rel_name, $rel_objs))
+			{
+				$rel_objs[$rel_name] = $rel->singular ? null : array();
+			}
+
+			if ((is_array($result) and ! in_array($model::implode_pk($obj), $result))
+				or ! is_array($result) and empty($result))
+			{
+				$this->hydrate($row, array(), $rel_objs[$rel_name], $rel->model_to, $rel_select);
+			}
 		}
 		$obj->_relate($rel_objs);
 

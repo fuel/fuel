@@ -405,7 +405,7 @@ class Model {
 		{
 			$this->_data[$property] = $value;
 		}
-		elseif (isset(static::$_relations) and array_key_exists($property, static::$_relations))
+		elseif (static::relations($property))
 		{
 			$this->_loaded_relations[$property] = $value;
 		}

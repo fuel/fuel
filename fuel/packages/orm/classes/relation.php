@@ -37,6 +37,11 @@ abstract class Relation {
 	protected $key_to = array();
 
 	/**
+	 * @var  bool  whether it's a single object or multiple
+	 */
+	protected $singular = false;
+
+	/**
 	 * Configures the relationship
 	 *
 	 * @param  string  the model that initiates the relationship

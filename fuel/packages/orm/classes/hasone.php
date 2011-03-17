@@ -16,6 +16,8 @@ namespace Orm;
 
 class HasOne extends Relation {
 
+	protected $singular = true;
+
 	public function __construct($from, $name, array $config)
 	{
 		$this->model_from  = $from;
