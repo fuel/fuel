@@ -32,14 +32,14 @@ class BelongsTo extends Relation {
 
 	public function get(Model $from)
 	{
-		$query = call_user_func(array($this->model_from, 'find'));
+		$query = call_user_func(array($this->model_to, 'find'));
 		reset($this->key_to);
 		foreach ($this->key_from as $key)
 		{
 			$query->where(current($this->key_to), $from->{$key});
 			next($this->key_to);
 		}
-		return $query->find();
+		return $query->find_one();
 	}
 
 	public function select($table)

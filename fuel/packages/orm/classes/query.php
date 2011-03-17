@@ -186,6 +186,7 @@ class Query {
 	 *
 	 * @param  array
 	 * @param  string
+	 * @todo   adding the table alias needs to work better, this will cause problems with WHERE IN
 	 */
 	public function _where($condition, $type = 'where')
 	{
@@ -198,6 +199,8 @@ class Query {
 			return $this;
 		}
 
+		// TODO: needs to work better, this will cause problems with WHERE IN
+		strpos($condition[0], '.') === false and $condition[0] = $this->alias.'.'.$condition[0];
 		if (count($condition) == 2)
 		{
 			$this->{$type}[] = array($condition[0], '=', $condition[1]);
@@ -370,7 +373,6 @@ class Query {
 		if ($this->use_subquery())
 		{
 			// Get the columns for final select
-			$columns = $columns;
 			foreach ($relations as $properties)
 			{
 				foreach ($properties[1] as $p)
@@ -380,7 +382,7 @@ class Query {
 			}
 
 			$new_query = call_user_func_array('DB::select', $columns);
-			$query = $new_query->from($query);
+			$query = $new_query->from(array($query, $this->alias));
 		}
 		else
 		{
@@ -520,9 +522,9 @@ class Query {
 	}
 
 	/**
-	 * Build the query and return it hydrated
+	 * Build the query and return hydrated results
 	 *
-	 * @return  Model
+	 * @return  array
 	 */
 	public function find()
 	{
@@ -530,7 +532,16 @@ class Query {
 		$columns = $this->select();
 
 		// Start building the query
-		$query = call_user_func_array('DB::select', $this->use_subquery() ? array(array_keys($columns)) : $columns);
+		$select = $columns;
+		if ($this->use_subquery())
+		{
+			$select = array();
+			foreach ($columns as $c)
+			{
+				$select[] = $c[0];
+			}
+		}
+		$query = call_user_func_array('DB::select', $select);
 
 		// Set from table
 		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
@@ -549,6 +560,26 @@ class Query {
 
 		// It's all built, now lets execute and start hydration
 		return $result;
+	}
+
+	/**
+	 * Build the query and return single object hydrated
+	 *
+	 * @return  Model
+	 */
+	public function find_one()
+	{
+		// get current limit and save it while fetching the first result
+		$limit = $this->limit;
+		$this->limit = 1;
+
+		// get the result using normal find
+		$result = $this->find();
+
+		// put back the old limit
+		$this->limit = $limit;
+
+		return $result ? reset($result) : null;
 	}
 
 	/**

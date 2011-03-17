@@ -249,7 +249,6 @@ class Model {
 		}
 		elseif ($id == 'first' || $id == 'last')
 		{
-			$options['limit'] = 1;
 			$query = Query::factory(get_called_class(), $options);
 
 			foreach(static::primary_key() as $pk)
@@ -257,7 +256,7 @@ class Model {
 				$query->order($pk, $id == 'first' ? 'ASC' : 'DESC');
 			}
 
-			return reset($query->find());
+			return $query->find_one();
 		}
 		else
 		{
