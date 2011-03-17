@@ -14,12 +14,64 @@
 
 namespace Orm;
 
-class BelongsTo extends HasOne implements Relation {
+class BelongsTo extends Relation {
 
-	public function join()
+	protected $singular = true;
+
+	protected $key_from = array();
+
+	protected $key_to = array('id');
+
+	public function __construct($from, $name, array $config)
 	{
-		return array();
+		$this->model_from  = $from;
+		$this->model_to    = array_key_exists('model_to', $config) ? $config['model_to'] : 'Model_'.\Inflector::classify($name);
+		$this->key_from    = array_key_exists('key_from', $config) ? (array) $config['key_from'] : (array) \Inflector::foreign_key($this->model_to);
+		$this->key_to      = array_key_exists('key_to', $config) ? (array) $config['key_to'] : $this->key_to;
+	}
+
+	public function get(Model $from)
+	{
+		$query = call_user_func(array($this->model_from, 'find'));
+		reset($this->key_to);
+		foreach ($this->key_from as $key)
+		{
+			$query->where(current($this->key_to), $from->{$key});
+			next($this->key_to);
+		}
+		return $query->find();
+	}
+
+	public function select($table)
+	{
+		$props = call_user_func(array($this->model_to, 'properties'));
+		$i = 0;
+		$properties = array();
+		foreach ($props as $pk => $pv)
+		{
+			$properties[] = array($table.'.'.$pk, $table.'_c'.$i);
+			$i++;
+		}
+		return $properties;
+	}
+
+	public function join($alias)
+	{
+		$join = array(
+			'table'	=> array(call_user_func(array($this->model_to, 'table')), $alias),
+			'type'	=> 'left',
+			'on'	=> array(),
+		);
+
+		reset($this->key_to);
+		foreach ($this->key_from as $key)
+		{
+			$join['on'][] = array('t0.'.$key, '=', $alias.'.'.current($this->key_to));
+			next($this->key_to);
+		}
+
+		return $join;
 	}
 }
 
-/* End of file belongsto.php */
+/* End of file hasone.php */
