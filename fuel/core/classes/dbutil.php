@@ -143,7 +143,7 @@ class DBUtil {
 	 */
 	public static function analyze_table($table)
 	{
-		return DBUtil::table_maintenance('analyze', $table);
+		return static::table_maintenance('analyze', $table);
 	}
 	
 	/**
@@ -154,7 +154,7 @@ class DBUtil {
 	 */
 	public static function check_table($table)
 	{
-		return DBUtil::table_maintenance('check', $table);
+		return static::table_maintenance('check', $table);
 	}
 	
 	/**
@@ -165,7 +165,7 @@ class DBUtil {
 	 */
 	public static function optimize_table($table)
 	{
-		return DBUtil::table_maintenance('optimize', $table);
+		return static::table_maintenance('optimize', $table);
 	}
 	
 	/**
@@ -176,7 +176,7 @@ class DBUtil {
 	 */
 	public static function repair_table($table)
 	{
-		return DBUtil::table_maintenance('repair', $table);
+		return static::table_maintenance('repair', $table);
 	}
 	
 	/*
