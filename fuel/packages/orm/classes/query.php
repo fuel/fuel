@@ -485,7 +485,7 @@ class Query {
 			}
 		}
 
-		if (is_array($result) and ! in_array($pk = $model::implode_pk($obj), $result))
+		if (is_array($result) and ! array_key_exists($pk = $model::implode_pk($obj), $result))
 		{
 			$obj = $model::factory($obj, false);
 			$result[$pk] = $obj;
@@ -497,7 +497,7 @@ class Query {
 		}
 		else
 		{
-			return is_array($result) ? $result[$pk] : $result;
+			$obj = is_array($result) ? $result[$pk] : $result;
 		}
 
 		$rel_objs = $obj->_relate();
@@ -526,7 +526,7 @@ class Query {
 	 *
 	 * @return  array
 	 */
-	public function find()
+	public function get()
 	{
 		// Get the columns
 		$columns = $this->select();
@@ -567,14 +567,14 @@ class Query {
 	 *
 	 * @return  Model
 	 */
-	public function find_one()
+	public function get_one()
 	{
 		// get current limit and save it while fetching the first result
 		$limit = $this->limit;
 		$this->limit = 1;
 
 		// get the result using normal find
-		$result = $this->find();
+		$result = $this->get();
 
 		// put back the old limit
 		$this->limit = $limit;

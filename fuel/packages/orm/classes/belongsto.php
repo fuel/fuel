@@ -39,7 +39,7 @@ class BelongsTo extends Relation {
 			$query->where(current($this->key_to), $from->{$key});
 			next($this->key_to);
 		}
-		return $query->find_one();
+		return $query->get_one();
 	}
 
 	public function select($table)

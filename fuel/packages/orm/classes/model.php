@@ -239,14 +239,17 @@ class Model {
 	 */
 	public static function find($id = null, array $options = array())
 	{
+		// Return Query object
 		if (is_null($id))
 		{
 			return Query::factory(get_called_class());
 		}
+		// Return all that match $options array
 		elseif ($id == 'all')
 		{
-			return Query::factory(get_called_class(), $options)->find();
+			return Query::factory(get_called_class(), $options)->get();
 		}
+		// Return first or last row that matches $options array
 		elseif ($id == 'first' || $id == 'last')
 		{
 			$query = Query::factory(get_called_class(), $options);
@@ -256,15 +259,16 @@ class Model {
 				$query->order($pk, $id == 'first' ? 'ASC' : 'DESC');
 			}
 
-			return $query->find_one();
+			return $query->get_one();
 		}
+		// Return specific request row by ID
 		else
 		{
 			$cache_pk = $where = array();
 			$id = (array) $id;
 			foreach (static::primary_key() as $pk)
 			{
-				$where[] = array('t0.'.$pk, '=', current($id));
+				$where[] = array($pk, '=', current($id));
 				$cache_pk[$pk] = current($id);
 				next($id);
 			}
@@ -277,7 +281,7 @@ class Model {
 
 			array_key_exists('where', $options) and $where = array_merge($options['where'], $where);
 			$options['where'] = $where;
-			return reset(Query::factory(get_called_class(), $options)->find());
+			return Query::factory(get_called_class(), $options)->get_one();
 		}
 	}
 
