@@ -190,11 +190,18 @@ class Query {
 	 */
 	public function _where($condition, $type = 'where')
 	{
-		if (is_array($condition[0]))
+		if (is_array(reset($condition)))
 		{
-			foreach ($condition as $c)
+			foreach ($condition as $k => $c)
 			{
-				$this->_where($c, $type);
+				if (is_string($k))
+				{
+					$this->_where(array($k, '=', $c), $type);
+				}
+				else
+				{
+					$this->_where($c, $type);
+				}
 			}
 			return $this;
 		}
