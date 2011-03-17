@@ -84,7 +84,7 @@ class Query {
 		{
 			if (method_exists($this, $opt))
 			{
-				call_user_func_array(array($this, $opt), (array) $val);
+				call_user_func_array(array($this, $opt), array($val));
 			}
 		}
 	}
@@ -260,9 +260,9 @@ class Query {
 		{
 			foreach ($relation as $r)
 			{
-				$this->relation($r);
+				$this->related($r);
 			}
-			return;
+			return $this;
 		}
 
 		$rel = call_user_func(array($this->model, 'relations'), $relation);
