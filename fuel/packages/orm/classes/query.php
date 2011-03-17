@@ -194,16 +194,18 @@ class Query {
 		{
 			foreach ($condition as $k => $c)
 			{
-				if (is_string($k))
-				{
-					$this->_where(array($k, '=', $c), $type);
-				}
-				else
-				{
-					$this->_where($c, $type);
-				}
+				$this->_where($c, $type);
 			}
 			return $this;
+		}
+		elseif (is_string(key($condition)))
+		{
+			foreach($condition as $k => $val)
+			{
+				unset($condition[$k]);
+				$condition[] = array($k, '=', $val);
+			}
+			return $this->_where($condition, $type);
 		}
 
 		// TODO: needs to work better, this will cause problems with WHERE IN
