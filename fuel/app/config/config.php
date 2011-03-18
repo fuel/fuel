@@ -111,7 +111,7 @@ return array(
 	* By default, your modules will cascade BEFORE your application. If
 	* you need your modules to cascade AFTER your app, set this to true
 	*/
-	'modules_after_app' => true,
+	'modules_after_app' => true, 
 
 
 	/**************************************************************************/

@@ -111,7 +111,7 @@ class Fuel {
 
 		\Config::load($config);
 		
-		$modules_index = (\Config::get('modules_after_app') === true) ? 0 : 1;
+		$modules_index = (\Config::get('modules_after_app') === true) ? 0 : 1; 
 
 		static::$_paths = array(APPPATH, COREPATH);
 		array_splice(static::$_paths, $modules_index, 0, \Config::get('module_paths', array()));
