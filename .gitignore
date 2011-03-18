@@ -9,3 +9,4 @@ desktop.ini
 fuel/app/logs/*/*/*
 fuel/app/cache/*/*
 nbproject/
+.idea
