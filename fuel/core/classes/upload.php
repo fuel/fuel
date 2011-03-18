@@ -431,7 +431,7 @@ class Upload {
 		// anything to save?
 		if (empty($files))
 		{
-			throw new Exception('No uploaded files are selected.');
+			throw new \Fuel_Exception('No uploaded files are selected.');
 		}
 
 		// make sure we have a valid path
@@ -444,7 +444,7 @@ class Upload {
 		}
 		if ( ! is_dir($path))
 		{
-			throw new Exception('Can\'t move the uploaded file. Destination path specified does not exist.');
+			throw new \Fuel_Exception('Can\'t move the uploaded file. Destination path specified does not exist.');
 		}
 
 		// now that we have a path, let's save the files
