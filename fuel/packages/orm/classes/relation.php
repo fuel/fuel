@@ -82,10 +82,10 @@ abstract class Relation {
 	 */
 	public function __get($property)
 	{
-		if ( ! property_exists($this, $property))
-		{
-			throw new Exception('Invalid relation property.');
-		}
+	if (strncomp($property, '_', 1) != 0 or ! property_exists($this, $property))
+	{
+		throw new Exception('Invalid relation property.');
+	}
 
 		return $this->{$property};
 	}
