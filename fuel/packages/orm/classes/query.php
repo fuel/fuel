@@ -542,7 +542,7 @@ class Query {
 			if ((is_array($result) and ! in_array($model::implode_pk($obj), $result))
 				or ! is_array($result) and empty($result))
 			{
-				$rel->hydrate($row, $rel_select, $obj, $rel_objs);
+				$rel->hydrate($row, $rel_select, $rel_name, $obj, $rel_objs);
 				$this->hydrate($row, array(), $rel_objs[$rel_name], $rel->model_to, $rel_select);
 			}
 		}

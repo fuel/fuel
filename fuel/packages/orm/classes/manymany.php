@@ -154,7 +154,7 @@ class ManyMany extends Relation {
 		return $join;
 	}
 
-	public function hydrate($row, &$select, $obj, &$obj_rels)
+	public function hydrate($row, &$select, $rel_name, $parent, &$parent_rels)
 	{
 		// simple key1, key2 table without - just delete the additional keys and return
 		if (empty($this->model_through))
@@ -172,9 +172,9 @@ class ManyMany extends Relation {
 		else
 		{
 			$obj = array();
+			$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
 			foreach ($select as $key => $s)
 			{
-				$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
 				if (preg_match('/^t[0-9]+_through\\.([a-z0-9_]+)/uiD', $s[0], $matches) > 0)
 				{
 					$obj[$matches[1]] = $row[$s[1]];
@@ -183,11 +183,20 @@ class ManyMany extends Relation {
 			}
 
 			$pk = call_user_func(array($rel->model_to, 'implode_pk'), $obj);
-			! array_key_exists($this->model_through, $obj_rels) and $obj_rels[$this->model_through] = array();
-			if ( ! array_key_exists($pk, $obj_rels[$this->model_through]))
+			! array_key_exists($this->model_through, $parent_rels) and $parent_rels[$this->model_through] = array();
+			if ( ! array_key_exists($pk, $parent_rels[$this->model_through]))
 			{
 				$obj = call_user_func(array($rel->model_to, 'factory'), $obj, false);
-				$obj_rels[$this->model_through][$pk] = $obj;
+				$parent_rels[$this->model_through][$pk] = $obj;
+			}
+
+			$obj_rels = $obj->_relate();
+			$parent_pk = call_user_func(array($parent, 'implode_pk'), $parent);
+			! array_key_exists($rel_name, $obj_rels) and $obj_rels[$rel_name] = array();
+			if ( ! array_key_exists($parent_pk, $obj_rels[$rel_name]))
+			{
+				$obj_rels[$rel_name][$parent_pk] = $parent;
+				$obj->_relate($obj_rels);
 			}
 		}
 	}

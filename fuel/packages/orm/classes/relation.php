@@ -94,7 +94,7 @@ abstract class Relation {
 	/**
 	 * Meant to fetch any additional through-objects from a row
 	 */
-	public function hydrate($row, $select, $obj, $obj_rels) {}
+	public function hydrate($row, &$select, $rel_name, $parent, &$parent_rels) {}
 }
 
 /* End of file relation.php */
