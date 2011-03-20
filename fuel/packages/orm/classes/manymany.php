@@ -73,10 +73,108 @@ class ManyMany extends Relation {
 
 	public function select($table)
 	{
+		$props = call_user_func(array($this->model_to, 'properties'));
+		$i = 0;
+		$properties = array();
+		foreach ($props as $pk => $pv)
+		{
+			$properties[] = array($table.'.'.$pk, $table.'_c'.$i);
+			$i++;
+		}
+
+		if (empty($this->model_through))
+		{
+			foreach ($this->key_through_to as $to)
+			{
+				$properties[] = array($table.'_through.'.$to, $table.'_through_c'.$i);
+				$i++;
+			}
+			foreach ($this->key_through_from as $from)
+			{
+				$properties[] = array($table.'_through.'.$from, $table.'_through_c'.$i);
+				$i++;
+			}
+		}
+		else
+		{
+			$rel = $this->model_from::relations($this->model_through);
+			$props = call_user_func(array($rel->model_to, 'properties'));
+			foreach ($props as $pk => $pv)
+			{
+				$properties[] = array($table.'_through.'.$pk, $table.'_through_c'.$i);
+				$i++;
+			}
+		}
+
+		return $properties;
 	}
 
-	public function join($alias)
+	public function join($alias_from, $alias_to)
 	{
+		$join = array(
+			array(
+				'table'	=> array(call_user_func(array($this->model_through, 'table')), $alias_from.'_through'),
+				'type'	=> 'left',
+				'on'	=> array(),
+			),
+			array(
+				'table'	=> array(call_user_func(array($this->model_to, 'table')), $alias_to),
+				'type'	=> 'left',
+				'on'	=> array(),
+			),
+		);
+
+		reset($this->key_from);
+		foreach ($this->key_through_from as $key)
+		{
+			$join[0]['on'][] = array($alias_from.'.'.$key, '=', $alias_from.'_through.'.current($this->key_from));
+			next($this->key_from);
+		}
+
+		reset($this->key_to);
+		foreach ($this->key_through_to as $key)
+		{
+			$join[1]['on'][] = array($alias_from.'_through.'.$key, '=', $alias_to.'.'.current($this->key_to));
+			next($this->key_to);
+		}
+
+		return $join;
+	}
+
+	public function hydrate($row, &$select, $obj, &$obj_rels)
+	{
+		// simple key1, key2 table without - just delete the additional keys and return
+		if (empty($this->model_through))
+		{
+			foreach ($select as $key => $s)
+			{
+				if (preg_match('/^t[0-9]+_'.$this->table_through.'\\./uiD', $s[0]) > 0)
+				{
+					unset($select[$key]);
+				}
+			}
+			return;
+		}
+		// turns out it's a relation through a model, create the model and relate this shit
+		else
+		{
+			foreach ($select as $s)
+			{
+				$rel = $this->model_from::relations($this->model_through);
+				$obj = array();
+				if (preg_match('/^t[0-9]+_through\\.([a-z0-9_]+)/uiD', $s[0], $matches) > 0)
+				{
+					$obj[$matches[1]] = $row[$s[1]];
+				}
+			}
+
+			$pk = $rel->model_to::implode_pk($obj);
+			if ( ! array_key_exists($pk, $obj_rels[$this->model_through]))
+			{
+				$obj = $rel->model_to::factory($obj, false);
+				$obj_rels[$this->model_through][$pk] = $obj;
+			}
+		}
 	}
 }
 

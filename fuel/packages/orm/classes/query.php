@@ -376,7 +376,7 @@ class Query {
 		{
 			$table = 't'.$i++;
 			$relations[$name] = array($rel, $rel->select($table));
-			$joins[] = $rel->join($table);
+			$joins[] = $rel->join($this->alias, $table);
 		}
 
 		if ($this->use_subquery())
@@ -540,6 +540,7 @@ class Query {
 			if ((is_array($result) and ! in_array($model::implode_pk($obj), $result))
 				or ! is_array($result) and empty($result))
 			{
+				$rel->hydrate($row, $rel_select, $obj, $rel_objs);
 				$this->hydrate($row, array(), $rel_objs[$rel_name], $rel->model_to, $rel_select);
 			}
 		}

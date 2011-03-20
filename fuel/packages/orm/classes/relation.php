@@ -70,10 +70,11 @@ abstract class Relation {
 	/**
 	 * Returns tables to join and fields to select with optional additional settings like order/where
 	 *
-	 * @param   string  alias for the table
+	 * @param   string  alias for the from table
+	 * @param   string  alias for the to table
 	 * @return  array
 	 */
-	abstract public function join($alias);
+	abstract public function join($alias_from, $alias_to);
 
 	/**
 	 * Allow outside access to protected properties
@@ -82,13 +83,18 @@ abstract class Relation {
 	 */
 	public function __get($property)
 	{
-	if (strncomp($property, '_', 1) != 0 or ! property_exists($this, $property))
-	{
-		throw new Exception('Invalid relation property.');
-	}
+		if (strncomp($property, '_', 1) != 0 or ! property_exists($this, $property))
+		{
+			throw new Exception('Invalid relation property.');
+		}
 
 		return $this->{$property};
 	}
+
+	/**
+	 * Meant to fetch any additional through-objects from a row
+	 */
+	public function hydrate($row, $select, $obj, $obj_rels) {}
 }
 
 /* End of file relation.php */
