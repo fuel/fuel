@@ -192,7 +192,7 @@ class Query {
 	{
 		if (is_array(reset($condition)))
 		{
-			foreach ($condition as $k => $c)
+			foreach ($condition as $c)
 			{
 				$this->_where($c, $type);
 			}
@@ -275,10 +275,12 @@ class Query {
 		}
 
 		$rel = call_user_func(array($this->model, 'relations'), $relation);
-		if ( ! empty($rel))
+		if (empty($rel))
 		{
-			$this->relations[$relation] = $rel;
+			throw new UndefinedRelation('Relation "'.$relation.'" was not found in the model.');
 		}
+
+		$this->relations[$relation] = $rel;
 
 		return $this;
 	}

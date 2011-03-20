@@ -27,6 +27,7 @@ Autoloader::add_classes(array(
 	'Orm\\Exception'			=> __DIR__.'/classes/exceptions.php',
 	'Orm\\RecordNotFound'		=> __DIR__.'/classes/exceptions.php',
 	'Orm\\UndefinedProperty'	=> __DIR__.'/classes/exceptions.php',
+	'Orm\\UndefinedRelation'	=> __DIR__.'/classes/exceptions.php',
 ));
 
 

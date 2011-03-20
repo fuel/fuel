@@ -11,20 +11,25 @@
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
  */
- 
+
 namespace Orm;
 
 /**
  * Base ORM Exception
  */
-class Exception extends \Fuel_Exception { }
+class Exception extends \Fuel_Exception {}
 
 /**
  * Record Not Found Exception
  */
-class RecordNotFound extends Exception { }
+class RecordNotFound extends Exception {}
 
 /**
  * Undefined Property Exception
  */
-class UndefinedProperty extends Exception { }
+class UndefinedProperty extends Exception {}
+
+/**
+ * Undefined Relation Exception
+ */
+class UndefinedRelation extends Exception {}

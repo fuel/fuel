@@ -184,7 +184,7 @@ class Inflector {
 	 */
 	public static function camelize($underscored_word)
 	{
-		return preg_replace('/(^|_)(.)/e', "strtoupper('\\2')", strval($underscored_word));
+		return preg_replace('/(^|_)(.)/e', "strtoupper('\\1\\2')", strval($underscored_word));
 	}
 
 	/**
@@ -241,7 +241,7 @@ class Inflector {
 			'\.+$' => '',            // ending dot => (nothing)
 			'\?' => ''                // question mark
 		);
-		
+
 		foreach ($trans as $key => $val)
 		{
 			$str = preg_replace("#".$key."#i", $val, $str);
@@ -277,7 +277,7 @@ class Inflector {
 		{
 			$str = \Str::ucfirst($str);
 		}
-		
+
 		return str_replace($sep, " ", strval($str));
 	}
 

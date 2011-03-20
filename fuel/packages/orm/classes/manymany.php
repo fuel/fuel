@@ -114,9 +114,16 @@ class ManyMany extends Relation {
 
 	public function join($alias_from, $alias_to)
 	{
-		$through_table = empty($this->model_through)
-			? $this->table_through
-			: call_user_func(array($this->model_through, 'table'));
+		if (empty($this->model_through))
+		{
+			$through_table = $this->table_through;
+		}
+		else
+		{
+			$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
+			$through_table = call_user_func(array($rel->model_to, 'table'));
+		}
+
 		$join = array(
 			array(
 				'table'	=> array($through_table, $alias_to.'_through'),
