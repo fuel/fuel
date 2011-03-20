@@ -171,17 +171,19 @@ class ManyMany extends Relation {
 		// turns out it's a relation through a model, create the model and relate this shit
 		else
 		{
-			foreach ($select as $s)
+			$obj = array();
+			foreach ($select as $key => $s)
 			{
 				$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
-				$obj = array();
 				if (preg_match('/^t[0-9]+_through\\.([a-z0-9_]+)/uiD', $s[0], $matches) > 0)
 				{
 					$obj[$matches[1]] = $row[$s[1]];
+					unset($select[$key]);
 				}
 			}
 
 			$pk = call_user_func(array($rel->model_to, 'implode_pk'), $obj);
+			! array_key_exists($this->model_through, $obj_rels) and $obj_rels[$this->model_through] = array();
 			if ( ! array_key_exists($pk, $obj_rels[$this->model_through]))
 			{
 				$obj = call_user_func(array($rel->model_to, 'factory'), $obj, false);
