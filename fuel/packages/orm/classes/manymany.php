@@ -53,17 +53,20 @@ class ManyMany extends Relation {
 			$this->model_through = $config['through']['model'];
 		}
 		// ...or allow for many-many matching with simple 2 column table
+		elseif ( ! empty($config['through']['table']))
+		{
+			$this->table_through = $config['through']['table'];
+		}
 		else
 		{
 			$table_name = array($this->model_from, $this->model_to);
 			natcasesort($table_name);
-			$this->table_through = array_key_exists('table', $config['through'])
-				? \Inflector::tableize($table_name[0]).'_'.\Inflector::tableize($table_name[1])
-				: $config['through']['table'];
+			$table_name = array_merge($table_name);
+			$this->table_through = \Inflector::tableize($table_name[0]).'_'.\Inflector::tableize($table_name[1]);
 		}
-		$this->key_through_from = array_key_exists('key_from', $config['through'])
+		$this->key_through_from = ! empty($config['through']['key_from'])
 			? (array) $config['through']['key_from'] : (array) \Inflector::foreign_key($this->model_from);
-		$this->key_through_to = array_key_exists('key_to', $config['through'])
+		$this->key_through_to = ! empty($config['through']['key_to'])
 			? (array) $config['through']['key_to'] : (array) \Inflector::foreign_key($this->model_to);
 	}
 
@@ -97,7 +100,7 @@ class ManyMany extends Relation {
 		}
 		else
 		{
-			$rel = $this->model_from::relations($this->model_through);
+			$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
 			$props = call_user_func(array($rel->model_to, 'properties'));
 			foreach ($props as $pk => $pv)
 			{
@@ -111,9 +114,12 @@ class ManyMany extends Relation {
 
 	public function join($alias_from, $alias_to)
 	{
+		$through_table = empty($this->model_through)
+			? $this->table_through
+			: call_user_func(array($this->model_through, 'table'));
 		$join = array(
 			array(
-				'table'	=> array(call_user_func(array($this->model_through, 'table')), $alias_from.'_through'),
+				'table'	=> array($through_table, $alias_to.'_through'),
 				'type'	=> 'left',
 				'on'	=> array(),
 			),
@@ -127,14 +133,14 @@ class ManyMany extends Relation {
 		reset($this->key_from);
 		foreach ($this->key_through_from as $key)
 		{
-			$join[0]['on'][] = array($alias_from.'.'.$key, '=', $alias_from.'_through.'.current($this->key_from));
+			$join[0]['on'][] = array($alias_from.'.'.current($this->key_from), '=', $alias_to.'_through.'.$key);
 			next($this->key_from);
 		}
 
 		reset($this->key_to);
 		foreach ($this->key_through_to as $key)
 		{
-			$join[1]['on'][] = array($alias_from.'_through.'.$key, '=', $alias_to.'.'.current($this->key_to));
+			$join[1]['on'][] = array($alias_to.'_through.'.$key, '=', $alias_to.'.'.current($this->key_to));
 			next($this->key_to);
 		}
 
@@ -148,7 +154,7 @@ class ManyMany extends Relation {
 		{
 			foreach ($select as $key => $s)
 			{
-				if (preg_match('/^t[0-9]+_'.$this->table_through.'\\./uiD', $s[0]) > 0)
+				if (preg_match('/^t[0-9]+_through\\./uiD', $s[0]) > 0)
 				{
 					unset($select[$key]);
 				}
@@ -160,7 +166,7 @@ class ManyMany extends Relation {
 		{
 			foreach ($select as $s)
 			{
-				$rel = $this->model_from::relations($this->model_through);
+				$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
 				$obj = array();
 				if (preg_match('/^t[0-9]+_through\\.([a-z0-9_]+)/uiD', $s[0], $matches) > 0)
 				{
@@ -168,10 +174,10 @@ class ManyMany extends Relation {
 				}
 			}
 
-			$pk = $rel->model_to::implode_pk($obj);
+			$pk = call_user_func(array($rel->model_to, 'implode_pk'), $obj);
 			if ( ! array_key_exists($pk, $obj_rels[$this->model_through]))
 			{
-				$obj = $rel->model_to::factory($obj, false);
+				$obj = call_user_func(array($rel->model_to, 'factory'), $obj, false);
 				$obj_rels[$this->model_through][$pk] = $obj;
 			}
 		}
