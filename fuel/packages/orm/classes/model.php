@@ -59,6 +59,16 @@ class Model {
 	 */
 	protected static $_cached_objects = array();
 
+	/**
+	 * @var  array  array of valid relation types
+	 */
+	protected static $_valid_relations = array(
+		'belongsto'  => 'BelongsTo',
+		'hasone'     => 'HasOne',
+		'hasmany'    => 'HasMany',
+		'manymany'   => 'ManyMany'
+	);
+
 	public static function factory($data = array(), $new = true)
 	{
 		return new static($data, $new);
@@ -190,40 +200,16 @@ class Model {
 		if ( ! array_key_exists($class, static::$_relations_cached))
 		{
 			$relations = array();
-			if (property_exists($class, '_hasone'))
+			foreach (static::$_valid_relations as $rel_name => $rel_class)
 			{
-				foreach (static::$_hasone as $key => $settings)
+				if (property_exists($class, '_'.$rel_name))
 				{
-					$name = is_string($settings) ? $settings : $key;
-					$settings = is_array($settings) ? $settings : array();
-					$relations[$name] = new HasOne($class, $name, $settings);
-				}
-			}
-			if (property_exists($class, '_belongsto'))
-			{
-				foreach (static::$_belongsto as $key => $settings)
-				{
-					$name = is_string($settings) ? $settings : $key;
-					$settings = is_array($settings) ? $settings : array();
-					$relations[$name] = new BelongsTo($class, $name, $settings);
-				}
-			}
-			if (property_exists($class, '_hasmany'))
-			{
-				foreach (static::$_hasmany as $key => $settings)
-				{
-					$name = is_string($settings) ? $settings : $key;
-					$settings = is_array($settings) ? $settings : array();
-					$relations[$name] = new HasMany($class, $name, $settings);
-				}
-			}
-			if (property_exists($class, '_manymany'))
-			{
-				foreach (static::$_manymany as $key => $settings)
-				{
-					$name = is_string($settings) ? $settings : $key;
-					$settings = is_array($settings) ? $settings : array();
-					$relations[$name] = new ManyMany($class, $name, $settings);
+					foreach (static::${'_'.$rel_name} as $key => $settings)
+					{
+						$name = is_string($settings) ? $settings : $key;
+						$settings = is_array($settings) ? $settings : array();
+						$relations[$name] = new $rel_class($class, $name, $settings);
+					}
 				}
 			}
 

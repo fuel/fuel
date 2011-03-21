@@ -144,9 +144,9 @@ class Form {
 		$attributes = ! is_array($attributes) ? array('action' => (string) $attributes) : $attributes;
 
 		// If there is still no action set, Form-post
-		if(empty($attributes['action']))
+		if( ! array_key_exists('action', $attributes))
 		{
-			$attributes['action'] = '';
+			$attributes['action'] = \Uri::current();
 		}
 
 		// If not a full URL, create one
