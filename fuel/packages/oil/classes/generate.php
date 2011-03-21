@@ -223,9 +223,15 @@ VIEW;
 				}
 
 				// add_{field}_to_{table}
-				else if (count($matches) == 3)
+				else if (count($matches) == 3 && $matches[1] == 'to')
 				{
 					$subjects = array($matches[0], $matches[2]);
+				}
+
+				// create_{table} (with underscores in table name)
+				else if (count($matches) !== 0)
+				{
+					$subjects = array(false, implode('_', $matches));
 				}
 
 				// There is no subject here so just carry on with a normal empty migration
