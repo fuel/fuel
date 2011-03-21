@@ -155,185 +155,191 @@ MODEL;
 <p>Edit this content in {$view_filepath}</p>
 VIEW;
 
-            // Create this view
-            static::create($view_file, $view, 'view');
-        }
+			// Create this view
+			static::create($view_file, $view, 'view');
+		}
 
-        $build and static::build();
-    }
+		$build and static::build();
+	}
 
 
-    public static function migration($args, $build = true)
-    {
-        // Get the migration name
-        $migration_name = strtolower(str_replace('-', '_', array_shift($args)));
+	public static function migration($args, $build = true)
+	{
+		// Get the migration name
+		$migration_name = strtolower(str_replace('-', '_', array_shift($args)));
 
-        // Check if a migration with this name already exists
-        if (count($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) > 0)
-        {
-            // Don't override a file
-            if (\Cli::option('s', \Cli::option('skip')) === true)
-            {
-                return;
-            }
+		// Check if a migration with this name already exists
+		if (count($duplicates = glob(APPPATH."migrations/*_{$migration_name}*")) > 0)
+		{
+			// Don't override a file
+			if (\Cli::option('s', \Cli::option('skip')) === true)
+			{
+				return;
+			}
 
-            // Tear up the file path and name to get the last duplicate
-            $file_name = pathinfo(end($duplicates), PATHINFO_FILENAME);
+			// Tear up the file path and name to get the last duplicate
+			$file_name = pathinfo(end($duplicates), PATHINFO_FILENAME);
 
-            // Override the (most recent) migration with the same name by using its number
-            if (\Cli::option('f', \Cli::option('force')) === true)
-            {
-                list($number) = explode('_', $file_name);
-            }
+			// Override the (most recent) migration with the same name by using its number
+			if (\Cli::option('f', \Cli::option('force')) === true)
+			{
+				list($number) = explode('_', $file_name);
+			}
 
-            // Name clashes but this is done by hand. Assume they know what they're doing and just increment the file
-            elseif (static::$scaffolding === false)
-            {
-                // Increment the name of this
-                $migration_name = \Str::increment(substr($file_name, 4), 2);
-            }
-        }
+			// Name clashes but this is done by hand. Assume they know what they're doing and just increment the file
+			elseif (static::$scaffolding === false)
+			{
+				// Increment the name of this
+				$migration_name = \Str::increment(substr($file_name, 4), 2);
+			}
+		}
 
-        // See if the action exists
-        $methods = get_class_methods(__NAMESPACE__ . '\Generate_Migration_Actions');
+		// See if the action exists
+		$methods = get_class_methods(__NAMESPACE__ . '\Generate_Migration_Actions');
 
-        // For empty migrations that dont have actions
-        $migration = array('', '');
+		// For empty migrations that dont have actions
+		$migration = array('', '');
 
-        // Loop through the actions and act on a matching action appropriately
-        foreach ($methods as $method_name)
-        {
-            // If the miration name starts with the name of the action method
-            if (substr($migration_name, 0, strlen($method_name)) === $method_name)
-            {
-                /**
-                 *    Create an array of the subject the migration is about
-                 *
-                 *    - In a migration named 'create_users' the subject is 'users' since thats what we want to create
-                 *        So it would be the second object in the array
-                 *            array(false, 'users')
-                 *
-                 *    - In a migration named 'add_name_to_users' the object is 'name' and the subject is 'users'.
-                 *        So again 'users' would be the second object, but 'name' would be the first
-                 *            array('name', 'users')
-                 *
-                 */
-                $subjects = array(false, false);
-                $matches = explode('_', str_replace($method_name . '_', '', $migration_name));
+		// Loop through the actions and act on a matching action appropriately
+		foreach ($methods as $method_name)
+		{
+			// If the miration name starts with the name of the action method
+			if (substr($migration_name, 0, strlen($method_name)) === $method_name)
+			{
+				/**
+				 *	Create an array of the subject the migration is about
+				 *
+				 *	- In a migration named 'create_users' the subject is 'users' since thats what we want to create
+				 *		So it would be the second object in the array
+				 *			array(false, 'users')
+				 *
+				 *	- In a migration named 'add_name_to_users' the object is 'name' and the subject is 'users'.
+				 *		So again 'users' would be the second object, but 'name' would be the first
+				 *			array('name', 'users')
+				 *
+				 */
+				$subjects = array(false, false);
+				$matches = explode('_', str_replace($method_name . '_', '', $migration_name));
 
-                // create_{table}
-                if (count($matches) == 1)
-                {
-                    $subjects = array(false, $matches[0]);
-                }
+				// create_{table}
+				if (count($matches) == 1)
+				{
+					$subjects = array(false, $matches[0]);
+				}
 
-                // add_{field}_to_{table}
-                else if (count($matches) == 3)
-                {
-                    $subjects = array($matches[0], $matches[2]);
-                }
+				// add_{field}_to_{table}
+				else if (count($matches) == 3 && $matches[1] == 'to')
+				{
+					$subjects = array($matches[0], $matches[2]);
+				}
 
-                // There is no subject here so just carry on with a normal empty migration
-                else
-                {
-                    break;
-                }
+				// create_{table} (with underscores in table name)
+				else if (count($matches) !== 0)
+				{
+					$subjects = array(false, implode('_', $matches));
+				}
 
-                // We always pass in fields to a migration, so lets sort them out here.
-                $fields = array();
-                foreach ($args as $field)
-                {
-                    $field_array = array();
+				// There is no subject here so just carry on with a normal empty migration
+				else
+				{
+					break;
+				}
 
-                    // Each paramater for a field is seperated by the : character
-                    $parts = explode(":", $field);
+				// We always pass in fields to a migration, so lets sort them out here.
+				$fields = array();
+				foreach ($args as $field)
+				{
+					$field_array = array();
 
-                    // We must have the 'name:type' if nothing else!
-                    if (count($parts) >= 2)
-                    {
-                        $field_array['name'] = array_shift($parts);
-                        foreach ($parts as $part_i => $part)
-                        {
-                            preg_match('/([a-z0-9_-]+)(?:\[([a-z0-9]+)\])?/i', $part, $part_matches);
-                            array_shift($part_matches);
+					// Each paramater for a field is seperated by the : character
+					$parts = explode(":", $field);
 
-                            if (count($part_matches) < 1)
-                            {
-                                // Move onto the next part, something is wrong here...
-                                continue;
-                            }
+					// We must have the 'name:type' if nothing else!
+					if (count($parts) >= 2)
+					{
+						$field_array['name'] = array_shift($parts);
+						foreach ($parts as $part_i => $part)
+						{
+							preg_match('/([a-z0-9_-]+)(?:\[([a-z0-9]+)\])?/i', $part, $part_matches);
+							array_shift($part_matches);
 
-                            $option_name = ''; // This is the name of the option to be passed to the action in a field
-                            $option = $part_matches;
+							if (count($part_matches) < 1)
+							{
+								// Move onto the next part, something is wrong here...
+								continue;
+							}
 
-                            // The first option always has to be the field type
-                            if ($part_i == 0)
-                            {
-                                $option_name = 'type';
-                                $type = $option[0];
-                                if ($type === 'string')
-                                {
-                                    $type = 'varchar';
-                                }
-                                else if ($type === 'integer')
-                                {
-                                    $type = 'int';
-                                }
+							$option_name = ''; // This is the name of the option to be passed to the action in a field
+							$option = $part_matches;
 
-                                if ( ! in_array($type, array('text', 'blob', 'datetime', 'date', 'timestamp', 'time')))
-                                {
-                                    if ( ! isset($option[1]) || $option[1] == NULL)
-                                    {
-                                        if (isset(self::$_default_constraints[$type]))
-                                        {
-                                            $field_array['constraint'] = self::$_default_constraints[$type];
-                                        }
-                                    }
-                                    else
-                                    {
-                                        $field_array['constraint'] = (int) $option[1];
-                                    }
-                                }
-                                $option = $type;
-                            }
-                            else
-                            {
-                                // This allows you to put any number of :option or :option[val] into your field and these will...
-                                // ... always be passed through to the action making it really easy to add extra options for a field
-                                $option_name = array_shift($option);
-                                if (count($option) > 0)
-                                {
-                                    $option = $option[0];
-                                }
-                                else
-                                {
-                                    $option = true;
-                                }
-                            }
+							// The first option always has to be the field type
+							if ($part_i == 0)
+							{
+								$option_name = 'type';
+								$type = $option[0];
+								if ($type === 'string')
+								{
+									$type = 'varchar';
+								}
+								else if ($type === 'integer')
+								{
+									$type = 'int';
+								}
 
-                            $field_array[$option_name] = $option;
+								if ( ! in_array($type, array('text', 'blob', 'datetime', 'date', 'timestamp', 'time')))
+								{
+									if ( ! isset($option[1]) || $option[1] == NULL)
+									{
+										if (isset(self::$_default_constraints[$type]))
+										{
+											$field_array['constraint'] = self::$_default_constraints[$type];
+										}
+									}
+									else
+									{
+										$field_array['constraint'] = (int) $option[1];
+									}
+								}
+								$option = $type;
+							}
+							else
+							{
+								// This allows you to put any number of :option or :option[val] into your field and these will...
+								// ... always be passed through to the action making it really easy to add extra options for a field
+								$option_name = array_shift($option);
+								if (count($option) > 0)
+								{
+									$option = $option[0];
+								}
+								else
+								{
+									$option = true;
+								}
+							}
 
-                        }
-                        $fields[] = $field_array;
-                    }
-                    else
-                    {
-                        // Invalid field passed in
-                        continue;
-                    }
-                }
+							$field_array[$option_name] = $option;
 
-                // Call the magic action which returns an array($up, $down) for the migration
-                $migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method_name}", $subjects, $fields);
-            }
-        }
+						}
+						$fields[] = $field_array;
+					}
+					else
+					{
+						// Invalid field passed in
+						continue;
+					}
+				}
 
-        // Build the migration
-        list($up, $down)=$migration;
+				// Call the magic action which returns an array($up, $down) for the migration
+				$migration = call_user_func(__NAMESPACE__ . "\Generate_Migration_Actions::{$method_name}", $subjects, $fields);
+			}
+		}
 
-        $migration_name = ucfirst(strtolower($migration_name));
+		// Build the migration
+		list($up, $down)=$migration;
 
-        $migration = <<<MIGRATION
+		$migration_name = ucfirst(strtolower($migration_name));
+
+		$migration = <<<MIGRATION
 <?php
 
 namespace Fuel\Migrations;
