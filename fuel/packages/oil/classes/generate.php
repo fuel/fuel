@@ -341,12 +341,12 @@ namespace Fuel\Migrations;
 
 class {$migration_name} {
 
-	function up()
+	public function up()
 	{
 {$up}
 	}
 
-	function down()
+	public function down()
 	{
 {$down}
 	}
