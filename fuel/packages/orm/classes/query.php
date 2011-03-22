@@ -190,6 +190,11 @@ class Query {
 	 */
 	public function _where($condition, $type = 'where')
 	{
+		if (empty($condition))
+		{
+			return $this;
+		}
+
 		if (is_array(reset($condition)))
 		{
 			foreach ($condition as $c)
@@ -220,6 +225,7 @@ class Query {
 		}
 		else
 		{
+			exit;
 			throw new Exception('Invalid param count for where condition.');
 		}
 
@@ -620,11 +626,13 @@ class Query {
 	 */
 	public function count($distinct = false)
 	{
+		$this->select or $this->select = 'id';
+
 		// Get the columns
-		$columns = \DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: key($this->select)).') AS count_result');
+		$columns = \DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: $this->select).') AS count_result');
 
 		// Remove the current select and
-		$query = call_user_func_array('DB::select', $columns);
+		$query = call_user_func('DB::select', $columns);
 
 		// Set from table
 		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
@@ -650,11 +658,13 @@ class Query {
 	 */
 	public function max($column)
 	{
+		is_array($column) and $column = array_shift($column);
+
 		// Get the columns
 		$columns = \DB::expr('MAX('.$this->alias.'.'.$column.') AS max_result');
 
 		// Remove the current select and
-		$query = call_user_func_array('DB::select', $columns);
+		$query = call_user_func('DB::select', $columns);
 
 		// Set from table
 		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
@@ -680,11 +690,13 @@ class Query {
 	 */
 	public function min($column)
 	{
+		is_array($column) and $column = array_shift($column);
+
 		// Get the columns
 		$columns = \DB::expr('MIN('.$this->alias.'.'.$column.') AS min_result');
 
 		// Remove the current select and
-		$query = call_user_func_array('DB::select', $columns);
+		$query = call_user_func('DB::select', $columns);
 
 		// Set from table
 		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
