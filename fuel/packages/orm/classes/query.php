@@ -722,7 +722,7 @@ class Query {
 	 */
 	public function insert()
 	{
-		$res = \DB::insert(call_user_func($this->model.'::table'), array_keys($this->values))
+		$res = \DB::insert(array(call_user_func($this->model.'::table'), $this->alias), array_keys($this->values))
 			->values(array_values($this->values))
 			->execute();
 
@@ -750,7 +750,7 @@ class Query {
 		$this->group_by  = array();
 
 		// Build query and execute update
-		$query = \DB::update(call_user_func($this->model.'::table'));
+		$query = \DB::update(array(call_user_func($this->model.'::table'), $this->alias));
 		$tmp   = $this->build_query($query);
 		$query = $tmp['query'];
 		$res = $query->set($this->values)->execute();
@@ -777,7 +777,7 @@ class Query {
 		$this->group_by  = array();
 
 		// Build query and execute update
-		$query = \DB::delete(call_user_func($this->model.'::table'));
+		$query = \DB::delete(array(call_user_func($this->model.'::table'), $this->alias));
 		$tmp   = $this->build_query($query);
 		$query = $tmp['query'];
 		$res = $query->execute();
