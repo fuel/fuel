@@ -190,6 +190,11 @@ class Query {
 	 */
 	public function _where($condition, $type = 'where')
 	{
+		if (empty($condition))
+		{
+			return $this;
+		}
+
 		if (is_array(reset($condition)))
 		{
 			foreach ($condition as $c)
