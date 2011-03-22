@@ -265,7 +265,7 @@ class Model {
 			return Query::factory(get_called_class(), $options)->get();
 		}
 		// Return first or last row that matches $options array
-		elseif ($id == 'first' || $id == 'last')
+		elseif ($id == 'first' or $id == 'last')
 		{
 			$query = Query::factory(get_called_class(), $options);
 
@@ -300,6 +300,42 @@ class Model {
 		}
 	}
 
+	/**
+	 * Find one or more entries
+	 *
+	 * @param   mixed
+	 * @param   array
+	 * @return  object|array
+	 */
+	public static function count($id = null, array $options = array())
+	{
+		return Query::factory(get_called_class(), $options)->count();
+	}
+
+	/**
+	 * Find the maximum
+	 *
+	 * @param   mixed
+	 * @param   array
+	 * @return  object|array
+	 */
+	public static function max($key = null)
+	{
+		return Query::factory(get_called_class())->max($key ?: static::primary_key());
+	}
+
+	/**
+	 * Find the minimum
+	 *
+	 * @param   mixed
+	 * @param   array
+	 * @return  object|array
+	 */
+	public static function min($key = null)
+	{
+		return Query::factory(get_called_class())->min($key ?: static::primary_key());
+	}
+
 	public static function __callStatic($method, $args)
 	{
 		if ($method == '_init')
@@ -327,34 +363,24 @@ class Model {
 			throw new \Fuel_Exception('Invalid method call.  Method '.$method.' does not exist.', 0);
 		}
 
-		$and_parts = explode('_and_', $fields);
+		$where = $or_where = array();
 
-		$table_name = static::table();
-
-		$where = array();
-		$or_where = array();
-
-		foreach ($and_parts as $and_part)
+		if (($and_parts = explode('_and_', $fields)))
 		{
-			$or_parts = explode('_or_', $and_part);
+			foreach ($and_parts as $and_part)
+			{
+				$or_parts = explode('_or_', $and_part);
 
-			if (count($or_parts) == 1)
-			{
-				$where[] = array(
-					$table_name.'.'.$or_parts[0],
-					'=',
-					array_shift($args)
-				);
-			}
-			else
-			{
-				foreach($or_parts as $or_part)
+				if (count($or_parts) == 1)
 				{
-					$or_where[] = array(
-						$table_name.'.'.$or_part,
-						'=',
-						array_shift($args)
-					);
+					$where[] = array($or_parts[0] => array_shift($args));
+				}
+				else
+				{
+					foreach($or_parts as $or_part)
+					{
+						$or_where[] = array($or_part => array_shift($args));
+					}
 				}
 			}
 		}
@@ -378,9 +404,6 @@ class Model {
 		{
 			$options['or_where'] = array_merge($or_where, $options['or_where']);
 		}
-
-//		\Debug::dump($options['where']);
-//		exit;
 
 		if ($find_type == 'count')
 		{
