@@ -77,6 +77,22 @@ abstract class Relation {
 	abstract public function join($alias_from, $alias_to);
 
 	/**
+	 * Takes the current relations and attempts to save them when cascading is allowed or forced
+	 *
+	 * @param  array|Model  single or multiple model instances to save
+	 * @param  mixed        cascading setting
+	 */
+	//abstract public function save($objects, $cascade = 'default');
+
+	/**
+	 * Takes the current relations and attempts to delete them when cascading is allowed or forced
+	 *
+	 * @param  array|Model  single or multiple model instances to delete
+	 * @param  mixed        cascading setting
+	 */
+	//abstract public function delete($objects, $cascade = 'default');
+
+	/**
 	 * Allow outside access to protected properties
 	 *
 	 * @param  $property

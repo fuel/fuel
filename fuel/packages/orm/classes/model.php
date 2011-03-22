@@ -63,10 +63,10 @@ class Model {
 	 * @var  array  array of valid relation types
 	 */
 	protected static $_valid_relations = array(
-		'belongsto'  => 'BelongsTo',
-		'hasone'     => 'HasOne',
-		'hasmany'    => 'HasMany',
-		'manymany'   => 'ManyMany'
+		'belongsto'  => 'Orm\\BelongsTo',
+		'hasone'     => 'Orm\\HasOne',
+		'hasmany'    => 'Orm\\HasMany',
+		'manymany'   => 'Orm\\ManyMany'
 	);
 
 	public static function factory($data = array(), $new = true)
