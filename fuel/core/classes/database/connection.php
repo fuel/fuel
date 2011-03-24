@@ -220,7 +220,7 @@ abstract class Database_Connection {
 			// Get the total rows from the last query executed
 			$result = $this->query
 			(
-				static::SELECT,
+				\DB::SELECT,
 				'SELECT COUNT(*) AS '.$this->quote_identifier('total_rows').' '.
 				'FROM ('.$sql.') AS '.$this->quote_table('counted_results'),
 				TRUE
@@ -247,7 +247,7 @@ abstract class Database_Connection {
 		// Quote the table name
 		$table = $this->quote_identifier($table);
 
-		return $this->query(static::SELECT, 'SELECT COUNT(*) AS total_row_count FROM '.$table, FALSE)
+		return $this->query(\DB::SELECT, 'SELECT COUNT(*) AS total_row_count FROM '.$table, FALSE)
 			->get('total_row_count');
 	}
 

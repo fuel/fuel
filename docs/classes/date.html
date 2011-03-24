@@ -66,7 +66,7 @@
 				<tr>
 					<th>Example</th>
 					<td>
-<pre class="php"><code>print_r( Date::Factory( 1294176140 ) );
+<pre class="php"><code>print_r( Date::factory( 1294176140 ) );
 
 // Returns
 Fuel\Core\Date Object
@@ -149,7 +149,7 @@ Fuel\Core\Date Object
 							<tr>
 								<th><kbd>$pattern_key</kbd></th>
 								<td>"local"</td>
-								<td>The the pattern key to use (see config/date.php)</td>
+								<td>The pattern key to use (see config/date.php)</td>
 							</tr>
 						</table>
 					</td>
@@ -330,7 +330,7 @@ echo Date::days_in_month(2,2000); // 29
 							<tr>
 								<th><kbd>$pattern_key</kbd></th>
 								<td>"local"</td>
-								<td>The the pattern key to use (see config/date.php)</td>
+								<td>The pattern key to use (see config/date.php)</td>
 							</tr>
 						</table>
 					</td>
@@ -342,7 +342,7 @@ echo Date::days_in_month(2,2000); // 29
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>echo Date::Factory( 1294176140 )->format("%m/%d/%Y"); // 01/04/2011</code></pre>
+						<pre class="php"><code>echo Date::factory( 1294176140 )->format("%m/%d/%Y"); // 01/04/2011</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -365,7 +365,7 @@ echo Date::days_in_month(2,2000); // 29
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>echo Date::Factory( 1294176140 )->get_timestamp(); // 1294176140</code></pre>
+						<pre class="php"><code>echo Date::factory( 1294176140 )->get_timestamp(); // 1294176140</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -388,7 +388,7 @@ echo Date::days_in_month(2,2000); // 29
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>echo Date::Factory( 1294176140, "Europe/London" )->get_timezone(); // Europe/London</code></pre>
+						<pre class="php"><code>echo Date::factory( 1294176140, "Europe/London" )->get_timezone(); // Europe/London</code></pre>
 					</td>
 				</tr>
 				</tbody>
@@ -416,7 +416,7 @@ echo Date::days_in_month(2,2000); // 29
 							<tr>
 								<th><kbd>$timezone</kbd></th>
 								<td><i>required</i></td>
-								<td>The the timezone to set the Date object to</td>
+								<td>The timezone to set the Date object to</td>
 							</tr>
 						</table>
 					</td>
@@ -428,7 +428,7 @@ echo Date::days_in_month(2,2000); // 29
 				<tr>
 					<th>Example</th>
 					<td>
-						<pre class="php"><code>echo Date::Factory( 1294176140 )->set_timezone("America/Chicago")->get_timezone(); // America/Chicago</code></pre>
+						<pre class="php"><code>echo Date::factory( 1294176140 )->set_timezone("America/Chicago")->get_timezone(); // America/Chicago</code></pre>
 					</td>
 				</tr>
 				</tbody>

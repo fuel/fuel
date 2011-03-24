@@ -60,7 +60,7 @@ class Generate
 			$action_str .= '
 	public function action_'.$action.'()
 	{
-		$this->template->title = \'' . \Inflector::humanize($singular) .' &raquo ' . \Inflector::humanize($action) . '\';
+		$this->template->title = \'' . \Inflector::humanize($singular) .' &raquo; ' . \Inflector::humanize($action) . '\';
 		$this->template->content = View::factory(\''.$singular .'/' . $action .'\');
 	}'.PHP_EOL;
 		}

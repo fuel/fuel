@@ -327,7 +327,7 @@ class Fuel {
 
 	/**
 	 * Returns the array of currently loaded search paths.
-	 * 
+	 *
 	 * @return  array  the array of paths
 	 */
 	public static function get_paths()
@@ -445,14 +445,14 @@ class Fuel {
 
 	/**
 	 * Checks to see if a module exists or not.
-	 * 
+	 *
 	 * @param	string	the module name
 	 * @return	bool	whether it exists or not
 	 */
 	public static function module_exists($module)
 	{
 		$paths = \Config::get('module_paths', array());
-		
+
 		foreach ($paths as $path)
 		{
 			if (is_dir($path.$module))
@@ -467,7 +467,7 @@ class Fuel {
 	 * This method does basic filesystem caching.  It is used for things like path caching.
 	 *
 	 * This method is from KohanaPHP's Kohana class.
-	 * 
+	 *
 	 * @param  string  the cache name
 	 * @param  array   the data to cache (if non given it returns)
 	 * @param  int     the number of seconds for the cache too live

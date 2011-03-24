@@ -37,6 +37,8 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 
 	public function __construct($identifier, $config)
 	{
+		parent::__construct($identifier, $config);
+
 		$this->config = isset($config['file']) ? $config['file'] : array();
 
 		// check for an expiration override
@@ -48,8 +50,6 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		{
 			throw new \Cache_Exception('Cache directory does not exist or is not writable.');
 		}
-
-		parent::__construct($identifier, $config);
 	}
 
 	// ---------------------------------------------------------------------
@@ -284,14 +284,14 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		switch ($name)
 		{
 			case 'cache_id':
-				if ( empty($value) OR ! is_string($value))
+				if (empty($value) or ! is_string($value))
 				{
 					$value = 'fuel';
 				}
 			break;
 
 			case 'expiration':
-				if ( empty($value) OR ! is_numeric($value))
+				if (empty($value) or ! is_numeric($value))
 				{
 					$value = null;
 				}

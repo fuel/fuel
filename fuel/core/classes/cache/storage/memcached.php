@@ -37,6 +37,8 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 
 	public function __construct($identifier, $config)
 	{
+		parent::__construct($identifier, $config);
+
 		$this->config = isset($config['memcached']) ? $config['memcached'] : array();
 
 		// make sure we have a memcache id
@@ -68,8 +70,6 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 				throw new \Cache_Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
 			}
 		}
-
-		parent::__construct($identifier, $config);
 	}
 
 	// ---------------------------------------------------------------------
@@ -246,7 +246,7 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 		$payload = $this->prep_contents();
 
 		// write it to the memcached server
-		if ($this->memcached->set($key, $payload, is_numeric($this->expiration) ? $this->expiration : 0) === false)
+		if ($this->memcached->set($key, $payload, ! is_null($this->expiration) ? (int) $this->expiration : 0) === false)
 		{
 			throw new \Cache_Exception('Memcached returned error code "'.$this->memcached->getResultCode().'" on write. Check your configuration.');
 		}
@@ -295,14 +295,14 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 		switch ($name)
 		{
 			case 'cache_id':
-				if ( empty($value) OR ! is_string($value))
+				if (empty($value) or ! is_string($value))
 				{
 					$value = 'fuel';
 				}
 			break;
 
 			case 'expiration':
-				if ( empty($value) OR ! is_numeric($value))
+				if (empty($value) or ! is_numeric($value))
 				{
 					$value = null;
 				}

@@ -39,7 +39,7 @@
 			section.</p>
 
 			<article>
-				<h4>set($identifier, $contents = null, $expiration = null, $dependencies = array())</h4>
+				<h4>set($identifier, $contents = null, $expiration = false, $dependencies = array())</h4>
 				<p>Writes a cache.</p>
 				<table class="method">
 					<tbody>
@@ -69,7 +69,7 @@
 								<tr>
 									<th><kbd>$expiration</kbd></th>
 									<td><i>int</i></td>
-									<td>Amount of seconds until the cache expires. 0 will make it never expire, null
+									<td>Amount of seconds until the cache expires. null will make it never expire, false
 									makes it use the default expiration set in config.</td>
 								</tr>
 								<tr>
