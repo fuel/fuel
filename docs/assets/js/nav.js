@@ -32,6 +32,7 @@ var nav = {
 				"Introduction":		"general/classes.html",
 				"Extending Core":	"general/extending_core.html"
 			},
+			"Modules":			"general/modules.html",
 			"Tasks":			"general/tasks.html",
 			"Migrations":		"general/migrations.html",
 			"Coding Standards":	"general/coding_standards.html"
@@ -66,6 +67,7 @@ var nav = {
 			// "Form":			"todo.html",
 			"Format":		"classes/format.html",
 			"Ftp":			"classes/ftp.html",
+			"Fuel":			"classes/fuel.html",
 			"Html":			"classes/html.html",
 			"Image":	    "classes/image.html",
 			"Inflector":	"classes/inflector.html",
@@ -76,8 +78,8 @@ var nav = {
 			"Output":		"classes/output.html",
 			"Pagination":	"classes/pagination.html",
 			// "Profiler":	"todo.html",
-			// "Redis":		"todo.html",
-			// "Request":	"todo.html",
+			"Redis":		"classes/redis.html",
+			"Request":		"classes/request.html",
 			// "Route":		"todo.html",
 			"Security":		"classes/security.html",
 			"Session": {

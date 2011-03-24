@@ -30,7 +30,7 @@
 
 		<h5>Configuration</h5>
 
-		<p>The log files are being placed in the folder specified by the attribute '<strong>log_path</strong>' in the <strong>config.php</strong>. You can also set the '<strong>log_threshold</strong>' and the '<strong>log_date_format</strong>' parameters there.<br/>Theese settings can also be changed on the fly by using the <a href="config.html">Config Class</a>.</p>
+		<p>The log files are being placed in the folder specified by the attribute '<strong>log_path</strong>' in the <strong>config.php</strong>. You can also set the '<strong>log_threshold</strong>' and the '<strong>log_date_format</strong>' parameters there.<br/>These settings can also be changed on the fly by using the <a href="config.html">Config Class</a>.</p>
 
 		<table class="config">
 			<tbody>
@@ -61,7 +61,7 @@
 					<td>string</td>
 					<td><pre class="php"><code>'Y-m-d H:i:s'</code></pre></td>
 					<td>
-						The date format for the log entries. This format must follow the PHP date format rules, see <a href="http://www.php.net/date">http://www.php.net/date</a> for a complete list.
+						The date format for the log entries. This format must follow the PHP date format rules. See <a href="http://www.php.net/date">http://www.php.net/date</a> for a complete list.
 					</td>
 				</tr>
 			</tbody>
@@ -81,7 +81,7 @@ Log::error()</code></pre>
 $var = 1;
 Log::info('Application started (with $var = '.$var.')', 'my_init_function()');
 
-// Save the new value of $var to the log file, without the $method paramenter
+// Save the new value of $var to the log file, without the $method parameter
 $var = 5;
 Log::debug('$var is now '.$var);
 
