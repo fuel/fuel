@@ -143,7 +143,7 @@ class DBUtil {
 	 */
 	public static function analyze_table($table)
 	{
-		return static::table_maintenance('analyze', $table);
+		return static::table_maintenance('ANALYZE TAB:E', $table);
 	}
 	
 	/**
@@ -154,7 +154,7 @@ class DBUtil {
 	 */
 	public static function check_table($table)
 	{
-		return static::table_maintenance('check', $table);
+		return static::table_maintenance('CHECK TABLE', $table);
 	}
 	
 	/**
@@ -165,7 +165,7 @@ class DBUtil {
 	 */
 	public static function optimize_table($table)
 	{
-		return static::table_maintenance('optimize', $table);
+		return static::table_maintenance('OPTIMIZE TABLE', $table);
 	}
 	
 	/**
@@ -176,7 +176,7 @@ class DBUtil {
 	 */
 	public static function repair_table($table)
 	{
-		return static::table_maintenance('repair', $table);
+		return static::table_maintenance('REPAIR TABLE', $table);
 	}
 	
 	/*
@@ -186,21 +186,9 @@ class DBUtil {
 	 * @param     string    $table    the table name
 	 * @return    bool      whether the operation has succeeded
 	 */
-	public static function table_maintenance($operation, $table)
+	protected static function table_maintenance($operation, $table)
 	{
-		$operations = array(
-			'analyze'	=> 'ANALYZE TABLE',
-			'check'	=> 'ANALYZE TABLE',
-			'optimize'	=> 'OPTIMIZE TABLE',
-			'repair'	=> 'REPAIR TABLE',
-		);
-		
-		if( ! array_key_exists(($operation = strtolower($operation)), $operations))
-		{
-			throw new \Fuel_Exception(strtoupper($operation).' is not an supported operation in DB::table_maintenance.');
-		}
-		
-		$result = DB::query($operations[$operation].' '.DB::quote_identifier($table), \DB::SELECT)->execute();
+		$result = \DB::query($operation.' '.\DB::quote_identifier($table), \DB::SELECT)->execute();
 		$type = $result->get('Msg_type');
 		$message = $result->get('Msg_text');
 		$table = $result->get('Table');
@@ -211,11 +199,11 @@ class DBUtil {
 		
 		if($type === 'error')
 		{
-			\Log::error('Table: '.$table.', Operation: '.$operations[$operation].', Message: '.$result->get('Msg_text'), 'DB::table_maintenance');
+			\Log::error('Table: '.$table.', Operation: '.$operation.', Message: '.$result->get('Msg_text'), 'DBUtil::table_maintenance');
 		}
 		else
 		{
-			\Log::write(ucfirst($type), 'Table: '.$table.', Operation: '.$operations[$operation].', Message: '.$result->get('Msg_text'), 'DB::table_maintenance');
+			\Log::write(ucfirst($type), 'Table: '.$table.', Operation: '.$operation.', Message: '.$result->get('Msg_text'), 'DBUtil::table_maintenance');
 		}
 		return false;
 	}
