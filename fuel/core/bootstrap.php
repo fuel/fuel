@@ -115,6 +115,12 @@ Autoloader::add_classes(array(
 	'Fuel\\Core\\Form'						=> COREPATH.'classes/form.php',
 	'Fuel\\Core\\Ftp'						=> COREPATH.'classes/ftp.php',
 	'Fuel\\Core\\Html'						=> COREPATH.'classes/html.php',
+
+	'Fuel\\Core\\Image'					=> COREPATH.'classes/image.php',
+	'Fuel\\Core\\Image_Driver'			=> COREPATH.'classes/image/driver.php',
+	'Fuel\\Core\\Image_Gd'				=> COREPATH.'classes/image/gd.php',
+	'Fuel\\Core\\Image_Imagemagick'		=> COREPATH.'classes/image/imagemagick.php',
+
 	'Fuel\\Core\\Inflector'					=> COREPATH.'classes/inflector.php',
 	'Fuel\\Core\\Input'						=> COREPATH.'classes/input.php',
 	'Fuel\\Core\\Lang'						=> COREPATH.'classes/lang.php',
