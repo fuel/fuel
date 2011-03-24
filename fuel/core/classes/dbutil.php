@@ -15,7 +15,7 @@
 namespace Fuel\Core;
 
 /**
- * FTP Class
+ * DBUtil Class
  *
  * @package		Fuel
  * @category	Core
@@ -124,15 +124,88 @@ class DBUtil {
 	}
 
 	/**
-	 * Tuncates a table.
+	 * Truncates a table.
 	 *
-	 * @throws	Fuel\Database_Exception
-	 * @param	string	$table	the table name
-	 * @return	int		the number of affected rows
+	 * @throws    Fuel\Database_Exception
+	 * @param     string    $table    the table name
+	 * @return    int       the number of affected rows
 	 */
 	public static function truncate_table($table)
 	{
 		return DB::query('TRUNCATE TABLE '.DB::quote_identifier($table), \DB::DELETE)->execute();
+	}
+	
+	/**
+	 * Analyzes a table.
+	 *
+	 * @param     string    $table    the table name
+	 * @return    bool      whether the table is OK
+	 */
+	public static function analyze_table($table)
+	{
+		return static::table_maintenance('ANALYZE TAB:E', $table);
+	}
+	
+	/**
+	 * Checks a table.
+	 *
+	 * @param     string    $table    the table name
+	 * @return    bool      whether the table is OK
+	 */
+	public static function check_table($table)
+	{
+		return static::table_maintenance('CHECK TABLE', $table);
+	}
+	
+	/**
+	 * Optimizes a table.
+	 *
+	 * @param     string    $table    the table name
+	 * @return    bool      whether the table has been optimized
+	 */
+	public static function optimize_table($table)
+	{
+		return static::table_maintenance('OPTIMIZE TABLE', $table);
+	}
+	
+	/**
+	 * Repairs a table.
+	 *
+	 * @param     string    $table    the table name
+	 * @return    bool      whether the table has been repaired
+	 */
+	public static function repair_table($table)
+	{
+		return static::table_maintenance('REPAIR TABLE', $table);
+	}
+	
+	/*
+	 * Executes table maintenance. Will throw Fuel_Exception when the operation is not supported.
+	 *
+	 * @throws	Fuel_Exception
+	 * @param     string    $table    the table name
+	 * @return    bool      whether the operation has succeeded
+	 */
+	protected static function table_maintenance($operation, $table)
+	{
+		$result = \DB::query($operation.' '.\DB::quote_identifier($table), \DB::SELECT)->execute();
+		$type = $result->get('Msg_type');
+		$message = $result->get('Msg_text');
+		$table = $result->get('Table');
+		if($type === 'status' and in_array(strtolower($message), array('ok','table is already up to date')))
+		{
+			return true;
+		}
+		
+		if($type === 'error')
+		{
+			\Log::error('Table: '.$table.', Operation: '.$operation.', Message: '.$result->get('Msg_text'), 'DBUtil::table_maintenance');
+		}
+		else
+		{
+			\Log::write(ucfirst($type), 'Table: '.$table.', Operation: '.$operation.', Message: '.$result->get('Msg_text'), 'DBUtil::table_maintenance');
+		}
+		return false;
 	}
 
 }
