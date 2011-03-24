@@ -126,7 +126,7 @@ return array(
 		 * );
 		 */
 		'packages'	=> array(
-			// 'activerecord',
+			'orm',
 		),
 
 		/**
