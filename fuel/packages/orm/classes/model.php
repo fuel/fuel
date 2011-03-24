@@ -763,6 +763,20 @@ class Model {
 		{
 			if (empty($events) or in_array($event, $events))
 			{
+				if ( ! class_exists($observer))
+				{
+					$observer_class = 'Observer_'.$observer; // TODO: needs to work with namespaces
+					if ( ! class_exists($observer_class))
+					{
+						throw new InvalidObserver($observer);
+					}
+
+					// Add the observer with the full classname for next usage
+					unset(static::$_observers_cached[$observer]);
+					static::$_observers_cached[$observer_class] = $events;
+					$observer = $observer_class;
+				}
+
 				call_user_func(array($observer, 'orm_notify'), $this, $event);
 			}
 		}

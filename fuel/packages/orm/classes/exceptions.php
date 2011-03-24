@@ -33,3 +33,8 @@ class UndefinedProperty extends Exception {}
  * Undefined Relation Exception
  */
 class UndefinedRelation extends Exception {}
+
+/**
+ * Invalid Observer Exception
+ */
+class InvalidObserver extends Exception {}
