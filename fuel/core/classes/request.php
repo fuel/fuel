@@ -35,11 +35,6 @@ class Request {
 	protected static $previous = false;
 
 	/**
-	 * @var	array	search paths for the current active request
-	 */
-	public $paths = array();
-
-	/**
 	 * Generates a new request.  The request is then set to be the active
 	 * request.  If this is the first request, then save that as the main
 	 * request for the app.
@@ -125,12 +120,12 @@ class Request {
 		// This ensures that show_404 is only called once.
 		static $call_count = 0;
 		$call_count++;
-		
+
 		if ($call_count > 1)
 		{
 			throw new \Fuel_Exception('It appears your _404_ route is incorrect.  Multiple Recursion has happened.');
 		}
-		
+
 
 		\Output::$status = 404;
 
@@ -218,6 +213,11 @@ class Request {
 	 * @var	Controller	Controller instance once instantiated
 	 */
 	public $controller_instance;
+
+	/**
+	 * @var	array	search paths for the current active request
+	 */
+	public $paths = array();
 
 	/**
 	 * Creates the new Request object by getting a new URI object, then parsing
@@ -341,6 +341,36 @@ class Request {
 	public function output()
 	{
 		return $this->output;
+	}
+
+	/**
+	 * Add to paths which are used by Fuel::find_file()
+	 *
+	 * @param  string  the new path
+	 * @param  bool    whether to add to the front or the back of the array
+	 */
+	public function add_path($path, $prefix = false)
+	{
+		if ($prefix)
+		{
+			// prefix the path to the paths array
+			array_unshift($this->paths, $path);
+		}
+		else
+		{
+			// add the new path
+			$this->paths[] = $path;
+		}
+	}
+
+	/**
+	 * Returns the array of currently loaded search paths.
+	 *
+	 * @return  array  the array of paths
+	 */
+	public function get_paths()
+	{
+		return $this->paths;
 	}
 
 	/**
