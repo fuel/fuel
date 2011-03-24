@@ -37,6 +37,8 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 
 	public function __construct($identifier, $config)
 	{
+		parent::__construct($identifier, $config);
+
 		$this->config = isset($config['memcached']) ? $config['memcached'] : array();
 
 		// make sure we have a memcache id
@@ -68,8 +70,6 @@ class Cache_Storage_Memcached extends \Cache_Storage_Driver {
 				throw new \Cache_Exception('Memcached sessions are configured, but there is no connection possible. Check your configuration.');
 			}
 		}
-
-		parent::__construct($identifier, $config);
 	}
 
 	// ---------------------------------------------------------------------

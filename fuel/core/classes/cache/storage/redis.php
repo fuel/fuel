@@ -37,6 +37,8 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 
 	public function __construct($identifier, $config)
 	{
+		parent::__construct($identifier, $config);
+
 		$this->config = isset($config['redis']) ? $config['redis'] : array();
 
 		// make sure we have a redis id
@@ -67,8 +69,6 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 				throw new \Cache_Exception('Version 1.2 or higher of the Redis NoSQL engine is required to use the redis cache driver.');
 			}
 		}
-
-		parent::__construct($identifier, $config);
 	}
 
 	// ---------------------------------------------------------------------
