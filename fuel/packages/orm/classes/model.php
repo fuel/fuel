@@ -55,6 +55,11 @@ class Model {
 	protected static $_relations_cached = array();
 
 	/**
+	 * @var  array  cached observers
+	 */
+	protected static $_observers_cached = array();
+
+	/**
 	 * @var  array  array of fetched objects
 	 */
 	protected static $_cached_objects = array();
@@ -229,6 +234,38 @@ class Model {
 
 			return static::$_relations_cached[$class][$specific];
 		}
+	}
+
+	/**
+	 * Get the class's observers and what they observe
+	 *
+	 * @return  array
+	 */
+	public static function observers()
+	{
+		$class = get_called_class();
+
+		if ( ! array_key_exists($class, static::$_observers_cached))
+		{
+			$observers = array();
+			if (property_exists($class, '_observers'))
+			{
+				foreach (static::$_observers as $obs_k => $obs_v)
+				{
+					if (is_int($obs_k))
+					{
+						$observers[$obs_v] = array();
+					}
+					else
+					{
+						$observers[$obs_k] = (array) $obs_v;
+					}
+				}
+			}
+			static::$_observers_cached[$class] = $observers;
+		}
+
+		return static::$_observers_cached;
 	}
 
 	/**
@@ -693,6 +730,22 @@ class Model {
 	}
 
 	/**
+	 * Calls all observers for the current event
+	 *
+	 * @param  string
+	 */
+	public function observe($event)
+	{
+		foreach ($this->observers() as $observer => $events)
+		{
+			if (empty($events) or in_array($event, $events))
+			{
+				call_user_func(array($observer, 'orm_notify'), $this, $event);
+			}
+		}
+	}
+
+	/**
 	 * Compare current state with the retrieved state
 	 *
 	 * @param   string|array $property
@@ -710,6 +763,16 @@ class Model {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns whether this is a saved or a new object
+	 *
+	 * @return  bool
+	 */
+	public function is_new()
+	{
+		return $this->_is_new;
 	}
 
 	/**
