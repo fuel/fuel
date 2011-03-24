@@ -9,7 +9,6 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		DudeAmI aka Kris <dudeami0@gmail.com>
  * @license		MIT License
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
@@ -43,15 +42,17 @@ class Image {
 	 */
 	public static function factory($config = array(), $filename = null)
 	{
-		$protocol = ucfirst(!empty($config['driver']) ? $config['driver'] : 'gd');
+		$protocol = ucfirst( ! empty($config['driver']) ? $config['driver'] : 'gd');
 		$class = 'Image_'.$protocol;
-		if ($protocol == 'Driver' || !class_exists($class))
+		if ($protocol == 'Driver' || ! class_exists($class))
 		{
 			throw new \Fuel_Exception('Protocol '.$protocol.' is not a valid protocol for emailing.');
 		}
 		$return = new $class($config);
 		if ($filename !== null)
+		{
 			$return->load($filename);
+		}
 		return $return;
 	}
 
@@ -68,7 +69,7 @@ class Image {
 
 	/**
 	 * Loads the image and checks if its compatable.
-	 * 
+	 *
 	 * @param  string  $filename  The file to load
 	 * @return Image_Driver
 	 */
@@ -79,9 +80,9 @@ class Image {
 
 	/**
 	 * Crops the image using coordinates or percentages.
-	 * 
+	 *
 	 * Absolute integer or percentages accepted for all 4.
-	 *  
+	 *
 	 * @param  integer  $x1  X-Coordinate based from the top-left corner.
 	 * @param  integer  $y1  Y-Coordinate based from the top-left corner.
 	 * @param  integer  $x2  X-Coordinate based from the bottom-right corner.
@@ -104,7 +105,7 @@ class Image {
 	 */
 	public static function resize($width, $height, $keepar = true, $pad = false)
 	{
-		return Image::instance()->resize($width, $height, $keepar);
+		return Image::instance()->resize($width, $height, $keepar, $pad);
 	}
 
 	/**
@@ -121,7 +122,7 @@ class Image {
 
 	/**
 	 * Rotates the image
-	 * 
+	 *
 	 * @param  integer  $degrees  The degrees to rotate, negatives integers allowed.
 	 * @return Image_Driver
 	 */
@@ -132,7 +133,7 @@ class Image {
 
 	/**
 	 * Adds a watermark to the image.
-	 * 
+	 *
 	 * @param  string   $filename  The filename of the watermark file to use.
 	 * @param  string   $position  The position of the watermark, ex: "bottom right", "center center", "top left"
 	 * @param  integer  $padding   The spacing between the edge of the image.
@@ -201,12 +202,12 @@ class Image {
 	 */
 	public static function save_pa($prepend, $append = null, $permissions = null)
 	{
-		return Image::instance()->save_pa($prepend, $append, $permission);
+		return Image::instance()->save_pa($prepend, $append, $permissions);
 	}
 
 	/**
 	 * Outputs the file directly to the user.
-	 * 
+	 *
 	 * @param  string  $filetype  The extension type to use. Ex: png, jpg, bmp, gif
 	 */
 	public static function output($filetype = null)
@@ -215,3 +216,5 @@ class Image {
 	}
 
 }
+
+// End of file image.php

@@ -9,7 +9,6 @@
  *
  * @package		Fuel
  * @version		1.0
- * @author		DudeAmI aka Kris <dudeami0@gmail.com>
  * @license		MIT License
  * @copyright	2010 - 2011 Fuel Development Team
  * @link		http://fuelphp.com
@@ -19,12 +18,12 @@ namespace Fuel\Core;
 
 abstract class Image_Driver {
 
-	protected $image_fullpath = null;
+	protected $image_fullpath  = null;
 	protected $image_directory = null;
-	protected $image_filename = null;
+	protected $image_filename  = null;
 	protected $image_extension = null;
-	protected $config = array();
-	protected $queued_actions = array();
+	protected $config          = array();
+	protected $queued_actions  = array();
 	protected $accepted_extension;
 
 	public function __construct($config)
@@ -44,7 +43,7 @@ abstract class Image_Driver {
 		{
 			$this->config = array_merge($this->config, $index);
 		}
-		else if ($index != null)
+		elseif ($index != null)
 		{
 			$this->config[$index] = $value;
 		}
@@ -53,15 +52,15 @@ abstract class Image_Driver {
 
 	/**
 	 * Exectues the presets set in the config. Additional parameters replace the $1, $2, ect.
-	 * 
-	 * @param	string	$name	The name of the preset.
+	 *
+	 * @param  string  $name  The name of the preset.
 	 */
 	public function preset($name)
 	{
 		$vars = func_get_args();
 		if (isset($this->config['presets'][$name]))
 		{
-			$old_config = $this->config;
+			$old_config   = $this->config;
 			$this->config = array_merge($this->config, $this->config['presets'][$name]);
 			foreach ($this->config['actions'] AS $action)
 			{
@@ -74,7 +73,7 @@ abstract class Image_Driver {
 						$action[$i] = preg_replace('#\$' . $x . '#', $vars[$x], $action[$i]);
 					}
 				}
-				call_user_func_array(array(&$this, $func), $action);
+				call_user_func_array(array($this, $func), $action);
 			}
 			$this->config = $old_config;
 		}
@@ -87,16 +86,16 @@ abstract class Image_Driver {
 	/**
 	 * Loads the image and checks if its compatable.
 	 *
-	 * @param	string	$filename	The file to load
-	 * @param	string	$return_data	Decides if it should return the images data, or just "$this".
-	 * @return	Image_Driver
+	 * @param   string  $filename     The file to load
+	 * @param   string  $return_data  Decides if it should return the images data, or just "$this".
+	 * @return  Image_Driver
 	 */
 	public function load($filename, $return_data = false)
 	{
 		// First check if the filename exists
 		$filename = realpath($filename);
 		$return = array(
-			'filename' => $filename, 
+			'filename'    => $filename,
 			'return_data' => $return_data
 		);
 		if (file_exists($filename))
@@ -106,12 +105,13 @@ abstract class Image_Driver {
 			if ($ext !== false)
 			{
 				$return = array_merge($return, array(
-					'image_fullpath' => $filename,
+					'image_fullpath'  => $filename,
 					'image_directory' => dirname($filename),
-					'image_filename' => basename($filename),
+					'image_filename'  => basename($filename),
 					'image_extension' => $ext
 				));
-				if (!$return_data) {
+				if ( ! $return_data)
+				{
 					$this->image_fullpath = $filename;
 					$this->image_directory = dirname($filename);
 					$this->image_filename = basename($filename);
@@ -137,11 +137,11 @@ abstract class Image_Driver {
 	 *
 	 * Negative whole numbers or percentages are coordinates from the bottom right.
 	 *
-	 * @param	integer	$x1	X-Coordinate for first set.
-	 * @param	integer	$y1	Y-Coordinate for first set.
-	 * @param	integer	$x2	X-Coordinate for second set.
-	 * @param	integer	$y2	Y-Coordinate for second set.
-	 * @return	Image_Driver
+	 * @param   integer  $x1  X-Coordinate for first set.
+	 * @param   integer  $y1  Y-Coordinate for first set.
+	 * @param   integer  $x2  X-Coordinate for second set.
+	 * @param   integer  $y2  Y-Coordinate for second set.
+	 * @return  Image_Driver
 	 */
 	public function crop($x1, $y1, $x2, $y2)
 	{
@@ -154,20 +154,17 @@ abstract class Image_Driver {
 	 *
 	 * Formats the crop method input for use with driver specific methods
 	 *
-	 * @param	integer	$x1	X-Coordinate for first set.
-	 * @param	integer	$y1	Y-Coordinate for first set.
-	 * @param	integer	$x2	X-Coordinate for second set.
-	 * @param	integer	$y2	Y-Coordinate for second set.
-	 * @return	Array	An array of variables for the specific driver.
+	 * @param   integer  $x1  X-Coordinate for first set.
+	 * @param   integer  $y1  Y-Coordinate for first set.
+	 * @param   integer  $x2  X-Coordinate for second set.
+	 * @param   integer  $y2  Y-Coordinate for second set.
+	 * @return  Array    An array of variables for the specific driver.
 	 */
 	protected function _crop($x1, $y1, $x2, $y2)
 	{
-		if ($y1 === null)
-			$y1 = $x1;
-		if ($x2 === null)
-			$x2 = "-" . $x1;
-		if ($y2 === null)
-			$y2 = "-" . $y1;
+		$y1 === null and $y1 = $x1;
+		$x2 === null and $x2 = "-" . $x1;
+		$y2 === null and $y2 = "-" . $y1;
 
 		$x1 = $this->convert_number($x1, true);
 		$y1 = $this->convert_number($y1, false);
@@ -185,11 +182,11 @@ abstract class Image_Driver {
 	/**
 	 * Resizes the image. If the width or height is null, it will resize retaining the original aspect ratio.
 	 *
-	 * @param	integer	$width	The new width of the image.
-	 * @param	integer	$height	The new height of the image.
-	 * @param	boolean	$keepar	If false, allows stretching of the image.
-	 * @param	boolean	$pad	Adds padding to the image when resizing.
-	 * @return	Image_Driver
+	 * @param   integer  $width   The new width of the image.
+	 * @param   integer  $height  The new height of the image.
+	 * @param   boolean  $keepar  If false, allows stretching of the image.
+	 * @param   boolean  $pad     Adds padding to the image when resizing.
+	 * @return  Image_Driver
 	 */
 	public function resize($width, $height = null, $keepar = true, $pad = false)
 	{
@@ -202,32 +199,32 @@ abstract class Image_Driver {
 	 *
 	 * Formats the resize method input for use with driver specific methods.
 	 *
-	 * @param	integer	$width	The new width of the image.
-	 * @param	integer	$height	The new height of the image.
-	 * @param	boolean	$keepar	If false, allows stretching of the image.
-	 * @param	boolean	$pad	Adds padding to the image when resizing.
-	 * @return	Array	An array of variables for the specific driver.
+	 * @param   integer  $width   The new width of the image.
+	 * @param   integer  $height  The new height of the image.
+	 * @param   boolean  $keepar  If false, allows stretching of the image.
+	 * @param   boolean  $pad     Adds padding to the image when resizing.
+	 * @return  Array    An array of variables for the specific driver.
 	 */
 	protected function _resize($width, $height = null, $keepar = true, $pad = true)
 	{
-		if ($height == null || $width == null)
+		if ($height == null or $width == null)
 		{
-			if ($height == null && substr($width, -1) == '%')
+			if ($height == null and substr($width, -1) == '%')
 			{
 				$height = $width;
 			}
-			else if (substr($height, -1) == '%' && $width == null)
+			elseif (substr($height, -1) == '%' and $width == null)
 			{
 				$width = $height;
 			}
 			else
 			{
 				$sizes = $this->sizes();
-				if ($height == null && $width != null)
+				if ($height == null and $width != null)
 				{
 					$height = $width * ($sizes->width / $sizes->height);
 				}
-				else if ($height != null && $width == null)
+				elseif ($height != null and $width == null)
 				{
 					$width = $height * ($sizes->height / $sizes->width);
 				}
@@ -237,17 +234,17 @@ abstract class Image_Driver {
 				}
 			}
 		}
-		$origwidth = $this->convert_number($width, true);
+		$origwidth  = $this->convert_number($width, true);
 		$origheight = $this->convert_number($height, false);
-		$width = $origwidth;
-		$height = $origheight;
-		$sizes = $this->sizes();
+		$width      = $origwidth;
+		$height     = $origheight;
+		$sizes      = $this->sizes();
 		$x = 0;
 		$y = 0;
 		if ($keepar)
 		{
 			// See which is the biggest ratio
-			$width_ratio = $width / $sizes->width;
+			$width_ratio  = $width / $sizes->width;
 			$height_ratio = $height / $sizes->height;
 			if ($width_ratio < $height_ratio)
 			{
@@ -263,13 +260,13 @@ abstract class Image_Driver {
 			$x = floor(($origwidth - $width) / 2);
 			$y = floor(($origheight - $height) / 2);
 		} else {
-			$origwidth = $width;
+			$origwidth  = $width;
 			$origheight = $height;
 		}
 		return array(
-			'width' => $width,
-			'height' => $height,
-			'cwidth' => $origwidth,
+			'width'   => $width,
+			'height'  => $height,
+			'cwidth'  => $origwidth,
 			'cheight' => $origheight,
 			'x' => $x,
 			'y' => $y
@@ -285,10 +282,10 @@ abstract class Image_Driver {
 	protected function _crop_resize($width, $height)
 	{
 		// Determine the crop size
-		$sizes = $this->sizes();
-		$width = $this->convert_number($width, true);
-		$height = $this->convert_number($height, false);
-		$widthr = $sizes->width / $width;
+		$sizes   = $this->sizes();
+		$width   = $this->convert_number($width, true);
+		$height  = $this->convert_number($height, false);
+		$widthr  = $sizes->width / $width;
 		$heightr = $sizes->height / $height;
 		$x = $y = 0;
 		if ($widthr < $heightr)
@@ -365,12 +362,12 @@ abstract class Image_Driver {
 	{
 		$filename = realpath($filename);
 		$return = false;
-		if (file_exists($filename) && $this->check_extension($filename, false))
+		if (file_exists($filename) and $this->check_extension($filename, false))
 		{
 			$x = 0;
 			$y = 0;
 			$wsizes = $this->sizes($filename);
-			$sizes = $this->sizes();
+			$sizes  = $this->sizes();
 			// Get the x and y  positions.
 			list($ypos, $xpos) = explode(' ', $position);
 			switch ($xpos)
@@ -434,8 +431,8 @@ abstract class Image_Driver {
 	 */
 	protected function _border($size, $color = null)
 	{
-		if (empty($color))
-			$color = $this->config['bgcolor'];
+		empty($color) and $color = $this->config['bgcolor'];
+
 		return array(
 			'size' => $size,
 			'color' => $color
@@ -483,7 +480,8 @@ abstract class Image_Driver {
 		return $this;
 	}
 
-	public function _round_border($radius, $borderwidth, $color) {
+	public function _round_border($radius, $borderwidth, $color)
+	{
 		$this->rounded($radius);
 	}
 
@@ -499,21 +497,23 @@ abstract class Image_Driver {
 	 */
 	protected function _rounded($radius, $sides, $antialias)
 	{
-		if ($radius < 0)
-			$radius = 0;
+		$radius < 0 and $radius = 0;
 		$tl = $tr = $bl = $br = $sides == null;
+
 		if ($sides != null)
 		{
-			$sides = explode(" ", $sides);
-			foreach ($sides AS $side)
+			$sides = explode(' ', $sides);
+			foreach ($sides as $side)
 			{
 				if ($side == 'tl' || $side == 'tr' || $side == 'bl' || $side == 'br')
+				{
 					$$side = true;
+				}
 			}
 		}
-		if ($antialias == null)
-			$antialias = 1;
-		return Array(
+		$antialias == null and $antialias = 1;
+
+		return array(
 			'radius' => $radius,
 			'tl' => $tl,
 			'tr' => $tr,
@@ -532,19 +532,30 @@ abstract class Image_Driver {
 	public function save($filename, $permissions = null)
 	{
 		$directory = dirname($filename);
-		if (!is_dir($directory))
+		if ( ! is_dir($directory))
+		{
 			throw new \Fuel_Exception("Could not find directory \"$directory\"");
+		}
+
 		// Touch the file
-		if (!touch($filename))
+		if ( ! touch($filename))
+		{
 			throw new \Fuel_Exception("Do not have permission to write to \"$filename\"");
+		}
+
 		// Set the new permissions
-		if ($permissions != null)
-			if (!chmod($filename, $permissions))
-				throw new \Fuel_Exception("Could not set permissions on the file.");
-		if (!$this->check_extension($filename, true))
+		if ($permissions != null and ! chmod($filename, $permissions))
+		{
+			throw new \Fuel_Exception("Could not set permissions on the file.");
+		}
+
+		if ( ! $this->check_extension($filename, true))
+		{
 			$filename .= "." . $this->image_extension;
+		}
+
 		$this->debug("", "Saving image as <code>$filename</code>");
-		return Array(
+		return array(
 			'filename' => $filename
 		);
 	}
@@ -560,7 +571,7 @@ abstract class Image_Driver {
 	public function save_pa($append, $prepend = null, $extension = null, $permissions = null)
 	{
 		$filename = substr($this->image_filename, 0, -(strlen($this->image_extension) + 1));
-		$fullpath = $this->image_directory . "/" . $append . $filename . $prepend . '.' . ($extension !== null ? $extension : $this->image_extension);
+		$fullpath = $this->image_directory.'/'.$append.$filename.$prepend.'.'.($extension !== null ? $extension : $this->image_extension);
 		$this->save($fullpath, $permissions);
 		return $this;
 	}
@@ -573,19 +584,23 @@ abstract class Image_Driver {
 	public function output($filetype = null)
 	{
 		if ($filetype == null)
-			if ($this->config['filetype'] == null)
-				$filetype = $this->image_extension;
-			else
-				$filetype = $this->config['filetype'];
+		{
+			$filetype = $this->config['filetype'] == null ? $this->image_extension : $this->config['filetype'];
+		}
+
 		if ($this->check_extension($filetype, false))
 		{
-			if (!$this->config['debug'])
+			if ( ! $this->config['debug'])
+			{
 				header('Content-Type: image/' . $filetype);
-		} else
+			}
+		}
+		else
 		{
 			throw new \Fuel_Exception("Image extension $filetype is unsupported.");
 		}
-		$this->debug("", "Outputting image as $filetype");
+
+		$this->debug('', "Outputting image as $filetype");
 		return array(
 			'filetype' => $filetype
 		);
@@ -614,12 +629,11 @@ abstract class Image_Driver {
 	protected function check_extension($filename, $writevar = true)
 	{
 		$return = false;
-		foreach ($this->accepted_extensions AS $ext)
+		foreach ($this->accepted_extension AS $ext)
 		{
 			if (substr($filename, strlen($ext) * -1) == $ext)
 			{
-				if ($writevar)
-					$this->image_extension = $ext;
+				$writevar and $this->image_extension = $ext;
 				$return = $ext;
 			}
 		}
@@ -664,7 +678,10 @@ abstract class Image_Driver {
 		$func = func_get_args();
 		$tmpfunc = array();
 		for ($i = 0; $i < count($func); $i++)
+		{
 			$tmpfunc[$i] = var_export($func[$i], true);
+		}
+
 		$this->debug("Queued <code>" . implode(", ", $tmpfunc) . "</code>");
 		$this->queued_actions[] = $func;
 	}
@@ -680,12 +697,16 @@ abstract class Image_Driver {
 		{
 			$tmpfunc = array();
 			for ($i = 0; $i < count($action); $i++)
+			{
 				$tmpfunc[$i] = var_export($action[$i], true);
-			$this->debug("", "<b>Executing <code>" . implode(", ", $tmpfunc) . "</code></b>");
+			}
+			$this->debug('', "<b>Executing <code>" . implode(", ", $tmpfunc) . "</code></b>");
 			call_user_func_array(array(&$this, '_' . $action[0]), array_slice($action, 1));
 		}
 		if (($clear === null && $this->config['clear_queue']) || $clear === true)
+		{
 			$this->queued_actions = array();
+		}
 	}
 
 	/**
@@ -693,14 +714,17 @@ abstract class Image_Driver {
 	 *
 	 * @param	string	$message
 	 */
-	protected function debug($message)
+	protected function debug()
 	{
 		if ($this->config['debug'])
 		{
 			$messages = func_get_args();
-			foreach ($messages AS $message)
+			foreach ($messages as $message)
+			{
 				echo '<div>' . $message . '&nbsp;</div>';
+			}
 		}
 	}
-
 }
+
+// End of file driver.php
