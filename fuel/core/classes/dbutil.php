@@ -110,7 +110,7 @@ class DBUtil {
 				$sql .= ' UNSIGNED';
 			}
 
-			$sql .= array_key_exists('DEFAULT', $attr) ? ' DEFAULT '.DB::escape($attr['DEFAULT']) : '';
+			$sql .= array_key_exists('DEFAULT', $attr) ? ' DEFAULT '. (($attr['DEFAULT'] instanceof \Database_Expression) ? $attr['DEFAULT']  : DB::escape($attr['DEFAULT'])) : '';
 			$sql .= array_key_exists('NULL', $attr) ? (($attr['NULL'] === true) ? ' NULL' : ' NOT NULL') : '';
 
 			if (array_key_exists('AUTO_INCREMENT', $attr) && $attr['AUTO_INCREMENT'] === true)
