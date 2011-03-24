@@ -489,6 +489,11 @@ class Model {
 		{
 			static::$_cached_objects[get_class($this)][static::implode_pk($data)] = $this;
 			$this->_is_new = false;
+			$this->observe('after_load');
+		}
+		else
+		{
+			$this->observe('after_create');
 		}
 	}
 
@@ -591,9 +596,15 @@ class Model {
 	 */
 	public function save()
 	{
+		$this->observe('before_save');
+
 		// save relations first in some way
 
-		return $this->_is_new ? $this->create() : $this->update();
+		$return = $this->_is_new ? $this->create() : $this->update();
+
+		$this->observe('after_save');
+
+		return $return;
 	}
 
 	/**
@@ -606,6 +617,8 @@ class Model {
 		{
 			return false;
 		}
+
+		$this->observe('before_insert');
 
 		// Set all current values
 		$query = Query::factory(get_called_class());
@@ -634,6 +647,8 @@ class Model {
 		static::$_cached_objects[get_class($this)][static::implode_pk($this)] = $this;
 		$this->_update_original();
 
+		$this->observe('after_insert');
+
 		return $id !== false;
 	}
 
@@ -653,6 +668,8 @@ class Model {
 		{
 			return true;
 		}
+
+		$this->observe('before_update');
 
 		// Create the query and limit to primary key(s)
 		$query       = Query::factory(get_called_class())->limit(1);
@@ -681,6 +698,8 @@ class Model {
 		// update the original property on success
 		$this->_update_original();
 
+		$this->observe('after_update');
+
 		return true;
 	}
 
@@ -694,6 +713,8 @@ class Model {
 		{
 			return false;
 		}
+
+		$this->observe('before_delete');
 
 		// Create the query and limit to primary key(s)
 		$query = Query::factory(get_called_class())->limit(1);
@@ -714,6 +735,8 @@ class Model {
 		{
 			unset(static::$_cached_objects[get_called_class()][static::implode_pk($this)]);
 		}
+
+		$this->observe('after_delete');
 
 		return $this->_original;
 	}
@@ -788,6 +811,8 @@ class Model {
 
 		// This is a new object
 		$this->_is_new = true;
+
+		$this->observe('after_clone');
 
 		// TODO
 		// hasone-belongsto cant be copied and has to be emptied
