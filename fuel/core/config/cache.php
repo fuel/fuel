@@ -23,10 +23,10 @@ return array(
 	 */
 
 	// default storage driver
-	'driver'				=> 'file',
+	'driver'      => 'file',
 
 	// default expiration (null = no expiration)
-	'expiration'	=> null,
+	'expiration'  => null,
 
 	/**
 	 * Default content handlers: convert values to strings to be stored
@@ -43,23 +43,22 @@ return array(
 	 */
 
 	// specific configuration settings for the file driver
-	'file'					=> array(
-		'path'					=>	'',					// if empty the default will be application/cache/
-							),
+	'file'  => array(
+		'path'  =>	'',  // if empty the default will be application/cache/
+	),
 
 	// specific configuration settings for the memcached driver
-	'memcached'				=> array(
-		'cache_id'				=> 'fuel',					// unique id to distinquish fuel cache items from others stored on the same server(s)
-		'servers'				=> array(					// array of servers and portnumbers that run the memcached service
-									array('host' => '127.0.0.1', 'port' => 11211, 'weight' => 100)
-								),
-							),
+	'memcached'  => array(
+		'cache_id'  => 'fuel',  // unique id to distinquish fuel cache items from others stored on the same server(s)
+		'servers'   => array(   // array of servers and portnumbers that run the memcached service
+			array('host' => '127.0.0.1', 'port' => 11211, 'weight' => 100)
+		),
+	),
 
 	// specific configuration settings for the redis driver
-	'redis'					=> array(
-		'database'				=> 'default'				// name of the redis database to use (as configured in config/db.php)
-							)
-
+	'redis'  => array(
+		'database'  => 'default'  // name of the redis database to use (as configured in config/db.php)
+	),
 );
 
 /* End of file cache.php */
