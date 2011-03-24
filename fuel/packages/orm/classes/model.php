@@ -265,7 +265,7 @@ class Model {
 			static::$_observers_cached[$class] = $observers;
 		}
 
-		return static::$_observers_cached;
+		return static::$_observers_cached[$class];
 	}
 
 	/**
