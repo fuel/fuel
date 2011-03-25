@@ -284,14 +284,14 @@ class Cache_Storage_File extends \Cache_Storage_Driver {
 		switch ($name)
 		{
 			case 'cache_id':
-				if ( empty($value) OR ! is_string($value))
+				if (empty($value) or ! is_string($value))
 				{
 					$value = 'fuel';
 				}
 			break;
 
 			case 'expiration':
-				if ( empty($value) OR ! is_numeric($value))
+				if (empty($value) or ! is_numeric($value))
 				{
 					$value = null;
 				}

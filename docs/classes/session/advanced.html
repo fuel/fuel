@@ -34,7 +34,7 @@
 		<p>
 			For most cases, it is sufficient to configure the desired driver, and use the methods documented on the <a href="./usage.html">usage</a> page.
 			However, there are situations where you would like more control over the way sessions behave.
-			You might want to use a different session driver than is configured in the session configation file.
+			You might want to use a different session driver than is configured in the session configuration file.
 			Or you have a need for multiple drivers concurrently. This is where the <kbd>factory</kbd> method comes in.
 		</p>
 		<p>
@@ -170,8 +170,8 @@ $(function()
 		'queueSizeLimit' : 3,
 		'simUploadLimit' : 3,
 		'removeCompleted': false,
-		'onSelectOnce'   : function(event,data)
 		'scriptData'     : {'fuelcid': getCookie('fuelcid')},
+		'onSelectOnce'   : function(event,data)
 		{
 			$('#status-message').text(data.filesSelected + ' files have been added to the queue.');
 		},
@@ -206,7 +206,7 @@ $(function()
 			- your page sends two ajax requests. the session cookie containing ID-A is again sent to the server with each request.<br />
 			- ajax request 1 finishes, and rotates the ID. A cookie with ID-B is sent to the browser.<br />
 			- now ajax request 2 finishes. Because it sent the same cookie, it also decides to rotate, this time to ID-C.<br />
-			(you will get a different ID, because session id's are generated using a randomized algorithm)<br />
+			(you will get a different ID, because session IDs are generated using a randomized algorithm)<br />
 		</p>
 		<p>
 			Now we have a problem. The session class tries to update the stored session with key ID-A to ID-C, but it can't find that session.
@@ -219,7 +219,7 @@ $(function()
 		</p>
 		<p>
 			Fuel's session class contains two mechanisms to detect and mitigate this problem.
-			Every session key store contains two session ID's: the current ID and the previous ID.
+			Every session key store contains two session IDs: the current ID and the previous ID.
 			If a request comes in just after the session id has been rotated, the correct session can be located using the previous session id stored in the key store.
 			And it case of a session id mismatch which could not be recovered using the previous id, no updated cookie will be sent back to the browser.
 			The result is that you lose the session data of that request, but you don't lose the session itself.

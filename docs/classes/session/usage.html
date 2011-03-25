@@ -186,7 +186,7 @@ if ( $userid === false )
 	echo "no user is logged in";
 }
 
-// you can retieve the entire array stored
+// you can retrieve the entire array stored
 $arr = Session::get('array');
 
 // or get a specific key from the array
@@ -348,7 +348,7 @@ $step = Session::get_flash('step');
 
 		<article>
 			<h4>keep_flash($variable)</h4>
-			<p>The <strong>keep_flash</strong> method resets a flash variable stored in the session to a 'unrequested' state. This allows you to get a flash variable, and still pass it on to the next page request.</p>
+			<p>The <strong>keep_flash</strong> method resets a flash variable stored in the session to an 'unrequested' state. This allows you to get a flash variable, and still pass it on to the next page request.</p>
 			<table class="method">
 				<tbody>
 				<tr>

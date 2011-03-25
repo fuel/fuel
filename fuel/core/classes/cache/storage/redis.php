@@ -277,7 +277,7 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 
 		// write the cache
 		$this->redis->set($key, $this->prep_contents());
-		if (!empty($this->expiration))
+		if ( ! empty($this->expiration))
 		{
 			$this->redis->expireat($key, $this->expiration);
 		}
@@ -426,21 +426,21 @@ class Cache_Storage_Redis extends Cache_Storage_Driver {
 		{
 			case 'database':
 				// do we have a database config
-				if ( empty($value) OR ! is_array($value))
+				if (empty($value) or ! is_array($value))
 				{
 					$value = 'default';
 				}
 			break;
 
 			case 'cache_id':
-				if ( empty($value) OR ! is_string($value))
+				if (empty($value) or ! is_string($value))
 				{
 					$value = 'fuel';
 				}
 			break;
 
 			case 'expiration':
-				if ( empty($value) OR ! is_numeric($value))
+				if (empty($value) or ! is_numeric($value))
 				{
 					$value = null;
 				}

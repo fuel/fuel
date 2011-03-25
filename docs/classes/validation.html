@@ -49,7 +49,7 @@ $val = Validation::factory();
 $val = Validation::factory('my_validation');</code></pre>
 
 			<p>After having it instantiated you can start adding fields to it. This works exactly like the when using
-			the Fieldset class, however here we'll only document the prefered usage.</p>
+			the Fieldset class, however here we'll only document the preferred usage.</p>
 
 			<pre class="php"><code>$val = Validation::factory('my_validation');
 
@@ -63,7 +63,7 @@ $val->add('password', 'Your password')->add_rule('required')
 
 			<p>The first parameter of the add_rule() method can contain PHP native function names, any valid PHP
 			callback and Closures in addition to the provided validation methods. The method will get the value to
-			be validated as its first arguement and any further arguements can be given to the add_rule() method.</p>
+			be validated as its first argument and any further arguments can be given to the add_rule() method.</p>
 
 			<p>We also provide a shorter syntax which is very limited in comparison. It will not accept array-callbacks,
 			closures or parameters other then strings.</p>
@@ -91,7 +91,7 @@ if ($val->run(array('username' => 'something')))</code></pre>
 
 			<p>When validation is ran there are three methods available for information about the input:</p>
 
-			<pre class="php"><code>// get an array of succesfully validated fields => value pairs
+			<pre class="php"><code>// get an array of successfully validated fields => value pairs
 $vars = $val->validated();
 // get an array of validation errors as field => error pairs
 $errors = $val->errors();
@@ -192,7 +192,7 @@ $val->add_field('email', 'Email address', 'match_value[me@mydomain.com,1]|valid_
 						<th>valid_emails</th>
 						<td>(none)</td>
 						<td>
-							Validates multiple email addresses seperated by comma's.
+							Validates multiple email addresses separated by commas.
 						</td>
 					</tr>
 					<tr>
@@ -276,7 +276,7 @@ $val->add_field('email', 'Email address', 'match_value[me@mydomain.com,1]|valid_
 					</tr>
 					<tr>
 						<th>punctuation</th>
-						<td>Allow dots, comma's, exclemation marks, question marks, colons and semi-colons.</td>
+						<td>Allow dots, commas, exclamation marks, question marks, colons and semi-colons.</td>
 					</tr>
 					<tr>
 						<th>dashes</th>
@@ -293,7 +293,7 @@ $val->add_field('email', 'Email address', 'match_value[me@mydomain.com,1]|valid_
 		<article>
 			<h3><a name="errors">Error messages</a></h3>
 
-			<p>Error messages are set using a language file "validation.php" which is loaded automaticly.</p>
+			<p>Error messages are set using a language file "validation.php" which is loaded automatically.</p>
 
 			<p>There are 2 ways of manipulating the error messages during validation.</p>
 
@@ -344,7 +344,7 @@ echo $val->errors('username')->get_message('The field :label must be filled out 
 		<article>
             <h3><a name="methods">Extending Validation class</a></h3>
 
-            <p>There are few aproaches to extend the validation class:</p>
+            <p>There are few approaches to extend the validation class:</p>
 
             <p>1. To extend the core class like described in the <a href="../general/extending_core.html">Extending Core Classes</a></p>
 

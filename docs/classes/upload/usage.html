@@ -350,7 +350,7 @@ if ( Upload::is_valid() )
 					<th>Example</th>
 					<td>
 						<pre class="php">
-<code>// get the list of succesfully uploaded files
+<code>// get the list of successfully uploaded files
 foreach( Upload::get_files() as $file )
 {
 	// do something with the file info
@@ -445,7 +445,7 @@ foreach( Upload::get_errors() as $file )
 				</tr>
 				<tr>
 					<th>Returns</th>
-					<td>boolean - true if the callback was registered, false if the registation failed.</td>
+					<td>boolean - true if the callback was registered, false if the registration failed.</td>
 				</tr>
 				<tr>
 					<th>Example</th>
@@ -493,7 +493,7 @@ Upload::register('before', function (&amp;$file) {
 			<p>
 				The callback will receive an entry from the uploaded files array as parameter. The entry is passed by reference, which allows
 				the callback function to modify the entries of the array.<br />
-				If the callback function returnes an integer, it is assumed to be an update of the uploaded file's error code.
+				If the callback function returns an integer, it is assumed to be an update of the uploaded file's error code.
 				All other return values are ignored.
 			</p>
 		</article>
@@ -503,7 +503,7 @@ Upload::register('before', function (&amp;$file) {
 			<p>
 				The <strong>process</strong> method processes the information about all uploaded files,
 				normalizes the different permutations of form field names that can be used,
-				fetches additional information about the file and it's mimetype,
+				fetches additional information about the file and its mimetype,
 				and validates the file.
 			</p>
 			<table class="method">

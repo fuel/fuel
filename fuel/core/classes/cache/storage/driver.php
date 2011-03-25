@@ -237,12 +237,12 @@ abstract class Cache_Storage_Driver {
 	 */
 	public function reset()
 	{
-		$this->contents			= NULL;
-		$this->created			= NULL;
-		$this->expiration		= NULL;
+		$this->contents			= null;
+		$this->created			= null;
+		$this->expiration		= null;
 		$this->dependencies		= array();
-		$this->content_handler	= NULL;
-		$this->handler_object	= NULL;
+		$this->content_handler	= null;
+		$this->handler_object	= null;
 	}
 
 	// ---------------------------------------------------------------------
@@ -257,14 +257,14 @@ abstract class Cache_Storage_Driver {
 	 * @param	array			Array of names on which this cache depends for
 	 * @return	object			The new request
 	 */
-	final public function set($contents = null, $expiration = null, $dependencies = array())
+	final public function set($contents = null, $expiration = false, $dependencies = array())
 	{
 		// save the current expiration
 		$current_expiration = $this->expiration;
 
 		// Use either the given value or the class property
 		if ( ! is_null($contents)) $this->set_contents($contents);
-		$this->expiration	= ( ! is_null($expiration)) ? $expiration : $this->expiration;
+		$this->expiration	= ($expiration !== false) ? $expiration : $this->expiration;
 		$this->dependencies	= ( ! empty($dependencies)) ? $dependencies : $this->dependencies;
 
 		// Create expiration timestamp when other then null

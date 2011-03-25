@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Modules - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('general', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Modules</h2>
+
+		<h3>What is a module?</h3>
+
+		<p>In short, a module is an independently developed part of an application.</p>
+		<p>
+			Within that application, it can operate independently, like for example a blog module or an album module. You can route directly to the module controllers, without having to access any global code.
+			Modules can also be used in a true HMVC context, where controllers call other controllers, which will produce (a part of) the result needed to generate the result of the page request.
+		</p>
+
+		<h3>Module configuration</h3>
+
+		<p>
+			To be able to use modules, you will have to tell FuelPHP where your modules are stored.
+			By default, this is in the modules folder of your application. You use the 'modules_path' setting in your applications config.php file to define your module path.
+			You can also define multiple paths. If you do, they will be searched in the sequence you have defined them.
+		</p>
+
+		<pre><code>/**
+ * To enable you to split up your application into modules which can be
+ * routed by the first uri segment you have to define their basepaths
+ * here. By default empty, but to use them you can add something
+ * like this:
+ *      array(APPPATH.'modules'.DS)
+ */
+'module_paths' => array(
+	//APPPATH.'modules'.DS
+),
+</code></pre>
+		<p>When you define your paths, make sure they end with DS, the FuelPHP platform independent directory separator.</p>
+
+		<h3>Module namespace</h3>
+
+		<p>One of the problems often encountered when working with independently developed code are class name collisions. For example, a lot of modules come with an admin controller. To avoid collisions, in FuelPHP every module lives in its own PHP namespace, which <strong><u>must</u></strong> be named identical to the folder name of the module.</p>
+
+		<pre><code>&lt;?php
+/**
+ * Module controller in the MyModule module
+ */
+
+namespace MyModule;
+
+class Controller_Widget {
+
+	// put your controller code here, just like for an application controller
+}
+</code></pre>
+
+		<h3>Module folder structure</h3>
+
+		<p>
+			You start creating a module by creating a folder for your new module in the modules folder you have defined in the configuration.
+			The folders name determines the name of the module, and the name of the namespace for the classes in the module.
+			This name is also used in the URI if you want to route to the modules controllers, or as part of the <a href="../classes/request.html">Request</a> in case of an HMVC call.
+		</p>
+		<p>
+			As a module can be viewed as a self contained part of the application, you'll notice that the module folder structure is very familiar.
+			It is the same as the structure of the application folder. The following folder structure is supported for a module:
+		</p>
+		<ul style="margin-top:-20px">
+			<li>classes
+				<ul style="margin-bottom:0px;">
+					<li>controller</li>
+					<li>model</li>
+					<li>view</li>
+				</ul>
+			</li>
+			<li>config</li>
+			<li>lang</li>
+			<li>views</li>
+		</ul>
+
+		<p style="margin-top:-20px">At the time of writing, tasks and migrations are not yet supported within a module.</p>
+
+		<h3>Module routing</h3>
+
+		<p>To be written.</p>
+
+		<h3>HMVC requests</h3>
+
+		<p>
+			Besides using modules as a way of separating logically independent parts of your application,
+			you can also use module controllers in an HMVC context, where one of your application's controllers calls one of more module controllers
+			to create the final result of the URI requested.
+		</p>
+		<p>
+			One common use of this is when you use a theme or template engine to generate your pages,
+			where every page is divided into sections, and sections are populated by widgets.
+			By using modules to produce the widget output, you can create a highly modular application, with easy to re-use components.
+		</p>
+
+		<p>You call a module controller method using the <a href="../classes/request.html">Request</a> class:</p>
+		<pre><code>// fetch the output of a mymodule controller method
+$widget = Request::factory('mymodule/mycontroller/mymethod/parms', false)->execute()->output;
+</code></pre>
+		<p class="note">
+			Note that you have to use '<strong>false</strong>' as second parameter to the factory() call, to prevent your URI to be routed.
+			If you don't, and you request a non-routable URI, you will end up with a 404 error!
+		</p>
+
+		<h3>Using static calls</h3>
+
+		<p>
+			It is also possible to call static methods in a module class.
+			For this to work, FuelPHP needs to be able to autoload the class when you reference it in your code.
+			Which means you will have to tell FuelPHP where to find the module. There are two ways to do this.
+		</p>
+
+		<p>You can preload the module by specifying the module to load in the 'always_load', 'modules' setting of your applications config.php file:</p>
+		<pre><code>'always_load' => array(
+
+	/**
+	 * These modules are always loaded on Fuel's startup. You can specify them
+	 * in the following manner:
+	 *
+	 * array('module_name');
+	 *
+	 * A path must be set in module_paths for this to work.
+	 */
+	'modules'	=> array('mymodule'),
+</code></pre>
+
+		<p>You can also add the module manually at runtime, before you use any of the static methods:</p>
+
+		<pre><code class="php">// add the module MyModule to FuelPHP
+Fuel::add_module('mymodule');
+</code></pre>
+
+		<p>You then call the module class like this:</p>
+
+		<pre><code class="php">\mymodule\myclass::mymethod('parms');
+</code></pre>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>
