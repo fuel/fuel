@@ -95,7 +95,7 @@ abstract class Relation {
 	 * @param  null|bool    either uses default setting (null) or forces when true or prevents when false
 	 * @todo   make abstract
 	 */
-	public function save($model_from, $model_to, $parent_saved, $cascade) {}
+	abstract public function save($model_from, $model_to, $parent_saved, $cascade);
 
 	/**
 	 * Takes the current relations and attempts to delete them when cascading is allowed or forced
@@ -106,7 +106,7 @@ abstract class Relation {
 	 * @param  null|bool    either uses default setting (null) or forces when true or prevents when false
 	 * @todo   make abstract
 	 */
-	public function delete($model_from, $model_to, $parent_deleted, $cascade) {}
+	abstract public function delete($model_from, $model_to, $parent_deleted, $cascade);
 
 	/**
 	 * Allow outside access to protected properties

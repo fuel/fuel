@@ -74,6 +74,40 @@ class HasMany extends Relation {
 
 		return array($model);
 	}
+
+	public function save($model_from, $model_to, $parent_saved, $cascade)
+	{
+		if ( ! $parent_saved)
+		{
+			return;
+		}
+
+		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
+		if ($cascade)
+		{
+			foreach ($model_to as $m)
+			{
+				$m->save();
+			}
+		}
+	}
+
+	public function delete($model_from, $model_to, $parent_deleted, $cascade)
+	{
+		if ( ! $parent_deleted)
+		{
+			return;
+		}
+
+		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
+		if ($cascade)
+		{
+			foreach ($model_to as $m)
+			{
+				$m->delete();
+			}
+		}
+	}
 }
 
 /* End of file hasone.php */
