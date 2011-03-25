@@ -74,7 +74,7 @@ abstract class Relation {
 	 * @param   string  alias for the to table
 	 * @return  array
 	 */
-	abstract public function join($alias_from, $alias_to);
+	abstract public function join($alias_from, $rel_name, $alias_to);
 
 	/**
 	 * Takes the current relations and attempts to save them when cascading is allowed or forced
@@ -106,11 +106,6 @@ abstract class Relation {
 
 		return $this->{$property};
 	}
-
-	/**
-	 * Meant to fetch any additional through-objects from a row
-	 */
-	public function hydrate($row, &$select, $rel_name, $parent, &$parent_rels) {}
 }
 
 /* End of file relation.php */

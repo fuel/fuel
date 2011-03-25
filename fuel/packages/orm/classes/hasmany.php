@@ -49,22 +49,27 @@ class HasMany extends Relation {
 		return $properties;
 	}
 
-	public function join($alias_from, $alias_to)
+	public function join($alias_from, $rel_name, $alias_to_nr)
 	{
-		$join = array(
-			'table'	=> array(call_user_func(array($this->model_to, 'table')), $alias_to),
-			'type'	=> 'left',
-			'on'	=> array(),
+		$alias_to = 't'.$alias_to_nr;
+		$model = array(
+			'model'      => $this->model_to,
+			'table'      => array(call_user_func(array($this->model_to, 'table')), $alias_to),
+			'join_type'  => 'left',
+			'join_on'    => array(),
+			'columns'    => $this->select($alias_to),
+			'rel_name'   => $rel_name,
+			'relation'   => $this
 		);
 
 		reset($this->key_to);
 		foreach ($this->key_from as $key)
 		{
-			$join['on'][] = array($alias_from.'.'.$key, '=', $alias_to.'.'.current($this->key_to));
+			$model['join_on'][] = array($alias_from.'.'.$key, '=', $alias_to.'.'.current($this->key_to));
 			next($this->key_to);
 		}
 
-		return $join;
+		return array($model);
 	}
 }
 

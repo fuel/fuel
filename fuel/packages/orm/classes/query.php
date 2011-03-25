@@ -322,6 +322,15 @@ class Query {
 	 */
 	public function build_query($query, $columns = array())
 	{
+		// This array will keep information about which models are loaded for hydration
+		$model = array(
+			'model'      => $this->model,
+			'table'      => $this->alias,
+			'join_on'    => null,
+			'columns'    => $columns,
+			'relation'   => null
+		);
+
 		// Get the limit
 		if ( ! is_null($this->limit))
 		{
@@ -377,63 +386,52 @@ class Query {
 			}
 		}
 
-		$relations = array(); // keeps all the relationship objects
-		$joins = array();     // keeps all the join table arrays
 		$i = 1;
+		$models = array();
 		foreach ($this->relations as $name => $rel)
 		{
-			$table = 't'.$i++;
-			$relations[$name] = array($rel, $rel->select($table));
-			$joins[] = $rel->join($this->alias, $table);
+			$models = array_merge($models, $rel->join($this->alias, $name, ++$i));
 		}
 
 		if ($this->use_subquery())
 		{
 			// Get the columns for final select
-			foreach ($relations as $properties)
+			foreach ($models as $m)
 			{
-				foreach ($properties[1] as $p)
+				foreach ($m['columns'] as $c)
 				{
-					$columns[] = $p;
+					$columns[] = $c;
 				}
 			}
 
+			// make current query subquery of ultimate query
 			$new_query = call_user_func_array('DB::select', $columns);
 			$query = $new_query->from(array($query, $this->alias));
 		}
 		else
 		{
-			foreach ($relations as $properties)
+			// add additional selected columns
+			foreach ($models as $m)
 			{
-				foreach ($properties[1] as $p)
+				foreach ($m['columns'] as $c)
 				{
-					$query->select($p);
+					$query->select($c);
 				}
 			}
 		}
 
-		foreach ($joins as $join)
+		// join tables
+		foreach ($models as $m)
 		{
-			if ( ! array_key_exists('table', $join))
+			$join_query = $query->join($m['table'], $m['join_type']);
+			foreach ($m['join_on'] as $on)
 			{
-				foreach ($join as $j)
-				{
-					$join_query = $query->join($j['table'], $j['type']);
-					foreach	($j['on'] as $on)
-					{
-						$join_query->on($on[0], $on[1], $on[2]);
-					}
-				}
-			}
-			else
-			{
-				$join_query = $query->join($join['table'], $join['type']);
-				foreach	($join['on'] as $on)
-				{
-					$join_query->on($on[0], $on[1], $on[2]);
-				}
+				$join_query->on($on[0], $on[1], $on[2]);
 			}
 		}
+
+		// put the base model in the models array
+		array_unshift($models, $model);
 
 		// Get the order
 		if ( ! empty($this->order_by))
@@ -462,7 +460,7 @@ class Query {
 			}
 		}
 
-		return array('query' => $query, 'relations' => $relations);
+		return array('query' => $query, 'models' => $models);
 	}
 
 	/**
@@ -484,18 +482,22 @@ class Query {
 	 * @param  string  model classname to hydrate
 	 * @param  array   columns to use
 	 */
-	public function hydrate($row, $relations, &$result, $model = null, $select = null)
+	public function hydrate($row, $models, &$result, $model = null, $select = null)
 	{
 		$model = is_null($model) ? $this->model : $model;
 		$select = is_null($select) ? $this->select() : $select;
 		$obj = array();
 		foreach ($select as $s)
 		{
-			$obj[preg_replace('/^t[0-9]+\\./uiD', '', $s[0])] = $row[$s[1]];
+			$obj[preg_replace('/^t[0-9]+(_[a-z]+)?\\./uiD', '', $s[0])] = $row[$s[1]];
 		}
 
 		foreach ($model::primary_key() as $pk)
 		{
+			if (empty($obj[$pk]))
+			{
+				\Debug::dump($model, $pk, $obj);
+			}
 			if (is_null($obj[$pk]))
 			{
 				return false;
@@ -536,20 +538,22 @@ class Query {
 		}
 
 		$rel_objs = $obj->_relate();
-		foreach ($relations as $rel_name => $rel)
+		foreach ($models as $m)
 		{
-			list($rel, $rel_select) = $rel;
-
-			if ( ! array_key_exists($rel_name, $rel_objs))
+			if (empty($m['model']))
 			{
-				$rel_objs[$rel_name] = $rel->singular ? null : array();
+				continue;
+			}
+
+			if ( ! array_key_exists($m['rel_name'], $rel_objs))
+			{
+				$rel_objs[$m['rel_name']] = $m['relation']->singular ? null : array();
 			}
 
 			if ((is_array($result) and ! in_array($model::implode_pk($obj), $result))
 				or ! is_array($result) and empty($result))
 			{
-				$rel->hydrate($row, $rel_select, $rel_name, $obj, $rel_objs);
-				$this->hydrate($row, array(), $rel_objs[$rel_name], $rel->model_to, $rel_select);
+				$this->hydrate($row, array(), $rel_objs[$m['rel_name']], $m['model'], $m['columns']);
 			}
 		}
 		$obj->_relate($rel_objs);
@@ -583,15 +587,15 @@ class Query {
 		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
 
 		// Build the query further
-		$tmp       = $this->build_query($query, $columns);
-		$query     = $tmp['query'];
-		$relations = $tmp['relations'];
+		$tmp     = $this->build_query($query, $columns);
+		$query   = $tmp['query'];
+		$models  = array_slice($tmp['models'], 1);
 
 		$rows = $query->execute()->as_array();
 		$result = array();
 		foreach ($rows as $row)
 		{
-			$this->hydrate($row, $relations, $result);
+			$this->hydrate($row, $models, $result);
 		}
 
 		// It's all built, now lets execute and start hydration
