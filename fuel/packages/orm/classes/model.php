@@ -68,10 +68,10 @@ class Model {
 	 * @var  array  array of valid relation types
 	 */
 	protected static $_valid_relations = array(
-		'belongsto'  => 'Orm\\BelongsTo',
-		'hasone'     => 'Orm\\HasOne',
-		'hasmany'    => 'Orm\\HasMany',
-		'manymany'   => 'Orm\\ManyMany'
+		'belongs_to'  => 'Orm\\BelongsTo',
+		'has_one'     => 'Orm\\HasOne',
+		'has_many'    => 'Orm\\HasMany',
+		'many_many'   => 'Orm\\ManyMany'
 	);
 
 	public static function factory($data = array(), $new = true)
@@ -265,7 +265,7 @@ class Model {
 			static::$_observers_cached[$class] = $observers;
 		}
 
-		return static::$_observers_cached;
+		return static::$_observers_cached[$class];
 	}
 
 	/**
