@@ -85,26 +85,30 @@ class ManyMany extends Relation {
 			$i++;
 		}
 
+		return $properties;
+	}
+
+	public function select_through($table)
+	{
 		if (empty($this->model_through))
 		{
 			foreach ($this->key_through_to as $to)
 			{
-				$properties[] = array($table.'_through.'.$to, $table.'_through_c'.$i);
-				$i++;
+				$properties[] = $table.$to;
 			}
 			foreach ($this->key_through_from as $from)
 			{
-				$properties[] = array($table.'_through.'.$from, $table.'_through_c'.$i);
-				$i++;
+				$properties[] = $table.$from;
 			}
 		}
 		else
 		{
+			$i = 1;
 			$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
 			$props = call_user_func(array($rel->model_to, 'properties'));
 			foreach ($props as $pk => $pv)
 			{
-				$properties[] = array($table.'_through.'.$pk, $table.'_through_c'.$i);
+				$properties[] = array($table.'.'.$pk, $table.'_c'.$i);
 				$i++;
 			}
 		}
@@ -112,10 +116,13 @@ class ManyMany extends Relation {
 		return $properties;
 	}
 
-	public function join($alias_from, $alias_to)
+	public function join($alias_from, $rel_name, $alias_to_nr)
 	{
+		$alias_to = 't'.$alias_to_nr;
+
 		if (empty($this->model_through))
 		{
+			$rel = null;
 			$through_table = $this->table_through;
 		}
 		else
@@ -124,81 +131,42 @@ class ManyMany extends Relation {
 			$through_table = call_user_func(array($rel->model_to, 'table'));
 		}
 
-		$join = array(
+		$models = array(
 			array(
-				'table'	=> array($through_table, $alias_to.'_through'),
-				'type'	=> 'left',
-				'on'	=> array(),
+				'model'      => $rel ? $rel->model_to : null,
+				'table'      => array($through_table, $alias_to.'_through'),
+				'join_type'  => 'left',
+				'join_on'    => array(),
+				'columns'    => $this->select_through($alias_to.'_through'),
+				'rel_name'   => $this->model_through,
+				'relation'   => $this
 			),
 			array(
-				'table'	=> array(call_user_func(array($this->model_to, 'table')), $alias_to),
-				'type'	=> 'left',
-				'on'	=> array(),
-			),
+				'model'      => $this->model_to,
+				'table'      => array(call_user_func(array($this->model_to, 'table')), $alias_to),
+				'join_type'  => 'left',
+				'join_on'    => array(),
+				'columns'    => $this->select($alias_to),
+				'rel_name'   => $rel_name,
+				'relation'   => $this
+			)
 		);
 
 		reset($this->key_from);
 		foreach ($this->key_through_from as $key)
 		{
-			$join[0]['on'][] = array($alias_from.'.'.current($this->key_from), '=', $alias_to.'_through.'.$key);
+			$models[0]['join_on'][] = array($alias_from.'.'.current($this->key_from), '=', $alias_to.'_through.'.$key);
 			next($this->key_from);
 		}
 
 		reset($this->key_to);
 		foreach ($this->key_through_to as $key)
 		{
-			$join[1]['on'][] = array($alias_to.'_through.'.$key, '=', $alias_to.'.'.current($this->key_to));
+			$models[1]['join_on'][] = array($alias_to.'_through.'.$key, '=', $alias_to.'.'.current($this->key_to));
 			next($this->key_to);
 		}
 
-		return $join;
-	}
-
-	public function hydrate($row, &$select, $rel_name, $parent, &$parent_rels)
-	{
-		// simple key1, key2 table without - just delete the additional keys and return
-		if (empty($this->model_through))
-		{
-			foreach ($select as $key => $s)
-			{
-				if (preg_match('/^t[0-9]+_through\\./uiD', $s[0]) > 0)
-				{
-					unset($select[$key]);
-				}
-			}
-			return;
-		}
-		// turns out it's a relation through a model, create the model and relate this shit
-		else
-		{
-			$obj = array();
-			$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
-			foreach ($select as $key => $s)
-			{
-				if (preg_match('/^t[0-9]+_through\\.([a-z0-9_]+)/uiD', $s[0], $matches) > 0)
-				{
-					$obj[$matches[1]] = $row[$s[1]];
-					unset($select[$key]);
-				}
-			}
-
-			$pk = call_user_func(array($rel->model_to, 'implode_pk'), $obj);
-			! array_key_exists($this->model_through, $parent_rels) and $parent_rels[$this->model_through] = array();
-			if ( ! array_key_exists($pk, $parent_rels[$this->model_through]))
-			{
-				$obj = call_user_func(array($rel->model_to, 'factory'), $obj, false);
-				$parent_rels[$this->model_through][$pk] = $obj;
-			}
-
-			$obj_rels = $obj->_relate();
-			$parent_pk = call_user_func(array($parent, 'implode_pk'), $parent);
-			! array_key_exists($rel_name, $obj_rels) and $obj_rels[$rel_name] = array();
-			if ( ! array_key_exists($parent_pk, $obj_rels[$rel_name]))
-			{
-				$obj_rels[$rel_name][$parent_pk] = $parent;
-				$obj->_relate($obj_rels);
-			}
-		}
+		return $models;
 	}
 }
 
