@@ -322,15 +322,6 @@ class Query {
 	 */
 	public function build_query($query, $columns = array())
 	{
-		// This array will keep information about which models are loaded for hydration
-		$model = array(
-			'model'      => $this->model,
-			'table'      => $this->alias,
-			'join_on'    => null,
-			'columns'    => $columns,
-			'relation'   => null
-		);
-
 		// Get the limit
 		if ( ! is_null($this->limit))
 		{
@@ -429,9 +420,6 @@ class Query {
 				$join_query->on($on[0], $on[1], $on[2]);
 			}
 		}
-
-		// put the base model in the models array
-		array_unshift($models, $model);
 
 		// Get the order
 		if ( ! empty($this->order_by))
@@ -589,7 +577,7 @@ class Query {
 		// Build the query further
 		$tmp     = $this->build_query($query, $columns);
 		$query   = $tmp['query'];
-		$models  = array_slice($tmp['models'], 1);
+		$models  = $tmp['models'];
 
 		$rows = $query->execute()->as_array();
 		$result = array();
