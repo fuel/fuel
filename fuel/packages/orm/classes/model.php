@@ -601,8 +601,13 @@ class Model {
 
 	/**
 	 * Save the object and it's relations, create when necessary
+	 *
+	 * @param  mixed  $cascade
+	 *     null = use default config,
+	 *     bool = force/prevent cascade,
+	 *     array cascades only the relations that are in the array
 	 */
-	public function save()
+	public function save($cascade = null)
 	{
 		if ($this->frozen())
 		{
@@ -612,14 +617,20 @@ class Model {
 		$this->observe('before_save');
 
 		$this->freeze();
-		// TODO: Save all relations with their keys within this object
+		foreach($this->relations() as $rel_name => $rel)
+		{
+			$rel->save($this, $this->{$rel_name}, false, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+		}
 		$this->unfreeze();
 
 		// Insert or update
 		$return = $this->_is_new ? $this->create() : $this->update();
 
 		$this->freeze();
-		// TODO: Now save all relations with this one's keys saved in other objects
+		foreach($this->relations() as $rel_name => $rel)
+		{
+			$rel->save($this, $this->{$rel_name}, false, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+		}
 		$this->unfreeze();
 
 		$this->observe('after_save');
@@ -725,8 +736,14 @@ class Model {
 
 	/**
 	 * Delete current object
+	 *
+	 * @param   mixed  $cascade
+	 *     null = use default config,
+	 *     bool = force/prevent cascade,
+	 *     array cascades only the relations that are in the array
+	 * @return
 	 */
-	public function delete()
+	public function delete($cascade = null)
 	{
 		// New objects can't be deleted, neither can frozen
 		if ($this->is_new() or $this->frozen())
@@ -737,7 +754,10 @@ class Model {
 		$this->observe('before_delete');
 
 		$this->freeze();
-		// TODO: Delete all cascading enabled relations with their keys within this object
+		foreach($this->relations() as $rel_name => $rel)
+		{
+			$rel->delete($this, $this->{$rel_name}, false, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+		}
 		$this->unfreeze();
 
 		// Create the query and limit to primary key(s)
@@ -755,7 +775,10 @@ class Model {
 		}
 
 		$this->freeze();
-		// TODO: Delete all cascading enabled relations with this one's keys saved in other objects
+		foreach($this->relations() as $rel_name => $rel)
+		{
+			$rel->delete($this, $this->{$rel_name}, true, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+		}
 		$this->unfreeze();
 
 		// Perform cleanup:
