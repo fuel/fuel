@@ -15,7 +15,7 @@
 
 			else
 			{
-				Session::set_flash('notice', 'Could not update ' . $<?php echo $singular; ?> . ' #' . $id);
+				Session::set_flash('notice', 'Could not update <?php echo $singular; ?> #' . $id);
 			}
 		}
 		
