@@ -15,24 +15,6 @@
 namespace Fuel\Core;
 
 class Arr {
-	
-	/**
-	 * Find the average of an array
-	 *
-	 * @access	public
-	 * @param	array	The array containing the values
-	 * @return	numeric	The average value
-	 */
-	function average($array)
-	{
-		// No arguments passed, lets not divide by 0
-		if ( ! ($count = count($array)) > 0)
-		{
-			return 0;
-		}
-		
-		return (array_sum($array) / $count);
-	}
 
 	/**
 	 * Flattens a multi-dimensional associative array down into a 1 dimensional
@@ -70,7 +52,7 @@ class Arr {
 		}
 		return $return;
 	}
-	
+
 	/**
 	 * Filters an array on prefixed associative keys.
 	 *
@@ -227,7 +209,7 @@ class Arr {
 
 		return static::insert_after_key($original, $value, $key);
 	}
-	
+
 	/**
 	 * Sorts a multi-dimensional array by it's values.
 	 *
@@ -244,33 +226,51 @@ class Arr {
 		{
 			throw new \Fuel_Exception('Arr::sort() - $array must be an array.');
 		}
-		
-		foreach($array as $k=>$v) 
+
+		foreach($array as $k=>$v)
 		{
 			$b[$k] = static::element($v, $key);
 		}
-		
+
 		switch($order)
 		{
 			case 'asc':
 				asort($b, $sort_flags);
 			break;
-			
-			case 'desc': 
+
+			case 'desc':
 				arsort($b, $sort_flags);
 			break;
-			
+
 			default:
 				throw new \Fuel_Exception('Arr::sort() - $order must be asc or desc.');
 			break;
 		}
-		
-		foreach($b as $key=>$val) 
+
+		foreach($b as $key=>$val)
 		{
 			$c[$key] = $array[$key];
 		}
-		
+
 		return $c;
+	}
+
+	/**
+	 * Find the average of an array
+	 *
+	 * @access	public
+	 * @param	array	The array containing the values
+	 * @return	numeric	The average value
+	 */
+	public static function average($array)
+	{
+		// No arguments passed, lets not divide by 0
+		if ( ! ($count = count($array)) > 0)
+		{
+			return 0;
+		}
+
+		return (array_sum($array) / $count);
 	}
 }
 
