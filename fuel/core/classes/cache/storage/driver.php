@@ -142,7 +142,7 @@ abstract class Cache_Storage_Driver {
 		$this->identifier = $identifier;
 
 		// fetch options from config and set them
-		$this->expiration		= array_key_exists('expiration', $config) ? $config['expiration'] : null;
+		$this->expiration		= array_key_exists('expiration', $config) ? $config['expiration'] : \Config::get('cache.expiration', null);
 		$this->dependencies		= array_key_exists('dependencies', $config) ? $config['dependencies'] : array();
 		$this->content_handler	= array_key_exists('content_handler', $config) ? new $config['content_handler']() : null;
 		$this->driver			= array_key_exists('driver', $config) ? $config['driver'] : 'file';
