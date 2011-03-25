@@ -16,10 +16,10 @@ class Database_PDO_Connection extends \Database_Connection {
 
 	// PDO uses no quoting for identifiers
 	protected $_identifier = '';
-	
+
 	// Allows transactions
 	protected $_trans_enabled = FALSE;
-	
+
 	// transaction errors
 	public $trans_errors = FALSE;
 
@@ -122,8 +122,8 @@ class Database_PDO_Connection extends \Database_Connection {
 				// This benchmark is worthless
 				Profiler::delete($benchmark);
 			}
-			
-			if ($type !== \DB::SELECT && $this->_trans_enabled) 
+
+			if ($type !== \DB::SELECT && $this->_trans_enabled)
 			{
 				// If we are using transactions, throwing an exception would defeat the purpose
 				// We need to log the failures for transaction status
@@ -131,7 +131,7 @@ class Database_PDO_Connection extends \Database_Connection {
 				{
 					$this->trans_errors = array();
 				}
-				
+
 				$this->trans_errors[] = $e->getMessage().' with query: "'.$sql.'"';
 				return false;
 			}
@@ -188,14 +188,12 @@ class Database_PDO_Connection extends \Database_Connection {
 
 	public function list_tables($like = NULL)
 	{
-		throw new \Fuel_Exception('Database method :method is not supported by :class',
-			array(':method' => __FUNCTION__, ':class' => __CLASS__));
+		throw new \Fuel_Exception('Database method '.__METHOD__.' is not supported by '.__CLASS__);
 	}
 
 	public function list_columns($table, $like = NULL)
 	{
-		throw new \Fuel_Exception('Database method :method is not supported by :class',
-			array(':method' => __FUNCTION__, ':class' => __CLASS__));
+		throw new \Fuel_Exception('Database method '.__METHOD__.' is not supported by '.__CLASS__);
 	}
 
 	public function escape($value)
@@ -205,14 +203,14 @@ class Database_PDO_Connection extends \Database_Connection {
 
 		return $this->_connection->quote($value);
 	}
-	
+
 	public function transactional($use_trans = TRUE)
 	{
 		if (is_bool($use_trans)) {
 			$this->_trans_enabled = $use_trans;
 		}
 	}
-	
+
 	public function start_transaction()
 	{
 		$this->transactional();
