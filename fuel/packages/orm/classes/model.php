@@ -604,11 +604,23 @@ class Model {
 	 */
 	public function save()
 	{
+		if ($this->frozen())
+		{
+			return false;
+		}
+
 		$this->observe('before_save');
 
-		// save relations first in some way
+		$this->freeze();
+		// TODO: Save all relations with their keys within this object
+		$this->unfreeze();
 
+		// Insert or update
 		$return = $this->_is_new ? $this->create() : $this->update();
+
+		$this->freeze();
+		// TODO: Now save all relations with this one's keys saved in other objects
+		$this->unfreeze();
 
 		$this->observe('after_save');
 
@@ -618,10 +630,10 @@ class Model {
 	/**
 	 * Save using INSERT
 	 */
-	public function create()
+	protected function create()
 	{
 		// Only allow creation with new object, otherwise: clone first, create later
-		if ( ! $this->_is_new)
+		if ( ! $this->is_new())
 		{
 			return false;
 		}
@@ -663,10 +675,10 @@ class Model {
 	/**
 	 * Save using UPDATE
 	 */
-	public function update()
+	protected function update()
 	{
 		// New objects can't be updated, neither can frozen
-		if ($this->_is_new or $this->_frozen)
+		if ($this->is_new())
 		{
 			return false;
 		}
@@ -717,12 +729,16 @@ class Model {
 	public function delete()
 	{
 		// New objects can't be deleted, neither can frozen
-		if ($this->_is_new or $this->_frozen)
+		if ($this->is_new() or $this->frozen())
 		{
 			return false;
 		}
 
 		$this->observe('before_delete');
+
+		$this->freeze();
+		// TODO: Delete all cascading enabled relations with their keys within this object
+		$this->unfreeze();
 
 		// Create the query and limit to primary key(s)
 		$query = Query::factory(get_called_class())->limit(1);
@@ -738,15 +754,28 @@ class Model {
 			return false;
 		}
 
+		$this->freeze();
+		// TODO: Delete all cascading enabled relations with this one's keys saved in other objects
+		$this->unfreeze();
+
+		// Perform cleanup:
+		// remove from internal object cache, remove PK's, set to non saved object, remove db original values
 		if (array_key_exists(get_called_class(), static::$_cached_objects)
 			and array_key_exists(static::implode_pk($this), static::$_cached_objects[get_called_class()]))
 		{
 			unset(static::$_cached_objects[get_called_class()][static::implode_pk($this)]);
 		}
+		foreach ($this->primary_key() as $pk)
+		{
+			unset($this->_data[$pk]);
+		}
+		$this->_is_new = true;
+		$this->_original = array();
+
 
 		$this->observe('after_delete');
 
-		return $this->_original;
+		return $this;
 	}
 
 	/**
@@ -818,6 +847,32 @@ class Model {
 	public function is_new()
 	{
 		return $this->_is_new;
+	}
+
+	/**
+	 * Check whether the object was frozen
+	 *
+	 * @return  boolean
+	 */
+	public function frozen()
+	{
+		return $this->_frozen;
+	}
+
+	/**
+	 * Freeze the object to disallow changing it or saving it
+	 */
+	public function freeze()
+	{
+		$this->_frozen = true;
+	}
+
+	/**
+	 * Unfreeze the object to allow changing it or saving it again
+	 */
+	public function unfreeze()
+	{
+		$this->_frozen = false;
 	}
 
 	/**
