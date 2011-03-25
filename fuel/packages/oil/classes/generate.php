@@ -127,31 +127,31 @@ MODEL;
 	public static function views($args, $build = true)
 	{
 		$args = self::_clear_args($args);
-		$directory = str_replace(array('_', '-'), '/', array_shift($args));
-		$controller_title = \Inflector::humanize($folder);
+		$controller = strtolower(array_shift($args));
+		$controller_title = \Inflector::humanize($controller);
 
-		$actions or $actions = array('index');
+		$view_dir = APPPATH.'views/'.trim(str_replace(array('_', '-'), DS, $controller), DS).DS;
+
+		$args or $args = array('index');
 
 		// Make the directory for these views to be store in
-		is_dir($directory) or static::$create_folders[] = APPPATH . 'views/'.$folder.'/';
+		is_dir($view_dir) or static::$create_folders[] = $view_dir;
 
 		// Add the default template if it doesnt exist
-		if ( ! file_exists($app_template = APPPATH . 'views/template.php'))
+		if ( ! file_exists($app_template = APPPATH.'views/template.php'))
 		{
-			static::create($app_template, file_get_contents(PKGPATH . 'oil/views/default/template.php'), 'view');
+			static::create($app_template, file_get_contents(PKGPATH.'oil/views/default/template.php'), 'view');
 		}
 
 		foreach ($args as $action)
 		{
 			$view_title = \Inflector::humanize($action);
-			$view_filepath = $view_file = $view_dir . $action . '.php';
-
 			$view = <<<VIEW
-<p>Edit this content in {$view_filepath}</p>
+<p>{$view_title}</p>
 VIEW;
 
 			// Create this view
-			static::create($view_file, $view, 'view');
+			static::create($view_dir.$action.'.php', $view, 'view');
 		}
 
 		$build and static::build();
