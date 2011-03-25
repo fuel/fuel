@@ -30,42 +30,42 @@
 
         <h5>Configuration</h5>
 
-        <p>The log files are being placed in the folder specified by the attribute '<strong>log_path</strong>' in the <strong>config.php</strong>. You can also set the '<strong>log_threshold</strong>' and the '<strong>log_date_format</strong>' parameters there.<br/>Theese settings can also be changed on the fly by using the <a href="config.html">Config Class</a>.</p>
+		<p>The log files are being placed in the folder specified by the attribute '<strong>log_path</strong>' in the <strong>config.php</strong>. You can also set the '<strong>log_threshold</strong>' and the '<strong>log_date_format</strong>' parameters there.<br/>These settings can also be changed on the fly by using the <a href="config.html">Config Class</a>.</p>
 
-        <table class="config">
-            <tbody>
-                <tr class="header">
-                    <th>Param</th>
-                    <th>Type</th>
-                    <th>Default</th>
-                    <th>Description</th>
-                </tr>
-                <tr>
-                    <th>log_threshold</th>
-                    <td>constant</td>
-                    <td><pre class="php"><code>Fuel::L_ERROR</code></pre></td>
-                    <td>
-                        Can be any of the following: <code>Fuel::L_NONE, Fuel::L_ERROR, Fuel::L_DEBUG, Fuel::L_INFO or Fuel::L_ALL</code>
-                    </td>
-                </tr>
-                <tr>
-                    <th>log_path</th>
-                    <td>string</td>
-                    <td><pre class="php"><code>APPPATH.'logs/'</code></pre></td>
-                    <td>
-                        Where to put the log files. (Folder must be writable)
-                    </td>
-                </tr>
-                <tr>
-                    <th>log_date_format</th>
-                    <td>string</td>
-                    <td><pre class="php"><code>'Y-m-d H:i:s'</code></pre></td>
-                    <td>
-                        The date format for the log entries. This format must follow the PHP date format rules, see <a href="http://www.php.net/date">http://www.php.net/date</a> for a complete list.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+		<table class="config">
+			<tbody>
+				<tr class="header">
+					<th>Param</th>
+					<th>Type</th>
+					<th>Default</th>
+					<th>Description</th>
+				</tr>
+				<tr>
+					<th>log_threshold</th>
+					<td>constant</td>
+					<td><pre class="php"><code>Fuel::L_ERROR</code></pre></td>
+					<td>
+						Can be any of the following: <code>Fuel::L_NONE, Fuel::L_ERROR, Fuel::L_DEBUG, Fuel::L_INFO or Fuel::L_ALL</code>
+					</td>
+				</tr>
+				<tr>
+					<th>log_path</th>
+					<td>string</td>
+					<td><pre class="php"><code>APPPATH.'logs/'</code></pre></td>
+					<td>
+						Where to put the log files. (Folder must be writable)
+					</td>
+				</tr>
+				<tr>
+					<th>log_date_format</th>
+					<td>string</td>
+					<td><pre class="php"><code>'Y-m-d H:i:s'</code></pre></td>
+					<td>
+						The date format for the log entries. This format must follow the PHP date format rules. See <a href="http://www.php.net/date">http://www.php.net/date</a> for a complete list.
+					</td>
+				</tr>
+			</tbody>
+		</table>
 
         <h5>Usage</h5>
         
@@ -81,7 +81,7 @@ Log::error()</code></pre>
 $var = 1;
 Log::info('Application started (with $var = '.$var.')', 'my_init_function()');
 
-// Save the new value of $var to the log file, without the $method paramenter
+// Save the new value of $var to the log file, without the $method parameter
 $var = 5;
 Log::debug('$var is now '.$var);
 

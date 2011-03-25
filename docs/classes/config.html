@@ -204,45 +204,45 @@ Config::load('custom', 'foo');</code></pre>
             </table>
         </article>
 
-        <article>
-            <h4>save($file, $config = null)</h4>
-            <p>The <strong>save</strong> method saves a config file into the system.  It searches through the config directories for the requested file.  If no existing file is found, the config file is created in the APPPATH config directory.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$file</kbd></th>
-                                <td><i>required</i></td>
-                                <td>The path to the config file, relative to the config directory.  Do not include the file extension (".php" is assumed).</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$config</kbd></th>
-                                <td><i>required</i></td>
-                                <td>If this is a string, it specifies a group name to save. If it is an array, it is assumed to contain the configuration to be saved.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td><kbd>true</kbd> if the config was saved, <kbd>false</kbd> if an error occured</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>// This loads the "custom" config file in a group named "foo".
+		<article>
+			<h4>save($file, $config = null)</h4>
+			<p>The <strong>save</strong> method saves a config file into the system.  It searches through the config directories for the requested file.  If no existing file is found, the config file is created in the APPPATH config directory.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$file</kbd></th>
+								<td><i>required</i></td>
+								<td>The path to the config file, relative to the config directory.  Do not include the file extension (".php" is assumed).</td>
+							</tr>
+							<tr>
+								<th><kbd>$config</kbd></th>
+								<td><i>required</i></td>
+								<td>If this is a string, it specifies a group name to save. If it is an array, it is assumed to contain the configuration to be saved.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td><kbd>true</kbd> if the config was saved, <kbd>false</kbd> if an error occurred</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// This loads the "custom" config file in a group named "foo".
 Config::load('custom', 'foo');
 
 // update some config item

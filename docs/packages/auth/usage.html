@@ -43,40 +43,40 @@
             drivers. One getting a driver instance and a second answering whether a loaded driver of that type
             validates. Below are first the methods for checking and getting the drivers.</p>
 
-            <article>
-                <h4>check($specific = null)</h4>
-                <p>Checks either all loaded Login drivers or just those specified as the parameter.</p>
-                <table class="method">
-                    <tbody>
-                    <tr>
-                        <th class="legend">Static</th>
-                        <td>Yes</td>
-                    </tr>
-                    <tr>
-                        <th>Parameters</th>
-                        <td>
-                            <table class="parameters">
-                                <tr>
-                                    <th>Param</th>
-                                    <th>Default</th>
-                                    <th class="description">Description</th>
-                                </tr>
-                                <tr>
-                                    <th><kbd>$specific</kbd></th>
-                                    <td><i>null</i></td>
-                                    <td>null to check all or one ore more driver id's (single string or array of strings)</td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Returns</th>
-                        <td>bool, whether one of the (given) drivers succesfully validated the login</td>
-                    </tr>
-                    <tr>
-                        <th>Example</th>
-                        <td>
-    <pre class="php"><code>if ( ! Auth::check())
+			<article>
+				<h4>check($specific = null)</h4>
+				<p>Checks either all loaded Login drivers or just those specified as the parameter.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$specific</kbd></th>
+									<td><i>null</i></td>
+									<td>null to check all or one ore more driver id's (single string or array of strings)</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>bool, whether one of the (given) drivers successfully validated the login</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+	<pre class="php"><code>if ( ! Auth::check())
 {
     Output::redirect('login');
 }

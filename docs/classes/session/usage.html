@@ -186,7 +186,7 @@ if ( $userid === false )
     echo "no user is logged in";
 }
 
-// you can retieve the entire array stored
+// you can retrieve the entire array stored
 $arr = Session::get('array');
 
 // or get a specific key from the array
@@ -346,40 +346,40 @@ $step = Session::get_flash('step');
             </table>
         </article>
 
-        <article>
-            <h4>keep_flash($variable)</h4>
-            <p>The <strong>keep_flash</strong> method resets a flash variable stored in the session to a 'unrequested' state. This allows you to get a flash variable, and still pass it on to the next page request.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$variable</kbd></th>
-                                <td><i>required</i></td>
-                                <td>Name of the flash variable to keep.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>void</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php">
+		<article>
+			<h4>keep_flash($variable)</h4>
+			<p>The <strong>keep_flash</strong> method resets a flash variable stored in the session to an 'unrequested' state. This allows you to get a flash variable, and still pass it on to the next page request.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$variable</kbd></th>
+								<td><i>required</i></td>
+								<td>Name of the flash variable to keep.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php">
 <code>// keep the step value for one more page request
 Session::keep_flash('step');
 </code></pre>

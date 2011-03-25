@@ -38,57 +38,57 @@
             <p>Using cache objects and Cache::factory() is explained in the <a href="advanced.html">advanced</a>
             section.</p>
 
-            <article>
-                <h4>set($identifier, $contents = null, $expiration = null, $dependencies = array())</h4>
-                <p>Writes a cache.</p>
-                <table class="method">
-                    <tbody>
-                    <tr>
-                        <th class="legend">Static</th>
-                        <td>Yes</td>
-                    </tr>
-                    <tr>
-                        <th>Parameters</th>
-                        <td>
-                            <table class="parameters">
-                                <tr>
-                                    <th>Param</th>
-                                    <th>Default</th>
-                                    <th class="description">Description</th>
-                                </tr>
-                                <tr>
-                                    <th><kbd>$identifier</kbd></th>
-                                    <td><i>string</i></td>
-                                    <td>Name of the cache</td>
-                                </tr>
-                                <tr>
-                                    <th><kbd>$contents</kbd></th>
-                                    <td><i>mixed</i></td>
-                                    <td>Contents to be cached</td>
-                                </tr>
-                                <tr>
-                                    <th><kbd>$expiration</kbd></th>
-                                    <td><i>int</i></td>
-                                    <td>Amount of seconds until the cache expires. 0 will make it never expire, null
-                                    makes it use the default expiration set in config.</td>
-                                </tr>
-                                <tr>
-                                    <th><kbd>$dependencies</kbd></th>
-                                    <td><i>array</i></td>
-                                    <td>Array of identifiers this cache depends on, this cache expires if one of those
-                                    is newer or doesn't exist anymore.</td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Returns</th>
-                        <td>void</td>
-                    </tr>
-                    <tr>
-                        <th>Example</th>
-                        <td>
-                            <pre class="php"><code>// Cache 'String to be cached' for 3 hours with identifier "test"
+			<article>
+				<h4>set($identifier, $contents = null, $expiration = false, $dependencies = array())</h4>
+				<p>Writes a cache.</p>
+				<table class="method">
+					<tbody>
+					<tr>
+						<th class="legend">Static</th>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<th>Parameters</th>
+						<td>
+							<table class="parameters">
+								<tr>
+									<th>Param</th>
+									<th>Default</th>
+									<th class="description">Description</th>
+								</tr>
+								<tr>
+									<th><kbd>$identifier</kbd></th>
+									<td><i>string</i></td>
+									<td>Name of the cache</td>
+								</tr>
+								<tr>
+									<th><kbd>$contents</kbd></th>
+									<td><i>mixed</i></td>
+									<td>Contents to be cached</td>
+								</tr>
+								<tr>
+									<th><kbd>$expiration</kbd></th>
+									<td><i>int</i></td>
+									<td>Amount of seconds until the cache expires. null will make it never expire, false
+									makes it use the default expiration set in config.</td>
+								</tr>
+								<tr>
+									<th><kbd>$dependencies</kbd></th>
+									<td><i>array</i></td>
+									<td>Array of identifiers this cache depends on, this cache expires if one of those
+									is newer or doesn't exist anymore.</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<th>Returns</th>
+						<td>void</td>
+					</tr>
+					<tr>
+						<th>Example</th>
+						<td>
+							<pre class="php"><code>// Cache 'String to be cached' for 3 hours with identifier "test"
 Cache::set('test', 'String to be cached.', 3600 * 3);</code></pre>
                         </td>
                     </tr>

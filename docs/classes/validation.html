@@ -48,8 +48,8 @@ $val = Validation::factory();
 // ... or name it
 $val = Validation::factory('my_validation');</code></pre>
 
-            <p>After having it instantiated you can start adding fields to it. This works exactly like the when using
-            the Fieldset class, however here we'll only document the prefered usage.</p>
+			<p>After having it instantiated you can start adding fields to it. This works exactly like the when using
+			the Fieldset class, however here we'll only document the preferred usage.</p>
 
             <pre class="php"><code>$val = Validation::factory('my_validation');
 
@@ -61,9 +61,9 @@ $val->add('password', 'Your password')->add_rule('required')
     ->add_rule('min_length', 3)
     ->add_rule('max_length', 10);</code></pre>
 
-            <p>The first parameter of the add_rule() method can contain PHP native function names, any valid PHP
-            callback and Closures in addition to the provided validation methods. The method will get the value to
-            be validated as its first arguement and any further arguements can be given to the add_rule() method.</p>
+			<p>The first parameter of the add_rule() method can contain PHP native function names, any valid PHP
+			callback and Closures in addition to the provided validation methods. The method will get the value to
+			be validated as its first argument and any further arguments can be given to the add_rule() method.</p>
 
             <p>We also provide a shorter syntax which is very limited in comparison. It will not accept array-callbacks,
             closures or parameters other then strings.</p>
@@ -91,7 +91,7 @@ if ($val->run(array('username' => 'something')))</code></pre>
 
             <p>When validation is ran there are three methods available for information about the input:</p>
 
-            <pre class="php"><code>// get an array of succesfully validated fields => value pairs
+			<pre class="php"><code>// get an array of successfully validated fields => value pairs
 $vars = $val->validated();
 // get an array of validation errors as field => error pairs
 $errors = $val->errors();
@@ -119,185 +119,185 @@ $val->run(array('password' => 'whatever'), true);</code></pre>
 $val->add('email', 'Email address')->add_rule('match_value', 'me@mydomain.com', true)->add_rule('valid_email');
 $val->add_field('email', 'Email address', 'match_value[me@mydomain.com,1]|valid_email');</code></pre>
 
-            <h4>Rules table</h4>
-            <table class="config">
-                <tbody>
-                    <tr class="header">
-                        <th>Rule</th>
-                        <th>Additional parameters</th>
-                        <th>Description</th>
-                    </tr>
-                    <tr>
-                        <th>required</th>
-                        <td>(none)</td>
-                        <td>
-                            The field must be set and have been given something other than <kbd>null</kbd>,
-                            <kbd>false</kbd> or empty string.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>match_value</th>
-                        <td><kbd>$compare</kbd>, <kbd>$strickt</kbd> = false</td>
-                        <td>
-                            The field input must match <kbd>$compare</kbd>, will be done using == unless 2nd parameter
-                            is also given as true (then === is used).
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>match_pattern</th>
-                        <td><kbd>$pattern</kbd></td>
-                        <td>
-                            Will try to match the value against the given $pattern which must be a full PREG regex.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>match_field</th>
-                        <td><kbd>$field</kbd></td>
-                        <td>
-                            Will try to match the field to the field with the given fieldname, the matching is done
-                            using ===.<br />
-                            <strong>Important:</strong> you can only match against a field that was added before the
-                            field this rule is added to.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>min_length</th>
-                        <td><kbd>$length</kbd></td>
-                        <td>
-                            Tests whether the string contains at least <kbd>$length</kbd>'s number of character.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>max_length</th>
-                        <td><kbd>$length</kbd></td>
-                        <td>
-                            Tests whether the string contains no more than <kbd>$length</kbd>'s number of character.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>exact_length</th>
-                        <td><kbd>$length</kbd></td>
-                        <td>
-                            Tests whether the string has precisely <kbd>$length</kbd>'s number of character.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>valid_email</th>
-                        <td>(none)</td>
-                        <td>
-                            Validates if the given input is a valid email address.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>valid_emails</th>
-                        <td>(none)</td>
-                        <td>
-                            Validates multiple email addresses seperated by comma's.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>valid_url</th>
-                        <td>(none)</td>
-                        <td>
-                            Validates if the given input is a valid URL.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>valid_ip</th>
-                        <td>(none)</td>
-                        <td>
-                            Validates if the given input is a valid IP.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>numeric_min</th>
-                        <td><kbd>$min_val</kbd></td>
-                        <td>
-                            Tests whether the given input is a number that is greater than <kbd>$min_val</kbd>.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>numeric_max</th>
-                        <td><kbd>$max_val</kbd></td>
-                        <td>
-                            Tests whether the given input is a number that is smaller than <kbd>$max_val</kbd>.
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>valid_string</th>
-                        <td><kbd>$flags</kbd> = array('alpha', 'utf8')</td>
-                        <td>
-                            See below.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+			<h4>Rules table</h4>
+			<table class="config">
+				<tbody>
+					<tr class="header">
+						<th>Rule</th>
+						<th>Additional parameters</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<th>required</th>
+						<td>(none)</td>
+						<td>
+							The field must be set and have been given something other than <kbd>null</kbd>,
+							<kbd>false</kbd> or empty string.
+						</td>
+					</tr>
+					<tr>
+						<th>match_value</th>
+						<td><kbd>$compare</kbd>, <kbd>$strickt</kbd> = false</td>
+						<td>
+							The field input must match <kbd>$compare</kbd>, will be done using == unless 2nd parameter
+							is also given as true (then === is used).
+						</td>
+					</tr>
+					<tr>
+						<th>match_pattern</th>
+						<td><kbd>$pattern</kbd></td>
+						<td>
+							Will try to match the value against the given $pattern which must be a full PREG regex.
+						</td>
+					</tr>
+					<tr>
+						<th>match_field</th>
+						<td><kbd>$field</kbd></td>
+						<td>
+							Will try to match the field to the field with the given fieldname, the matching is done
+							using ===.<br />
+							<strong>Important:</strong> you can only match against a field that was added before the
+							field this rule is added to.
+						</td>
+					</tr>
+					<tr>
+						<th>min_length</th>
+						<td><kbd>$length</kbd></td>
+						<td>
+							Tests whether the string contains at least <kbd>$length</kbd>'s number of character.
+						</td>
+					</tr>
+					<tr>
+						<th>max_length</th>
+						<td><kbd>$length</kbd></td>
+						<td>
+							Tests whether the string contains no more than <kbd>$length</kbd>'s number of character.
+						</td>
+					</tr>
+					<tr>
+						<th>exact_length</th>
+						<td><kbd>$length</kbd></td>
+						<td>
+							Tests whether the string has precisely <kbd>$length</kbd>'s number of character.
+						</td>
+					</tr>
+					<tr>
+						<th>valid_email</th>
+						<td>(none)</td>
+						<td>
+							Validates if the given input is a valid email address.
+						</td>
+					</tr>
+					<tr>
+						<th>valid_emails</th>
+						<td>(none)</td>
+						<td>
+							Validates multiple email addresses separated by commas.
+						</td>
+					</tr>
+					<tr>
+						<th>valid_url</th>
+						<td>(none)</td>
+						<td>
+							Validates if the given input is a valid URL.
+						</td>
+					</tr>
+					<tr>
+						<th>valid_ip</th>
+						<td>(none)</td>
+						<td>
+							Validates if the given input is a valid IP.
+						</td>
+					</tr>
+					<tr>
+						<th>numeric_min</th>
+						<td><kbd>$min_val</kbd></td>
+						<td>
+							Tests whether the given input is a number that is greater than <kbd>$min_val</kbd>.
+						</td>
+					</tr>
+					<tr>
+						<th>numeric_max</th>
+						<td><kbd>$max_val</kbd></td>
+						<td>
+							Tests whether the given input is a number that is smaller than <kbd>$max_val</kbd>.
+						</td>
+					</tr>
+					<tr>
+						<th>valid_string</th>
+						<td><kbd>$flags</kbd> = array('alpha', 'utf8')</td>
+						<td>
+							See below.
+						</td>
+					</tr>
+				</tbody>
+			</table>
 
-            <h4>Valid string rule</h4>
-            <p>Validates whether a string adheres to the conditions set by the $flags parameter. The accepted flags
-            are:</p>
-            <table class="config">
-                <tbody>
-                    <tr class="header">
-                        <th>Flag</th>
-                        <th>Description</th>
-                    </tr>
-                    <tr>
-                        <th>alpha</th>
-                        <td>Allow alphabetical characters.</td>
-                    </tr>
-                    <tr>
-                        <th>uppercase</th>
-                        <td>Used in combination with alpha to only allow uppercase characters.</td>
-                    </tr>
-                    <tr>
-                        <th>lowercase</th>
-                        <td>Used in combination with alpha to only allow lowercase characters.</td>
-                    </tr>
-                    <tr>
-                        <th>numeric</th>
-                        <td>Allow numeric characters.</td>
-                    </tr>
-                    <tr>
-                        <th>spaces</th>
-                        <td>Allow normal spaces.</td>
-                    </tr>
-                    <tr>
-                        <th>newlines</th>
-                        <td>Allow newline character.</td>
-                    </tr>
-                    <tr>
-                        <th>tabs</th>
-                        <td>Allow tabs.</td>
-                    </tr>
-                    <tr>
-                        <th>dots</th>
-                        <td>Allow dots.</td>
-                    </tr>
-                    <tr>
-                        <th>punctuation</th>
-                        <td>Allow dots, comma's, exclemation marks, question marks, colons and semi-colons.</td>
-                    </tr>
-                    <tr>
-                        <th>dashes</th>
-                        <td>Allow dashes and underscores.</td>
-                    </tr>
-                    <tr>
-                        <th>utf8</th>
-                        <td>Adds UTF8 modifier to regex.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </article>
+			<h4>Valid string rule</h4>
+			<p>Validates whether a string adheres to the conditions set by the $flags parameter. The accepted flags
+			are:</p>
+			<table class="config">
+				<tbody>
+					<tr class="header">
+						<th>Flag</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<th>alpha</th>
+						<td>Allow alphabetical characters.</td>
+					</tr>
+					<tr>
+						<th>uppercase</th>
+						<td>Used in combination with alpha to only allow uppercase characters.</td>
+					</tr>
+					<tr>
+						<th>lowercase</th>
+						<td>Used in combination with alpha to only allow lowercase characters.</td>
+					</tr>
+					<tr>
+						<th>numeric</th>
+						<td>Allow numeric characters.</td>
+					</tr>
+					<tr>
+						<th>spaces</th>
+						<td>Allow normal spaces.</td>
+					</tr>
+					<tr>
+						<th>newlines</th>
+						<td>Allow newline character.</td>
+					</tr>
+					<tr>
+						<th>tabs</th>
+						<td>Allow tabs.</td>
+					</tr>
+					<tr>
+						<th>dots</th>
+						<td>Allow dots.</td>
+					</tr>
+					<tr>
+						<th>punctuation</th>
+						<td>Allow dots, commas, exclamation marks, question marks, colons and semi-colons.</td>
+					</tr>
+					<tr>
+						<th>dashes</th>
+						<td>Allow dashes and underscores.</td>
+					</tr>
+					<tr>
+						<th>utf8</th>
+						<td>Adds UTF8 modifier to regex.</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
 
-        <article>
-            <h3><a name="errors">Error messages</a></h3>
+		<article>
+			<h3><a name="errors">Error messages</a></h3>
 
-            <p>Error messages are set using a language file "validation.php" which is loaded automaticly.</p>
+			<p>Error messages are set using a language file "validation.php" which is loaded automatically.</p>
 
-            <p>There are 2 ways of manipulating the error messages during validation.</p>
+			<p>There are 2 ways of manipulating the error messages during validation.</p>
 
-            <pre class="php"><code>// change a rule per validation object
+			<pre class="php"><code>// change a rule per validation object
 $val->set_message('required', 'The field :label is required.');
 
 // or per error
@@ -344,7 +344,7 @@ echo $val->errors('username')->get_message('The field :label must be filled out 
         <article>
             <h3><a name="methods">Extending Validation class</a></h3>
 
-            <p>There are few aproaches to extend the validation class:</p>
+            <p>There are few approaches to extend the validation class:</p>
 
             <p>1. To extend the core class like described in the <a href="../general/extending_core.html">Extending Core Classes</a></p>
 

@@ -140,98 +140,98 @@ Output::set_header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalid
 Output::set_header('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT');
 Output::set_header('Pragma', 'no-cache');
 </code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
-        <article>
-            <h4>send_headers()</h4>
-            <p>The <strong>send_headers</strong> method sents the set headers out to the browser, including the HTTP status of the request.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td><i>None</i></td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>void</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>Output::send_headers();</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <p>Note that you normally don't have to call this method manually. FuelPHP will take care of this as part of processing the request.</p>
-        </article>
+		<article>
+			<h4>send_headers()</h4>
+			<p>The <strong>send_headers</strong> method sends the set headers out to the browser, including the HTTP status of the request.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td><i>None</i></td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>Output::send_headers();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<p>Note that you normally don't have to call this method manually. FuelPHP will take care of this as part of processing the request.</p>
+		</article>
 
-        <article>
-            <h4>redirect($url = '', $method = 'location', $redirect_code = 302)</h4>
-            <p>The <strong>redirect</strong> method offers different methods of redirecting to a new URL.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$url</kbd></th>
-                                <td><pre class="php"><code>''</code></pre></td>
-                                <td>URL to redirect to.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$method</kbd></th>
-                                <td><pre class="php"><code>'location'</code></pre></td>
-                                <td>Redirection method to use. Supported are 'location' and 'refresh'.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$redirect_code</kbd></th>
-                                <td><pre class="php"><code>302</code></pre></td>
-                                <td>HTTP status code to send back as part of the redirect.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>This method terminates the current script, it does not return.</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>Output::redirect('http://example.com/home', 'refresh');</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+		<article>
+			<h4>redirect($url = '', $method = 'location', $redirect_code = 302)</h4>
+			<p>The <strong>redirect</strong> method offers different methods of redirecting to a new URL.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$url</kbd></th>
+								<td><pre class="php"><code>''</code></pre></td>
+								<td>URL to redirect to.</td>
+							</tr>
+							<tr>
+								<th><kbd>$method</kbd></th>
+								<td><pre class="php"><code>'location'</code></pre></td>
+								<td>Redirection method to use. Supported are 'location' and 'refresh'.</td>
+							</tr>
+							<tr>
+								<th><kbd>$redirect_code</kbd></th>
+								<td><pre class="php"><code>302</code></pre></td>
+								<td>HTTP status code to send back as part of the redirect.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>This method terminates the current script, it does not return.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>Output::redirect('http://example.com/home', 'refresh');</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
-    </section>
+	</section>
 
-    <section id="footer">
-        <p>
-            <a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
-            &copy; 2010 - 2011 Fuel Development Team
-        </p>
-    </section>
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
 
 </body>
 </html>

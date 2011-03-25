@@ -57,19 +57,19 @@ class Generate
 
        $actions or $actions = array('index');
 
-        $action_str = '';
-        foreach ($actions as $action)
-        {
-            $action_str .= '
-    public function action_'.$action.'()
-    {
-        $this->template->title = \'' . \Inflector::humanize($singular) .' &raquo ' . \Inflector::humanize($action) . '\';
-        $this->template->content = View::factory(\''.$singular .'/' . $action .'\');
-    }'.PHP_EOL;
-        }
+		$action_str = '';
+		foreach ($actions as $action)
+		{
+			$action_str .= '
+	public function action_'.$action.'()
+	{
+		$this->template->title = \'' . \Inflector::humanize($singular) .' &raquo; ' . \Inflector::humanize($action) . '\';
+		$this->template->content = View::factory(\''.$singular .'/' . $action .'\');
+	}'.PHP_EOL;
+		}
 
-        // Build Controller
-        $controller = <<<CONTROLLER
+		// Build Controller
+		$controller = <<<CONTROLLER
 <?php
 
 class Controller_{$class_name} extends Controller_Template {

@@ -17,71 +17,71 @@
 </head>
 <body>
 
-    <header>
-        <h1>FUEL Documentation</h1>
-    </header>
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
 
-    <div id="main-nav"></div>
+	<div id="main-nav"></div>
 
-    <section id="content">
-        <h2>Session Class</h2>
+	<section id="content">
+		<h2>Session Class</h2>
 
-        <p>The session class allows you to maintain state for your application in the stateless environment of the web.
-            It allows you to store variables on the server using a variety of storage solutions, and recall these variables on the next page request.</p>
+		<p>The session class allows you to maintain state for your application in the stateless environment of the web.
+			It allows you to store variables on the server using a variety of storage solutions, and recall these variables on the next page request.</p>
 
-        <h3>Manual loading</h3>
+		<h3>Manual loading</h3>
 
-        <p>
-            For most cases, it is sufficient to configure the desired driver, and use the methods documented on the <a href="./usage.html">usage</a> page.
-            However, there are situations where you would like more control over the way sessions behave.
-            You might want to use a different session driver than is configured in the session configation file.
-            Or you have a need for multiple drivers concurrently. This is where the <kbd>factory</kbd> method comes in.
-        </p>
-        <p>
-            The <kbd>factory</kbd> method returns an instance of the session class, using the driver defined in the configuration file or via the parameter.
-            You can use the methods documented on the <a href="./usage.html">usage</a> page on the object returned, using dynamic calls.
-        </p>
+		<p>
+			For most cases, it is sufficient to configure the desired driver, and use the methods documented on the <a href="./usage.html">usage</a> page.
+			However, there are situations where you would like more control over the way sessions behave.
+			You might want to use a different session driver than is configured in the session configuration file.
+			Or you have a need for multiple drivers concurrently. This is where the <kbd>factory</kbd> method comes in.
+		</p>
+		<p>
+			The <kbd>factory</kbd> method returns an instance of the session class, using the driver defined in the configuration file or via the parameter.
+			You can use the methods documented on the <a href="./usage.html">usage</a> page on the object returned, using dynamic calls.
+		</p>
 
-        <article>
-            <h4>factory($config = array())</h4>
-            <p>
-                The <strong>factory</strong> method allows you to manually instantiate a session driver.
-            </p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th>Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th>Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$config</kbd></th>
-                                <td><i>optional</i></td>
-                                <td>
-                                    You can select the driver of your choice by simply passing the name of the driver to the factory method.
-                                    If you require more custom configuration, define a $config array, using the parameters documented on the <a href="./config.html">configuration</a> page.
-                                    Configuration settings you pass here will override the ones defined in the configuration file.
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>object - The instantiated session object.</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php">
+		<article>
+			<h4>factory($config = array())</h4>
+			<p>
+				The <strong>factory</strong> method allows you to manually instantiate a session driver.
+			</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$config</kbd></th>
+								<td><i>optional</i></td>
+								<td>
+									You can select the driver of your choice by simply passing the name of the driver to the factory method.
+									If you require more custom configuration, define a $config array, using the parameters documented on the <a href="./config.html">configuration</a> page.
+									Configuration settings you pass here will override the ones defined in the configuration file.
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>object - The instantiated session object.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php">
 <code>// instantiate a database session
 $session = Session::factory('db');
 
@@ -156,83 +156,83 @@ return "";
 
 $(function()
 {
-    $('#custom_file_upload').uploadify(
-    {
-        'uploader'       : '/uploadify/uploadify.swf',
-        'script'         : '/uploadify/uploadify.php',
-        'cancelImg'      : '/uploadify/cancel.png',
-        'folder'         : '/uploads',
-        'multi'          : true,
-        'auto'           : true,
-        'fileExt'        : '*.jpg;*.gif;*.png',
-        'fileDesc'       : 'Image Files (.JPG, .GIF, .PNG)',
-        'queueID'        : 'custom-queue',
-        'queueSizeLimit' : 3,
-        'simUploadLimit' : 3,
-        'removeCompleted': false,
-        'onSelectOnce'   : function(event,data)
-        'scriptData'     : {'fuelcid': getCookie('fuelcid')},
-        {
-            $('#status-message').text(data.filesSelected + ' files have been added to the queue.');
-        },
-        'onAllComplete'  : function(event,data)
-        {
-            $('#status-message').text(data.filesUploaded + ' files uploaded, ' + data.errors + ' errors.');
-        }
-    });
+	$('#custom_file_upload').uploadify(
+	{
+		'uploader'       : '/uploadify/uploadify.swf',
+		'script'         : '/uploadify/uploadify.php',
+		'cancelImg'      : '/uploadify/cancel.png',
+		'folder'         : '/uploads',
+		'multi'          : true,
+		'auto'           : true,
+		'fileExt'        : '*.jpg;*.gif;*.png',
+		'fileDesc'       : 'Image Files (.JPG, .GIF, .PNG)',
+		'queueID'        : 'custom-queue',
+		'queueSizeLimit' : 3,
+		'simUploadLimit' : 3,
+		'removeCompleted': false,
+		'scriptData'     : {'fuelcid': getCookie('fuelcid')},
+		'onSelectOnce'   : function(event,data)
+		{
+			$('#status-message').text(data.filesSelected + ' files have been added to the queue.');
+		},
+		'onAllComplete'  : function(event,data)
+		{
+			$('#status-message').text(data.filesUploaded + ' files uploaded, ' + data.errors + ' errors.');
+		}
+	});
 }
 </code></pre>
 
-        <h2>Concurrency</h2>
+		<h2>Concurrency</h2>
 
-        <p>
-            When talking about sessions, session cookies, and their behaviour, it is important to understand how they work
-            and what the possibilities and limitations are.
-        </p>
-        <p>
-            This is especially true when it comes to concurrency.
-            For web-based application, you will have concurrency if you use multiple asynchronous ajax calls on your webpages,
-            or if you allow a browser to have multiple windows open to the same application (which, lets face it, is something you can't prevent).
-        </p>
-        <p>
-            Something else you need to know is that by default, the session class will rotate (or regenerate) the session id on a regular basis,
-            to prevent session hijacking due to session id fixation (someone stealing your session cookie and use it to take over your session).
-            You can control the rotation time using a configuration setting, or even disable it, but from a security point of view that is a bad idea.
-            Take these two together, and you have a potential disaster on your hands!
-        </p>
-        <p>
-            An illustration:<br />
-            - you request a page, the session cookie containing ID-A is sent to the server.<br />
-            - your page sends two ajax requests. the session cookie containing ID-A is again sent to the server with each request.<br />
-            - ajax request 1 finishes, and rotates the ID. A cookie with ID-B is sent to the browser.<br />
-            - now ajax request 2 finishes. Because it sent the same cookie, it also decides to rotate, this time to ID-C.<br />
-            (you will get a different ID, because session id's are generated using a randomized algorithm)<br />
-        </p>
-        <p>
-            Now we have a problem. The session class tries to update the stored session with key ID-A to ID-C, but it can't find that session.
-            Remember, it had been updated from ID-A to ID-B by the first ajax call! So it decides the session is invalid, create a new and empty
-            session, and return that cookie to the browser. Now your valid cookie is overwritten by the new and empty session cookie.
-            Result: you have lost the session.
-        </p>
-        <p>
-            This is an issue that most frameworks have not solved. Enter Fuel!
-        </p>
-        <p>
-            Fuel's session class contains two mechanisms to detect and mitigate this problem.
-            Every session key store contains two session ID's: the current ID and the previous ID.
-            If a request comes in just after the session id has been rotated, the correct session can be located using the previous session id stored in the key store.
-            And it case of a session id mismatch which could not be recovered using the previous id, no updated cookie will be sent back to the browser.
-            The result is that you lose the session data of that request, but you don't lose the session itself.
-        </p>
+		<p>
+			When talking about sessions, session cookies, and their behaviour, it is important to understand how they work
+			and what the possibilities and limitations are.
+		</p>
+		<p>
+			This is especially true when it comes to concurrency.
+			For web-based application, you will have concurrency if you use multiple asynchronous ajax calls on your webpages,
+			or if you allow a browser to have multiple windows open to the same application (which, lets face it, is something you can't prevent).
+		</p>
+		<p>
+			Something else you need to know is that by default, the session class will rotate (or regenerate) the session id on a regular basis,
+			to prevent session hijacking due to session id fixation (someone stealing your session cookie and use it to take over your session).
+			You can control the rotation time using a configuration setting, or even disable it, but from a security point of view that is a bad idea.
+			Take these two together, and you have a potential disaster on your hands!
+		</p>
+		<p>
+			An illustration:<br />
+			- you request a page, the session cookie containing ID-A is sent to the server.<br />
+			- your page sends two ajax requests. the session cookie containing ID-A is again sent to the server with each request.<br />
+			- ajax request 1 finishes, and rotates the ID. A cookie with ID-B is sent to the browser.<br />
+			- now ajax request 2 finishes. Because it sent the same cookie, it also decides to rotate, this time to ID-C.<br />
+			(you will get a different ID, because session IDs are generated using a randomized algorithm)<br />
+		</p>
+		<p>
+			Now we have a problem. The session class tries to update the stored session with key ID-A to ID-C, but it can't find that session.
+			Remember, it had been updated from ID-A to ID-B by the first ajax call! So it decides the session is invalid, create a new and empty
+			session, and return that cookie to the browser. Now your valid cookie is overwritten by the new and empty session cookie.
+			Result: you have lost the session.
+		</p>
+		<p>
+			This is an issue that most frameworks have not solved. Enter Fuel!
+		</p>
+		<p>
+			Fuel's session class contains two mechanisms to detect and mitigate this problem.
+			Every session key store contains two session IDs: the current ID and the previous ID.
+			If a request comes in just after the session id has been rotated, the correct session can be located using the previous session id stored in the key store.
+			And it case of a session id mismatch which could not be recovered using the previous id, no updated cookie will be sent back to the browser.
+			The result is that you lose the session data of that request, but you don't lose the session itself.
+		</p>
 
-    </section>
+	</section>
 
-    <section id="footer">
-        <p>
-            <a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
-            &copy; 2010 - 2011 Fuel Development Team
-        </p>
-    </section>
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
 
 </body>
 </html>

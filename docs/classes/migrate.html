@@ -28,59 +28,59 @@
 
         <p>The migrate class allows you to run, walk through and revert <a href="../general/migrations.html">Migrations</a> from your controllers.</p>
 
-        <article>
-            <h4>current()</h4>
-            <p>Run's the up and down methods to the migration currently set in the migration config.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th>Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>None</td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>bool</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre><code>Migrate::current();</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+		<article>
+			<h4>current()</h4>
+			<p>Runs the up and down methods to the migration currently set in the migration config.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>None</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>bool</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Migrate::current();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
-        <article>
-            <h4>latest()</h4>
-            <p>Run's up methods for ever migration between the current version and the last in the migrations folder.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th>Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>None</td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>boolean</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre><code>Migrate::latest();</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+		<article>
+			<h4>latest()</h4>
+			<p>Runs up methods for ever migration between the current version and the last in the migrations folder.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>None</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>boolean</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Migrate::latest();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
         <article>
             <h4>version($version)</h4>

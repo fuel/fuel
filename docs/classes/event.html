@@ -28,50 +28,50 @@
 
         <p>The event class allows you to interact with the Fuel Core without having to alter any core files.</p>
 
-        <article>
-            <h4>register($event, $callback)</h4>
-            <p>The <strong>register</strong> method allows files to register an object that will be ran when the <kbd>trigger</kbd> method is called.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$event</kbd></th>
-                                <td><i>required</i></td>
-                                <td>The event you are registering your code to.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$callback</kbd></th>
-                                <td><i>required</i></td>
-                                <td>The callback method. </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>boolean</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre><code>Event::register('user_login', 'Class::method')</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+		<article>
+			<h4>register($event, $callback)</h4>
+			<p>The <strong>register</strong> method allows files to register an object that will be run when the <kbd>trigger</kbd> method is called.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$event</kbd></th>
+								<td><i>required</i></td>
+								<td>The event you are registering your code to.</td>
+							</tr>
+							<tr>
+								<th><kbd>$callback</kbd></th>
+								<td><i>required</i></td>
+								<td>The callback method. </td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>boolean</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre><code>Event::register('user_login', 'Class::method')</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
         <article>
             <h4>trigger($event, $data = '', $return_type = 'string')</h4>

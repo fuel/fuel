@@ -5,5 +5,5 @@
 </p>
 <?php endforeach; ?>
 
-<?php echo '<?php'; ?> echo HTML::anchor('<?php echo $plural; ?>/edit/'.$<?php echo $singular; ?>->id, 'Edit'); <?php echo '?>'; ?> | 
-<?php echo '<?php'; ?> echo HTML::anchor('<?php echo $plural; ?>', 'Back'); <?php echo '?>'; ?>
+<?php echo '<?php'; ?> echo Html::anchor('<?php echo $plural; ?>/edit/'.$<?php echo $singular; ?>->id, 'Edit'); <?php echo '?>'; ?> | 
+<?php echo '<?php'; ?> echo Html::anchor('<?php echo $plural; ?>', 'Back'); <?php echo '?>'; ?>

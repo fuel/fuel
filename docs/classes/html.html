@@ -203,61 +203,61 @@ echo Html::mail_to('name@domain.com', 'Name', 'Something');
 
 //returns &lt;a href="mailto:name@domain.com" id="a2" class="sample" style="color:red;"&gt;Name&lt;/a&gt;
 echo Html:::mail_to('name@domain.com', 'Name', null, array('id' => 'a2', 'class' => 'sample', 'style' => 'color:red'));</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
-        <article>
-            <h4>mail_to_save($email, $text, $subject = null, $attr = array())</h4>
-            <p>The <strong>mail_to_save</strong> method returns javascript code that produce an html anchor tag with mailto as target.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th>Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$email</kbd></th>
-                                <td><i>required</i></td>
-                                <td>Email address</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$text</kbd></th>
-                                <td><i>required</i></td>
-                                <td>Anchor value</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$subject</kbd></th>
-                                <td><strong>null</strong></td>
-                                <td>Anchor value</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$attr</kbd></th>
-                                <td><strong>empty</strong></td>
-                                <td>Array of attributes to be applied to the anchor tag.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>String containing the correctly formated anchor tag (and attributes if supplied).</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>//returns
+		<article>
+			<h4>mail_to_save($email, $text, $subject = null, $attr = array())</h4>
+			<p>The <strong>mail_to_save</strong> method returns javascript code that produces an html anchor tag with mailto as target.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$email</kbd></th>
+								<td><i>required</i></td>
+								<td>Email address</td>
+							</tr>
+							<tr>
+								<th><kbd>$text</kbd></th>
+								<td><i>required</i></td>
+								<td>Anchor value</td>
+							</tr>
+							<tr>
+								<th><kbd>$subject</kbd></th>
+								<td><strong>null</strong></td>
+								<td>Anchor value</td>
+							</tr>
+							<tr>
+								<th><kbd>$attr</kbd></th>
+								<td><strong>empty</strong></td>
+								<td>Array of attributes to be applied to the anchor tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated anchor tag (and attributes if supplied).</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>//returns
 //&lt;script type="text/javascript"&gt
 //    var user = "name";
 //    var at = "@";
@@ -705,51 +705,51 @@ echo Html::audio('../sounds/beep.mp3');
 
 //returns &lt;audio&gt;&lt;source src="../sounds/beep.mp3" /&gt;&lt;source src="../sounds/frog.mp4" /&gt;&lt;/audio&gt;
 echo Html::audio(array('../sounds/beep.mp3','../sounds/frog.mp4'));</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
-        <article>
-            <h4>ul($list, $style = false)</h4>
-            <p>The <strong>ul</strong> method returns correctly formated single or multi-level unordered list.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th>Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$list</kbd></th>
-                                <td><i>required</i></td>
-                                <td>Array containing single or multi-level items to be outputed as list items.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$style</kbd></th>
-                                <td><strong>false</strong></td>
-                                <td>Array of attributes to be applied to the ul tag.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>String containing the correctly formated list.</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>/* returns
+		<article>
+			<h4>ul($list, $style = false)</h4>
+			<p>The <strong>ul</strong> method returns correctly formated single or multi-level unordered list.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th>Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$list</kbd></th>
+								<td><i>required</i></td>
+								<td>Array containing single or multi-level items to be outputted as list items.</td>
+							</tr>
+							<tr>
+								<th><kbd>$style</kbd></th>
+								<td><strong>false</strong></td>
+								<td>Array of attributes to be applied to the ul tag.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>String containing the correctly formated list.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>/* returns
 &lt;ul id="todo" class="pending"&gt;
     &lt;li&gt;red&lt;/li&gt;
     &lt;li&gt;blue&lt;/li&gt;

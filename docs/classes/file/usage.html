@@ -33,8 +33,8 @@
         <section>
             <h2>Usage</h2>
 
-            <p>The File class's basic usage it through its helper methods which are listed below.</p>
-        </section>
+			<p>The File class's basic usage is through its helper methods which are listed below.</p>
+		</section>
 
         <article>
             <h4>create($basepath, $name, $contents = null, $area = null)</h4>
@@ -209,65 +209,65 @@ File::read(DOCROOT.'test.txt', true);</code></pre>
             </table>
         </article>
 
-        <article>
-            <h4>read_dir($path, $depth = 0, $filter = null, $area = null)</h4>
-            <p>Reads directory contents into an array.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$path</kbd></th>
-                                <td><i>required</i></td>
-                                <td>Location of the directory to read</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$depth</kbd></th>
-                                <td><kbd>0</kbd></td>
-                                <td>How deep the subdirectories are recursed: 0 for unlimited, 1 for only the current
-                                directory or specific number.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$filter</kbd></th>
-                                <td><kbd>null</kbd></td>
-                                <td>A filter for which files to read: <kbd>array()</kbd> for all or <kbd>null</kbd> for
-                                all but hidden.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$area</kbd></th>
-                                <td><kbd>null</kbd></td>
-                                <td>Area object to use, defaults to main config (see <a href="advanced.html">advanced
-                                usage</a> for more information)</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>array - a natural-case sorted array with subdirectories on top. Directories have a string key
-                    with array value (or false when not read because of $depth limitation) and files are int indexed
-                    with filename as value.</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>File::read(DOCROOT);</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+		<article>
+			<h4>read_dir($path, $depth = 0, $filter = null, $area = null)</h4>
+			<p>Reads directory contents into an array.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$path</kbd></th>
+								<td><i>required</i></td>
+								<td>Location of the directory to read</td>
+							</tr>
+							<tr>
+								<th><kbd>$depth</kbd></th>
+								<td><kbd>0</kbd></td>
+								<td>How deep the subdirectories are recurred: 0 for unlimited, 1 for only the current
+								directory or specific number.</td>
+							</tr>
+							<tr>
+								<th><kbd>$filter</kbd></th>
+								<td><kbd>null</kbd></td>
+								<td>A filter for which files to read: <kbd>array()</kbd> for all or <kbd>null</kbd> for
+								all but hidden.</td>
+							</tr>
+							<tr>
+								<th><kbd>$area</kbd></th>
+								<td><kbd>null</kbd></td>
+								<td>Area object to use, defaults to main config (see <a href="advanced.html">advanced
+								usage</a> for more information)</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array - a natural-case sorted array with subdirectories on top. Directories have a string key
+					with array value (or false when not read because of $depth limitation) and files are int indexed
+					with filename as value.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>File::read(DOCROOT);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
         <article>
             <h4>update($basepath, $name, $contents = null, $area = null)</h4>

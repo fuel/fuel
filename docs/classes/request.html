@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Request Class - Fuel Documentation</title>
+	<link href="../assets/css/main.css" media="screen" rel="stylesheet" />
+	<script type="text/javascript" src="../assets/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../assets/js/nav.js"></script>
+	<script type="text/javascript" src="../assets/js/highlight.pack.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			show_nav('classes', '../');
+		});
+		hljs.tabReplace = '    ';
+		hljs.initHighlightingOnLoad();
+	</script>
+</head>
+<body>
+
+	<header>
+		<h1>FUEL Documentation</h1>
+	</header>
+
+	<div id="main-nav"></div>
+
+	<section id="content">
+		<h2>Request Class</h2>
+
+		<p>The Request class processes URI requests. It is used by FuelPHP in index.php to process the users URI request, and you need it to generates request in an HMVC context.</p>
+
+		<article>
+			<h4>factory($uri = null, $route = true)</h4>
+			<p>The <strong>factory</strong> method returns a new request object.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$uri</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The URI being requested. If this parameter is not present, the URI class will be used to detect the URI.</td>
+							</tr>
+							<tr>
+								<th><kbd>$route</kbd></th>
+								<td><pre class="php"><code>true</code></pre></td>
+								<td>If true, the URI passed or detected will be processed by the routing class. If no route is present, a 404 will be generated. If you request a non-public URI, set this to <strong>false</strong>.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Fuel\Core\Request Object</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// create the request object for the admin controller, login method
+$request = Request::factory('admin/login');
+
+// note that this only creates the object, it does not execute the request!</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>execute()</h4>
+			<p>The <strong>execute</strong> method executes a request, and stores the resulting output in the request object to be used later.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Fuel\Core\Request Object</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// create and execute the request object for the admin controller, login method
+$request = Request::factory('admin/login')->execute();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>output()</h4>
+			<p>The <strong>output</strong> method fetches the output of the executed request.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Fuel\Core\Request Object</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// execute the request, fetch the output, and display it
+$request = Request::factory('admin/login')->execute()->output();
+echo $request;
+
+// The Request object contains a __toString() method as an alternative way to fetch the output
+$request = Request::factory('admin/login')->execute();
+echo $request;</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>show_404($return = false)</h4>
+			<p>The <strong>show_404</strong> method will display or return the applications 404 page. If none is configured in your config routes.php, the FuelPHP default 404 page will be used instead. If the configured 404 route is incorrect, an error will be thrown.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$return</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>If <strong>false</strong>, the result will be echoed out. If <strong>true</strong>, it will be returned.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>If <strong>$return</strong> is false, the method will exit. If not, it will return the html of the 404 page configured.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>Request::show_404();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>main()</h4>
+			<p>The <strong>main</strong> method returns the main Request instance (the one created by the initial page request).</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Fuel\Core\Request Object, or false if no main request instance exists.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>$main = Request::main();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>active()</h4>
+			<p>The <strong>active</strong> method returns the currently active Request instance.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Fuel\Core\Request Object, or false if no active request instance exists.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>$active = Request::active();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>add_path($path, $prefix = false)</h4>
+			<p>The <strong>add_path</strong> method allows you to add a search path to the current request instance. The search paths are used by Fuel::find_file() to locate files within your application.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$path</kbd></th>
+								<td><i>required</i></td>
+								<td>Path to be added to the list of Request local search paths</td>
+							</tr>
+							<tr>
+								<th><kbd>$prefix</kbd></th>
+								<td><pre class="php"><code>false</code></pre></td>
+								<td>If <strong>false</strong>, the path will be appended to the search path. If <strong>true</strong>, it will be prepended.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td><i>void</i></td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// add the applications myfiles folder to the search path of the active request instance
+Request::active()->add_path(APPPATH.'myfiles'.DS);</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>get_paths()</h4>
+			<p>The <strong>get_paths</strong> method returns the defined list of search paths.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td><i>void</i></td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>// get the defined search paths of the active request instance
+$paths = Request::active()->get_paths();</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+	<section id="footer">
+		<p>
+			<a href="http://fuelphp.com">Fuel PHP</a> is released under the MIT license.<br />
+			&copy; 2010 - 2011 Fuel Development Team
+		</p>
+	</section>
+
+</body>
+</html>

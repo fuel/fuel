@@ -28,45 +28,45 @@
 
         <p>The Date class is a set of helper functions for working with dates.</p>
 
-        <article>
-            <h4>factory($timestamp = null, $timezone = null)</h4>
-            <p>The <strong>factory</strong> method returns a new date object.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$timestamp</kbd></th>
-                                <td><i><pre class="php"><code>null</code></pre></i></td>
-                                <td>The timestamp to set the date object to</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$timezone</kbd></th>
-                                <td><pre class="php"><code>null</code></pre></td>
-                                <td>The timezone in which the time is set</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>Fuel\Core\Date Object</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-<pre class="php"><code>print_r( Date::Factory( 1294176140 ) );
+		<article>
+			<h4>factory($timestamp = null, $timezone = null)</h4>
+			<p>The <strong>factory</strong> method returns a new date object.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$timestamp</kbd></th>
+								<td><i><pre class="php"><code>null</code></pre></i></td>
+								<td>The timestamp to set the date object to</td>
+							</tr>
+							<tr>
+								<th><kbd>$timezone</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The timezone in which the time is set</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Fuel\Core\Date Object</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+<pre class="php"><code>print_r( Date::factory( 1294176140 ) );
 
 // Returns
 Fuel\Core\Date Object
@@ -123,45 +123,45 @@ Fuel\Core\Date Object
             </table>
         </article>
 
-        <article>
-            <h4>create_from_string($input, $pattern_key = 'local')</h4>
-            <p>The <strong>create_from_string</strong> creates a Date object from a named date string format</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$input</kbd></th>
-                                <td><i>Required</i></td>
-                                <td>The date string to use</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$pattern_key</kbd></th>
-                                <td>"local"</td>
-                                <td>The the pattern key to use (see config/date.php)</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>Fuel\Core\Date Object</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>print_r( Date::create_from_string( "01/04/2011" , "us" ) );
+		<article>
+			<h4>create_from_string($input, $pattern_key = 'local')</h4>
+			<p>The <strong>create_from_string</strong> creates a Date object from a named date string format</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$input</kbd></th>
+								<td><i>Required</i></td>
+								<td>The date string to use</td>
+							</tr>
+							<tr>
+								<th><kbd>$pattern_key</kbd></th>
+								<td>"local"</td>
+								<td>The pattern key to use (see config/date.php)</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Fuel\Core\Date Object</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>print_r( Date::create_from_string( "01/04/2011" , "us" ) );
 
 // Returns
 Fuel\Core\Date Object
@@ -310,130 +310,130 @@ echo Date::days_in_month(2,2000); // 29
 
 
 <article>
-            <h4>format($pattern_key = 'local')</h4>
-            <p>The <strong>formatted</strong> method returns a formatted date as specified by the pattern key</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>No</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$pattern_key</kbd></th>
-                                <td>"local"</td>
-                                <td>The the pattern key to use (see config/date.php)</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>string</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>echo Date::Factory( 1294176140 )->format("%m/%d/%Y"); // 01/04/2011</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+			<h4>format($pattern_key = 'local')</h4>
+			<p>The <strong>formatted</strong> method returns a formatted date as specified by the pattern key</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$pattern_key</kbd></th>
+								<td>"local"</td>
+								<td>The pattern key to use (see config/date.php)</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Date::factory( 1294176140 )->format("%m/%d/%Y"); // 01/04/2011</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
 <article>
-            <h4>get_timestamp()</h4>
-            <p>The <strong>get_timestamp</strong> method returns the Date object's timestamp</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>No</td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>int</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>echo Date::Factory( 1294176140 )->get_timestamp(); // 1294176140</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+			<h4>get_timestamp()</h4>
+			<p>The <strong>get_timestamp</strong> method returns the Date object's timestamp</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>int</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Date::factory( 1294176140 )->get_timestamp(); // 1294176140</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
 <article>
-            <h4>get_timezone()</h4>
-            <p>The <strong>get_timezone</strong> method returns the Date object's timezone</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>No</td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>string</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>echo Date::Factory( 1294176140, "Europe/London" )->get_timezone(); // Europe/London</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+			<h4>get_timezone()</h4>
+			<p>The <strong>get_timezone</strong> method returns the Date object's timezone</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Date::factory( 1294176140, "Europe/London" )->get_timezone(); // Europe/London</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
 <article>
-            <h4>set_timezone($timezone)</h4>
-            <p>The <strong>set_timezone</strong> method sets the Date object's timezone</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>No</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$timezone</kbd></th>
-                                <td><i>required</i></td>
-                                <td>The the timezone to set the Date object to</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>string</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php"><code>echo Date::Factory( 1294176140 )->set_timezone("America/Chicago")->get_timezone(); // America/Chicago</code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+			<h4>set_timezone($timezone)</h4>
+			<p>The <strong>set_timezone</strong> method sets the Date object's timezone</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>No</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$timezone</kbd></th>
+								<td><i>required</i></td>
+								<td>The timezone to set the Date object to</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Date::factory( 1294176140 )->set_timezone("America/Chicago")->get_timezone(); // America/Chicago</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
 
     </section>

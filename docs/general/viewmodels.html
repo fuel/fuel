@@ -23,18 +23,18 @@
 
     <div id="main-nav"></div>
 
-    <section id="content">
-        <h2>ViewModels</h2>
-        
-        <p>ViewModels are optional, if you don't need them just use <a href="views.html">Views</a>.</p>
+	<section id="content">
+		<h2>ViewModels</h2>
+		
+		<p>ViewModels are optional; if you don't need them, you can use <a href="views.html">Views</a>.</p>
 
         <h3>What is a ViewModel?</h3>
 
-        <p>A ViewModel is a class that contains the logic that is needed to generate your views. When the controller
-        is done with your user input and is done with whatever actions it needed to take, it turns execution over to
-        the ViewModel to retrieve whatever data is needed for the view. A ViewModel shouldn't do any data manipulation,
-        but can contain Database calls and any other retrievel or preperation operations needed to generate the View's
-        data.</p>
+		<p>A ViewModel is a class that contains the logic that is needed to generate your views. When the controller
+		is done with your user input and is done with whatever actions it needed to take, it turns execution over to
+		the ViewModel to retrieve whatever data is needed for the view. A ViewModel shouldn't do any data manipulation,
+		but can contain Database calls and any other retrieval or preparation operations needed to generate the View's
+		data.</p>
 
         <h2>Creating a ViewModel</h2>
 
@@ -85,10 +85,10 @@
 
         <h2>Security</h2>
 
-        <p>By default ViewModels sanitize anything you set in them using Secutiry::clean(). If you want to pass 
-        something unfiltered you can use the method <kbd>add_raw()</kbd>.</p>
-        
-        <pre><code>class View_Index extends ViewModel {
+		<p>By default ViewModels sanitize anything you set in them using Security::clean(). If you want to pass 
+		something unfiltered you can use the method <kbd>add_raw()</kbd>.</p>
+		
+		<pre><code>class View_Index extends ViewModel {
 
     public function view()
     {
@@ -136,7 +136,7 @@ $echo_upper('this string'); // Outputs: "THIS STRING"</code></pre>
         than the default view() method. To use those you need to add the method's name as the second parameter to the
         <kbd>ViewModel::factory()</kbd> method:</p>
 
-        <pre><code>// will call other_method() upon the the ViewModel from the above example
+		<pre><code>// will call other_method() upon the ViewModel from the above example
 ViewModel::factory('Index', 'other_method');</code></pre>
 
         <h3>Before and after methods</h3>

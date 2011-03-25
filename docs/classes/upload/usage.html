@@ -315,42 +315,42 @@ if ( Upload::is_valid() )
             </table>
         </article>
 
-        <article>
-            <h4>get_files($index = null)</h4>
-            <p>The <strong>get_files</strong> method returns a multi-dimensional array with all files uploaded that have an error status = Upload::UPLOAD_ERR_OK.</p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$index</kbd></th>
-                                <td><i>optional</i></td>
-                                <td>index number of the file in the uploaded files array. If not specified, or the index refers to a file with
-                                an error status other than UPLOAD_ERR_OK, an array with all validated files is returned.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>array</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php">
-<code>// get the list of succesfully uploaded files
+		<article>
+			<h4>get_files($index = null)</h4>
+			<p>The <strong>get_files</strong> method returns a multi-dimensional array with all files uploaded that have an error status = Upload::UPLOAD_ERR_OK.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$index</kbd></th>
+								<td><i>optional</i></td>
+								<td>index number of the file in the uploaded files array. If not specified, or the index refers to a file with
+								an error status other than UPLOAD_ERR_OK, an array with all validated files is returned.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>array</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php">
+<code>// get the list of successfully uploaded files
 foreach( Upload::get_files() as $file )
 {
     // do something with the file info
@@ -409,48 +409,48 @@ foreach( Upload::get_errors() as $file )
             </table>
         </article>
 
-        <article>
-            <h4>register($event, $callback)</h4>
-            <p>
-                The <strong>register</strong> method allows you to register callbacks for specific upload events,
-                and allow you to add your own code to the <strong>process()</strong> and <strong>save()</strong> methods.
-            </p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$event</kbd></th>
-                                <td><i>required</i></td>
-                                <td>name of the callback event you want to register. Valid names are 'validate', 'before' and 'after'.</td>
-                            </tr>
-                            <tr>
-                                <th><kbd>$callback</kbd></th>
-                                <td><i>required</i></td>
-                                <td>Valid PHP callback function. This can be a function, a dynamic or static method, or a closure.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>boolean - true if the callback was registered, false if the registation failed.</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php">
+		<article>
+			<h4>register($event, $callback)</h4>
+			<p>
+				The <strong>register</strong> method allows you to register callbacks for specific upload events,
+				and allow you to add your own code to the <strong>process()</strong> and <strong>save()</strong> methods.
+			</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$event</kbd></th>
+								<td><i>required</i></td>
+								<td>name of the callback event you want to register. Valid names are 'validate', 'before' and 'after'.</td>
+							</tr>
+							<tr>
+								<th><kbd>$callback</kbd></th>
+								<td><i>required</i></td>
+								<td>Valid PHP callback function. This can be a function, a dynamic or static method, or a closure.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>boolean - true if the callback was registered, false if the registration failed.</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php">
 <code>// register a before callback using a closure
 Upload::register('before', function (&amp;$file) {
         if ($file['error'] == Upload::UPLOAD_ERR_OK)
@@ -481,62 +481,62 @@ Upload::register('before', function (&amp;$file) {
     }
 );
 </code></pre>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <p>
-                If you want to use a 'validate' callback, be sure to register it before you call Upload::process().
-                If you have used the 'auto_process' configuration setting, Upload::process() will be called as soon as you use the Upload class,
-                which means you will have to call it again after you have defined the callback.
-            </p>
-            <p>
-                The callback will receive an entry from the uploaded files array as parameter. The entry is passed by reference, which allows
-                the callback function to modify the entries of the array.<br />
-                If the callback function returnes an integer, it is assumed to be an update of the uploaded file's error code.
-                All other return values are ignored.
-            </p>
-        </article>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<p>
+				If you want to use a 'validate' callback, be sure to register it before you call Upload::process().
+				If you have used the 'auto_process' configuration setting, Upload::process() will be called as soon as you use the Upload class,
+				which means you will have to call it again after you have defined the callback.
+			</p>
+			<p>
+				The callback will receive an entry from the uploaded files array as parameter. The entry is passed by reference, which allows
+				the callback function to modify the entries of the array.<br />
+				If the callback function returns an integer, it is assumed to be an update of the uploaded file's error code.
+				All other return values are ignored.
+			</p>
+		</article>
 
-        <article>
-            <h4>process($config = array())</h4>
-            <p>
-                The <strong>process</strong> method processes the information about all uploaded files,
-                normalizes the different permutations of form field names that can be used,
-                fetches additional information about the file and it's mimetype,
-                and validates the file.
-            </p>
-            <table class="method">
-                <tbody>
-                <tr>
-                    <th class="legend">Static</th>
-                    <td>Yes</td>
-                </tr>
-                <tr>
-                    <th>Parameters</th>
-                    <td>
-                        <table class="parameters">
-                            <tr>
-                                <th>Param</th>
-                                <th>Default</th>
-                                <th class="description">Description</th>
-                            </tr>
-                            <tr>
-                                <th><kbd>$config</kbd></th>
-                                <td><i>optional</i></td>
-                                <td>array of configuration items, so you can override the settings defined in the configuration file.</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Returns</th>
-                    <td>void</td>
-                </tr>
-                <tr>
-                    <th>Example</th>
-                    <td>
-                        <pre class="php">
+		<article>
+			<h4>process($config = array())</h4>
+			<p>
+				The <strong>process</strong> method processes the information about all uploaded files,
+				normalizes the different permutations of form field names that can be used,
+				fetches additional information about the file and its mimetype,
+				and validates the file.
+			</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$config</kbd></th>
+								<td><i>optional</i></td>
+								<td>array of configuration items, so you can override the settings defined in the configuration file.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>void</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php">
 <code>// process the uploaded files
 // set the max size to 10Kb, and allow overwrites of duplicate files
 Upload::process( array('max_size' => 10240, 'auto_rename' => false, 'overwrite' => true) );
