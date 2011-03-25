@@ -79,7 +79,7 @@ class Cache {
 	 * @param	array			Contains the identifiers of caches this one will depend on (not supported by all drivers!)
 	 * @return	object			The new request
 	 */
-	public static function set($identifier, $contents = null, $expiration = null, $dependencies = array())
+	public static function set($identifier, $contents = null, $expiration = false, $dependencies = array())
 	{
 		$cache = static::factory($identifier);
 		return $cache->set($contents, $expiration, $dependencies);
