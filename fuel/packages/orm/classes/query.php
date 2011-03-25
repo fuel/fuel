@@ -482,10 +482,6 @@ class Query {
 
 		foreach ($model::primary_key() as $pk)
 		{
-			if (empty($obj[$pk]))
-			{
-				\Debug::dump($model, $pk, $obj);
-			}
 			if (is_null($obj[$pk]))
 			{
 				return false;
