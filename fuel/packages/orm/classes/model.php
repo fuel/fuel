@@ -183,7 +183,15 @@ class Model {
 		// ...if the above failed, run DB query to fetch properties
 		if (empty($properties))
 		{
-			$properties = \DB::list_columns(static::table());
+			try
+			{
+				$properties = \DB::list_columns(static::table());
+			}
+			catch (\Exception $e)
+			{
+				throw new Exception('Listing columns not possible, you have to set the model properties with a '.
+					'static $_properties setting in the model.');
+			}
 		}
 
 		// cache the properties for next usage
