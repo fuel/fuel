@@ -490,7 +490,7 @@ class Model {
 	 * @param  array
 	 * @param  bool
 	 */
-	protected function __construct(array $data, $new = true)
+	public function __construct(array $data, $new = true)
 	{
 		$this->_update_original($data);
 		foreach ($data as $key => $val)

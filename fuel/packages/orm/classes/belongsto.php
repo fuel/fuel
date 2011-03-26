@@ -24,6 +24,7 @@ class BelongsTo extends Relation {
 
 	public function __construct($from, $name, array $config)
 	{
+		$this->name        = $name;
 		$this->model_from  = $from;
 		$this->model_to    = array_key_exists('model_to', $config) ? $config['model_to'] : 'Model_'.\Inflector::classify($name);
 		$this->key_from    = array_key_exists('key_from', $config) ? (array) $config['key_from'] : (array) \Inflector::foreign_key($this->model_to);
@@ -81,15 +82,47 @@ class BelongsTo extends Relation {
 		return array($model);
 	}
 
-	public function save($model_from, $model_to, $original_model_to, $parent_saved, $cascade)
+	public function save($model_from, $model_to, $original_model_id, $parent_saved, $cascade)
 	{
 		if ($parent_saved)
 		{
 			return;
 		}
 
+		$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
+		// Check if there was another model assigned (this supersedes any change to the foreign key(s))
+		if ($current_model_id != $original_model_id)
+		{
+			// change the foreign keys in the model_from to point to the new relation
+			reset($this->key_to);
+			foreach ($model_to->primary_key() as $pk)
+			{
+				$model_from->{current($this->key_to)} = $pk;
+				next($this->key_to);
+			}
+		}
+		// if not check the model_from's foreign_keys
+		else
+		{
+			$foreign_keys = count($this->key_to) == 1 ? array($original_model_id) : explode('][', substr($original_model_id, 1, -1));
+			reset($this->key_from);
+			foreach ($foreign_keys as $fk)
+			{
+				// if any of the keys changed, reload the relationship - saving the object will save those keys
+				if ($model_from->{current($this->key_from)} != $fk)
+				{
+					$obj = call_user_func(array($this->model_to, find), $foreign_keys);
+					$rel = $model_from->_relate();
+					$rel[$this->name] = $obj;
+					$model_from->_relate($obj);
+					break;
+				}
+				next($this->key_from);
+			}
+		}
+
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade)
+		if ($cascade and ! empty($model_to))
 		{
 			$model_to->save();
 		}
@@ -103,7 +136,7 @@ class BelongsTo extends Relation {
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade)
+		if ($cascade and ! empty($model_to))
 		{
 			$model_to->delete();
 		}

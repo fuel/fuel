@@ -617,7 +617,7 @@ class Query {
 		$this->select or $this->select = 'id';
 
 		// Get the columns
-		$columns = \DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').$this->table_prefix().$this->alias.'.'.($distinct ?: $this->select).') AS count_result');
+		$columns = \DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').\Database_Connection::instance()->table_prefix().$this->alias.'.'.($distinct ?: $this->select).') AS count_result');
 
 		// Remove the current select and
 		$query = call_user_func('DB::select', $columns);
@@ -649,7 +649,7 @@ class Query {
 		is_array($column) and $column = array_shift($column);
 
 		// Get the columns
-		$columns = \DB::expr('MAX('.$this->table_prefix().$this->alias.'.'.$column.') AS max_result');
+		$columns = \DB::expr('MAX('.\Database_Connection::instance()->table_prefix().$this->alias.'.'.$column.') AS max_result');
 
 		// Remove the current select and
 		$query = call_user_func('DB::select', $columns);
@@ -681,7 +681,7 @@ class Query {
 		is_array($column) and $column = array_shift($column);
 
 		// Get the columns
-		$columns = \DB::expr('MIN('.$this->table_prefix().$this->alias.'.'.$column.') AS min_result');
+		$columns = \DB::expr('MIN('.\Database_Connection::instance()->table_prefix().$this->alias.'.'.$column.') AS min_result');
 
 		// Remove the current select and
 		$query = call_user_func('DB::select', $columns);
