@@ -38,3 +38,8 @@ class UndefinedRelation extends Exception {}
  * Invalid Observer Exception
  */
 class InvalidObserver extends Exception {}
+
+/**
+ * Frozen Object Exception
+ */
+class FrozenObject extends Exception {}
