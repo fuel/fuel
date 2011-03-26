@@ -61,89 +61,82 @@ class Router {
 			$match->parse($request);
 		}
 
+		return  static::find_controller($match);
+	}
+
+	/**
+	 * Find the controller that matches the route requested
+	 *
+	 * @param	Route		the given Route object
+	 * @return	mixed		the match array or false
+	 */
+	protected static function find_controller($match)
+	{
+		// First port of call: request for a module?
+		if (\Fuel::module_exists($match->segments[0]))
+		{
+			// make the module known to the autoloader
+			\Fuel::add_module($match->segments[0]);
+
+			$segments = $match->segments;
+
+			// first check if the controller is in a directory.
+			$match->module = array_shift($segments);
+			$match->directory = count($segments) ? array_shift($segments) : null;
+			$match->controller = count($segments) ? array_shift($segments) : $match->module;
+
+			// does the module controller exist?
+			if (class_exists(ucfirst($match->module).'\\Controller_'.ucfirst($match->directory).'_'.ucfirst($match->controller)))
+			{
+				$match->action = count($segments) ? array_shift($segments) : 'index';
+				$match->method_params = $segments;
+				return $match;
+			}
+
+			$segments = $match->segments;
+
+			// then check if it's a module controller
+			$match->module = array_shift($segments);
+			$match->directory = null;
+			$match->controller = count($segments) ? array_shift($segments) : $match->module;
+
+			// does the module controller exist?
+			if (class_exists(ucfirst($match->module).'\\Controller_'.ucfirst($match->controller)))
+			{
+				$match->action = count($segments) ? array_shift($segments) : 'index';
+				$match->method_params = $segments;
+				return $match;
+			}
+		}
+
 		$segments = $match->segments;
 
-		if (static::find_controller($match, $segments))
+		// It's not a module, first check if the controller is in a directory.
+		$match->directory = array_shift($segments);
+		$match->controller = count($segments) ? array_shift($segments) : $match->directory;
+
+		if (class_exists('Controller_'.ucfirst($match->directory).'_'.ucfirst($match->controller)))
 		{
-			// Check for a module
-			if ($match->module !== null)
-			{
-				// search for a module controller
-				if (count($segments) > 1)
-				{
-					// reset the found controller and action
-					$match->controller = $match->action = null;
-					array_shift($segments);
-					static::find_controller($match, $segments);
-				}
-			}
+			$match->action = count($segments) ? array_shift($segments) : 'index';
+			$match->method_params = $segments;
 			return $match;
 		}
 
-		return false;
-	}
+		$segments = $match->segments;
 
-	protected static function find_controller( & $match, $segments)
-	{
-		// We first want to check if the controller is in a directory.  This way directories
-		// can have the same name as a base controller and still work.
-		if ($match->controller === null && count($segments) > 1)
+		// It's not in a directory, so check for app controllers
+		$match->directory = null;
+		$match->controller = count($segments) ? array_shift($segments) : $match->directory;
+
+		// We first want to check if the controller is in a directory.
+		if (class_exists('Controller_'.ucfirst($match->controller)))
 		{
-			if ($controller_path = \Fuel::find_file('classes'.DS.'controller'.DS.$segments[0], $segments[1]))
-			{
-				$match->directory = $segments[0];
-				array_shift($segments);
-
-				$match->controller = $segments[0];
-				array_shift($segments);
-			}
-			elseif ($controller_path = \Fuel::find_file('classes'.DS.'controller'.DS.$segments[0], $segments[0]))
-			{
-				$match->directory = $segments[0];
-				$match->controller = $segments[0];
-				array_shift($segments);
-			}
-		}
-
-		// Check for the controller
-		if ($match->controller === null)
-		{
-			// Check for a module by this name
-			if ($module_path = \Fuel::module_exists($segments[0]))
-			{
-				\Fuel::add_module($segments[0]);
-			}
-			if ($controller_path = \Fuel::find_file('classes'.DS.'controller', $segments[0]))
-			{
-				// did we find  a module controller?
-				if (strpos($controller_path, APPPATH.'classes') !== 0 && $match->module === null)
-				{
-					$match->module = $segments[0];
-				}
-				$match->controller = $segments[0];
-				array_shift($segments);
-			}
-		}
-
-		if ($match->controller !== null)
-		{
-			// Since we found a controller lets see if there is an action defined
-			if (count($segments) > 0)
-			{
-				$match->action = $segments[0];
-				array_shift($segments);
-			}
-			else
-			{
-				$match->action = 'index';
-			}
-
+			$match->action = count($segments) ? array_shift($segments) : 'index';
 			$match->method_params = $segments;
-
-			// We are all done here
-			return true;
+			return $match;
 		}
 
+		// none of the above. I give up...
 		return false;
 	}
 }
