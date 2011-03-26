@@ -109,7 +109,7 @@ class BelongsTo extends Relation {
 			foreach ($foreign_keys as $fk)
 			{
 				// if any of the keys changed, reload the relationship - saving the object will save those keys
-				if ($model_from->{$this->key_from} != $fk)
+				if ($model_from->{current($this->key_from)} != $fk)
 				{
 					$obj = call_user_func(array($this->model_to, find), $foreign_keys);
 					$rel = $model_from->_relate();
@@ -117,6 +117,7 @@ class BelongsTo extends Relation {
 					$model_from->_relate($obj);
 					break;
 				}
+				next($this->key_from);
 			}
 		}
 
