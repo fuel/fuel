@@ -477,7 +477,12 @@ class Model {
 	/**
 	 * @var  array
 	 */
-	private $_loaded_relations = array();
+	private $_data_relations = array();
+
+	/**
+	 * @var  arrayy  keeps a copy of the relation ids that were originally retrieved from the database
+	 */
+	private $_original_relations = array();
 
 	/**
 	 * Constructor
@@ -521,6 +526,7 @@ class Model {
 
 	/**
 	 * Fetch or set relations on this object
+	 * To be used only after having fetched them from the database!
 	 *
 	 * @param   array|null  $rels
 	 * @return  void|array
@@ -529,11 +535,27 @@ class Model {
 	{
 		if (is_null($rels))
 		{
-			return $this->_loaded_relations;
+			return $this->_data_relations;
 		}
 		else
 		{
-			$this->_loaded_relations = $rels;
+			$this->_data_relations = $rels;
+
+			$this->_original_relations = array();
+			foreach ($rels as $rel => $data)
+			{
+				if (is_array($data))
+				{
+					foreach ($data as $obj)
+					{
+						$this->_original_relations[$rel][] = $obj->implode_pk($obj);
+					}
+				}
+				else
+				{
+					$this->_original_relations[$rel] = $obj->implode_pk($obj);
+				}
+			}
 		}
 	}
 
@@ -556,11 +578,11 @@ class Model {
 		}
 		elseif ($rel = static::relations($property))
 		{
-			if ( ! array_key_exists($property, $this->_loaded_relations))
+			if ( ! array_key_exists($property, $this->_data_relations))
 			{
-				$this->_loaded_relations[$property] = $rel->get($this);
+				$this->_data_relations[$property] = $rel->get($this);
 			}
-			return $this->_loaded_relations[$property];
+			return $this->_data_relations[$property];
 		}
 		else
 		{
@@ -591,7 +613,7 @@ class Model {
 		}
 		elseif (static::relations($property))
 		{
-			$this->_loaded_relations[$property] = $value;
+			$this->_data_relations[$property] = $value;
 		}
 		else
 		{
@@ -601,8 +623,13 @@ class Model {
 
 	/**
 	 * Save the object and it's relations, create when necessary
+	 *
+	 * @param  mixed  $cascade
+	 *     null = use default config,
+	 *     bool = force/prevent cascade,
+	 *     array cascades only the relations that are in the array
 	 */
-	public function save()
+	public function save($cascade = null)
 	{
 		if ($this->frozen())
 		{
@@ -612,14 +639,20 @@ class Model {
 		$this->observe('before_save');
 
 		$this->freeze();
-		// TODO: Save all relations with their keys within this object
+		foreach($this->relations() as $rel_name => $rel)
+		{
+			$rel->save($this, $this->{$rel_name}, false, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+		}
 		$this->unfreeze();
 
 		// Insert or update
 		$return = $this->_is_new ? $this->create() : $this->update();
 
 		$this->freeze();
-		// TODO: Now save all relations with this one's keys saved in other objects
+		foreach($this->relations() as $rel_name => $rel)
+		{
+			$rel->save($this, $this->{$rel_name}, true, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+		}
 		$this->unfreeze();
 
 		$this->observe('after_save');
@@ -725,8 +758,14 @@ class Model {
 
 	/**
 	 * Delete current object
+	 *
+	 * @param   mixed  $cascade
+	 *     null = use default config,
+	 *     bool = force/prevent cascade,
+	 *     array cascades only the relations that are in the array
+	 * @return  Model  this instance as a new object without primary key(s)
 	 */
-	public function delete()
+	public function delete($cascade = null)
 	{
 		// New objects can't be deleted, neither can frozen
 		if ($this->is_new() or $this->frozen())
@@ -737,7 +776,10 @@ class Model {
 		$this->observe('before_delete');
 
 		$this->freeze();
-		// TODO: Delete all cascading enabled relations with their keys within this object
+		foreach($this->relations() as $rel_name => $rel)
+		{
+			$rel->delete($this, $this->{$rel_name}, false, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+		}
 		$this->unfreeze();
 
 		// Create the query and limit to primary key(s)
@@ -755,7 +797,10 @@ class Model {
 		}
 
 		$this->freeze();
-		// TODO: Delete all cascading enabled relations with this one's keys saved in other objects
+		foreach($this->relations() as $rel_name => $rel)
+		{
+			$rel->delete($this, $this->{$rel_name}, true, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+		}
 		$this->unfreeze();
 
 		// Perform cleanup:

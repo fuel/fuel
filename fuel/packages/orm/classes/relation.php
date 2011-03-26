@@ -42,6 +42,16 @@ abstract class Relation {
 	protected $singular = false;
 
 	/**
+	 * @var  bool  whether saving this one's model_from should cascade to save model_to
+	 */
+	protected $cascade_save = true;
+
+	/**
+	 * @var  bool  whether deleting this one's model_from should cascade to delete model_to
+	 */
+	protected $cascade_delete = false;
+
+	/**
 	 * Configures the relationship
 	 *
 	 * @param  string  the model that initiates the relationship
@@ -77,20 +87,26 @@ abstract class Relation {
 	abstract public function join($alias_from, $rel_name, $alias_to);
 
 	/**
-	 * Takes the current relations and attempts to save them when cascading is allowed or forced
+	 * Saves the current relationships and may cascade saving to model_to instances
 	 *
+	 * @param  Model        instance of model_from
 	 * @param  array|Model  single or multiple model instances to save
-	 * @param  mixed        cascading setting
+	 * @param  bool         whether the model_from has been saved already
+	 * @param  null|bool    either uses default setting (null) or forces when true or prevents when false
+	 * @todo   make abstract
 	 */
-	//abstract public function save($objects, $cascade = 'default');
+	abstract public function save($model_from, $model_to, $parent_saved, $cascade);
 
 	/**
 	 * Takes the current relations and attempts to delete them when cascading is allowed or forced
 	 *
+	 * @param  Model        instance of model_from
 	 * @param  array|Model  single or multiple model instances to delete
-	 * @param  mixed        cascading setting
+	 * @param  bool         whether the model_from has been saved already
+	 * @param  null|bool    either uses default setting (null) or forces when true or prevents when false
+	 * @todo   make abstract
 	 */
-	//abstract public function delete($objects, $cascade = 'default');
+	abstract public function delete($model_from, $model_to, $parent_deleted, $cascade);
 
 	/**
 	 * Allow outside access to protected properties

@@ -108,9 +108,14 @@ class Router {
 		// Check for the controller
 		if ($match->controller === null)
 		{
+			// Check for a module by this name
+			if ($module_path = \Fuel::module_exists($segments[0]))
+			{
+				\Fuel::add_module($segments[0]);
+			}
 			if ($controller_path = \Fuel::find_file('classes'.DS.'controller', $segments[0]))
 			{
-				// this may be a module controller
+				// did we find  a module controller?
 				if (strpos($controller_path, APPPATH.'classes') !== 0 && $match->module === null)
 				{
 					$match->module = $segments[0];

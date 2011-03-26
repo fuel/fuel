@@ -28,6 +28,9 @@ class BelongsTo extends Relation {
 		$this->model_to    = array_key_exists('model_to', $config) ? $config['model_to'] : 'Model_'.\Inflector::classify($name);
 		$this->key_from    = array_key_exists('key_from', $config) ? (array) $config['key_from'] : (array) \Inflector::foreign_key($this->model_to);
 		$this->key_to      = array_key_exists('key_to', $config) ? (array) $config['key_to'] : $this->key_to;
+
+		$this->cascade_save    = array_key_exists('cascade_save', $config) ? $config['cascade_save'] : $this->cascade_save;
+		$this->cascade_delete  = array_key_exists('cascade_save', $config) ? $config['cascade_save'] : $this->cascade_delete;
 	}
 
 	public function get(Model $from)
@@ -76,6 +79,34 @@ class BelongsTo extends Relation {
 		}
 
 		return array($model);
+	}
+
+	public function save($model_from, $model_to, $parent_saved, $cascade)
+	{
+		if ($parent_saved)
+		{
+			return;
+		}
+
+		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
+		if ($cascade)
+		{
+			$model_to->save();
+		}
+	}
+
+	public function delete($model_from, $model_to, $parent_deleted, $cascade)
+	{
+		if ($parent_deleted)
+		{
+			return;
+		}
+
+		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
+		if ($cascade)
+		{
+			$model_to->delete();
+		}
 	}
 }
 
