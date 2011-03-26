@@ -223,7 +223,7 @@ class Date {
 			return;
 		}
 		
-		\Lang::load('time_ago', true);
+		\Lang::load('date', true);
 		
 		$difference = time() - $timestamp;
 		$periods	= array('second', 'minute', 'hour', 'day', 'week', 'month', 'years', 'decade');
@@ -241,8 +241,8 @@ class Date {
 			$periods[$j] = \Inflector::pluralize($periods[$j]);
 		}
 		
-		$text = \Lang::line('time_ago.text', array(
-			'time' => \Lang::line('time_ago.'.$periods[$j], array('t' => $difference))
+		$text = \Lang::line('date.text', array(
+			'time' => \Lang::line('date.'.$periods[$j], array('t' => $difference))
 		));
 		
 		return $text;
