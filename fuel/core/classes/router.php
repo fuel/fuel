@@ -29,7 +29,41 @@ class Router {
 			return;
 		}
 
-		static::$routes[$path] = new \Route($path, $options);
+		$name = $path;
+		if (is_array($options) and array_key_exists('name', $options))
+		{
+			$name = $options['name'];
+			unset($options['name']);
+			if (count($options) == 1 and ! is_array($options[0]))
+			{
+				$options = $options[0];
+			}
+		}
+
+		static::$routes[$name] = new \Route($path, $options);
+	}
+
+	/**
+	 * Does reverse routing for a named route.  This will return the FULL url
+	 * (including the base url and index.php).
+	 *
+	 * WARNING: This is VERY limited at this point.  Does not work if there is
+	 * any regex in the route.
+	 *
+	 * Usage:
+	 *
+	 * <a href="<?php echo Router::get('foo'); ?>">Foo</a>
+	 *
+	 * @param   string  $name  the name of the route
+	 * @param   array   $named_params  the array of named parameters
+	 * @return  string  the full url for the named route
+	 */
+	public static function get($name, $named_params = array())
+	{
+		if (array_key_exists($name, static::$routes))
+		{
+			return \Uri::create(static::$routes[$name]->path, $named_params);
+		}
 	}
 
 	/**
