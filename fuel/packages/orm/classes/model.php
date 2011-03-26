@@ -477,7 +477,12 @@ class Model {
 	/**
 	 * @var  array
 	 */
-	private $_loaded_relations = array();
+	private $_data_relations = array();
+
+	/**
+	 * @var  arrayy  keeps a copy of the relation ids that were originally retrieved from the database
+	 */
+	private $_original_relations = array();
 
 	/**
 	 * Constructor
@@ -521,6 +526,7 @@ class Model {
 
 	/**
 	 * Fetch or set relations on this object
+	 * To be used only after having fetched them from the database!
 	 *
 	 * @param   array|null  $rels
 	 * @return  void|array
@@ -529,11 +535,27 @@ class Model {
 	{
 		if (is_null($rels))
 		{
-			return $this->_loaded_relations;
+			return $this->_data_relations;
 		}
 		else
 		{
-			$this->_loaded_relations = $rels;
+			$this->_data_relations = $rels;
+
+			$this->_original_relations = array();
+			foreach ($rels as $rel => $data)
+			{
+				if (is_array($data))
+				{
+					foreach ($data as $obj)
+					{
+						$this->_original_relations[$rel][] = $obj->implode_pk($obj);
+					}
+				}
+				else
+				{
+					$this->_original_relations[$rel] = $obj->implode_pk($obj);
+				}
+			}
 		}
 	}
 
@@ -556,11 +578,11 @@ class Model {
 		}
 		elseif ($rel = static::relations($property))
 		{
-			if ( ! array_key_exists($property, $this->_loaded_relations))
+			if ( ! array_key_exists($property, $this->_data_relations))
 			{
-				$this->_loaded_relations[$property] = $rel->get($this);
+				$this->_data_relations[$property] = $rel->get($this);
 			}
-			return $this->_loaded_relations[$property];
+			return $this->_data_relations[$property];
 		}
 		else
 		{
@@ -591,7 +613,7 @@ class Model {
 		}
 		elseif (static::relations($property))
 		{
-			$this->_loaded_relations[$property] = $value;
+			$this->_data_relations[$property] = $value;
 		}
 		else
 		{
