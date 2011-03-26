@@ -209,6 +209,44 @@ class Date {
 		$days_in_month = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 		return $days_in_month[$month-1];
 	}
+	
+	/**
+	 * Returns the time ago
+	 *
+	 * @param	int		UNIX timestamp from current server
+	 * @return	string	Time ago
+	 */
+	public static function time_ago($timestamp)
+	{
+        if ( $timestamp === null )
+		{
+			return;
+		}
+		
+		\Lang::load('time_ago', true);
+		
+        $difference = time() - $timestamp;
+        $periods    = array('second', 'minute', 'hour', 'day', 'week', 'month', 'years', 'decade');
+        $lengths    = array(60, 60, 24, 7, 4.35, 12, 10);
+
+        for ($j = 0; $difference >= $lengths[$j]; $j++)
+		{
+            $difference /= $lengths[$j];
+		}
+
+        $difference = round($difference);
+
+        if ( $difference != 1 )
+		{
+			$periods[$j] = \Inflector::pluralize($periods[$j]);
+		}
+		
+        $text = \Lang::line('time_ago.text', array(
+			'time' => \Lang::line('time_ago.'.$periods[$j], array('t' => $difference))
+		));
+
+        return $text;
+    }
 
 	/* ---------------------------------------------------------------------------
 	 * DYNAMIC METHODS
