@@ -39,7 +39,8 @@ defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 require_once APPPATH.'bootstrap.php';
 
 // Generate the request, execute it and send the output.
-echo Request::factory()->execute()->send_headers()->output();
+$response = Request::factory()->execute()->response();
+$response->send(true);
 
 // Fire off the shutdown event
 Event::shutdown();

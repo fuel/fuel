@@ -15,7 +15,7 @@ class Controller_Welcome extends Controller {
 		$data['title'] = $messages[array_rand($messages)];
 
 		// Set a HTTP 404 output header
-		Output::$status = 404;
+		$this->response->status = 404;
 		$this->render('welcome/404', $data);
 	}
 }

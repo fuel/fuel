@@ -52,7 +52,7 @@ abstract class Controller_Template extends \Controller {
 	{
 		if ($this->auto_render === true)
 		{
-			$this->output = $this->template;
+			$this->response->body($this->template);
 		}
 
 		return parent::after();
