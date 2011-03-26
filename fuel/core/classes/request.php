@@ -240,6 +240,7 @@ class Request {
 		{
 			$this->module = $this->route->module;
 			\Fuel::add_module($this->module);
+			$this->add_path(\Fuel::module_exists($this->module));
 		}
 
 		$this->directory = $this->route->directory;
