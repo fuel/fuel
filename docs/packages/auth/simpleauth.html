@@ -83,7 +83,7 @@ public function action_login()
 		if($auth->login($_POST['username'],$_POST['password']))
 		{
 			// credentials ok, go right in
-			Output::redirect('success_page');
+			Response::redirect('success_page');
 		}
 		else
 		{
