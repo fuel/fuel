@@ -615,10 +615,14 @@ class Query {
 	public function count($distinct = false)
 	{
 		$this->select or $this->select = 'id';
-
+		
+		// Get table prefix
+		$prefix = call_user_func('DB::table_prefix', call_user_func($this->model.'::table'));
+		$prefix = str_replace(call_user_func($this->model.'::table'), '', $prefix);
+		
 		// Get the columns
-		$columns = \DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: $this->select).') AS count_result');
-
+		$columns = \DB::expr('COUNT('.$prefix.($distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: $this->select).') AS count_result');
+		
 		// Remove the current select and
 		$query = call_user_func('DB::select', $columns);
 
