@@ -176,7 +176,7 @@ Fuel\Core\Date Object
 			</table>
 		</article>
 
-<article>
+		<article>
 			<h4>range_to_array($start, $end, $interval = '+1 Day')</h4>
 			<p>The <strong>range_to_array</strong> converts a range of dates into an array of date objects</p>
 			<table class="method">
@@ -259,7 +259,7 @@ Array
 			</table>
 		</article>
 
-<article>
+		<article>
 			<h4>days_in_month($month, $year = null)</h4>
 			<p>The <strong>days_in_month</strong> returns the number of days in any given month, in the year specified</p>
 			<table class="method">
@@ -305,11 +305,48 @@ echo Date::days_in_month(2,2000); // 29
 				</tbody>
 			</table>
 		</article>
+		
+		<article>
+			<h4>time_ago($timestamp)</h4>
+			<p>The <strong>time_ago</strong> method returns a formatted time difference.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$timestamp</kbd></th>
+								<td><i>Required</i></td>
+								<td>The UNIX timestamp</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>string</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>echo Date::time_ago( 1294176140 ); // 3 months ago</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
 
-
-
-
-<article>
+		<article>
 			<h4>format($pattern_key = 'local')</h4>
 			<p>The <strong>formatted</strong> method returns a formatted date as specified by the pattern key</p>
 			<table class="method">
@@ -349,7 +386,7 @@ echo Date::days_in_month(2,2000); // 29
 			</table>
 		</article>
 
-<article>
+		<article>
 			<h4>get_timestamp()</h4>
 			<p>The <strong>get_timestamp</strong> method returns the Date object's timestamp</p>
 			<table class="method">
@@ -372,7 +409,7 @@ echo Date::days_in_month(2,2000); // 29
 			</table>
 		</article>
 
-<article>
+		<article>
 			<h4>get_timezone()</h4>
 			<p>The <strong>get_timezone</strong> method returns the Date object's timezone</p>
 			<table class="method">
@@ -395,7 +432,7 @@ echo Date::days_in_month(2,2000); // 29
 			</table>
 		</article>
 
-<article>
+		<article>
 			<h4>set_timezone($timezone)</h4>
 			<p>The <strong>set_timezone</strong> method sets the Date object's timezone</p>
 			<table class="method">
