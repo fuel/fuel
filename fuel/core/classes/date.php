@@ -225,28 +225,28 @@ class Date {
 		
 		\Lang::load('time_ago', true);
 		
-        $difference = time() - $timestamp;
-        $periods    = array('second', 'minute', 'hour', 'day', 'week', 'month', 'years', 'decade');
-        $lengths    = array(60, 60, 24, 7, 4.35, 12, 10);
+		$difference = time() - $timestamp;
+ 		$periods	= array('second', 'minute', 'hour', 'day', 'week', 'month', 'years', 'decade');
+ 		$lengths	= array(60, 60, 24, 7, 4.35, 12, 10);
 
         for ($j = 0; $difference >= $lengths[$j]; $j++)
 		{
-            $difference /= $lengths[$j];
+        	$difference /= $lengths[$j];
 		}
 
         $difference = round($difference);
 
-        if ( $difference != 1 )
+		if ( $difference != 1 )
 		{
 			$periods[$j] = \Inflector::pluralize($periods[$j]);
 		}
 		
-        $text = \Lang::line('time_ago.text', array(
+		$text = \Lang::line('time_ago.text', array(
 			'time' => \Lang::line('time_ago.'.$periods[$j], array('t' => $difference))
 		));
-
-        return $text;
-    }
+		
+		return $text;
+	}
 
 	/* ---------------------------------------------------------------------------
 	 * DYNAMIC METHODS
