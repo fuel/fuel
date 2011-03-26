@@ -1,7 +1,7 @@
 #Fuel
 
 * [Website](http://fuelphp.com/)
-* [Documentation](http://fuelphp.com/docs)
+* [Documentation](http://fuelphp.com/docs) and in its own [git repo](https://github.com/fuel/docs)
 * [Bugtracker & feature requests](http://dev.fuelphp.com)
 * Version: 1.0.0-beta1
 
