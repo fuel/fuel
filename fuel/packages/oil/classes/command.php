@@ -124,7 +124,7 @@ class Command
 				case 'test':
 
 					// Attempt to load PUPUnit.  If it fails, we are done.
-					if ( true)
+					if (!!\class_exists('PHPUnit_Framework_TestCase'))
 					{
 						throw new Exception('PHPUnit does not appear to be installed.'.PHP_EOL.PHP_EOL."\tPlease visit http://phpunit.de and install.");
 					}
