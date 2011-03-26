@@ -710,7 +710,7 @@ class Query {
 	 */
 	public function insert()
 	{
-		$res = \DB::insert(array(call_user_func($this->model.'::table'), $this->alias), array_keys($this->values))
+		$res = \DB::insert(call_user_func($this->model.'::table'), array_keys($this->values))
 			->values(array_values($this->values))
 			->execute();
 

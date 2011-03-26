@@ -8,14 +8,14 @@
 
 			if ($<?php echo $singular; ?>->save())
 			{
-				Session::set_flash('notice', 'Updated ' . $<?php echo $singular; ?> . ' #' . $<?php echo $singular; ?>->id);
+				Session::set_flash('notice', 'Updated <?php echo $singular; ?> #' . $<?php echo $singular; ?>->id);
 
 				Output::redirect('<?php echo $plural; ?>');
 			}
 
 			else
 			{
-				Session::set_flash('notice', 'Could not update ' . $<?php echo $singular; ?> . ' #' . $id);
+				Session::set_flash('notice', 'Could not update <?php echo $singular; ?> #' . $id);
 			}
 		}
 		
