@@ -30,9 +30,9 @@ class DBUtil {
 	 * @param	string	$database	the database name
 	 * @return	int		the number of affected rows
 	 */
-	public static function create_database($database)
+	public static function create_database($database, $if_not_exists = false)
 	{
-		return DB::query('CREATE DATABASE '.DB::quote_identifier($database), \DB::UPDATE)->execute();
+		return DB::query('CREATE DATABASE '.(($if_not_exists === true) ? 'IF NOT EXISTS ' : '').DB::quote_identifier($database), \DB::UPDATE)->execute();
 	}
 
 	/**
