@@ -88,7 +88,7 @@ class Controller {
 
 	public function render($view, $data = array(), $auto_encode = null)
 	{
-		$this->response->body(\View::factory($view, $data, $auto_encode));
+		$this->response->body .= \View::factory($view, $data, $auto_encode);
 	}
 }
 
