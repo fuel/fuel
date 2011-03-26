@@ -617,7 +617,7 @@ class Query {
 		$this->select or $this->select = 'id';
 		
 		// Get the columns
-		$columns = \DB::expr('COUNT('.$distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: $this->select).') AS count_result');
+		$columns = \DB::expr('COUNT('.($distinct ? 'DISTINCT ' : '').$this->alias.'.'.($distinct ?: $this->select).') AS count_result');
 		
 		// Remove the current select and
 		$query = call_user_func('DB::select', $columns);
