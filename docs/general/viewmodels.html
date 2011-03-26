@@ -25,7 +25,7 @@
 
 	<section id="content">
 		<h2>ViewModels</h2>
-		
+
 		<p>ViewModels are optional; if you don't need them, you can use <a href="views.html">Views</a>.</p>
 
 		<h3>What is a ViewModel?</h3>
@@ -83,35 +83,6 @@
 
 		<p>And you're done.</p>
 
-		<h2>Security</h2>
-
-		<p>By default ViewModels sanitize anything you set in them using Security::clean(). If you want to pass 
-		something unfiltered you can use the method <kbd>add_raw()</kbd>.</p>
-		
-		<pre><code>class View_Index extends ViewModel {
-
-	public function view()
-	{
-		// add it unfiltered just like you added
-		// add it filtered, outputs: &amp;lt;strong&amp;gt;not bold because filtered&amp;lt;/strong&amp;gt;
-		$this->title = '&lt;strong&gt;not bold because filtered&lt;/strong&gt;';
-
-		// add it unfiltered just like you added
-		$this->set_raw('title', '&lt;strong&gt;not bold because filtered&lt;/strong&gt;');
-	}
-}</code></pre>
-
-		<p>If you don't want your ViewModel to work like this add a public static property <kbd>$filter_output</kbd>
-		and set it to false. Now anything will be added unfiltered, if you do want some values filtered you can use
-		<kbd>set_safe()</kbd> in the same way <kbd>set_raw()</kbd> was used in the example above.</p>
-
-		<p><strong>Note on objects:</strong> Unless the passed object is of the type View, ViewModel or Closure it is
-		expected to have a __toString() method and forced to be a string when output filtering is enabled. If you want
-		to pass it anyway you need to use <kbd>set_raw()</kbd>, but don't forget to filter what you use!<br />
-		View &amp; ViewModels are expected to contain HTML and take care of their own filtering, which is why they're
-		not sanitized. Closures cannot be sanitized, and you should take care to ensure this is done within them if
-		necessary.</p>
-
 		<h2>Passing functions to views</h2>
 
 		<p>To pass a View specific function from your ViewModel to your View you use Closures:</p>
@@ -145,10 +116,10 @@ ViewModel::factory('Index', 'other_method');</code></pre>
 		or <kbd>after()</kbd> method just like you can with Controllers.</p>
 
 		<h3>Changing the template</h3>
-		
+
 		<p>By default the <kbd>$this->_template</kbd> gets a View object assigned to it. You can replace this object by
 		making your own <kbd>set_template()</kbd> method in the ViewModel and returning an object of your choosing.<br />
-		This object must however allow you to set properties on it (which are used as the template data) and must have 
+		This object must however allow you to set properties on it (which are used as the template data) and must have
 		a <kbd>__toString()</kbd> magic method that will render and return the parsed contents.<br />
 		The name of the expected view is available in the <kbd>$this->_template</kbd> property.</p>
 

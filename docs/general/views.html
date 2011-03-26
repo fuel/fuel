@@ -92,6 +92,38 @@
 	$this->output = $view;
 }</code></pre>
 
+		<h2>Security</h2>
+
+		<p>By default Views use output encoding to sanitize anything you pass to them using Security::htmlentities().
+			If you want to pass something unfiltered you can use the method <kbd>set($name, $value, false)</kbd>.</p>
+
+		<pre><code>class Controller_Example extends Controller {
+
+	public function action_index()
+	{
+		$view = \View::factory('example');
+
+		// add it unfiltered just like you added
+		// add it filtered, outputs: &amp;lt;strong&amp;gt;not bold because filtered&amp;lt;/strong&amp;gt;
+		$view->title = '&lt;strong&gt;not bold because filtered&lt;/strong&gt;';
+
+		// add it unfiltered just like you added
+		$view->set('title', '&lt;strong&gt;not bold because filtered&lt;/strong&gt;', false);
+	}
+}</code></pre>
+
+		<p>If you don't want your View to work like this change the public static property <kbd>View::$auto_encode</kbd>
+		and set it to false. Now anything will be added unfiltered, if you do want some values filtered you can use
+		<kbd>set($name, $value, true)</kbd>.</p>
+
+		<p><strong>Note on objects:</strong> Unless the passed object is of the type View, ViewModel or Closure it is
+		expected to have a __toString() method and forced to be a string when output filtering is enabled. If you want
+		to pass it anyway you need to use <kbd>set($name, $value, false)</kbd>, but don't forget to filter what you
+		use!<br />
+		View &amp; ViewModels are expected to contain HTML and take care of their own filtering, which is why they're
+		not sanitized. Closures cannot be sanitized, and you should take care to ensure this is done within them if
+		necessary.</p>
+
 		<h2>Nesting Views</h2>
 
 		<p>Views can also be nested, meaning views can contain other views. This can be done multiple ways.</p>
