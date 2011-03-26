@@ -73,7 +73,7 @@ class View {
 	public function __construct($file = null, array $data = null, $encode = null)
 	{
 		$encode === null and $encode = static::$auto_encode;
-		
+
 		if ($file !== null)
 		{
 			$this->set_filename($file);
@@ -242,7 +242,7 @@ class View {
 	public static function set_global($key, $value = null, $encode = null)
 	{
 		$encode === null and $encode = static::$auto_encode;
-		
+
 		if (is_array($key))
 		{
 			foreach ($key as $key2 => $value)
@@ -329,7 +329,7 @@ class View {
 	public function set($key, $value = null, $encode = null)
 	{
 		$encode === null and $encode = static::$auto_encode;
-		
+
 		if (is_array($key))
 		{
 			foreach ($key as $name => $value)

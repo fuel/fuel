@@ -21,24 +21,19 @@ namespace Fuel\Core;
 /**
  * ViewModel
  *
- * @package		Fuel
- * @subpackage	Core
- * @category	Core
- * @author		Jelmer Schreuder
+ * @package	    Fuel
+ * @subpackage  Core
+ * @category    Core
+ * @author      Jelmer Schreuder
  */
 abstract class ViewModel {
 
 	/**
-	 * @var	bool	whether to filter the variables passed to the View
-	 */
-	static public $filter_output = true;
-
-	/**
 	 * Factory for fetching the ViewModel
 	 *
-	 * @param	string	ViewModel classname without View_ prefix or full classname
-	 * @param	string	Method to execute
-	 * @return
+	 * @param   string  ViewModel classname without View_ prefix or full classname
+	 * @param   string  Method to execute
+	 * @return  ViewModel
 	 */
 	public static function factory($viewmodel, $method = 'view')
 	{
@@ -56,14 +51,19 @@ abstract class ViewModel {
 	}
 
 	/**
-	 * @var string	method to execute when rendering
+	 * @var  string  method to execute when rendering
 	 */
 	protected $_method;
 
 	/**
-	 * @var	string|View	view name, after instantiation a View object
+	 * @var  string|View  view name, after instantiation a View object
 	 */
 	protected $_template;
+
+	/**
+	 * @var  bool  whether or not to use auto encoding
+	 */
+	protected $_auto_encode;
 
 	protected function __construct($method)
 	{
@@ -75,6 +75,7 @@ abstract class ViewModel {
 
 		$this->_template	= $this->set_template();
 		$this->_method		= $method;
+		$this->_auto_encode = \View::$auto_encode;
 
 		$this->before();
 
@@ -93,6 +94,22 @@ abstract class ViewModel {
 	protected function set_template()
 	{
 		return \View::factory($this->_template);
+	}
+
+	/**
+	 * Change auto encoding setting
+	 *
+	 * @param   null|bool  change setting (bool) or get the current setting (null)
+	 * @return  void|bool  returns current setting or nothing when it is changed
+	 */
+	public function auto_encoding($setting = null)
+	{
+		if (is_null($setting))
+		{
+			return $this->_auto_encode;
+		}
+
+		$this->_auto_encode = (bool) $setting;
 	}
 
 	/**
@@ -129,7 +146,7 @@ abstract class ViewModel {
 	 */
 	public function __set($name, $val)
 	{
-		static::$filter_output ? $this->set_safe($name, $val) : $this->set_raw($name, $val);
+		\View::$auto_encode ? $this->set_safe($name, $val) : $this->set_raw($name, $val);
 	}
 
 	/**
@@ -142,12 +159,7 @@ abstract class ViewModel {
 	 */
 	public function set_safe($name, $val)
 	{
-		if ( ! is_object($val) or ! ($val instanceof ViewModel or $val instanceof View or $val instanceof \Closure))
-		{
-			$val = \Security::clean(is_object($val) ? (string) $val : $val);
-		}
-
-		$this->_template->{$name} = $val;
+		$this->_template->set($name, $val, true);
 	}
 
 	/**
@@ -158,7 +170,7 @@ abstract class ViewModel {
 	 */
 	public function set_raw($name, $val)
 	{
-		$this->_template->{$name} = $val;
+		$this->_template->set($name, $val, false);
 	}
 
 	/**
