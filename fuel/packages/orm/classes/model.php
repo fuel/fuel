@@ -189,8 +189,8 @@ class Model {
 			}
 			catch (\Exception $e)
 			{
-				throw new Exception('Listing columns not possible, you have to set the model properties with a '.
-					'static $_properties setting in the model.');
+				throw new Exception('Listing columns not failed, you have to set the model properties with a '.
+					'static $_properties setting in the model. Original exception: '.$e->getMessage());
 			}
 		}
 
