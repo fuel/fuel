@@ -208,7 +208,7 @@ Migrated to latest version: 3.
 			{
 				Session::set_flash('notice', 'Added ' . $monkey . ' #' . $monkey->id);
 
-				Output::redirect('monkeys');
+				Response::redirect('monkeys');
 			}
 
 			else
@@ -235,7 +235,7 @@ Migrated to latest version: 3.
 			{
 				Session::set_flash('notice', 'Updated ' . $monkey . ' #' . $monkey->id);
 
-				Output::redirect('monkeys');
+				Response::redirect('monkeys');
 			}
 
 			else
@@ -267,7 +267,7 @@ Migrated to latest version: 3.
 			Session::set_flash('notice', 'Could not delete ' . $monkey . ' #' . $id);
 		}
 
-		Output::redirect('monkeys');
+		Response::redirect('monkeys');
 	}
 
 

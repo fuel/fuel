@@ -4,29 +4,19 @@
  *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
- * @package    Fuel
- * @version    1.0
- * @author     Fuel Development Team
- * @license    MIT License
- * @copyright  2010 - 2011 Fuel Development Team
- * @link       http://fuelphp.com
+ * @package		Fuel
+ * @version		1.0
+ * @author		Fuel Development Team
+ * @license		MIT License
+ * @copyright	2010 - 2011 Fuel Development Team
+ * @link		http://fuelphp.com
  */
 
 namespace Fuel\Core;
 
 
 
-class Output {
-
-	/**
-	 * @var	int		The HTTP status code
-	 */
-	public static $status = 200;
-
-	/**
-	 * @var	array	An array of headers
-	 */
-	public static $headers = array();
+class Response {
 
 	/**
 	 * @var	array	An array of status codes and messages
@@ -80,36 +70,6 @@ class Output {
 		509 => 'Bandwidth Limit Exceeded'
 	);
 
-	/**
-	 * Adds a header to the queue
-	 *
-	 * @access	public
-	 * @param	string	The header name
-	 * @param	string	The header value
-	 * @return	void
-	 */
-	public static function set_header($name, $value)
-	{
-		static::$headers[$name] = $value;
-	}
-
-	/**
-	 * Adds multiple headers to the queue
-	 *
-	 * @access	public
-	 * @param	array	Array with header name/value pairs
-	 * @return	void
-	 */
-	public static function set_headers($headers)
-	{
-		if (is_array($headers))
-		{
-			foreach ($headers as $name => $value)
-			{
-				static::set_header($name, $value);
-			}
-		}
-	}
 
 	/**
 	 * Redirects to another uri/url.  Sets the redirect header,
@@ -126,7 +86,9 @@ class Output {
 	 */
 	public static function redirect($url = '', $method = 'location', $redirect_code = 302)
 	{
-		static::$status = $redirect_code;
+		$response = new static;
+
+		$response->status = $redirect_code;
 
 		if (strpos($url, '://') === false)
 		{
@@ -135,21 +97,71 @@ class Output {
 
 		if ($method == 'location')
 		{
-			static::set_header('Location', $url);
+			$response->set_header('Location', $url);
 		}
 		elseif ($method == 'refresh')
 		{
-			static::set_header('Refresh', '0;url='.$url);
+			$response->set_header('Refresh', '0;url='.$url);
 		}
 		else
 		{
 			return;
 		}
 
-		Event::shutdown();
+		\Event::shutdown();
 
-		static::send_headers();
+		$response->send(true);
 		exit;
+	}
+
+	/**
+	 * @var	int		The HTTP status code
+	 */
+	public $status = 200;
+
+	/**
+	 * @var	array	An array of headers
+	 */
+	public $headers = array();
+
+	/**
+	 * @var	string	the content of the response
+	 */
+	public $body = null;
+
+	public function __construct($body = null, $status = 200)
+	{
+		$this->content = $body;
+		$this->status = $status;
+	}
+
+	/**
+	 * Adds a header to the queue
+	 *
+	 * @access	public
+	 * @param	string	The header name
+	 * @param	string	The header value
+	 * @return	void
+	 */
+	public function set_header($name, $value)
+	{
+		$this->headers[$name] = $value;
+	}
+
+	/**
+	 * Sets the body for the response
+	 *
+	 * @access	public
+	 * @param	string	The response content
+	 * @return	void
+	 */
+	public function body($value = false)
+	{
+		if ($value === false)
+		{
+			return $this->body;
+		}
+		$this->body = $value;
 	}
 
 	/**
@@ -158,21 +170,36 @@ class Output {
 	 * @access	public
 	 * @return	void
 	 */
-	public static function send_headers()
+	public function send_headers()
 	{
 		if ( ! headers_sent())
 		{
 			// Send the protocol line first
 			$protocol = \Input::server('SERVER_PROTOCOL') ? \Input::server('SERVER_PROTOCOL') : 'HTTP/1.1';
-			header($protocol.' '.static::$status.' '.static::$statuses[static::$status]);
+			header($protocol.' '.$this->status.' '.static::$statuses[$this->status]);
 
-			foreach (static::$headers as $name => $value)
+			foreach ($this->headers as $name => $value)
 			{
 				is_string($name) and $value = "{$name}: {$value}";
 				header($value, true);
 			}
 		}
 	}
+
+	public function send($send_headers = false)
+	{
+		$send_headers and $this->send_headers();
+		
+		if ($this->body != null)
+		{
+			echo $this->body;
+		}
+	}
+	
+	public function __toString()
+	{
+		return (string) $this->body();
+	}
 }
 
-/* End of file output.php */
+/* End of file response.php */
