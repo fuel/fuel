@@ -93,6 +93,12 @@ class BelongsTo extends Relation {
 		// Check if there was another model assigned (this supersedes any change to the foreign key(s))
 		if ($current_model_id != $original_model_id)
 		{
+			// Save if it's a yet unsaved object
+			if ($model_to->is_new())
+			{
+				$model_to->save(false);
+			}
+
 			// change the foreign keys in the model_from to point to the new relation
 			reset($this->key_to);
 			foreach ($model_to->primary_key() as $pk)
