@@ -106,7 +106,7 @@ CONTROLLER;
         $model = <<<MODEL
 <?php
 
-class Model_{$class_name} extends ActiveRecord\Model { }
+class Model_{$class_name} extends Orm\Model { }
 
 /* End of file $filename.php */
 MODEL;

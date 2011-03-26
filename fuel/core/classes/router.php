@@ -15,7 +15,7 @@
 namespace Fuel\Core;
 
 class Router {
-	
+
 	public static $routes = array();
 
 	public static function add($path, $options = null)
@@ -31,10 +31,10 @@ class Router {
 
 		static::$routes[$path] = new \Route($path, $options);
 	}
-	
+
 	/**
 	 * Processes the given request using the defined routes
-	 * 
+	 *
 	 * @param	Request		the given Request object
 	 * @param	bool		whether to use the defined routes or not
 	 * @return	mixed		the match array or false
@@ -53,7 +53,7 @@ class Router {
 				}
 			}
 		}
-		
+
 		if ( ! $match)
 		{
 			// Since we didn't find a match, we will create a new route.
@@ -62,33 +62,27 @@ class Router {
 		}
 
 		$segments = $match->segments;
-		
+
 		if (static::find_controller($match, $segments))
 		{
-			return $match;
-		}
-		// Check for a module
-		if ($module_path = \Fuel::module_exists($segments[0]))
-		{
-			$match->module = $segments[0];
-			\Fuel::add_module($match->module);
-			if (static::find_controller($match, $segments))
+			// Check for a module
+			if ($match->module !== null)
 			{
-				return $match;
-			}
-			elseif (count($segments) > 1)
-			{
-				array_shift($segments);
-				if (static::find_controller($match, $segments))
+				// search for a module controller
+				if (count($segments) > 1)
 				{
-					return $match;
+					// reset the found controller and action
+					$match->controller = $match->action = null;
+					array_shift($segments);
+					static::find_controller($match, $segments);
 				}
 			}
+			return $match;
 		}
-		
+
 		return false;
 	}
-	
+
 	protected static function find_controller( & $match, $segments)
 	{
 		// We first want to check if the controller is in a directory.  This way directories
@@ -116,11 +110,16 @@ class Router {
 		{
 			if ($controller_path = \Fuel::find_file('classes'.DS.'controller', $segments[0]))
 			{
+				// this may be a module controller
+				if (strpos($controller_path, APPPATH.'classes') !== 0 && $match->module === null)
+				{
+					$match->module = $segments[0];
+				}
 				$match->controller = $segments[0];
 				array_shift($segments);
 			}
 		}
-	
+
 		if ($match->controller !== null)
 		{
 			// Since we found a controller lets see if there is an action defined
@@ -129,9 +128,9 @@ class Router {
 				$match->action = $segments[0];
 				array_shift($segments);
 			}
-			
+
 			$match->method_params = $segments;
-			
+
 			// We are all done here
 			return true;
 		}
