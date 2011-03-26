@@ -641,7 +641,8 @@ class Model {
 		$this->freeze();
 		foreach($this->relations() as $rel_name => $rel)
 		{
-			$rel->save($this, $this->{$rel_name}, false, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+			$rel->save($this, $this->{$rel_name}, $this->_original_relations[$rel_name], false,
+				is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
 		}
 		$this->unfreeze();
 
@@ -651,7 +652,8 @@ class Model {
 		$this->freeze();
 		foreach($this->relations() as $rel_name => $rel)
 		{
-			$rel->save($this, $this->{$rel_name}, true, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
+			$rel->save($this, $this->{$rel_name}, $this->_original_relations[$rel_name], true,
+				is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
 		}
 		$this->unfreeze();
 

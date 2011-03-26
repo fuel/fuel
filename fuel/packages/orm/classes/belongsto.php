@@ -81,7 +81,7 @@ class BelongsTo extends Relation {
 		return array($model);
 	}
 
-	public function save($model_from, $model_to, $parent_saved, $cascade)
+	public function save($model_from, $model_to, $original_model_to, $parent_saved, $cascade)
 	{
 		if ($parent_saved)
 		{
