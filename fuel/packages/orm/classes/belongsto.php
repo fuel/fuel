@@ -89,7 +89,7 @@ class BelongsTo extends Relation {
 			return;
 		}
 
-		$current_model_id = $model_to->implode_pk($model_to);
+		$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
 		// Check if there was another model assigned (this supersedes any change to the foreign key(s))
 		if ($current_model_id != $original_model_id)
 		{
@@ -121,7 +121,7 @@ class BelongsTo extends Relation {
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade)
+		if ($cascade and ! empty($model_to))
 		{
 			$model_to->save();
 		}
@@ -135,7 +135,7 @@ class BelongsTo extends Relation {
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade)
+		if ($cascade and ! empty($model_to))
 		{
 			$model_to->delete();
 		}
