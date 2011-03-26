@@ -101,11 +101,13 @@ class BelongsTo extends Relation {
 
 			// change the foreign keys in the model_from to point to the new relation
 			reset($this->key_to);
+			$model_from->unfreeze();
 			foreach ($model_to->primary_key() as $pk)
 			{
 				$model_from->{current($this->key_to)} = $pk;
 				next($this->key_to);
 			}
+			$model_from->freeze();
 		}
 		// if not check the model_from's foreign_keys
 		else
@@ -117,10 +119,21 @@ class BelongsTo extends Relation {
 				// if any of the keys changed, reload the relationship - saving the object will save those keys
 				if ($model_from->{current($this->key_from)} != $fk)
 				{
+					// Attempt to load the new related object
 					$obj = call_user_func(array($this->model_to, find), $foreign_keys);
+					if (empty($object))
+					{
+						throw new Exception('New relation set on '.$this->model_from.' object wasn\'t found.');
+					}
+
+					// Add the new relation to the model_from
+					$model_from->unfreeze();
 					$rel = $model_from->_relate();
 					$rel[$this->name] = $obj;
 					$model_from->_relate($obj);
+					$model_from->freeze();
+
+					// we can stop checking the foreign keys
 					break;
 				}
 				next($this->key_from);

@@ -533,6 +533,11 @@ class Model {
 	 */
 	public function _relate($rels = null)
 	{
+		if ($this->_frozen)
+		{
+			throw new FrozenObject('No changes allowed.');
+		}
+
 		if (is_null($rels))
 		{
 			return $this->_data_relations;
@@ -600,7 +605,7 @@ class Model {
 	{
 		if ($this->_frozen)
 		{
-			throw new Exception('Object is frozen, no changes allowed.');
+			throw new FrozenObject('No changes allowed.');
 		}
 
 		if (in_array($property, static::primary_key()) and $this->{$property} !== null)

@@ -29,6 +29,7 @@ Autoloader::add_classes(array(
 	'Orm\\UndefinedProperty'	=> __DIR__.'/classes/exceptions.php',
 	'Orm\\UndefinedRelation'	=> __DIR__.'/classes/exceptions.php',
 	'Orm\\InvalidObserver'		=> __DIR__.'/classes/exceptions.php',
+	'Orm\\FrozenObject'			=> __DIR__.'/classes/exceptions.php',
 ));
 
 
