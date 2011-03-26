@@ -17,6 +17,11 @@ namespace Orm;
 abstract class Relation {
 
 	/**
+	 * @var  string  name of the relationship in the model_from
+	 */
+	protected $name;
+
+	/**
 	 * @var  Model  classname of the parent model
 	 */
 	protected $model_from;

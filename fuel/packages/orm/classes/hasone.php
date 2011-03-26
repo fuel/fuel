@@ -20,6 +20,7 @@ class HasOne extends Relation {
 
 	public function __construct($from, $name, array $config)
 	{
+		$this->name        = $name;
 		$this->model_from  = $from;
 		$this->model_to    = array_key_exists('model_to', $config) ? $config['model_to'] : 'Model_'.\Inflector::classify($name);
 		$this->key_from    = array_key_exists('key_from', $config) ? (array) $config['key_from'] : $this->key_from;
