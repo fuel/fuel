@@ -133,6 +133,10 @@ class Router {
 				$match->action = $segments[0];
 				array_shift($segments);
 			}
+			else
+			{
+				$match->action = 'index';
+			}
 
 			$match->method_params = $segments;
 
