@@ -104,14 +104,15 @@ class HasOne extends Relation {
 			}
 
 			// if still loaded set this object's old relation's foreign keys to null
-			if ($obj = call_user_func(array($this->model_to, 'cached_object'), $original_model_id))
+			if ($original_model_id and $obj = call_user_func(array($this->model_to, 'find'),
+				count($this->key_to) == 1 ? array($original_model_id) : explode('][', substr($original_model_id, 1, -1))))
 			{
 				// check whether the object still refers to this model_from
 				$changed = false;
 				reset($this->key_to);
 				foreach ($this->key_from as $pk)
 				{
-					if ($model_to->{current($this->key_to)} != $model_from->{$pk})
+					if ($obj->{current($this->key_to)} != $model_from->{$pk})
 					{
 						$changed = true;
 					}

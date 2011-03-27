@@ -530,6 +530,22 @@ class Model implements \ArrayAccess, \Iterator {
 		{
 			$this->_original[$key] = $val;
 		}
+
+		$this->_original_relations = array();
+		foreach ($this->_data_relations as $rel => $data)
+		{
+			if (is_array($data))
+			{
+				foreach ($data as $obj)
+				{
+					$this->_original_relations[$rel][] = $obj ? $obj->implode_pk($obj) : null;
+				}
+			}
+			else
+			{
+				$this->_original_relations[$rel] = $data ? $data->implode_pk($data) : null;
+			}
+		}
 	}
 
 	/**
@@ -679,6 +695,8 @@ class Model implements \ArrayAccess, \Iterator {
 			);
 		}
 		$this->unfreeze();
+
+		$this->_update_original();
 
 		$this->observe('after_save');
 
@@ -976,8 +994,8 @@ class Model implements \ArrayAccess, \Iterator {
 		// hasmany-belongsto can be copied, ie no change
 		// many-many relationships should be copied, ie no change
 	}
-	
-	public function offsetSet($offset, $value) 
+
+	public function offsetSet($offset, $value)
 	{
 		if (is_null($offset))
 		{
@@ -989,17 +1007,17 @@ class Model implements \ArrayAccess, \Iterator {
 		}
 	}
 
-	public function offsetExists($offset) 
+	public function offsetExists($offset)
 	{
 		return isset($this->_data[$offset]);
 	}
 
-	public function offsetUnset($offset) 
+	public function offsetUnset($offset)
 	{
 		unset($this->_data[$offset]);
 	}
 
-	public function offsetGet($offset) 
+	public function offsetGet($offset)
 	{
 		return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
 	}
@@ -1027,7 +1045,7 @@ class Model implements \ArrayAccess, \Iterator {
 	public function valid()
 	{
 		return $this->current() !== false;
-	}	
+	}
 
 }
 
