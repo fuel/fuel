@@ -83,6 +83,13 @@ class HasMany extends Relation {
 			return;
 		}
 
+		if ( ! is_array($models_to) and ($models_to = is_null($models_to) ? array() : $models_to) !== array())
+		{
+			throw new Exception('Assigned relationships must be an array or null, given relationship value for '.
+				$this->name.' is invalid.');
+		}
+		$original_model_ids === null and $original_model_ids = array();
+
 		foreach ($models_to as $key => $model_to)
 		{
 			$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
@@ -140,7 +147,10 @@ class HasMany extends Relation {
 			{
 				$model_from->unfreeze();
 				$rel = $model_from->_relate();
-				unset($rel[$this->name][$key]);
+				if ($rel[$this->name][$key] === $model_to)
+				{
+					unset($rel[$this->name][$key]);
+				}
 				$rel[$this->name][$current_model_id] = $model_to;
 				$model_from->_relate($rel);
 				$model_from->freeze();
@@ -168,9 +178,9 @@ class HasMany extends Relation {
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade and ! empty($model_to))
+		if ($cascade and ! empty($models_to))
 		{
-			foreach ($model_to as $m)
+			foreach ($models_to as $m)
 			{
 				$m->save();
 			}
