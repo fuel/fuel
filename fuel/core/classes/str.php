@@ -23,6 +23,47 @@ namespace Fuel\Core;
 class Str {
 
 	/**
+	 * Truncates a string to the given length.  It will optionally preserve
+	 * HTML tags if $is_html is set to true.
+	 *
+	 * @param   string  $string        the string to truncate
+	 * @param   int     $limit         the number of characters to truncate too
+	 * @param   string  $continuation  the string to use to denote it was truncated
+	 * @param   bool    $is_html       whether the string has HTML
+	 * @return  string  the truncated string
+	 */
+	public static function truncate($string, $limit, $continuation = '...', $is_html = false)
+	{
+		$offset = 0;
+		$tags = array();
+		if ($is_html)
+		{
+			preg_match_all('/<[^>]+>([^<]*)/', $string, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+			foreach ($matches as $match)
+			{
+				if($match[0][1] - $offset >= $limit)
+				{
+					break;
+				}
+				$tag = substr(strtok($match[0][0], " \t\n\r\0\x0B>"), 1);
+				if($tag[0] != '/')
+				{
+					$tags[] = $tag;
+				}
+				elseif (end($tags) == substr($tag, 1))
+				{
+					array_pop($tags);
+				}
+				$offset += $match[1][1] - $match[0][1];
+			}
+		}
+		$new_string = substr($string, 0, $limit = min(strlen($string),  $limit + $offset));
+		$new_string .= (strlen($string) > $limit ? $continuation : '');
+		$new_string .= (count($tags = array_reverse($tags)) ? '</'.implode('></',$tags).'>' : '');
+		return $new_string;
+	}
+
+	/**
 	 * Add's _1 to a string or increment the ending number to allow _2, _3, etc
 	 *
 	 * @param string $str required
