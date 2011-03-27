@@ -102,6 +102,7 @@ class HasOne extends Relation {
 				}
 				$frozen and $model_to->freeze();
 			}
+
 			// if still loaded set this object's old relation's foreign keys to null
 			if ($obj = call_user_func(array($this->model_to, 'cached_object'), $original_model_id))
 			{
@@ -127,18 +128,21 @@ class HasOne extends Relation {
 						$obj->{$fk} = null;
 					}
 					$frozen and $obj->freeze();
+
+					// cascading this change won't work here, save just the object with cascading switched off
+					$obj->save(false);
 				}
 			}
 		}
-		// if not check the model_to's foreign_keys
-		else
+		// if not empty check the model_to's foreign_keys, when empty nothing changed
+		elseif ( ! empty($model_to))
 		{
 			// check if model_to still refers to this model_from
 			$changed = false;
 			reset($this->key_to);
 			foreach ($this->key_from as $pk)
 			{
-				if ($model_to->{curren($this->key_to)} != $model_from->{$pk})
+				if ($model_to->{current($this->key_to)} != $model_from->{$pk})
 				{
 					$changed = true;
 				}
@@ -154,6 +158,9 @@ class HasOne extends Relation {
 				$rel[$this->name] = null;
 				$model_from->_relate($rel);
 				$model_from->freeze();
+
+				// cascading this change won't work here, save just the object with cascading switched off
+				$model_from->save(false);
 			}
 		}
 
