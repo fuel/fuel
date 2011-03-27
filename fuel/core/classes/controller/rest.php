@@ -68,7 +68,16 @@ abstract class Controller_Rest extends \Controller {
 		// If they call user, go to $this->post_user();
 		$controller_method = strtolower(\Input::method()) . '_' . $resource;
 
-		call_user_func(array($this, $controller_method));
+		// If method is not available, set status code to 404
+		if (method_exists($this, $controller_method)) 
+		{
+			call_user_func(array($this, $controller_method));
+		}
+		else 
+		{
+			$this->response->status = 404;
+			return;
+		}
 	}
 
 	/*
