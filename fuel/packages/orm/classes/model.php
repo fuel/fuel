@@ -145,7 +145,11 @@ class Model {
 		$pk = '';
 		foreach(static::$_primary_key as $p)
 		{
-			$pk .= '['.(is_object($data) ? $data->{$p} : (isset($data[$p]) ? $data[$p] : null)).']';
+			if (is_null((is_object($data) ? $data->{$p} : (isset($data[$p]) ? $data[$p] : null))))
+			{
+				return null;
+			}
+			$pk .= '['.(is_object($data) ? $data->{$p} : $data[$p]).']';
 		}
 
 		return $pk;
@@ -553,12 +557,12 @@ class Model {
 				{
 					foreach ($data as $obj)
 					{
-						$this->_original_relations[$rel][] = $obj->implode_pk($obj);
+						$this->_original_relations[$rel][] = $obj ? $obj->implode_pk($obj) : null;
 					}
 				}
 				else
 				{
-					$this->_original_relations[$rel] = $obj->implode_pk($obj);
+					$this->_original_relations[$rel] = $data ? $data->implode_pk($data) : null;
 				}
 			}
 		}

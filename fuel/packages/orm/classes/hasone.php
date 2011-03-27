@@ -86,7 +86,7 @@ class HasOne extends Relation {
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade)
+		if ($cascade and ! empty($model_to))
 		{
 			$model_to->save();
 		}
