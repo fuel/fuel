@@ -225,7 +225,6 @@ class Query {
 		}
 		else
 		{
-			exit;
 			throw new Exception('Invalid param count for where condition.');
 		}
 
@@ -259,6 +258,7 @@ class Query {
 			return;
 		}
 
+		strpos($property, '.') === false and $property = $this->alias.'.'.$property;
 		$this->order_by[$property] = $direction;
 
 		return $this;
@@ -320,7 +320,7 @@ class Query {
 	 * @param   string|select  either array for select query or string update, delete, insert
 	 * @return  array          with keys query and relations
 	 */
-	public function build_query($query, $columns = array())
+	public function build_query($query, $columns = array(), $type = 'select')
 	{
 		// Get the limit
 		if ( ! is_null($this->limit))
@@ -339,9 +339,9 @@ class Query {
 		{
 			foreach ($this->order_by as $property => $direction)
 			{
-				if (strpos($property, '.') === false or strpos($property, $this->alias.'.') === 0)
+				if (strpos($property, $this->alias.'.') === 0)
 				{
-					$query->order_by($property, $direction);
+					$query->order_by($type == 'select' ? $property : substr($property, strlen($this->alias.'.')), $direction);
 					unset($this->order_by[$property]);
 				}
 			}
@@ -357,8 +357,9 @@ class Query {
 		{
 			foreach ($this->where as $key => $conditional)
 			{
-				if (strpos($conditional[0], '.') === false or strpos($conditional[0], $this->alias.'.') === 0)
+				if (strpos($conditional[0], $this->alias.'.') === 0)
 				{
+					$type != 'select' and $conditional[0] = substr($conditional[0], strlen($this->alias.'.'));
 					$query->where($conditional[0], $conditional[1], $conditional[2]);
 					unset($this->where[$key]);
 				}
@@ -369,12 +370,18 @@ class Query {
 		{
 			foreach ($this->or_where as $key => $conditional)
 			{
-				if (strpos($conditional[0], '.') === false or strpos($conditional[0], $this->alias.'.') === 0)
+				if (strpos($conditional[0], $this->alias.'.') === 0)
 				{
 					$query->or_where($conditional[0], $conditional[1], $conditional[2]);
 					unset($this->or_where[$key]);
 				}
 			}
+		}
+
+		// If it's not a select we're done
+		if ($type != 'select')
+		{
+			return array('query' => $query, 'models' => array());
 		}
 
 		$i = 1;
@@ -738,8 +745,8 @@ class Query {
 		$this->group_by  = array();
 
 		// Build query and execute update
-		$query = \DB::update(array(call_user_func($this->model.'::table'), $this->alias));
-		$tmp   = $this->build_query($query);
+		$query = \DB::update(call_user_func($this->model.'::table'));
+		$tmp   = $this->build_query($query, array(), 'update');
 		$query = $tmp['query'];
 		$res = $query->set($this->values)->execute();
 
@@ -765,8 +772,8 @@ class Query {
 		$this->group_by  = array();
 
 		// Build query and execute update
-		$query = \DB::delete(array(call_user_func($this->model.'::table'), $this->alias));
-		$tmp   = $this->build_query($query);
+		$query = \DB::delete(call_user_func($this->model.'::table'));
+		$tmp   = $this->build_query($query, array(), 'delete');
 		$query = $tmp['query'];
 		$res = $query->execute();
 
