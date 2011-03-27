@@ -117,6 +117,13 @@
 						The string to append to the temp images, as to avoid conflicts.
 					</td>
 				</tr>
+				<tr>persistence</th>
+					<td>boolean</td>
+					<td><pre class="php"><code>false</code></pre></td>
+					<td>
+						Sets if the image should be reloaded after previous modifications
+					</td>
+				</tr>
 				<tr>
 					<th>debug</th>
 					<td>boolean</td>
@@ -909,6 +916,52 @@ Image::load('filename.gif')
 // Saves to prepend_filename2_append.gif
 Image::load('filename.gif')
 	->save_pa('prepend', 'append');
+						</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>sizes($filename = null)</h4>
+			<p>Returns an images width and height.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$filename</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The path to the file to be checked, defaults to currently loaded image.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td><pre class="php"><code>Object</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>
+// Get sizes for an image
+$sizes = Image::sizes('filename.gif')->output();
+
+// Get the Aspect Ratio
+$ar = $sizes->width / $sizes->height;
 						</code></pre>
 					</td>
 				</tr>

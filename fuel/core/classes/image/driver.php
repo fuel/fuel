@@ -22,6 +22,7 @@ abstract class Image_Driver {
 	protected $image_directory = null;
 	protected $image_filename  = null;
 	protected $image_extension = null;
+	protected $new_extension   = null;
 	protected $config          = array();
 	protected $queued_actions  = array();
 	protected $accepted_extension;
@@ -594,6 +595,7 @@ abstract class Image_Driver {
 			{
 				header('Content-Type: image/' . $filetype);
 			}
+			$this->new_extension = $filetype;
 		}
 		else
 		{
@@ -635,6 +637,7 @@ abstract class Image_Driver {
 			{
 				$writevar and $this->image_extension = $ext;
 				$return = $ext;
+
 			}
 		}
 		return $return;
@@ -707,6 +710,14 @@ abstract class Image_Driver {
 		{
 			$this->queued_actions = array();
 		}
+	}
+
+	/**
+	 * Reloads the image.
+	 */
+	public function reload()
+	{
+		$this->load($this->image_fullpath);
 	}
 
 	/**

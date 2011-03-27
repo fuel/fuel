@@ -19,7 +19,7 @@ namespace Fuel\Core;
 class Image_Imagemagick extends Image_Driver {
 
 	private $image_temp = null;
-	protected $accepted_extensions = array('png', 'gif', 'jpg', 'jpeg');
+	protected $accepted_extension = array('png', 'gif', 'jpg', 'jpeg');
 	private $size_cache = null;
 
 	public function load($filename)
@@ -173,6 +173,9 @@ class Image_Imagemagick extends Image_Driver {
 		$old = '"'.$this->image_temp.'"';
 		$new = '"'.$filename.'"';
 		$this->exec('convert', $old.' '.$new);
+		
+		if ($this->config['persistence'] === true)
+			$this->reload();
 
 		return $this;
 	}
@@ -212,10 +215,11 @@ class Image_Imagemagick extends Image_Driver {
 
 	protected function add_background()
 	{
-		if ($this->config['bgcolor'] != null)
+		if ($this->config['bgcolor'] != null || ($this->new_extension == 'jpg' || $this->new_extension == 'jpeg'))
 		{
+			$bgcolor = $this->config['bgcolor'] == null ? '#000' : $this->config['bgcolor'];
 			$image   = '"'.$this->image_temp.'"';
-			$color   = $this->create_color($this->config['bgcolor'], 100);
+			$color   = $this->create_color($bgcolor, 100);
 			$sizes   = $this->sizes();
 			$command = '-size '.$sizes->width.'x'.$sizes->height.' '.'canvas:'.$color.' '.
 				$image.' -composite '.$image;

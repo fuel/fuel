@@ -215,6 +215,17 @@ class Image {
 		Image::instance()->output($filetype);
 	}
 
+	/**
+	 * Returns sizes for the currently loaded image, or the image given in the $filename.
+	 *
+	 * @param	string	$filename	The location of the file to get sizes for.
+	 * @return	object	An object containing width and height variables.
+	 */
+	public static function sizes($filename = null)
+	{
+		return Image::instance()->sizes();
+	}
+
 }
 
 // End of file image.php

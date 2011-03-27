@@ -57,7 +57,12 @@ return array(
 	 * Used to debug the class, defaults to false.
 	 */
 	'debug' => false,
-	
+
+	/**
+	 * Sets if the image should be reloaded after previous modifications (true reloads, false persists).
+	 */
+	'persistence' => true,
+
 	/**
 	 * These presets allow you to call controlled manipulations.
 	 */
