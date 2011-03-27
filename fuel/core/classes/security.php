@@ -156,7 +156,7 @@ class Security {
 		{
 			$value = htmlentities($value, ENT_COMPAT, \Fuel::$encoding, false);
 		}
-		elseif (is_array($value))
+		elseif (is_array($value) || $value instanceof \Iterator)
 		{
 			foreach ($value as $k => $v)
 			{
@@ -177,7 +177,7 @@ class Security {
 			// Throw exception when it wasn't whitelisted and can't be converted to String
 			if ( ! method_exists($value, '__toString'))
 			{
-				throw new \Fuel_Exception('Object class was not whitelisted in secutiry.whitelisted_classes and could '.
+				throw new \Fuel_Exception('Object class was not whitelisted in security.whitelisted_classes and could '.
 					'not be converted to string.');
 			}
 

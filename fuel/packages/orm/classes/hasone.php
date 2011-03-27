@@ -78,11 +78,88 @@ class HasOne extends Relation {
 		return array($model);
 	}
 
-	public function save($model_from, $model_to, $original_model_to, $parent_saved, $cascade)
+	public function save($model_from, $model_to, $original_model_id, $parent_saved, $cascade)
 	{
 		if ( ! $parent_saved)
 		{
 			return;
+		}
+
+		$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
+		// Check if there was another model assigned (this supersedes any change to the foreign key(s))
+		if ($current_model_id != $original_model_id)
+		{
+			// assign this object to the new objects foreign keys
+			if ( ! empty($model_to))
+			{
+				reset($this->key_to);
+				$frozen = $model_to->frozen(); // only unfreeze/refreeze when it was frozen
+				$frozen and $model_to->unfreeze();
+				foreach ($this->key_from as $pk)
+				{
+					$model_to->{current($this->key_to)} = $model_from->{$pk};
+					next($this->key_to);
+				}
+				$frozen and $model_to->freeze();
+			}
+
+			// if still loaded set this object's old relation's foreign keys to null
+			if ($original_model_id and $obj = call_user_func(array($this->model_to, 'find'),
+				count($this->key_to) == 1 ? array($original_model_id) : explode('][', substr($original_model_id, 1, -1))))
+			{
+				// check whether the object still refers to this model_from
+				$changed = false;
+				reset($this->key_to);
+				foreach ($this->key_from as $pk)
+				{
+					if ($obj->{current($this->key_to)} != $model_from->{$pk})
+					{
+						$changed = true;
+					}
+					next($this->key_to);
+				}
+
+				// when it still refers to this object, reset the foreign key(s)
+				if ( ! $changed)
+				{
+					$frozen = $obj->frozen(); // only unfreeze/refreeze when it was frozen
+					$frozen and $obj->unfreeze();
+					foreach ($this->key_to as $fk)
+					{
+						$obj->{$fk} = null;
+					}
+					$frozen and $obj->freeze();
+
+					// cascading this change won't work here, save just the object with cascading switched off
+					$obj->save(false);
+				}
+			}
+		}
+		// if not empty check the model_to's foreign_keys, when empty nothing changed
+		elseif ( ! empty($model_to))
+		{
+			// check if model_to still refers to this model_from
+			$changed = false;
+			reset($this->key_to);
+			foreach ($this->key_from as $pk)
+			{
+				if ($model_to->{current($this->key_to)} != $model_from->{$pk})
+				{
+					$changed = true;
+				}
+				next($this->key_to);
+			}
+
+			// if any of the keys changed, the relationship was broken - remove model_to from loaded objects
+			if ($changed)
+			{
+				// Remove the model_to from the relationships of model_from
+				$model_from->unfreeze();
+				$rel = $model_from->_relate();
+				$rel[$this->name] = null;
+				$model_from->_relate($rel);
+				$model_from->freeze();
+			}
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
