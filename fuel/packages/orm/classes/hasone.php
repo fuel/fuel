@@ -153,15 +153,12 @@ class HasOne extends Relation {
 			// if any of the keys changed, the relationship was broken - remove model_to from loaded objects
 			if ($changed)
 			{
-				// Add the new relation to the model_from
+				// Remove the model_to from the relationships of model_from
 				$model_from->unfreeze();
 				$rel = $model_from->_relate();
 				$rel[$this->name] = null;
 				$model_from->_relate($rel);
 				$model_from->freeze();
-
-				// cascading this change won't work here, save just the object with cascading switched off
-				$model_from->save(false);
 			}
 		}
 
