@@ -35,6 +35,12 @@ class Image_Imagemagick extends Image_Driver {
 			}
 			while (file_exists($this->image_temp));
 		}
+		else if (file_exists($this->image_temp))
+		{
+			$this->debug('Removing previous temporary image.');
+			unlink($this->image_temp);
+		}
+		$this->debug('Temp file: '.$this->image_temp);
 		$this->exec('convert', '"'.$image_fullpath.'" "'.$this->image_temp.'"');
 
 		return $this;

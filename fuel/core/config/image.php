@@ -51,7 +51,7 @@ return array(
 	/**
 	 * Sets if the queue should be cleared after a save(), save_pa(), or output().
 	 */
-	'clear_queue' => false,
+	'clear_queue' => true,
 
 	/**
 	 * Used to debug the class, defaults to false.
@@ -84,8 +84,7 @@ return array(
 			'actions' => array(
 				array('crop_resize', 200, 200),
 				array('border', 20, "#f00"),
-				array('rounded', 10),
-				array('output', 'png')
+				array('rounded', 10)
 			)
 		)
 	)

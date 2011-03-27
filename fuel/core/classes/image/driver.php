@@ -82,6 +82,7 @@ abstract class Image_Driver {
 		{
 			throw new \Fuel_Exception("Could not load preset $name, you sure it exists?");
 		}
+		return $this;
 	}
 
 	/**
@@ -94,7 +95,6 @@ abstract class Image_Driver {
 	public function load($filename, $return_data = false)
 	{
 		// First check if the filename exists
-		$filename = realpath($filename);
 		$return = array(
 			'filename'    => $filename,
 			'return_data' => $return_data
@@ -717,6 +717,7 @@ abstract class Image_Driver {
 	 */
 	public function reload()
 	{
+		$this->debug("Reloading was called!");
 		$this->load($this->image_fullpath);
 		return $this;
 	}

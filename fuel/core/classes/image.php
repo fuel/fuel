@@ -21,6 +21,13 @@ class Image {
 	protected static $_instance = null;
 
 	/**
+	 * Holds the config until an instance is initiated.
+	 *
+	 * @var  array   Config options to be passed when the instance is created.
+	 */
+	protected static $_config = array();
+
+	/**
 	 * Creates a new instance for static use of the class.
 	 *
 	 * @return  Image_Driver
@@ -29,7 +36,7 @@ class Image {
 	{
 		if (static::$_instance == null)
 		{
-			static::$_instance = static::factory();
+			static::$_instance = static::factory(static::$_config);
 		}
 		return static::$_instance;
 	}
@@ -42,6 +49,7 @@ class Image {
 	 */
 	public static function factory($config = array(), $filename = null)
 	{
+		!is_array($config) and $config = array();
 		$protocol = ucfirst( ! empty($config['driver']) ? $config['driver'] : 'gd');
 		$class = 'Image_'.$protocol;
 		if ($protocol == 'Driver' || ! class_exists($class))
@@ -59,12 +67,25 @@ class Image {
 	/**
 	 * Used to set configuration options.
 	 *
+	 * Sending the config options through the static reference initalizes the
+	 * instance. If you need to send a driver config through the static reference,
+	 * make sure its the first one sent! If errors arise, create a new instance using
+	 * factory().
+	 *
 	 * @param  array   $config   An array of configuration settings.
 	 * @return Image_Driver
 	 */
-	public static function config($config = array())
+	public static function config($index = array(), $value = null)
 	{
-		return static::instance()->config($config);
+		if (static::$_instance === null)
+		{
+			if ($value !== null)
+				$index = array($index => $value);
+			if (is_array($index))
+				static::$_config = array_merge(static::$_config, $index);
+			static::instance();
+		}
+		return static::instance()->config($index, $value);;
 	}
 
 	/**

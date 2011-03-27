@@ -28,18 +28,14 @@ class Image_Gd extends Image_Driver {
 		$return = false;
 		$image_extension == 'jpg' and $image_extension = 'jpeg';
 
-		if (is_resource($this->image_data))
-		{
-			imagedestroy($this->image_data);
-			$this->image_data = null;
-		}
+		$this->image_data !== null and imagedestroy($this->image_data);
+		$this->image_data = null;
 
 		// Check if the function exists
 		if (function_exists('imagecreatefrom'.$image_extension))
 		{
 			// Create a new transparent image.
 			$sizes = $this->sizes($image_fullpath);
-			$this->debug("Loading <code>".$image_fullpath."</code> with size of ".$sizes->width."x".$sizes->height);
 			$tmpImage = call_user_func('imagecreatefrom'.$image_extension, $image_fullpath);
 			$image = $this->create_transparent_image($sizes->width, $sizes->height, $tmpImage);
 			if ( ! $return_data)
@@ -51,6 +47,7 @@ class Image_Gd extends Image_Driver {
 			{
 				$return = $image;
 			}
+			$this->debug('', "<strong>Loaded</strong> <code>".$image_fullpath."</code> with size of ".$sizes->width."x".$sizes->height);
 		}
 		else
 		{
@@ -254,7 +251,7 @@ class Image_Gd extends Image_Driver {
 
 		$this->run_queue();
 
-		$vars = array(&$this->image_data, $filename);
+		$vars = array($this->image_data, $filename);
 		$filetype = $this->image_extension;
 		if ($filetype == 'jpg' || $filetype == 'jpeg')
 		{
