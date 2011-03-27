@@ -373,8 +373,12 @@ class Image_Gd extends Image_Driver {
 		$image = imagecreatetruecolor($width, $height);
 		$color = $this->create_color($image, null, 0);
 		imagesavealpha($image, true);
-		if ($this->new_extension == 'gif')
+		if ($this->image_extension == 'gif' || $this->image_extension == 'png')
 		{
+			// Get the current transparent color if possible...
+			$transcolor = imagecolortransparent($image);
+			if ($transcolor > 0)
+				$color = $transcolor;
 			imagecolortransparent($image, $color);
 		}
 		// Set the blending mode to false, add the bgcolor, then switch it back.
