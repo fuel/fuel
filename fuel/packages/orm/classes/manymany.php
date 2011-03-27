@@ -181,7 +181,7 @@ class ManyMany extends Relation {
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade)
+		if ($cascade and ! empty($model_to))
 		{
 			foreach ($model_to as $m)
 			{
@@ -198,7 +198,7 @@ class ManyMany extends Relation {
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade)
+		if ($cascade and ! empty($model_to))
 		{
 			foreach ($model_to as $m)
 			{
