@@ -229,7 +229,7 @@ class Image {
 
 	public static function reload()
 	{
-		static::instance()->reload();
+		return static::instance()->reload();
 	}
 
 }

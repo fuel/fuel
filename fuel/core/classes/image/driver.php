@@ -718,6 +718,7 @@ abstract class Image_Driver {
 	public function reload()
 	{
 		$this->load($this->image_fullpath);
+		return $this;
 	}
 
 	/**
