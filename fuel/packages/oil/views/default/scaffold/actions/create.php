@@ -8,9 +8,9 @@
 
 			if ($<?php echo $singular; ?> and $<?php echo $singular; ?>->save())
 			{
-				Session::set_flash('notice', 'Added ' . $<?php echo $singular; ?> . ' #' . $<?php echo $singular; ?>->id . '.');
+				Session::set_flash('notice', 'Added <?php echo $singular; ?> #' . $<?php echo $singular; ?>->id . '.');
 
-				Output::redirect('<?php echo $plural; ?>');
+				Response::redirect('<?php echo $plural; ?>');
 			}
 
 			else

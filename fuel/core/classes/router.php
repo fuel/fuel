@@ -15,7 +15,7 @@
 namespace Fuel\Core;
 
 class Router {
-	
+
 	public static $routes = array();
 
 	public static function add($path, $options = null)
@@ -29,12 +29,46 @@ class Router {
 			return;
 		}
 
-		static::$routes[$path] = new \Route($path, $options);
+		$name = $path;
+		if (is_array($options) and array_key_exists('name', $options))
+		{
+			$name = $options['name'];
+			unset($options['name']);
+			if (count($options) == 1 and ! is_array($options[0]))
+			{
+				$options = $options[0];
+			}
+		}
+
+		static::$routes[$name] = new \Route($path, $options);
 	}
-	
+
+	/**
+	 * Does reverse routing for a named route.  This will return the FULL url
+	 * (including the base url and index.php).
+	 *
+	 * WARNING: This is VERY limited at this point.  Does not work if there is
+	 * any regex in the route.
+	 *
+	 * Usage:
+	 *
+	 * <a href="<?php echo Router::get('foo'); ?>">Foo</a>
+	 *
+	 * @param   string  $name  the name of the route
+	 * @param   array   $named_params  the array of named parameters
+	 * @return  string  the full url for the named route
+	 */
+	public static function get($name, $named_params = array())
+	{
+		if (array_key_exists($name, static::$routes))
+		{
+			return \Uri::create(static::$routes[$name]->path, $named_params);
+		}
+	}
+
 	/**
 	 * Processes the given request using the defined routes
-	 * 
+	 *
 	 * @param	Request		the given Request object
 	 * @param	bool		whether to use the defined routes or not
 	 * @return	mixed		the match array or false
@@ -53,7 +87,7 @@ class Router {
 				}
 			}
 		}
-		
+
 		if ( ! $match)
 		{
 			// Since we didn't find a match, we will create a new route.
@@ -61,81 +95,82 @@ class Router {
 			$match->parse($request);
 		}
 
-		$segments = $match->segments;
-		
-		if (static::find_controller($match, $segments))
+		return  static::find_controller($match);
+	}
+
+	/**
+	 * Find the controller that matches the route requested
+	 *
+	 * @param	Route		the given Route object
+	 * @return	mixed		the match array or false
+	 */
+	protected static function find_controller($match)
+	{
+		// First port of call: request for a module?
+		if (\Fuel::module_exists($match->segments[0]))
 		{
-			return $match;
-		}
-		// Check for a module
-		if ($module_path = \Fuel::module_exists($segments[0]))
-		{
-			$match->module = $segments[0];
-			\Fuel::add_module($match->module);
-			if (static::find_controller($match, $segments))
+			// make the module known to the autoloader
+			\Fuel::add_module($match->segments[0]);
+
+			$segments = $match->segments;
+
+			// first check if the controller is in a directory.
+			$match->module = array_shift($segments);
+			$match->directory = count($segments) ? array_shift($segments) : null;
+			$match->controller = count($segments) ? array_shift($segments) : $match->module;
+
+			// does the module controller exist?
+			if (class_exists(ucfirst($match->module).'\\Controller_'.ucfirst($match->directory).'_'.ucfirst($match->controller)))
 			{
+				$match->action = count($segments) ? array_shift($segments) : 'index';
+				$match->method_params = $segments;
 				return $match;
 			}
-			elseif (count($segments) > 1)
-			{
-				array_shift($segments);
-				if (static::find_controller($match, $segments))
-				{
-					return $match;
-				}
-			}
-		}
-		
-		return false;
-	}
-	
-	protected static function find_controller( & $match, $segments)
-	{
-		// We first want to check if the controller is in a directory.  This way directories
-		// can have the same name as a base controller and still work.
-		if ($match->controller === null && count($segments) > 1)
-		{
-			if ($controller_path = \Fuel::find_file('classes'.DS.'controller'.DS.$segments[0], $segments[1]))
-			{
-				$match->directory = $segments[0];
-				array_shift($segments);
 
-				$match->controller = $segments[0];
-				array_shift($segments);
-			}
-			elseif ($controller_path = \Fuel::find_file('classes'.DS.'controller'.DS.$segments[0], $segments[0]))
+			$segments = $match->segments;
+
+			// then check if it's a module controller
+			$match->module = array_shift($segments);
+			$match->directory = null;
+			$match->controller = count($segments) ? array_shift($segments) : $match->module;
+
+			// does the module controller exist?
+			if (class_exists(ucfirst($match->module).'\\Controller_'.ucfirst($match->controller)))
 			{
-				$match->directory = $segments[0];
-				$match->controller = $segments[0];
-				array_shift($segments);
+				$match->action = count($segments) ? array_shift($segments) : 'index';
+				$match->method_params = $segments;
+				return $match;
 			}
 		}
 
-		// Check for the controller
-		if ($match->controller === null)
+		$segments = $match->segments;
+
+		// It's not a module, first check if the controller is in a directory.
+		$match->directory = array_shift($segments);
+		$match->controller = count($segments) ? array_shift($segments) : $match->directory;
+
+		if (class_exists('Controller_'.ucfirst($match->directory).'_'.ucfirst($match->controller)))
 		{
-			if ($controller_path = \Fuel::find_file('classes'.DS.'controller', $segments[0]))
-			{
-				$match->controller = $segments[0];
-				array_shift($segments);
-			}
-		}
-	
-		if ($match->controller !== null)
-		{
-			// Since we found a controller lets see if there is an action defined
-			if (count($segments) > 0)
-			{
-				$match->action = $segments[0];
-				array_shift($segments);
-			}
-			
+			$match->action = count($segments) ? array_shift($segments) : 'index';
 			$match->method_params = $segments;
-			
-			// We are all done here
-			return true;
+			return $match;
 		}
 
+		$segments = $match->segments;
+
+		// It's not in a directory, so check for app controllers
+		$match->directory = null;
+		$match->controller = count($segments) ? array_shift($segments) : $match->directory;
+
+		// We first want to check if the controller is in a directory.
+		if (class_exists('Controller_'.ucfirst($match->controller)))
+		{
+			$match->action = count($segments) ? array_shift($segments) : 'index';
+			$match->method_params = $segments;
+			return $match;
+		}
+
+		// none of the above. I give up...
 		return false;
 	}
 }

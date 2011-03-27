@@ -24,9 +24,9 @@ class Controller {
 	public $request;
 
 	/**
-	 * @var	string	Holds the output of the controller
+	 * @var	object	The current Response object
 	 */
-	public $output = '';
+	public $response;
 
 	/**
 	 * Sets the controller request object.
@@ -35,9 +35,10 @@ class Controller {
 	 * @param	object	The current request object
 	 * @return	void
 	 */
-	public function __construct(\Request $request)
+	public function __construct(\Request $request, \Response $response)
 	{
 		$this->request = $request;
+		$this->response = $response;
 	}
 
 	/**
@@ -87,7 +88,7 @@ class Controller {
 
 	public function render($view, $data = array(), $auto_encode = null)
 	{
-		$this->output .= \View::factory($view, $data, $auto_encode);
+		$this->response->body .= \View::factory($view, $data, $auto_encode);
 	}
 }
 

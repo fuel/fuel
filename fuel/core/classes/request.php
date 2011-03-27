@@ -125,20 +125,17 @@ class Request {
 			throw new \Fuel_Exception('It appears your _404_ route is incorrect.  Multiple Recursion has happened.');
 		}
 
-
-		\Output::$status = 404;
-
 		if (\Config::get('routes._404_') === null)
 		{
-			$output = \View::factory('404');
+			$response = new \Response(\View::factory('404'), 404);
 
 			if ($return)
 			{
-				return $output;
+				return $response;
 			}
 
-			\Output::send_headers();
-			exit($output);
+			$response->send(true);
+			exit;
 		}
 		else
 		{
@@ -146,10 +143,11 @@ class Request {
 
 			if ($return)
 			{
-				return $request->output();
+				return $request->response;
 			}
 
-			exit($request->send_headers()->output());
+			$request->response->send(true);
+			exit;
 		}
 	}
 
@@ -166,7 +164,7 @@ class Request {
 	/**
 	 * @var	string	Holds the response of the request.
 	 */
-	public $output = NULL;
+	public $response = null;
 
 	/**
 	 * @var	object	The request's URI object
@@ -242,6 +240,7 @@ class Request {
 		{
 			$this->module = $this->route->module;
 			\Fuel::add_module($this->module);
+			$this->add_path(\Fuel::module_exists($this->module));
 		}
 
 		$this->directory = $this->route->directory;
@@ -267,7 +266,7 @@ class Request {
 
 		if ( ! $this->route)
 		{
-			$this->output = static::show_404(true);
+			$this->response = static::show_404(true);
 			static::reset_request();
 			return $this;
 		}
@@ -281,13 +280,13 @@ class Request {
 		// If the class doesn't exist then 404
 		if ( ! class_exists($class))
 		{
-			$this->output = static::show_404(true);
+			$this->response = static::show_404(true);
 			static::reset_request();
 			return $this;
 		}
 
 		logger(Fuel::L_INFO, 'Loading controller '.$class, __METHOD__);
-		$this->controller_instance = $controller = new $class($this);
+		$this->controller_instance = $controller = new $class($this, new \Response);
 
 		$method = $method_prefix.($method ?: (property_exists($controller, 'default_action') ? $controller->default_action : 'index'));
 
@@ -319,27 +318,20 @@ class Request {
 			}
 
 			// Get the controller's output
-			$this->output =& $controller->output;
+			$this->response =& $controller->response;
 		}
 		else
 		{
-			$this->output = static::show_404(true);
+			$this->response = static::show_404(true);
 		}
 
 		static::reset_request();
 		return $this;
 	}
 
-	public function send_headers()
+	public function response()
 	{
-		\Output::send_headers();
-
-		return $this;
-	}
-
-	public function output()
-	{
-		return $this->output;
+		return $this->response;
 	}
 
 	/**
@@ -387,7 +379,7 @@ class Request {
 	 */
 	public function __toString()
 	{
-		return (string) $this->output;
+		return (string) $this->response;
 	}
 }
 

@@ -112,7 +112,6 @@ class Fuel {
 		\Config::load($config);
 
 		static::$_paths = array(APPPATH, COREPATH);
-		array_splice(static::$_paths, 1, 0, \Config::get('module_paths', array()));
 
 		// Load in the routes
 		\Config::load('routes', true);
@@ -393,10 +392,9 @@ class Fuel {
 	 * module. Won't register twice, will just return the path on a second call.
 	 *
 	 * @param   string  module name (lowercase prefix without underscore)
-	 * @param   bool    whether it is an loaded package
 	 * @return  string  the path that was loaded
 	 */
-	public static function add_module($name, $loaded = false)
+	public static function add_module($name)
 	{
 		if ( ! $path = \Autoloader::namespace_path('\\'.ucfirst($name)))
 		{
@@ -412,7 +410,6 @@ class Fuel {
 				if (is_dir($mod_check_path = $modpath.strtolower($name).DS))
 				{
 					$path = $mod_check_path;
-					static::add_path($path);
 					$ns = '\\'.ucfirst($name);
 					\Autoloader::add_namespaces(array(
 						$ns					=> $path.'classes'.DS,
@@ -425,19 +422,6 @@ class Fuel {
 		{
 			// strip the classes directory, we need the module root
 			$path = substr($path,0, -8);
-		}
-
-		if ($loaded)
-		{
-			// add the module path
-			static::add_path($path);
-
-			// get the path for this modules namespace
-			if ( $path = \Autoloader::namespace_path('\\'.ucfirst($name)))
-			{
-				// add the namespace path too
-				static::add_path($path);
-			}
 		}
 
 		return $path;

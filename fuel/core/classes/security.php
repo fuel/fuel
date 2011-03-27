@@ -124,7 +124,7 @@ class Security {
 
 			return htmLawed($value, array('safe' => 1, 'balanced' => 0));
 		}
-		
+
 		foreach ($value as $k => $v)
 		{
 			$value[$k] = static::xss_clean($v);
@@ -162,6 +162,26 @@ class Security {
 			{
 				$value[$k] = static::htmlentities($v);
 			}
+		}
+		elseif (is_object($value))
+		{
+			// Check if the object is whitelisted and return when that's the case
+			foreach (\Config::get('security.whitelisted_classes') as $class)
+			{
+				if (is_a($value, $class))
+				{
+					return $value;
+				}
+			}
+
+			// Throw exception when it wasn't whitelisted and can't be converted to String
+			if ( ! method_exists($value, '__toString'))
+			{
+				throw new \Fuel_Exception('Object class was not whitelisted in secutiry.whitelisted_classes and could '.
+					'not be converted to string.');
+			}
+
+			$value = static::htmlentities((string) $value);
 		}
 
 		return $value;

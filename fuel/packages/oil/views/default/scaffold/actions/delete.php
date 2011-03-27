@@ -10,4 +10,4 @@
 			Session::set_flash('notice', 'Could not delete ' . $<?php echo $singular; ?> . ' #' . $id);
 		}
 
-		Output::redirect('<?php echo $plural; ?>');
+		Response::redirect('<?php echo $plural; ?>');

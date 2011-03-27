@@ -81,25 +81,25 @@ abstract class Controller_Rest extends \Controller {
 	{
 		if (empty($data))
 		{
-			\Output::$status = 404;
+			$this->response->status = 404;
 			return;
 		}
 
-		\Output::$status = $http_code;
+		$this->response->status = $http_code;
 
 		// If the format method exists, call and return the output in that format
 		if (method_exists('Controller_Rest', '_format_' . $this->request->format))
 		{
 			// Set the correct format header
-			\Output::set_header('Content-Type', $this->_supported_formats[$this->request->format]);
+			$this->response->set_header('Content-Type', $this->_supported_formats[$this->request->format]);
 
-			$this->output = $this->{'_format_' . $this->request->format}($data);
+			$this->response->body($this->{'_format_' . $this->request->format}($data));
 		}
 
 		// Format not supported, output directly
 		else
 		{
-			$this->output = (string) $data;
+			$this->response->body((string) $data);
 		}
 	}
 
