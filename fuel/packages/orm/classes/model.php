@@ -113,7 +113,7 @@ class Model {
 	public static function cached_object($obj, $class = null)
 	{
 		$class = $class ?: get_called_class();
-		$id    = static::implode_pk($obj);
+		$id    = is_int($obj) or is_string($obj) ? $obj : static::implode_pk($obj);
 
 		return ( ! empty(static::$_cached_objects[$class][$id])) ? static::$_cached_objects[$class][$id] : false;
 	}
