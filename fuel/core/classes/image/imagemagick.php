@@ -174,7 +174,7 @@ class Image_Imagemagick extends Image_Driver {
 		$new = '"'.$filename.'"';
 		$this->exec('convert', $old.' '.$new);
 		
-		if ($this->config['persistence'] === true)
+		if ($this->config['persistence'] === false)
 			$this->reload();
 
 		return $this;
@@ -187,7 +187,7 @@ class Image_Imagemagick extends Image_Driver {
 		$this->run_queue();
 		$this->add_background();
 
-		if (substr($this->image_fullpath, -1 * strlen($filetype)) != $filetype)
+		if (substr($this->image_temp, -1 * strlen($filetype)) != $filetype)
 		{
 			$old = '"'.$this->image_temp.'"';
 			if ( ! $this->config['debug'])
@@ -202,6 +202,8 @@ class Image_Imagemagick extends Image_Driver {
 				echo file_get_contents($this->image_temp);
 			}
 		}
+		if ($this->config['persistence'] === false)
+			$this->reload();
 		return $this;
 	}
 

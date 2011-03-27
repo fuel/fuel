@@ -267,7 +267,7 @@ class Image_Gd extends Image_Driver {
 		}
 
 		call_user_func_array('image'.$filetype, $vars);
-		if ($this->config['persistence'] === true)
+		if ($this->config['persistence'] === false)
 			$this->reload();
 		return $this;
 	}
@@ -293,6 +293,10 @@ class Image_Gd extends Image_Driver {
 		}
 
 		call_user_func_array('image'.$filetype, $vars);
+		
+		if ($this->config['persistence'] === false)
+			$this->reload();
+
 		return $this;
 	}
 

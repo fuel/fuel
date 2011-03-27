@@ -27,11 +27,11 @@ class Image {
 	 */
 	protected static function instance()
 	{
-		if (Image::$_instance == null)
+		if (static::$_instance == null)
 		{
-			Image::$_instance = Image::factory();
+			static::$_instance = static::factory();
 		}
-		return Image::$_instance;
+		return static::$_instance;
 	}
 
 	/**
@@ -64,7 +64,7 @@ class Image {
 	 */
 	public static function config($config = array())
 	{
-		return Image::instance()->config($config);
+		return static::instance()->config($config);
 	}
 
 	/**
@@ -75,7 +75,7 @@ class Image {
 	 */
 	public static function load($filename)
 	{
-		return Image::instance()->load($filename);
+		return static::instance()->load($filename);
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Image {
 	 */
 	public static function crop($x1, $y1, $x2, $y2)
 	{
-		return Image::instance()->crop($x1, $y1, $x2, $y2);
+		return static::instance()->crop($x1, $y1, $x2, $y2);
 	}
 
 	/**
@@ -105,7 +105,7 @@ class Image {
 	 */
 	public static function resize($width, $height, $keepar = true, $pad = false)
 	{
-		return Image::instance()->resize($width, $height, $keepar, $pad);
+		return static::instance()->resize($width, $height, $keepar, $pad);
 	}
 
 	/**
@@ -117,7 +117,7 @@ class Image {
 	 */
 	public static function crop_resize($width, $height)
 	{
-		return Image::instance()->crop_resize($width, $height);
+		return static::instance()->crop_resize($width, $height);
 	}
 
 	/**
@@ -128,7 +128,7 @@ class Image {
 	 */
 	public static function rotate($degrees)
 	{
-		return Image::instance()->rotate($degrees);
+		return static::instance()->rotate($degrees);
 	}
 
 	/**
@@ -141,7 +141,7 @@ class Image {
 	 */
 	public static function watermark($filename, $position, $padding = 5)
 	{
-		return Image::instance()->watermark($filename, $position, $padding);
+		return static::instance()->watermark($filename, $position, $padding);
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Image {
 	 */
 	public static function border($size, $color = null)
 	{
-		return Image::instance()->border($size, $color);
+		return static::instance()->border($size, $color);
 	}
 
 	/**
@@ -164,7 +164,7 @@ class Image {
 	 */
 	public static function mask($maskimage)
 	{
-		return Image::instance()->mask($maskimage);
+		return static::instance()->mask($maskimage);
 	}
 
 	/**
@@ -177,7 +177,7 @@ class Image {
 	 */
 	public static function rounded($radius, $sides = null, $antialias = null)
 	{
-		return Image::instance()->rounded($radius, $sides, $antialias);
+		return static::instance()->rounded($radius, $sides, $antialias);
 	}
 
 	/**
@@ -185,11 +185,11 @@ class Image {
 	 *
 	 * @param  string  $filename     The location where to save the image.
 	 * @param  string  $permissions  Allows unix style permissions
-	 * @return string  The location of the file
+	 * @return Image_Driver
 	 */
 	public static function save($filename, $permissions = null)
 	{
-		return Image::instance()->save($filename, $permissions);
+		return static::instance()->save($filename, $permissions);
 	}
 
 	/**
@@ -198,21 +198,22 @@ class Image {
 	 * @param  string  $prepend      The text to add to the beginning of the filename.
 	 * @param  string  $append       The text to add to the end of the filename.
 	 * @param  string  $permissions  Allows unix style permissions
-	 * @return string  The location of the file
+	 * @return Image_Driver
 	 */
 	public static function save_pa($prepend, $append = null, $permissions = null)
 	{
-		return Image::instance()->save_pa($prepend, $append, $permissions);
+		return static::instance()->save_pa($prepend, $append, $permissions);
 	}
 
 	/**
 	 * Outputs the file directly to the user.
 	 *
 	 * @param  string  $filetype  The extension type to use. Ex: png, jpg, bmp, gif
+	 * @return Image_Driver
 	 */
 	public static function output($filetype = null)
 	{
-		Image::instance()->output($filetype);
+		return static::instance()->output($filetype);
 	}
 
 	/**
@@ -223,7 +224,12 @@ class Image {
 	 */
 	public static function sizes($filename = null)
 	{
-		return Image::instance()->sizes();
+		return static::instance()->sizes();
+	}
+
+	public static function reload()
+	{
+		static::instance()->reload();
 	}
 
 }

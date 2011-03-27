@@ -837,7 +837,7 @@ Image::load('filename.gif')
 				</tr>
 				<tr>
 					<th>Returns</th>
-					<td>void</td>
+					<td>Image_Driver</td>
 				</tr>
 				<tr>
 					<th>Example</th>
@@ -908,7 +908,7 @@ Image::load('filename.gif')
 				</tr>
 				<tr>
 					<th>Returns</th>
-					<td>void</td>
+					<td>Image_Driver</td>
 				</tr>
 				<tr>
 					<th>Example</th>
@@ -917,52 +917,6 @@ Image::load('filename.gif')
 // Saves to prepend_filename2_append.gif
 Image::load('filename.gif')
 	->save_pa('prepend', 'append');
-						</code></pre>
-					</td>
-				</tr>
-				</tbody>
-			</table>
-		</article>
-
-		<article>
-			<h4>sizes($filename = null)</h4>
-			<p>Returns an images width and height.</p>
-			<table class="method">
-				<tbody>
-				<tr>
-					<th class="legend">Static</th>
-					<td>Yes</td>
-				</tr>
-				<tr>
-					<th>Parameters</th>
-					<td>
-						<table class="parameters">
-							<tr>
-								<th>Param</th>
-								<th>Default</th>
-								<th class="description">Description</th>
-							</tr>
-							<tr>
-								<th><kbd>$filename</kbd></th>
-								<td><pre class="php"><code>null</code></pre></td>
-								<td>The path to the file to be checked, defaults to currently loaded image.</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<tr>
-					<th>Returns</th>
-					<td><pre class="php"><code>Object</code></pre></td>
-				</tr>
-				<tr>
-					<th>Example</th>
-					<td>
-						<pre class="php"><code>
-// Get sizes for an image
-$sizes = Image::sizes('filename.gif')->output();
-
-// Get the Aspect Ratio
-$ar = $sizes->width / $sizes->height;
 						</code></pre>
 					</td>
 				</tr>
@@ -1018,6 +972,93 @@ Image::load('filename.gif')
 // Output as jpeg
 Image::load('filename.gif')
 	->output('jpeg');
+						</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+		<article>
+			<h4>sizes($filename = null)</h4>
+			<p>Returns an images width and height.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Parameters</th>
+					<td>
+						<table class="parameters">
+							<tr>
+								<th>Param</th>
+								<th>Default</th>
+								<th class="description">Description</th>
+							</tr>
+							<tr>
+								<th><kbd>$filename</kbd></th>
+								<td><pre class="php"><code>null</code></pre></td>
+								<td>The path to the file to be checked, defaults to currently loaded image.</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td><pre class="php"><code>Object</code></pre></td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>
+// Get sizes for an image
+$sizes = Image::sizes('filename.gif')->output();
+
+// Get the Aspect Ratio
+$ar = $sizes->width / $sizes->height;
+						</code></pre>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+		<article>
+			<h4>reload()</h4>
+			<p>Reloads the image.</p>
+			<table class="method">
+				<tbody>
+				<tr>
+					<th class="legend">Static</th>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<th>Returns</th>
+					<td>Image_Driver</td>
+				</tr>
+				<tr>
+					<th>Example</th>
+					<td>
+						<pre class="php"><code>
+// Load the image
+Image::load('filename.gif')
+	->resize(100, 100)
+	->save_pa('', '_100px');
+
+// Reload the image and make another thumbnail
+Image::reload()
+	->resize(300, 300)
+	->save_pa('', '_300px');
+
+// This functions identical to the above
+Image::config('persistence', false)
+	->resize(100, 100)
+	->save_pa('', '_100px')
+	->resize(300, 300)
+	->save_pa('', '_300px');
 						</code></pre>
 					</td>
 				</tr>

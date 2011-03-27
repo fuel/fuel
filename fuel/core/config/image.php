@@ -59,7 +59,9 @@ return array(
 	'debug' => false,
 
 	/**
-	 * Sets if the image should be reloaded after previous modifications (true reloads, false persists).
+	 * Sets if the image should be reloaded after previous modifications
+	 *
+	 * true makes changes persist, false reloads after each save (includes save_pa).
 	 */
 	'persistence' => true,
 
