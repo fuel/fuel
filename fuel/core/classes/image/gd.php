@@ -373,7 +373,7 @@ class Image_Gd extends Image_Driver {
 		$image = imagecreatetruecolor($width, $height);
 		$color = $this->create_color($image, null, 0);
 		imagesavealpha($image, true);
-		if ($this->image_extension == 'gif')
+		if ($this->new_extension == 'gif')
 		{
 			imagecolortransparent($image, $color);
 		}
