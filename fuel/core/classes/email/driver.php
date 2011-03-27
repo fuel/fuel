@@ -255,6 +255,10 @@ abstract class Email_Driver {
 		{
 			$address = $name.' <'.$address.'>';
 		}
+		else
+		{
+			$address = '<'.$address.'>';
+		}
 		$this->sender = $address;
 		return $this;
 	}

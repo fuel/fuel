@@ -164,7 +164,7 @@ class Email_Smtp extends Email_Driver {
 				break;
 			case 'from' :
 
-				$this->_send_data('MAIL FROM:<'.$data.'>');
+				$this->_send_data('MAIL FROM:'.$data);
 
 				$resp = 250;
 				break;
