@@ -149,6 +149,12 @@ class ManyMany extends Relation {
 				throw new Exception('Invalid Model instance added to relations in this model.');
 			}
 
+			// Save if it's a yet unsaved object
+			if ($model_to->is_new())
+			{
+				$model_to->save(false);
+			}
+
 			$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
 
 			// Check if the model was already assigned, if not INSERT relationships:

@@ -84,9 +84,13 @@ class HasMany extends Relation {
 				throw new Exception('Invalid Model instance added to relations in this model.');
 			}
 
+			// Save if it's a yet unsaved object
+			if ($model_to->is_new())
+			{
+				$model_to->save(false);
+			}
+
 			$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
-				// unset current model from from array
-				unset($original_model_ids[array_search($current_model_id, $original_model_ids)]);
 
 			// Check if the model was already assigned
 			if ( ! in_array($current_model_id, $original_model_ids))
