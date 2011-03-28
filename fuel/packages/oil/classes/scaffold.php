@@ -29,7 +29,7 @@ class Scaffold
 		Generate::$scaffolding = true;
 	}
 
-	public function generate($args, $subfolder = 'default')
+	public static function generate($args, $subfolder = 'default')
 	{
 		$subfolder = trim($subfolder, '/');
 		if ( ! is_dir( PKGPATH.'oil/views/'.$subfolder))
