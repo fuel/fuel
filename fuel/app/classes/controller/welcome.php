@@ -6,7 +6,7 @@ class Controller_Welcome extends Controller {
 
 	public function action_index()
 	{
-		$this->render('welcome/index');
+		$this->response->body = View::factory('welcome/index');
 	}
 
 	public function action_404()
@@ -16,6 +16,6 @@ class Controller_Welcome extends Controller {
 
 		// Set a HTTP 404 output header
 		$this->response->status = 404;
-		$this->render('welcome/404', $data);
+		$this->response->body = View::factory('welcome/404', $data);
 	}
 }
