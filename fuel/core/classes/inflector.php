@@ -43,7 +43,7 @@ class Inflector {
 		'/(m)an$/'					=> '\1en',		// man, woman, spokesman
 		'/(c)hild$/'				=> '\1hildren',	// child
 		'/(buffal|tomat)o$/'		=> '\1\2oes',	// buffalo, tomato
-		'/(bu)s$/'					=> '\1\2ses',	// bus
+		'/(bu|campu)s$/'			=> '\1\2ses',	// bus
 		'/(alias|status|virus)/'	=> '\1es',		// alias
 		'/(octop)us$/'				=> '\1i',		// octopus
 		'/(ax|cri|test)is$/'		=> '\1es',		// axis, crisis
@@ -60,7 +60,7 @@ class Inflector {
 		'/(cris|ax|test)es$/'	=> '\1is',
 		'/(shoe)s$/'			=> '\1',
 		'/(o)es$/'				=> '\1',
-		'/(bus)es$/'			=> '\1',
+		'/(bus|campus)es$/'		=> '\1',
 		'/([m|l])ice$/'			=> '\1ouse',
 		'/(x|ch|ss|sh)es$/'		=> '\1',
 		'/(m)ovies$/'			=> '\1\2ovie',
