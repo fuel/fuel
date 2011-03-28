@@ -24,6 +24,12 @@ Autoloader::add_classes(array(
 	'Orm\\ManyThrough'  => __DIR__.'/classes/manythrough.php',
 	'Orm\\Relation'     => __DIR__.'/classes/relation.php',
 
+	// Observers
+	'Orm\\Observer_CreatedOn'   => __DIR__.'/classes/observer/createdon.php',
+	'Orm\\Observer_Typing'      => __DIR__.'/classes/observer/typing.php',
+	'Orm\\Observer_UpdatedOn'   => __DIR__.'/classes/observer/updatedon.php',
+	'Orm\\Observer_Validation'  => __DIR__.'/classes/observer/validation.php',
+
 	// Exceptions
 	'Orm\\Exception'          => __DIR__.'/classes/exceptions.php',
 	'Orm\\RecordNotFound'     => __DIR__.'/classes/exceptions.php',
