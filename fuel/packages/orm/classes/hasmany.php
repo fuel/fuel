@@ -40,19 +40,6 @@ class HasMany extends Relation {
 		return $query->get();
 	}
 
-	public function select($table)
-	{
-		$props = call_user_func(array($this->model_to, 'properties'));
-		$i = 0;
-		$properties = array();
-		foreach ($props as $pk => $pv)
-		{
-			$properties[] = array($table.'.'.$pk, $table.'_c'.$i);
-			$i++;
-		}
-		return $properties;
-	}
-
 	public function join($alias_from, $rel_name, $alias_to_nr)
 	{
 		$alias_to = 't'.$alias_to_nr;

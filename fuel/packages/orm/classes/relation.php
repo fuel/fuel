@@ -80,7 +80,19 @@ abstract class Relation {
 	 * @param   string
 	 * @return  array
 	 */
-	abstract public function select($table);
+	public function select($table)
+	{
+		$props = call_user_func(array($this->model_to, 'properties'));
+		$i = 0;
+		$properties = array();
+		foreach ($props as $pk => $pv)
+		{
+			$properties[] = array($table.'.'.$pk, $table.'_c'.$i);
+			$i++;
+		}
+
+		return $properties;
+	}
 
 	/**
 	 * Returns tables to join and fields to select with optional additional settings like order/where
