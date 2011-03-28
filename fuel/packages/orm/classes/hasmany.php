@@ -139,7 +139,7 @@ class HasMany extends Relation {
 			{
 				$model_from->unfreeze();
 				$rel = $model_from->_relate();
-				if ($rel[$this->name][$key] === $model_to)
+				if ( ! empty($rel[$this->name][$key]) and $rel[$this->name][$key] === $model_to)
 				{
 					unset($rel[$this->name][$key]);
 				}

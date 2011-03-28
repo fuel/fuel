@@ -548,6 +548,7 @@ class Query {
 			}
 		}
 		$obj->_relate($rel_objs);
+		$obj->_update_original();
 
 		return $obj;
 	}

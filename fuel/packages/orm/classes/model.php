@@ -571,22 +571,6 @@ class Model implements \ArrayAccess, \Iterator {
 		else
 		{
 			$this->_data_relations = $rels;
-
-			$this->_original_relations = array();
-			foreach ($rels as $rel => $data)
-			{
-				if (is_array($data))
-				{
-					foreach ($data as $obj)
-					{
-						$this->_original_relations[$rel][] = $obj ? $obj->implode_pk($obj) : null;
-					}
-				}
-				else
-				{
-					$this->_original_relations[$rel] = $data ? $data->implode_pk($data) : null;
-				}
-			}
 		}
 	}
 
@@ -743,7 +727,6 @@ class Model implements \ArrayAccess, \Iterator {
 		// update the original properties on creation and cache object for future retrieval in this request
 		$this->_is_new = false;
 		static::$_cached_objects[get_class($this)][static::implode_pk($this)] = $this;
-		$this->_update_original();
 
 		$this->observe('after_insert');
 
@@ -794,7 +777,6 @@ class Model implements \ArrayAccess, \Iterator {
 		}
 
 		// update the original property on success
-		$this->_update_original();
 
 		$this->observe('after_update');
 

@@ -150,28 +150,31 @@ class ManyMany extends Relation {
 			}
 
 			$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
-				// unset current model from from array
-				unset($original_model_ids[array_search($current_model_id, $original_model_ids)]);
 
 			// Check if the model was already assigned, if not INSERT relationships:
 			if ( ! in_array($current_model_id, $original_model_ids))
 			{
 				$ids = array();
 				reset($this->key_from);
-				foreach ($this->key_through_from as $key)
+				foreach ($this->key_through_from as $pk)
 				{
-					$ids[$key] = $model_from->{current($this->key_from)};
+					$ids[$pk] = $model_from->{current($this->key_from)};
 					next($this->key_from);
 				}
 
 				reset($this->key_to);
-				foreach ($this->key_through_to as $key)
+				foreach ($this->key_through_to as $pk)
 				{
-					$ids[$key] = $model_to->{current($this->key_to)};
+					$ids[$pk] = $model_to->{current($this->key_to)};
 					next($this->key_to);
 				}
 
 				\DB::insert($this->table_through)->set($ids)->execute();
+			}
+			else
+			{
+				// unset current model from from array
+				unset($original_model_ids[array_search($current_model_id, $original_model_ids)]);
 			}
 
 			// ensure correct pk assignment
@@ -179,7 +182,7 @@ class ManyMany extends Relation {
 			{
 				$model_from->unfreeze();
 				$rel = $model_from->_relate();
-				if ($rel[$this->name][$key] === $model_to)
+				if ( ! empty($rel[$this->name][$key]) and $rel[$this->name][$key] === $model_to)
 				{
 					unset($rel[$this->name][$key]);
 				}
