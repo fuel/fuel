@@ -112,60 +112,49 @@ class BelongsTo extends Relation {
 		// if not check the model_from's foreign_keys
 		else
 		{
-			if ($model_to === null and ! empty($original_model_id))
+			$foreign_keys = count($this->key_to) == 1 ? array($original_model_id) : explode('][', substr($original_model_id, 1, -1));
+			$changed      = false;
+			$new_rel_id   = array();
+			reset($foreign_keys);
+			foreach ($this->key_from as $fk)
 			{
+				if (is_null($model_from->{$fk}))
+				{
+					$changed = true;
+					$new_rel_id = null;
+					break;
+				}
+				elseif ($model_from->{$fk} != current($foreign_keys))
+				{
+					$changed = true;
+				}
+				$new_rel_id[] = $model_from->{$fk};
+				next($foreign_keys);
+			}
+
+			// if any of the keys changed, reload the relationship - saving the object will save those keys
+			if ($changed)
+			{
+				// Attempt to load the new related object
+				if ( ! is_null($new_rel_id))
+				{
+					$rel_obj = call_user_func(array($this->model_to, 'find'), $new_rel_id);
+					if (empty($rel_obj))
+					{
+						throw new Exception('New relation set on '.$this->model_from.' object wasn\'t found.');
+					}
+				}
+				else
+				{
+					$rel_obj = null;
+				}
+
+				// Add the new relation to the model_from
 				$model_from->unfreeze();
 				$rel = $model_from->_relate();
-				$rel[$this->name] = null;
+				$rel[$this->name] = $rel_obj;
 				$model_from->_relate($rel);
 				$model_from->freeze();
-			}
-			else
-			{
-				$foreign_keys = count($this->key_to) == 1 ? array($original_model_id) : explode('][', substr($original_model_id, 1, -1));
-				$changed      = false;
-				$new_rel_id   = array();
-				reset($foreign_keys);
-				foreach ($this->key_from as $fk)
-				{
-					if (is_null($model_from->{$fk}))
-					{
-						$changed = true;
-						$new_rel_id = null;
-						break;
-					}
-					elseif ($model_from->{$fk} != current($foreign_keys))
-					{
-						$changed = true;
-					}
-					$new_rel_id[] = $model_from->{$fk};
-					next($foreign_keys);
-				}
-
-				// if any of the keys changed, reload the relationship - saving the object will save those keys
-				if ($changed)
-				{
-					// Attempt to load the new related object
-					if ( ! is_null($new_rel_id))
-					{
-						$rel_obj = call_user_func(array($this->model_to, 'find'), $new_rel_id);
-						if (empty($rel_obj))
-						{
-							throw new Exception('New relation set on '.$this->model_from.' object wasn\'t found.');
-						}
-					}
-					else
-					{
-						$rel_obj = null;
-					}
-
-					// Add the new relation to the model_from
-					$model_from->unfreeze();
-					$rel = $model_from->_relate();
-					$rel[$this->name] = $rel_obj;
-					$model_from->_relate($rel);
-					$model_from->freeze();
-				}
 			}
 		}
 

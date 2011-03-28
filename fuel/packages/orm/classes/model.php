@@ -15,7 +15,7 @@
 namespace Orm;
 use \Inflector;
 
-class Model {
+class Model implements \ArrayAccess, \Iterator {
 
 	/* ---------------------------------------------------------------------------
 	 * Static usage
@@ -113,7 +113,7 @@ class Model {
 	public static function cached_object($obj, $class = null)
 	{
 		$class = $class ?: get_called_class();
-		$id    = static::implode_pk($obj);
+		$id    = is_int($obj) or is_string($obj) ? (string) $obj : static::implode_pk($obj);
 
 		return ( ! empty(static::$_cached_objects[$class][$id])) ? static::$_cached_objects[$class][$id] : false;
 	}
@@ -139,7 +139,11 @@ class Model {
 		if (count(static::$_primary_key) == 1)
 		{
 			$p = reset(static::$_primary_key);
-			return (is_object($data) ? $data->{$p} : (isset($data[$p]) ? $data[$p] : null));
+			return (is_object($data)
+				? strval($data->{$p})
+				: (isset($data[$p])
+					? strval($data[$p])
+					: null));
 		}
 
 		$pk = '';
@@ -526,6 +530,22 @@ class Model {
 		{
 			$this->_original[$key] = $val;
 		}
+
+		$this->_original_relations = array();
+		foreach ($this->_data_relations as $rel => $data)
+		{
+			if (is_array($data))
+			{
+				foreach ($data as $obj)
+				{
+					$this->_original_relations[$rel][] = $obj ? $obj->implode_pk($obj) : null;
+				}
+			}
+			else
+			{
+				$this->_original_relations[$rel] = $data ? $data->implode_pk($data) : null;
+			}
+		}
 	}
 
 	/**
@@ -675,6 +695,8 @@ class Model {
 			);
 		}
 		$this->unfreeze();
+
+		$this->_update_original();
 
 		$this->observe('after_save');
 
@@ -972,6 +994,59 @@ class Model {
 		// hasmany-belongsto can be copied, ie no change
 		// many-many relationships should be copied, ie no change
 	}
+
+	public function offsetSet($offset, $value)
+	{
+		if (is_null($offset))
+		{
+			return false;
+		}
+		else
+		{
+			$this->_data[$offset] = $value;
+		}
+	}
+
+	public function offsetExists($offset)
+	{
+		return isset($this->_data[$offset]);
+	}
+
+	public function offsetUnset($offset)
+	{
+		unset($this->_data[$offset]);
+	}
+
+	public function offsetGet($offset)
+	{
+		return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
+	}
+
+	public function rewind()
+	{
+		reset($this->_data);
+	}
+
+	public function current()
+	{
+		return current($this->_data);
+	}
+
+	public function key()
+	{
+		return key($this->_data);
+	}
+
+	public function next()
+	{
+		return next($this->_data);
+	}
+
+	public function valid()
+	{
+		return $this->current() !== false;
+	}
+
 }
 
 /* End of file model.php */
