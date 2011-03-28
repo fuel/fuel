@@ -79,6 +79,11 @@ class HasMany extends Relation {
 
 		foreach ($models_to as $key => $model_to)
 		{
+			if ( ! $model_to instanceof $this->model_to)
+			{
+				throw new Exception('Invalid Model instance added to relations in this model.');
+			}
+
 			$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
 				// unset current model from from array
 				unset($original_model_ids[array_search($current_model_id, $original_model_ids)]);

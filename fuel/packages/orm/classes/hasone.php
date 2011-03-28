@@ -72,6 +72,11 @@ class HasOne extends Relation {
 			return;
 		}
 
+		if ( ! $model_to instanceof $this->model_to and $model_to !== null)
+		{
+			throw new Exception('Invalid Model instance added to relations in this model.');
+		}
+
 		$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
 		// Check if there was another model assigned (this supersedes any change to the foreign key(s))
 		if ($current_model_id != $original_model_id)
