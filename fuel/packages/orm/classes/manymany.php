@@ -128,34 +128,121 @@ class ManyMany extends Relation {
 		return $models;
 	}
 
-	public function save($model_from, $model_to, $original_model_to, $parent_saved, $cascade)
+	public function save($model_from, $models_to, $original_model_ids, $parent_saved, $cascade)
 	{
 		if ( ! $parent_saved)
 		{
 			return;
 		}
 
-		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade and ! empty($model_to))
+		if ( ! is_array($models_to) and ($models_to = is_null($models_to) ? array() : $models_to) !== array())
 		{
-			foreach ($model_to as $m)
+			throw new Exception('Assigned relationships must be an array or null, given relationship value for '.
+				$this->name.' is invalid.');
+		}
+		$original_model_ids === null and $original_model_ids = array();
+
+		foreach ($models_to as $key => $model_to)
+		{
+			if ( ! $model_to instanceof $this->model_to)
+			{
+				throw new Exception('Invalid Model instance added to relations in this model.');
+			}
+
+			$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
+				// unset current model from from array
+				unset($original_model_ids[array_search($current_model_id, $original_model_ids)]);
+
+			// Check if the model was already assigned, if not INSERT relationships:
+			if ( ! in_array($current_model_id, $original_model_ids))
+			{
+				$ids = array();
+				reset($this->key_from);
+				foreach ($this->key_through_from as $key)
+				{
+					$ids[$key] = $model_from->{current($this->key_from)};
+					next($this->key_from);
+				}
+
+				reset($this->key_to);
+				foreach ($this->key_through_to as $key)
+				{
+					$ids[$key] = $model_to->{current($this->key_to)};
+					next($this->key_to);
+				}
+
+				\DB::insert($this->table_through)->set($ids)->execute();
+			}
+
+			// ensure correct pk assignment
+			if ($key != $current_model_id)
+			{
+				$model_from->unfreeze();
+				$rel = $model_from->_relate();
+				if ($rel[$this->name][$key] === $model_to)
+				{
+					unset($rel[$this->name][$key]);
+				}
+				$rel[$this->name][$current_model_id] = $model_to;
+				$model_from->_relate($rel);
+				$model_from->freeze();
+			}
+		}
+
+		// If any original ids are left they are no longer assigned, DELETE the relationships:
+		foreach ($original_model_ids as $original_model_id)
+		{
+			$query = \DB::delete($this->table_through);
+
+			reset($this->key_from);
+			foreach ($this->key_through_from as $key)
+			{
+				$query->where($key, '=', $model_from->{current($this->key_from)});
+				next($this->key_from);
+			}
+
+			$to_keys = count($this->key_to) == 1 ? array($original_model_id) : explode('][', substr($original_model_id, 1, -1));
+			reset($to_keys);
+			foreach ($this->key_through_to as $key)
+			{
+				$query->where($key, '=', current($to_keys));
+				next($to_keys);
+			}
+
+			$query->execute();
+		}
+
+		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
+		if ($cascade and ! empty($models_to))
+		{
+			foreach ($models_to as $m)
 			{
 				$m->save();
 			}
 		}
 	}
 
-	public function delete($model_from, $model_to, $parent_deleted, $cascade)
+	public function delete($model_from, $models_to, $parent_deleted, $cascade)
 	{
 		if ( ! $parent_deleted)
 		{
 			return;
 		}
 
+		// Delete all relationship entries for the model_from
+		$query = \DB::delete($this->table_through);
+		reset($this->key_from);
+		foreach ($this->key_through_from as $key)
+		{
+			$query->where($key, '=', $model_from->{current($this->key_from)});
+			next($this->key_from);
+		}
+		$query->delete();
+
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
 		if ($cascade and ! empty($model_to))
 		{
-			foreach ($model_to as $m)
+			foreach ($models_to as $m)
 			{
 				$m->delete();
 			}
