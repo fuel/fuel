@@ -29,10 +29,11 @@ class Model implements \ArrayAccess, \Iterator {
 	/**
 	 * @var  array  relationship properties
 	 */
-	// protected static $_hasone;
-	// protected static $_belongsto;
-	// protected static $_hasmany;
-	// protected static $_manymany;
+	// protected static $_has_one;
+	// protected static $_belongs_to;
+	// protected static $_has_many;
+	// protected static $_many_many;
+	// protected static $_many_through;
 
 	/**
 	 * @var  array  name or names of the primary keys
