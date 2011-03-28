@@ -68,10 +68,11 @@ class Model implements \ArrayAccess, \Iterator {
 	 * @var  array  array of valid relation types
 	 */
 	protected static $_valid_relations = array(
-		'belongs_to'  => 'Orm\\BelongsTo',
-		'has_one'     => 'Orm\\HasOne',
-		'has_many'    => 'Orm\\HasMany',
-		'many_many'   => 'Orm\\ManyMany'
+		'belongs_to'    => 'Orm\\BelongsTo',
+		'has_one'       => 'Orm\\HasOne',
+		'has_many'      => 'Orm\\HasMany',
+		'many_many'     => 'Orm\\ManyMany',
+		'many_through'  => 'Orm\\ManyThrough',
 	);
 
 	public static function factory($data = array(), $new = true)

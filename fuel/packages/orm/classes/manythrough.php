@@ -14,7 +14,7 @@
 
 namespace Orm;
 
-class ManyMany extends Relation {
+class ManyTrough extends Relation {
 
 	protected $key_from = array('id');
 
@@ -24,11 +24,6 @@ class ManyMany extends Relation {
 	 * @var  string  classname of model to use as connection
 	 */
 	protected $model_through;
-
-	/**
-	 * @var  string  table name of table to use as connection, alternative to $model_through setting
-	 */
-	protected $table_through;
 
 	/**
 	 * @var  string  foreign key of from model in connection table
@@ -42,22 +37,22 @@ class ManyMany extends Relation {
 
 	public function __construct($from, $name, array $config)
 	{
-		$this->name        = $name;
-		$this->model_from  = $from;
-		$this->model_to    = array_key_exists('model_to', $config) ? $config['model_to'] : 'Model_'.\Inflector::classify($name);
+		$this->name          = $name;
+		$this->model_from    = $from;
+		$this->model_to      = array_key_exists('model_to', $config) ? $config['model_to'] : 'Model_'.\Inflector::classify($name);
 		$this->key_from    = array_key_exists('key_from', $config) ? (array) $config['key_from'] : $this->key_from;
 		$this->key_to      = array_key_exists('key_to', $config) ? (array) $config['key_to'] : $this->key_to;
 
-		if ( ! empty($config['table_through']))
+		if ( ! empty($config['model_through']))
 		{
-			$this->table_through = $config['table_through'];
+			$this->model_through = $config['model_through'];
 		}
 		else
 		{
 			$table_name = array($this->model_from, $this->model_to);
 			natcasesort($table_name);
 			$table_name = array_merge($table_name);
-			$this->table_through = \Inflector::tableize($table_name[0]).'_'.\Inflector::tableize($table_name[1]);
+			$this->model_through = 'Model_'.ucfirst(\Inflector::tableize($table_name[0])).'_'.ucfirst(\Inflector::tableize($table_name[1]));
 		}
 		$this->key_through_from = ! empty($config['key_through_from'])
 			? (array) $config['key_through_from'] : (array) \Inflector::foreign_key($this->model_from);
@@ -74,13 +69,13 @@ class ManyMany extends Relation {
 
 	public function select_through($table)
 	{
-		foreach ($this->key_through_to as $to)
+		$i = 1;
+		$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
+		$props = call_user_func(array($rel->model_to, 'properties'));
+		foreach ($props as $pk => $pv)
 		{
-			$properties[] = $table.$to;
-		}
-		foreach ($this->key_through_from as $from)
-		{
-			$properties[] = $table.$from;
+			$properties[] = array($table.'.'.$pk, $table.'_c'.$i);
+			$i++;
 		}
 
 		return $properties;
@@ -90,10 +85,13 @@ class ManyMany extends Relation {
 	{
 		$alias_to = 't'.$alias_to_nr;
 
+		$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
+		$through_table = call_user_func(array($rel->model_to, 'table'));
+
 		$models = array(
 			array(
-				'model'      => null,
-				'table'      => array($this->table_through, $alias_to.'_through'),
+				'model'      => $rel->model_to,
+				'table'      => array($through_table, $alias_to.'_through'),
 				'join_type'  => 'left',
 				'join_on'    => array(),
 				'columns'    => $this->select_through($alias_to.'_through'),
