@@ -81,16 +81,16 @@ class BelongsTo extends Relation {
 			throw new Exception('Invalid Model instance added to relations in this model.');
 		}
 
+		// Save if it's a yet unsaved object
+		if ($model_to and $model_to->is_new())
+		{
+			$model_to->save(false);
+		}
+
 		$current_model_id = $model_to ? $model_to->implode_pk($model_to) : null;
 		// Check if there was another model assigned (this supersedes any change to the foreign key(s))
 		if ($current_model_id != $original_model_id)
 		{
-			// Save if it's a yet unsaved object
-			if ($model_to and $model_to->is_new())
-			{
-				$model_to->save(false);
-			}
-
 			// change the foreign keys in the model_from to point to the new relation
 			reset($this->key_from);
 			$model_from->unfreeze();
