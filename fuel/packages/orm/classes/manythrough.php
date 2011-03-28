@@ -14,7 +14,7 @@
 
 namespace Orm;
 
-class ManyTrough extends Relation {
+class ManyThrough extends Relation {
 
 	protected $key_from = array('id');
 
@@ -52,7 +52,7 @@ class ManyTrough extends Relation {
 			$table_name = array($this->model_from, $this->model_to);
 			natcasesort($table_name);
 			$table_name = array_merge($table_name);
-			$this->model_through = 'Model_'.ucfirst(\Inflector::tableize($table_name[0])).'_'.ucfirst(\Inflector::tableize($table_name[1]));
+			$this->model_through = \Inflector::tableize($table_name[0]).'_'.\Inflector::tableize($table_name[1]);
 		}
 		$this->key_through_from = ! empty($config['key_through_from'])
 			? (array) $config['key_through_from'] : (array) \Inflector::foreign_key($this->model_from);

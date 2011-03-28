@@ -76,11 +76,11 @@ class ManyMany extends Relation {
 	{
 		foreach ($this->key_through_to as $to)
 		{
-			$properties[] = $table.$to;
+			$properties[] = $table.'.'.$to;
 		}
 		foreach ($this->key_through_from as $from)
 		{
-			$properties[] = $table.$from;
+			$properties[] = $table.'.'.$from;
 		}
 
 		return $properties;
