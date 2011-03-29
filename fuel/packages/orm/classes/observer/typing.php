@@ -14,63 +14,62 @@
 
 namespace Orm;
 
-class Observer_Typing extends Observer {
+class Observer_Typing {
 
+	/**
+	 * @var  array  types of events to act on and whether they are pre- or post-database
+	 */
+	public static $events = array(
+		'before_save'  => 'before',
+		'after_save'   => 'after',
+		'after_load'   => 'after',
+	);
+
+	/**
+	 * @var  array  regexes for db types with the method(s) to use, optionally pre- or post-database
+	 */
 	public static $type_methods = array(
 		'/^varchar/uiD' => array(
-				'before_save' => 'Orm\\Observer_Typing::type_varchar'
+			'before' => 'Orm\\Observer_Typing::type_varchar'
 			),
 		'/^(tiny|small|medium|big)?int(eger)?/uiD'
 			=> 'Orm\\Observer_Typing::type_integer',
 		'/^(float|double|decimal)/uiD'
 			=> 'Orm\\Observer_Typing::type_float',
-		'/^(tiny|medium|long)?text/'
-			=> 'Orm\\Observer_Typing::type_text',
+		'/^(tiny|medium|long)?text/' => array(
+			'before' => 'Orm\\Observer_Typing::type_text'
+		),
 		'/^set\\(/uiD' => array(
-			'before_save' => 'Orm\\Observer_Typing::type_set'
+			'before' => 'Orm\\Observer_Typing::type_set'
 		),
 		'/^enum\\(/uiD' => array(
-			'before_save' => 'Orm\\Observer_Typing::type_set'
+			'before' => 'Orm\\Observer_Typing::type_set'
 		),
 		'/^serialize$/uiD' => array(
-			'before_save' => 'Orm\\Observer_Typing::type_serialize',
-			'after_load'  => 'Orm\\Observer_Typing::type_unserialize',
+			'before' => 'Orm\\Observer_Typing::type_serialize',
+			'after'  => 'Orm\\Observer_Typing::type_unserialize',
 		),
 		'/^json$/uiD' => array(
-			'before_save' => 'Orm\\Observer_Typing::type_json_encode',
-			'after_load'  => 'Orm\\Observer_Typing::type_json_decode',
+			'before' => 'Orm\\Observer_Typing::type_json_encode',
+			'after'  => 'Orm\\Observer_Typing::type_json_decode',
 		),
 	);
 
-	public function before_save(Model $obj)
+	/**
+	 * Get notified of an event
+	 *
+	 * @param  Model   $instance
+	 * @param  string  $event
+	 */
+	public static function orm_notify(Model $instance, $event)
 	{
-		$properties = $obj->properties();
-
-		foreach ($properties as $p => $settings)
+		if ( ! array_key_exists($event, static::$events))
 		{
-			if (empty($settings['type']))
-			{
-				continue;
-			}
-
-			foreach (static::$type_methods as $match => $method)
-			{
-				if (is_array($method))
-				{
-					$method = ! empty($method[__FUNCTION__]) ? $method[__FUNCTION__] : false;
-				}
-
-				if ($method and preg_match($match, $settings['type']) > 0)
-				{
-					$obj->{$p} = call_user_func($method, $obj->{$p}, $settings['type']);
-				}
-			}
+			return;
 		}
-	}
 
-	public function after_load(Model $obj)
-	{
-		$properties = $obj->properties();
+		$event_type = static::$events[$event];
+		$properties = $instance->properties();
 
 		foreach ($properties as $p => $settings)
 		{
@@ -83,12 +82,12 @@ class Observer_Typing extends Observer {
 			{
 				if (is_array($method))
 				{
-					$method = ! empty($method[__FUNCTION__]) ? $method[__FUNCTION__] : false;
+					$method = ! empty($method[$event_type]) ? $method[$event_type] : false;
 				}
 
 				if ($method and preg_match($match, $settings['type']) > 0)
 				{
-					$obj->{$p} = call_user_func($method, $obj->{$p}, $settings['type']);
+					$instance->{$p} = call_user_func($method, $instance->{$p}, $settings['type']);
 				}
 			}
 		}
