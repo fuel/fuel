@@ -17,24 +17,29 @@ namespace Orm;
 class Observer_Typing extends Observer {
 
 	public static $type_methods = array(
-		'/^varchar\\[[0-9]+\\]$/uiD'
-			=> 'Orm\\Observer::type_varchar',
-		'/^int(eger)?$/uiD'
-			=> 'Orm\\Observer::type_integer',
-		'/^(float|double)?$/uiD'
-			=> 'Orm\\Observer::type_integer',
-		'/^text$/'
-			=> false,
-		'/^serialize$/'
-			=> array(
-				'before_save' => 'Orm\\Observer::type_serialize',
-				'after_load'  => 'Orm\\Observer::type_unserialize',
+		'/^varchar/uiD' => array(
+				'before_save' => 'Orm\\Observer_Typing::type_varchar'
 			),
-		'/^json$/'
-			=> array(
-				'before_save' => 'Orm\\Observer::type_json_encode',
-				'after_load'  => 'Orm\\Observer::type_json_decode',
-			),
+		'/^(tiny|small|medium|big)?int(eger)?/uiD'
+			=> 'Orm\\Observer_Typing::type_integer',
+		'/^(float|double|decimal)/uiD'
+			=> 'Orm\\Observer_Typing::type_float',
+		'/^(tiny|medium|long)?text/'
+			=> 'Orm\\Observer_Typing::type_text',
+		'/^set\\(/uiD' => array(
+			'before_save' => 'Orm\\Observer_Typing::type_set'
+		),
+		'/^enum\\(/uiD' => array(
+			'before_save' => 'Orm\\Observer_Typing::type_set'
+		),
+		'/^serialize$/uiD' => array(
+			'before_save' => 'Orm\\Observer_Typing::type_serialize',
+			'after_load'  => 'Orm\\Observer_Typing::type_unserialize',
+		),
+		'/^json$/uiD' => array(
+			'before_save' => 'Orm\\Observer_Typing::type_json_encode',
+			'after_load'  => 'Orm\\Observer_Typing::type_json_decode',
+		),
 	);
 
 	public function before_save(Model $obj)
@@ -91,6 +96,11 @@ class Observer_Typing extends Observer {
 
 	public static function type_varchar($var, $type)
 	{
+		if (is_array($var) or (is_object($var) and ! method_exists($var, '__toString')))
+		{
+			throw new InvalidContentType('Array or object could not be converted to varchar.');
+		}
+
 		$var = strval($var);
 		$length = intval(substr($type, 8, -1));
 		strlen($var) > $length and $var = substr($var, 0, $length);
@@ -98,13 +108,62 @@ class Observer_Typing extends Observer {
 		return $var;
 	}
 
-	public static function type_integer($var)
+	public static function type_text($var, $type)
 	{
+		if (is_array($var) or (is_object($var) and ! method_exists($var, '__toString')))
+		{
+			throw new InvalidContentType('Array or object could not be converted to text.');
+		}
+
+		return strval($var);
+	}
+
+	public static function type_integer($var, $type)
+	{
+		if (is_array($var) or is_object($var))
+		{
+			throw new InvalidContentType('Array or object could not be converted to integer.');
+		}
+
+		if (strtolower(substr($type, 0, strlen('tinyint'))) == 'tinyint')
+		{
+			if ($var < -32768 or $var > 32767)
+			{
+				throw new InvalidContentType('Integer value outside of range.');
+			}
+		}
+		elseif (strtolower(substr($type, 0, strlen('smallint'))) == 'smallint')
+		{
+			if ($var < -8388608 or $var > 8388607)
+			{
+				throw new InvalidContentType('Integer value outside of range.');
+			}
+		}
+		elseif (strtolower(substr($type, 0, strlen('bigint'))) == 'bigint')
+		{
+			if ($var < intval('-9223372036854775808') or $var > intval('9223372036854775807'))
+			{
+				throw new InvalidContentType('Integer value outside of range.');
+			}
+		}
+		else // assume int/integer
+		{
+			if ($var < intval('-2147483648') or $var > intval('2147483647'))
+			{
+				throw new InvalidContentType('Integer value outside of range.');
+			}
+		}
+
 		return intval($var);
 	}
 
 	public static function type_float($var)
 	{
+		if (is_array($var) or is_object($var))
+		{
+			throw new InvalidContentType('Array or object could not be converted to float.');
+		}
+
 		return floatval($var);
 	}
 
@@ -128,5 +187,8 @@ class Observer_Typing extends Observer {
 		return json_decode($var);
 	}
 }
+
+// Invalid content exception, thrown when conversion is not possible
+class InvalidContentType extends Exception {}
 
 // End of file typing.php
