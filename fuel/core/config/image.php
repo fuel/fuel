@@ -36,12 +36,12 @@ return array(
 	/**
 	 * The install location of the imagemagick executables.
 	 */
-	'imagemagick_dir' => 'C:/wamp/imagemagick/',
+	'imagemagick_dir' => '/usr/bin/',
 
 	/**
 	 * Temporary directory to store image files in that are being edited.
 	 */
-	'temp_dir' => 'C:/wamp/tmp/',
+	'temp_dir' => '/tmp/',
 
 	/**
 	 * The string of text to append to the image.
@@ -51,13 +51,20 @@ return array(
 	/**
 	 * Sets if the queue should be cleared after a save(), save_pa(), or output().
 	 */
-	'clear_queue' => false,
+	'clear_queue' => true,
+
+	/**
+	 * Sets if the image should be reloaded after previous modifications
+	 *
+	 * true makes changes persist, false reloads after each save (includes save_pa).
+	 */
+	'persistence' => false,
 
 	/**
 	 * Used to debug the class, defaults to false.
 	 */
 	'debug' => false,
-	
+
 	/**
 	 * These presets allow you to call controlled manipulations.
 	 */
@@ -77,8 +84,7 @@ return array(
 			'actions' => array(
 				array('crop_resize', 200, 200),
 				array('border', 20, "#f00"),
-				array('rounded', 10),
-				array('output', 'png')
+				array('rounded', 10)
 			)
 		)
 	)
