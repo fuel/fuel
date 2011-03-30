@@ -16,23 +16,34 @@ namespace Orm;
 
 class Observer_Validation extends Observer {
 
-	public static function get_fieldset($class)
+	/**
+	 * Set a Model's properties as fields on a Fieldset, which will be created with the Model's
+	 * classname if none is provided.
+	 *
+	 * @param   string
+	 * @param   Fieldset|null
+	 * @return  Fieldset
+	 */
+	public static function set_fields($class, $fieldset = null)
 	{
 		$properties = $class::properties();
 
-		if ($val = \Fieldset::instance($class))
+		if (is_null($fieldset))
 		{
-			return $val;
+			$fieldset = \Fieldset::instance($class);
+			if ( ! $fieldset)
+			{
+				$fieldset = \Fieldset::factory($class);
+			}
 		}
 
-		$val = \Fieldset::factory($class);
 		foreach ($properties as $p => $settings)
 		{
 			if (empty($settings['validation']))
 			{
 				continue;
 			}
-			$field = $val->add($p, ! empty($settings['title']) ? $settings['title'] : $p);
+			$field = $fieldset->add($p, ! empty($settings['title']) ? $settings['title'] : $p);
 			if ( ! emtpy($settings['rules']))
 			{
 				foreach ($settings['rules'] as $rule => $args)
@@ -42,12 +53,18 @@ class Observer_Validation extends Observer {
 			}
 		}
 
-		return $val;
+		return $fieldset;
 	}
 
+	/**
+	 * Execute before saving the Model
+	 *
+	 * @param   Model
+	 * @throws  ValidationFailed
+	 */
 	public function before_save(Model $obj)
 	{
-		$val = static::get_fieldset(get_class($obj))->validation();
+		$val = static::set_fields(get_class($obj))->validation();
 
 		if ( ! $val->run($obj))
 		{
