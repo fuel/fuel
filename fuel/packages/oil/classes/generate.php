@@ -41,7 +41,7 @@ class Generate
 		$singular = strtolower(array_shift($args));
 		$actions = $args;
 
-		$filepath = APPPATH . 'classes/controller/' . $singular .'.php';
+		$filepath = APPPATH . 'classes/controller/' . trim(str_replace(array('_', '-'), DS, $singular), DS) .'.php';
 
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = static::class_name($singular);
@@ -93,7 +93,7 @@ CONTROLLER;
 
 		$plural = \Inflector::pluralize($singular);
 
-		$filepath = APPPATH . 'classes/model/' . str_replace('_', '/', $singular) .'.php';
+		$filepath = APPPATH . 'classes/model/' . trim(str_replace(array('_', '-'), DS, $singular), DS).'.php';
 
 		// Uppercase each part of the class name and remove hyphens
 		$class_name = static::class_name($singular);
@@ -397,12 +397,6 @@ HELP;
 
 	public static function create($filepath, $contents, $type = 'file')
 	{
-		// Final check for stupid characters
-		if (in_array($type, array('controller', 'model')))
-		{
-			$filepath = str_replace(array('_', '-'), '/', $filepath);
-		}
-
 		$directory = dirname($filepath);
 		is_dir($directory) or static::$create_folders[] = $directory;
 
