@@ -17,14 +17,26 @@ Fuel is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a 
 * Jelmer Schreuder - Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
 * Harro Verton - Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
 
-##Requirements
+##Downloading Fuel
 
-The planned requirements for Fuel are as follows:
+Since Fuel uses Submodules and since GitHub Downloads don't support submodules, do not download Fuel using the Downloads link here.
 
-* PHP 5.3 or greater
-* Any web server
+We will be putting a "Download" section on <http://fuelphp.com> soon.
 
-That's it! Nothing else.
+##Cloning Fuel
+
+Fuel uses submodules for things like the **core** folder.  After you clone the repository you will need to init and update the submodules.
+
+Here is the basic usage:
+
+    git clone git://github.com/fuel/fuel.git
+    cd fuel/
+    git submodule init
+    git submodule update
+
+You can also shorten the last two commands to one:
+
+    git submodule update --init
 
 ##Donate
 
