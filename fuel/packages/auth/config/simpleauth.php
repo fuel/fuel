@@ -10,12 +10,15 @@ return array(
 	),
 
 	'roles' => array(
-		'#' => array('website' => 'r'), // default rights
-		'banned' => false,
-		'user' => array('comments' => 'cr'),
-		'moderator' => array('comments' => 'ud'),
-		'admin' => array('website' => 'cud', 'admin' => 'crud'),
-		'super' => true,
+		'#'          => array('website' => array('read')), // default rights
+		'banned'     => false,
+		'user'       => array('comments' => array('create', 'read')),
+		'moderator'  => array('comments' => array('update', 'delete')),
+		'admin'      => array(
+			'website'  => array('create', 'update', 'delete'),
+			'admin'    => array('create', 'read', 'update', 'delete'),
+		),
+		'super'      => true,
 	),
 
     'table_name' => 'simpleusers',
