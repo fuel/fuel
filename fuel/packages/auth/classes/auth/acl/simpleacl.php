@@ -32,9 +32,9 @@ class Auth_Acl_SimpleAcl extends \Auth_Acl_Driver {
 			return false;
 		}
 
-		$area = $condition[0];
-		$rights = $condition[1];
-		$current_roles = $group->get_roles($entity[1]);
+		$area    = $condition[0];
+		$rights  = $condition[1];
+		$current_roles  = $group->get_roles($entity[1]);
 		$current_rights = '';
 		if (is_array($current_roles))
 		{
@@ -42,30 +42,41 @@ class Auth_Acl_SimpleAcl extends \Auth_Acl_Driver {
 			array_key_exists('#', $roles) && array_unshift($current_roles, '#');
 			foreach ($current_roles as $r_role)
 			{
-				if ( ! array_key_exists($r_role, $roles) || ($r_rights = $roles[$r_role]) === false)
+				// continue if the role wasn't found
+				if ( ! array_key_exists($r_role, $roles))
+				{
+					continue;
+				}
+				$r_rights = $roles[$r_role];
+
+				// if one of the roles has a negative wildcard (false) return it
+				if ($r_rights === false)
 				{
 					return false;
 				}
-
-				if (array_key_exists($area, $r_rights))
+				// if one of the roles has a positive wildecard (true) return it
+				elseif ($r_rights === true)
 				{
-					$current_rights = ($r_rights === true || $current_rights === true)
-						? true
-						: $current_rights . $r_rights[$area];
+					return true;
+				}
+				// if there are roles for the current area, merge them with earlier fetched roles
+				elseif (array_key_exists($area, $r_rights))
+				{
+					$current_rights = array_unique(array_merge($current_rights, $r_rights[$area]));
 				}
 			}
 		}
 
-		// start checking rights, terminate false when character not found
-		$rights = array_unique(preg_split('//', $rights, -1, PREG_SPLIT_NO_EMPTY));
+		// start checking rights, terminate false when right not found
 		foreach ($rights as $right)
 		{
-			if (strpos($current_rights, $right) === false)
+			if ( ! in_array($right, $current_rights))
 			{
 				return false;
 			}
 		}
 
+		// all necessary rights were found, return true
 		return true;
 	}
 }
