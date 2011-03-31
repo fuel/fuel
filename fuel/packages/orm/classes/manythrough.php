@@ -65,6 +65,29 @@ class ManyThrough extends Relation {
 
 	public function get(Model $from)
 	{
+		// Create the query on the model_through
+		$rel = call_user_func(array($this->model_from, 'relations'), $this->model_through);
+		$query = call_user_func(array($rel->model_to, 'find'));
+
+		// set the model_from's keys as where conditions for the model_through
+		reset($this->key_through_from);
+		foreach ($this->key_from as $key)
+		{
+			$query->where(current($this->key_through_from), $from->{$key});
+			next($this->key_through_from);
+		}
+
+		// fetch related model_to on the model_through
+		$query->related($this->name);
+		$result = $query->get();
+
+		// relate the model_through instances to the model_from
+		$rels = $from->_relate();
+		$rels[$this->model_through] = $result;
+		$from->_relate($rels);
+
+		// return the array of model_to
+		return $result->{$this->name};
 	}
 
 	public function select_through($table)
