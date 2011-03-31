@@ -32,7 +32,7 @@ abstract class Auth_Acl_Driver extends \Auth_Driver {
 		// default driver id to driver name when not given
 		! array_key_exists('id', $config) && $config['id'] = $config['driver'];
 
-		$class = 'Auth_Acl_'.ucfirst($config['driver']);
+		$class = \Inflector::get_namespace($config['driver']).'Auth_Acl_'.ucfirst(\Inflector::denamespace($config['driver']));
 		$driver = new $class($config);
 		static::$_instances[$driver->get_id()] = $driver;
 

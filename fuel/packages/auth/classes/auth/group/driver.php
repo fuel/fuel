@@ -32,7 +32,7 @@ abstract class Auth_Group_Driver extends \Auth_Driver {
 		// default driver id to driver name when not given
 		! array_key_exists('id', $config) && $config['id'] = $config['driver'];
 
-		$class = 'Auth_Group_'.ucfirst($config['driver']);
+		$class = \Inflector::get_namespace($config['driver']).'Auth_Group_'.ucfirst(\Inflector::denamespace($config['driver']));
 		$driver = new $class($config);
 		static::$_instances[$driver->get_id()] = $driver;
 
