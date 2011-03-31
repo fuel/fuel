@@ -87,7 +87,12 @@ class ManyThrough extends Relation {
 		$from->_relate($rels);
 
 		// return the array of model_to
-		return $result->{$this->name};
+		$return = array();
+		foreach ($result as $r)
+		{
+			$return[$r->{$this->name}->implode_pk($r->{$this->name})] = $r->{$this->name};
+		}
+		return $return;
 	}
 
 	public function select_through($table)
