@@ -29,6 +29,10 @@ Fuel uses submodules for things like the **core** folder.  After you clone the r
 
 Here is the basic usage:
 
+    git clone --recursive git://github.com/fuel/fuel.git
+
+The above command is the same as running:
+
     git clone git://github.com/fuel/fuel.git
     cd fuel/
     git submodule init

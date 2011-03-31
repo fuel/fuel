@@ -979,6 +979,23 @@ class Model implements \ArrayAccess, \Iterator {
 		// many-many relationships should be copied, ie no change
 	}
 
+
+	/**
+	 * Method for use with Fieldset::add_model()
+	 *
+	 * @param   Fieldset     Fieldset instance to add fields to
+	 * @param   array|Model  Model instance or array for use to repopulate
+	 */
+	public static function set_form_fields($form, $instance = null)
+	{
+		Observer_Validation::set_fields(get_called_class(), $form);
+		$instance and $form->repopulate($instance);
+	}
+
+	/**
+	 * Implementation of ArrayAccess
+	 */
+
 	public function offsetSet($offset, $value)
 	{
 		if (is_null($offset))
@@ -1005,6 +1022,10 @@ class Model implements \ArrayAccess, \Iterator {
 	{
 		return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
 	}
+
+	/**
+	 * Implementation of Iterable
+	 */
 
 	public function rewind()
 	{
