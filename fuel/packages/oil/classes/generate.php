@@ -473,7 +473,8 @@ HELP;
 
 	private static function _find_migration_number()
 	{
-		list($last) = explode('_', basename(end(glob(APPPATH .'migrations/*_*.php'))));
+		$glob = glob(APPPATH .'migrations/*_*.php');
+		list($last) = explode('_', basename(end($glob)));
 
 		return str_pad($last + 1, 3, '0', STR_PAD_LEFT);
 	}
