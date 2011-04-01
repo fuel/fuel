@@ -154,34 +154,46 @@ class ManyThrough extends Relation {
 		return $models;
 	}
 
-	public function save($model_from, $model_to, $original_model_to, $parent_saved, $cascade)
+	public function save($model_from, $models_to, $original_model_ids, $parent_saved, $cascade)
 	{
 		if ( ! $parent_saved)
 		{
 			return;
 		}
 
+		// TODO:
+		// NOT YET IMPLEMENTED, MANY-THROUGH RELATIONS ARE ONLY SAVEABLE THROUGH
+		// THE OBJECT IN BETWEEN
+
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade and ! empty($model_to))
+		if ($cascade and ! empty($models_to))
 		{
-			foreach ($model_to as $m)
+			foreach ($models_to as $m)
 			{
 				$m->save();
 			}
 		}
 	}
 
-	public function delete($model_from, $model_to, $parent_deleted, $cascade)
+	public function delete($model_from, $models_to, $parent_deleted, $cascade)
 	{
 		if ( ! $parent_deleted)
 		{
 			return;
 		}
 
+		// break all existing relations
+		$rels = $model_from->_relate();
+		$rels[$this->name] = array();
+		$model_from->_relate($rels);
+
+		// TODO:
+		// May need to delete all through models as well, but could also be considered desirable cascading behavior
+
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
-		if ($cascade and ! empty($model_to))
+		if ($cascade and ! empty($models_to))
 		{
-			foreach ($model_to as $m)
+			foreach ($models_to as $m)
 			{
 				$m->delete();
 			}

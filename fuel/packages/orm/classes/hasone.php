@@ -175,8 +175,9 @@ class HasOne extends Relation {
 		}
 
 		// break current relations
-		$model_from->_relate(null);
-		$model_to->_relate(null);
+		$rels = $model_from->_relate();
+		$rels[$this->name] = null;
+		$model_from->_relate($rels);
 		foreach ($this->key_to as $fk)
 		{
 			$model_to->{$fk} = null;

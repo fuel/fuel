@@ -183,11 +183,23 @@ class HasMany extends Relation {
 		}
 	}
 
-	public function delete($model_from, $model_to, $parent_deleted, $cascade)
+	public function delete($model_from, $models_to, $parent_deleted, $cascade)
 	{
 		if ( ! $parent_deleted)
 		{
 			return;
+		}
+
+		// break current relations
+		$rels = $model_from->_relate();
+		$rels[$this->name] = array();
+		$model_from->_relate($rels);
+		foreach ($models_to as $model_to)
+		{
+			foreach ($this->key_to as $fk)
+			{
+				$model_to->{$fk} = null;
+			}
 		}
 
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
