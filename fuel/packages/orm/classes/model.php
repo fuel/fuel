@@ -533,6 +533,14 @@ class Model implements \ArrayAccess, \Iterator {
 			$this->_original[$key] = $val;
 		}
 
+		$this->_update_original_relations();
+	}
+
+	/**
+	 * Update the original relations for this object
+	 */
+	public function _update_original_relations()
+	{
 		$this->_original_relations = array();
 		foreach ($this->_data_relations as $rel => $data)
 		{
@@ -596,6 +604,7 @@ class Model implements \ArrayAccess, \Iterator {
 			if ( ! array_key_exists($property, $this->_data_relations))
 			{
 				$this->_data_relations[$property] = $rel->get($this);
+				$this->_update_original_relations();
 			}
 			return $this->_data_relations[$property];
 		}
