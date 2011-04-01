@@ -174,6 +174,14 @@ class HasOne extends Relation {
 			return;
 		}
 
+		// break current relations
+		$model_from->_relate(null);
+		$model_to->_relate(null);
+		foreach ($this->key_to as $fk)
+		{
+			$model_to->{$fk} = null;
+		}
+
 		$cascade = is_null($cascade) ? $this->cascade_save : (bool) $cascade;
 		if ($cascade and ! empty($model_to))
 		{

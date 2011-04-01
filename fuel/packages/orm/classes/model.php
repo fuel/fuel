@@ -565,14 +565,14 @@ class Model implements \ArrayAccess, \Iterator {
 	 * @param   array|null  $rels
 	 * @return  void|array
 	 */
-	public function _relate($rels = null)
+	public function _relate($rels = false)
 	{
 		if ($this->_frozen)
 		{
 			throw new FrozenObject('No changes allowed.');
 		}
 
-		if (is_null($rels))
+		if ($rels = false)
 		{
 			return $this->_data_relations;
 		}
