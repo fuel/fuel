@@ -62,11 +62,6 @@ class Query {
 	protected $where = array();
 
 	/**
-	 * @var  array  or where conditions
-	 */
-	protected $or_where = array();
-
-	/**
 	 * @var  array  order by clauses
 	 */
 	protected $order_by = array();
@@ -193,7 +188,7 @@ class Query {
 	 * @param  string
 	 * @todo   adding the table alias needs to work better, this will cause problems with WHERE IN
 	 */
-	public function _where($condition, $type = 'where')
+	public function _where($condition, $type = 'and_where')
 	{
 		if (empty($condition))
 		{
@@ -222,11 +217,11 @@ class Query {
 		strpos($condition[0], '.') === false and $condition[0] = $this->alias.'.'.$condition[0];
 		if (count($condition) == 2)
 		{
-			$this->{$type}[] = array($condition[0], '=', $condition[1]);
+			$this->where[] = array($type, array($condition[0], '=', $condition[1]));
 		}
 		elseif (count($condition) == 3)
 		{
-			$this->{$type}[] = $condition;
+			$this->where[] = array($type, $condition);
 		}
 		else
 		{
@@ -234,6 +229,54 @@ class Query {
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Open a nested and_where condition
+	 */
+	public function and_where_open()
+	{
+		$this->where[] = array('and_where_open', array());
+	}
+
+	/**
+	 * Close a nested and_where condition
+	 */
+	public function and_where_close()
+	{
+		$this->where[] = array('and_where_close', array());
+	}
+
+	/**
+	 * Alias to and_where_open()
+	 */
+	public function where_open()
+	{
+		$this->where[] = array('and_where_open', array());
+	}
+
+	/**
+	 * Alias to and_where_close()
+	 */
+	public function where_close()
+	{
+		$this->where[] = array('and_where_close', array());
+	}
+
+	/**
+	 * Open a nested or_where condition
+	 */
+	public function or_where_open()
+	{
+		$this->where[] = array('or_where_open', array());
+	}
+
+	/**
+	 * Close a nested or_where condition
+	 */
+	public function or_where_close()
+	{
+		$this->where[] = array('or_where_close', array());
 	}
 
 	/**
@@ -370,25 +413,14 @@ class Query {
 
 		if ( ! empty($this->where))
 		{
-			foreach ($this->where as $key => $conditional)
+			foreach ($this->where as $key => $where)
 			{
+				list($method, $conditional) = $where;
 				if (strpos($conditional[0], $this->alias.'.') === 0)
 				{
 					$type != 'select' and $conditional[0] = substr($conditional[0], strlen($this->alias.'.'));
-					$query->where($conditional[0], $conditional[1], $conditional[2]);
+					call_user_func_array(array($query, $method), $conditional);
 					unset($this->where[$key]);
-				}
-			}
-		}
-
-		if ( ! empty($this->or_where))
-		{
-			foreach ($this->or_where as $key => $conditional)
-			{
-				if (strpos($conditional[0], $this->alias.'.') === 0)
-				{
-					$query->or_where($conditional[0], $conditional[1], $conditional[2]);
-					unset($this->or_where[$key]);
 				}
 			}
 		}
@@ -463,18 +495,10 @@ class Query {
 		// put omitted where conditions back
 		if ( ! empty($this->where))
 		{
-			foreach ($this->where as $key => $conditional)
+			foreach ($this->where as $where)
 			{
-				$query->where($conditional[0], $conditional[1], $conditional[2]);
-			}
-		}
-
-		// put omitted or_where conditions back
-		if ( ! empty($this->or_where))
-		{
-			foreach ($this->or_where as $conditional)
-			{
-				$query->or_where($conditional[0], $conditional[1], $conditional[2]);
+				list($method, $conditional) = $where;
+				call_user_func_array(array($query, $method), $conditional);
 			}
 		}
 
