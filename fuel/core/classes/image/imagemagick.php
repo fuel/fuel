@@ -19,7 +19,7 @@ namespace Fuel\Core;
 class Image_Imagemagick extends Image_Driver {
 
 	private $image_temp = null;
-	protected $accepted_extension = array('png', 'gif', 'jpg', 'jpeg');
+	protected $accepted_extension = array('png', 'gif', 'jpg', 'jpeg', 'psd');
 	private $size_cache = null;
 
 	public function load($filename)
@@ -49,7 +49,7 @@ class Image_Imagemagick extends Image_Driver {
 		{
 			throw new \Fuel_Exception("Could not write in the temp directory.");
 		}
-		$this->exec('convert', '"'.$image_fullpath.'" "'.$this->image_temp.'"');
+		$this->exec('convert', '"'.$image_fullpath.'"[0] "'.$this->image_temp.'"');
 		return $this;
 	}
 
@@ -158,7 +158,7 @@ class Image_Imagemagick extends Image_Driver {
 				$filename = $this->image_temp;
 			}
 
-			$output = $this->exec('identify', '-format "%[fx:w] %[fx:h]" "'.$filename.'"');
+			$output = $this->exec('identify', '-format "%[fx:w] %[fx:h]" "'.$filename.'"[0]');
 			list($width, $height) = explode(" ", $output[0]);
 			$return = (object) array(
 				'width' => $width,
@@ -268,7 +268,8 @@ class Image_Imagemagick extends Image_Driver {
 			}
 			else
 			{
-				throw new \Fuel_Exception("imagemagick failed to edit the image. Returned with $code.");
+				$message = implode('\n', $output);
+				throw new \Fuel_Exception("imagemagick failed to edit the image. Returned with $code.<br /><br />Command:\n <code>$command</code>");
 			}
 		}
 		return $output;

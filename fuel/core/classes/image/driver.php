@@ -247,7 +247,7 @@ abstract class Image_Driver {
 			// See which is the biggest ratio
 			$width_ratio  = $width / $sizes->width;
 			$height_ratio = $height / $sizes->height;
-			if ($width_ratio < $height_ratio)
+			if ($width_ratio > $height_ratio)
 			{
 				$width = floor($sizes->width * $height_ratio);
 			}
@@ -538,6 +538,11 @@ abstract class Image_Driver {
 			throw new \Fuel_Exception("Could not find directory \"$directory\"");
 		}
 
+		if ( ! $this->check_extension($filename, true))
+		{
+			$filename .= "." . $this->image_extension;
+		}
+
 		// Touch the file
 		if ( ! touch($filename))
 		{
@@ -548,11 +553,6 @@ abstract class Image_Driver {
 		if ($permissions != null and ! chmod($filename, $permissions))
 		{
 			throw new \Fuel_Exception("Could not set permissions on the file.");
-		}
-
-		if ( ! $this->check_extension($filename, true))
-		{
-			$filename .= "." . $this->image_extension;
 		}
 
 		$this->debug("", "Saving image as <code>$filename</code>");
@@ -633,7 +633,7 @@ abstract class Image_Driver {
 		$return = false;
 		foreach ($this->accepted_extension AS $ext)
 		{
-			if (substr($filename, strlen($ext) * -1) == $ext)
+			if (strtolower(substr($filename, strlen($ext) * -1)) == strtolower($ext))
 			{
 				$writevar and $this->image_extension = $ext;
 				$return = $ext;
