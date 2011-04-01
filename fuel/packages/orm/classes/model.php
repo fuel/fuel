@@ -572,13 +572,17 @@ class Model implements \ArrayAccess, \Iterator {
 			throw new FrozenObject('No changes allowed.');
 		}
 
-		if ($rels = false)
+		if ($rels === false)
 		{
 			return $this->_data_relations;
 		}
-		else
+		elseif (is_array($rels))
 		{
 			$this->_data_relations = $rels;
+		}
+		else
+		{
+			throw new Exception('Invalid input for _relate(), should be an array.');
 		}
 	}
 

@@ -237,6 +237,8 @@ class Query {
 	public function and_where_open()
 	{
 		$this->where[] = array('and_where_open', array());
+
+		return $this;
 	}
 
 	/**
@@ -245,6 +247,8 @@ class Query {
 	public function and_where_close()
 	{
 		$this->where[] = array('and_where_close', array());
+
+		return $this;
 	}
 
 	/**
@@ -253,6 +257,8 @@ class Query {
 	public function where_open()
 	{
 		$this->where[] = array('and_where_open', array());
+
+		return $this;
 	}
 
 	/**
@@ -261,6 +267,8 @@ class Query {
 	public function where_close()
 	{
 		$this->where[] = array('and_where_close', array());
+
+		return $this;
 	}
 
 	/**
@@ -269,6 +277,8 @@ class Query {
 	public function or_where_open()
 	{
 		$this->where[] = array('or_where_open', array());
+
+		return $this;
 	}
 
 	/**
@@ -277,6 +287,8 @@ class Query {
 	public function or_where_close()
 	{
 		$this->where[] = array('or_where_close', array());
+
+		return $this;
 	}
 
 	/**
@@ -347,6 +359,8 @@ class Query {
 	public function _join(array $join)
 	{
 		$this->joins[] = $join;
+
+		return $this;
 	}
 
 	/**
@@ -416,7 +430,7 @@ class Query {
 			foreach ($this->where as $key => $where)
 			{
 				list($method, $conditional) = $where;
-				if (strpos($conditional[0], $this->alias.'.') === 0)
+				if (empty($conditional) or strpos($conditional[0], $this->alias.'.') === 0)
 				{
 					$type != 'select' and $conditional[0] = substr($conditional[0], strlen($this->alias.'.'));
 					call_user_func_array(array($query, $method), $conditional);
