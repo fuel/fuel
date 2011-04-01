@@ -25,9 +25,9 @@ Autoloader::add_classes(array(
 	'Orm\\Relation'     => __DIR__.'/classes/relation.php',
 
 	// Observers
-	'Orm\\Observer_CreatedOn'   => __DIR__.'/classes/observer/createdon.php',
+	'Orm\\Observer_CreatedAt'   => __DIR__.'/classes/observer/createdat.php',
 	'Orm\\Observer_Typing'      => __DIR__.'/classes/observer/typing.php',
-	'Orm\\Observer_UpdatedOn'   => __DIR__.'/classes/observer/updatedon.php',
+	'Orm\\Observer_UpdatedAt'   => __DIR__.'/classes/observer/updatedat.php',
 	'Orm\\Observer_Validation'  => __DIR__.'/classes/observer/validation.php',
 
 	// Exceptions

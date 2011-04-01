@@ -14,11 +14,14 @@
 
 namespace Orm;
 
-class Observer_UpdatedOn extends Observer {
+class Observer_UpdatedAt extends Observer {
+
+	public static $mysql_timestamp = false;
+	public static $property = 'updated_at';
 
 	public function before_save(Model $obj)
 	{
-		$obj->updated_on = \Date::time()->get_timestamp();
+		$obj->{static::$property} = static::$mysql_timestamp ? \Date::time()->format('mysql') : \Date::time()->get_timestamp();
 	}
 }
 

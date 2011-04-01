@@ -14,11 +14,14 @@
 
 namespace Orm;
 
-class Observer_CreatedOn extends Observer {
+class Observer_CreatedAt extends Observer {
+
+	public static $mysql_timestamp = false;
+	public static $property = 'created_at';
 
 	public function before_insert(Model $obj)
 	{
-		$obj->created_on = \Date::time()->get_timestamp();
+		$obj->{static::$property} = static::$mysql_timestamp ? \Date::time()->format('mysql') : \Date::time()->get_timestamp();
 	}
 }
 
