@@ -665,13 +665,13 @@ class Model implements \ArrayAccess, \Iterator {
 		$this->freeze();
 		foreach($this->relations() as $rel_name => $rel)
 		{
-			$rel->save(
-				$this,
-				array_key_exists($rel_name, $this->_data_relations) ? $this->_data_relations[$rel_name] : null,
-				array_key_exists($rel_name, $this->_original_relations) ? $this->_original_relations[$rel_name] : null,
-				false,
-				is_array($cascade) ? in_array($rel_name, $cascade) : $cascade
-			);
+			if (array_key_exists($rel_name, $this->_data_relations))
+			{
+				$rel->save($this, $this->{$rel_name},
+					array_key_exists($rel_name, $this->_original_relations) ? $this->_original_relations[$rel_name] : null,
+					false, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade
+				);
+			}
 		}
 		$this->unfreeze();
 
@@ -681,13 +681,13 @@ class Model implements \ArrayAccess, \Iterator {
 		$this->freeze();
 		foreach($this->relations() as $rel_name => $rel)
 		{
-			$rel->save(
-				$this,
-				array_key_exists($rel_name, $this->_data_relations) ? $this->_data_relations[$rel_name] : null,
-				array_key_exists($rel_name, $this->_original_relations) ? $this->_original_relations[$rel_name] : null,
-				true,
-				is_array($cascade) ? in_array($rel_name, $cascade) : $cascade
-			);
+			if (array_key_exists($rel_name, $this->_data_relations))
+			{
+				$rel->save($this, $this->{$rel_name},
+					array_key_exists($rel_name, $this->_original_relations) ? $this->_original_relations[$rel_name] : null,
+					true, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade
+				);
+			}
 		}
 		$this->unfreeze();
 
@@ -814,12 +814,7 @@ class Model implements \ArrayAccess, \Iterator {
 		$this->freeze();
 		foreach($this->relations() as $rel_name => $rel)
 		{
-			$rel->delete(
-				$this,
-				array_key_exists($rel_name, $this->_data_relations) ? $this->_data_relations[$rel_name] : null,
-				false,
-				is_array($cascade) ? in_array($rel_name, $cascade) : $cascade
-			);
+			$rel->delete($this, $this->{$rel_name}, false, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
 		}
 		$this->unfreeze();
 
@@ -840,12 +835,7 @@ class Model implements \ArrayAccess, \Iterator {
 		$this->freeze();
 		foreach($this->relations() as $rel_name => $rel)
 		{
-			$rel->delete(
-				$this,
-				array_key_exists($rel_name, $this->_data_relations) ? $this->_data_relations[$rel_name] : null,
-				true,
-				is_array($cascade) ? in_array($rel_name, $cascade) : $cascade
-			);
+			$rel->delete($this, $this->{$rel_name}, true, is_array($cascade) ? in_array($rel_name, $cascade) : $cascade);
 		}
 		$this->unfreeze();
 
