@@ -70,6 +70,34 @@ class ManyMany extends Relation {
 
 	public function get(Model $from)
 	{
+		// Create the query on the model_through
+		$query = call_user_func(array($this->model_to, 'find'));
+
+		// set the model_from's keys as where conditions for the model_through
+		$join = array(
+				'table'      => array($this->table_through, 't0_through'),
+				'join_type'  => null,
+				'join_on'    => array(),
+				'columns'    => $this->select_through('t0_through')
+		);
+
+		reset($this->key_from);
+		foreach ($this->key_through_from as $key)
+		{
+			$query->where('t0_through.'.$key, $from->{current($this->key_from)});
+			next($this->key_from);
+		}
+
+		reset($this->key_to);
+		foreach ($this->key_through_to as $key)
+		{
+			$join['join_on'][] = array('t0_through.'.$key, '=', 't0.'.current($this->key_to));
+			next($this->key_to);
+		}
+
+		$query->_join($join);
+
+		return $query->get();
 	}
 
 	public function select_through($table)

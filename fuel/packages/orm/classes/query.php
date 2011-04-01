@@ -37,6 +37,11 @@ class Query {
 	protected $relations = array();
 
 	/**
+	 * @var  array  tables to join without returning any info
+	 */
+	protected $joins = array();
+
+	/**
 	 * @var  array  fields to select
 	 */
 	protected $select = array();
@@ -292,6 +297,16 @@ class Query {
 	}
 
 	/**
+	 * Add a table to join, consider this a protect method only for Orm package usage
+	 *
+	 * @param  array
+	 */
+	public function _join(array $join)
+	{
+		$this->joins[] = $join;
+	}
+
+	/**
 	 * Set any properties for insert or update
 	 *
 	 * @param  string|array
@@ -419,6 +434,14 @@ class Query {
 		}
 
 		// join tables
+		foreach ($this->joins as $j)
+		{
+			$join_query = $query->join($j['table'], $j['join_type']);
+			foreach ($j['join_on'] as $on)
+			{
+				$join_query->on($on[0], $on[1], $on[2]);
+			}
+		}
 		foreach ($models as $m)
 		{
 			$join_query = $query->join($m['table'], $m['join_type']);
