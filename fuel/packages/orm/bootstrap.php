@@ -25,6 +25,7 @@ Autoloader::add_classes(array(
 	'Orm\\Relation'     => __DIR__.'/classes/relation.php',
 
 	// Observers
+	'Orm\\Observer'             => __DIR__.'/classes/observer.php',
 	'Orm\\Observer_CreatedAt'   => __DIR__.'/classes/observer/createdat.php',
 	'Orm\\Observer_Typing'      => __DIR__.'/classes/observer/typing.php',
 	'Orm\\Observer_UpdatedAt'   => __DIR__.'/classes/observer/updatedat.php',

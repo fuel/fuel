@@ -44,11 +44,19 @@ class Observer_Validation extends Observer {
 				continue;
 			}
 			$field = $fieldset->add($p, ! empty($settings['label']) ? $settings['label'] : $p);
-			if ( ! empty($settings['rules']))
+			if ( ! empty($settings['validation']))
 			{
-				foreach ($settings['rules'] as $rule => $args)
+				foreach ($settings['validation'] as $rule => $args)
 				{
-					array_unshift($args, $rule);
+					if (is_int($rule) and is_string($args))
+					{
+						$args = array($args);
+					}
+					else
+					{
+						array_unshift($args, $rule);
+					}
+
 					call_user_func_array(array($field, 'add_rule'), $args);
 				}
 			}
@@ -67,9 +75,22 @@ class Observer_Validation extends Observer {
 	{
 		$val = static::set_fields(get_class($obj))->validation();
 
-		if ($val->run($obj) === false)
+		$input = array();
+		foreach ($obj as $k => $v)
+		{
+			! in_array($k, $obj->primary_key()) and $input[$k] = $v;
+		}
+
+		if ($val->run($input) === false)
 		{
 			throw new ValidationFailed();
+		}
+		else
+		{
+			foreach ($input as $k => $v)
+			{
+				$obj->{$k} = $val->validated($k);
+			}
 		}
 	}
 }
