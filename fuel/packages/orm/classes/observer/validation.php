@@ -43,11 +43,12 @@ class Observer_Validation extends Observer {
 			{
 				continue;
 			}
-			$field = $fieldset->add($p, ! empty($settings['title']) ? $settings['title'] : $p);
-			if ( ! emtpy($settings['rules']))
+			$field = $fieldset->add($p, ! empty($settings['label']) ? $settings['label'] : $p);
+			if ( ! empty($settings['rules']))
 			{
 				foreach ($settings['rules'] as $rule => $args)
 				{
+					array_unshift($args, $rule);
 					call_user_func_array(array($field, 'add_rule'), $args);
 				}
 			}
@@ -66,7 +67,7 @@ class Observer_Validation extends Observer {
 	{
 		$val = static::set_fields(get_class($obj))->validation();
 
-		if ( ! $val->run($obj))
+		if ($val->run($obj) === false)
 		{
 			throw new ValidationFailed();
 		}

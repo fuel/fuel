@@ -73,7 +73,7 @@ class Observer_Typing {
 
 		foreach ($properties as $p => $settings)
 		{
-			if (empty($settings['type']))
+			if (empty($settings['type']) || in_array($p, $instance->primary_key()))
 			{
 				continue;
 			}

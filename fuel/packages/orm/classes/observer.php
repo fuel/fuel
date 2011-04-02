@@ -16,7 +16,7 @@ namespace Orm;
 
 abstract class Observer {
 
-	protected $_instance = array();
+	protected static $_instance = array();
 
 	public static function orm_notify($instance, $event)
 	{
