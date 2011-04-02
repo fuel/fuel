@@ -656,6 +656,37 @@ class Query {
 	}
 
 	/**
+	 * Get the Query as it's been build up to this point and return it as an object
+	 *
+	 * @return Database_Query
+	 */
+	public function get_query()
+	{
+		// Get the columns
+		$columns = $this->select();
+
+		// Start building the query
+		$select = $columns;
+		if ($this->use_subquery())
+		{
+			$select = array();
+			foreach ($columns as $c)
+			{
+				$select[] = $c[0];
+			}
+		}
+		$query = call_user_func_array('DB::select', $select);
+
+		// Set from table
+		$query->from(array(call_user_func($this->model.'::table'), $this->alias));
+
+		// Build the query further
+		$tmp     = $this->build_query($query, $columns);
+
+		return $tmp['query'];
+	}
+
+	/**
 	 * Build the query and return single object hydrated
 	 *
 	 * @return  Model
