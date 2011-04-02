@@ -449,7 +449,7 @@ class Query {
 		$models = array();
 		foreach ($this->relations as $name => $rel)
 		{
-			$models = array_merge($models, $rel->join($this->alias, $name, ++$i));
+			$models = array_merge($models, $rel->join($this->alias, $name, $i++));
 		}
 
 		if ($this->use_subquery())
