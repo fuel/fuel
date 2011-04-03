@@ -10,3 +10,6 @@
 [submodule "fuel/packages/oil"]
 	path = fuel/packages/oil
 	url = git://github.com/fuel/oil.git
+[submodule "docs"]
+	path = docs
+	url = git://github.com/fuel/docs.git
