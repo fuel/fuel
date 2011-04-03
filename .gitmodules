@@ -7,3 +7,6 @@
 [submodule "fuel/packages/auth"]
 	path = fuel/packages/auth
 	url = git://github.com/fuel/auth.git
+[submodule "fuel/packages/oil"]
+	path = fuel/packages/oil
+	url = git://github.com/fuel/oil.git
