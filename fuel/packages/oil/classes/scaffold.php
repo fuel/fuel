@@ -59,7 +59,7 @@ class Scaffold
 		$data['plural'] = $plural = \Inflector::pluralize($singular);
 		$data['fields'] = $fields;
 
-		$filepath = APPPATH.'classes/controller/'.$plural.'.php';
+		$filepath = APPPATH.'classes/controller/'.trim(str_replace(array('_', '-'), DS, $plural), DS).'.php';
 		$controller = \View::factory($subfolder.'/scaffold/controller', $data);
 
 		$controller->actions = array(
