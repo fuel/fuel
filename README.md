@@ -4,7 +4,7 @@
 * [Documentation](http://fuelphp.com/docs) and in its own [git repo](https://github.com/fuel/docs)
 * [Bugtracker & feature requests](http://dev.fuelphp.com)
 * [Forums](http://fuelphp.com/forums) for comments, discussion and community support
-* Version: 1.0.0-dev (approaching RC1)
+* Version: 1.0.0-RC1 (approaching RC2)
 
 ## Description
 
