@@ -29,13 +29,13 @@ Fuel uses submodules for things like the **core** folder.  After you clone the r
 
 Here is the basic usage:
 
-``` bash
+```
 git clone --recursive git://github.com/fuel/fuel.git
 ```
 
 The above command is the same as running:
 
-``` bash
+```
 git clone git://github.com/fuel/fuel.git
 cd fuel/
 git submodule init
@@ -44,7 +44,7 @@ git submodule update
 
 You can also shorten the last two commands to one:
 
-``` bash
+```
 git submodule update --init
 ```
 
