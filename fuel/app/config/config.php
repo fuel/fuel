@@ -13,6 +13,19 @@
 return array(
 
 	/**
+	 * base_url - The base URL of the application.
+	 * MUST contain a trailing slash (/)
+	 *
+	 * You can set this to a full or relative URL:
+	 *
+	 *     'base_url' => '/foo',
+	 *     'base_url' => 'http://foo.com/'
+	 *
+	 * Set this to null to have it automatically detected.
+	 */
+	'base_url'		=> null,
+
+	/**
 	 * index_file - The name of the main bootstrap file.
 	 *
 	 * Set this to false or remove if you using mod_rewrite.
