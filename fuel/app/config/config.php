@@ -37,10 +37,10 @@ return array(
 	 *
 	 * Fuel::DEVELOPMENT
 	 * Fuel::TEST
-	 * Fuel::QA
+	 * Fuel::STAGE
 	 * Fuel::PRODUCTION
 	 */
-	'environment'	=> Fuel::DEVELOPMENT,
+	'environment'	=> (isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : Fuel::DEVELOPMENT),
 
 	'profiling'		=> false,
 
