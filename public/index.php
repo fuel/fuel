@@ -40,12 +40,18 @@ require_once APPPATH.'bootstrap.php';
 
 // Generate the request, execute it and send the output.
 $response = Request::factory()->execute()->response();
+
+// This will add the execution time and memory usage to the output.
+// Comment this out if you don't use it.
+$bm = Profiler::app_total();
+$response->body(str_replace(array('{exec_time}', '{mem_usage}'), array(round($bm[0], 4), round($bm[1] / pow(1024, 2), 3)), $response->body()));
+
 $response->send(true);
 
 // Fire off the shutdown event
 Event::shutdown();
 
-// Do some final cleanup
-Fuel::finish();
+// Make sure everything is flushed to the browser
+ob_end_flush();
 
 /* End of file index.php */
