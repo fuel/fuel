@@ -13,6 +13,8 @@
 return array(
 	'active' => Config::get('environment'),
 
+	'default_charset' => null,
+
 	Fuel::DEVELOPMENT => array(
 		'type'			=> 'mysql',
 		'connection'	=> array(
