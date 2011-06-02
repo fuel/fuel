@@ -63,6 +63,8 @@ return array(
 
 	'locale'		=> 'en_US',
 
+	'encoding'		=> 'UTF-8',
+	
 	/**
 	 * DateTime settings
 	 *
