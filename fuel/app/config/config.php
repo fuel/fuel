@@ -72,6 +72,8 @@ return array(
 	 * default_timezone		optional, if you want to change the server's default timezone
 	 */
 	'server_gmt_offset'	=> 0,
+	
+	'default_timezone'	=> 'UTC',
 
 	/**
 	 * Logging Threshold.  Can be set to any of the following:
