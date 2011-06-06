@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0-RC2.1
+
+### Core
+
+* Fixed a security issue where the URI was not being properly sanitized.
+
 ## v1.0-RC2
 
 ### Core
