@@ -45,7 +45,7 @@
 			<li><a href="http://fuelphp.com/docs" target="_blank">Documentation</a></li>
 			<li><a href="http://fuelphp.com/" target="_blank">Official Website</a></li>
 			<li><a href="http://github.com/fuel/fuel" target="_blank">GitHub Respository</a></li>
-			<li><a href="http://dev.fuelphp.com" target="_blank">Issue Tracker</a></li>
+			<li><a href="http://fuelphp.com/contribute/issue-tracker" target="_blank">Issue Tracker</a></li>
 		</ul>
 
 		<p class="footer">

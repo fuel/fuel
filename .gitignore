@@ -6,6 +6,7 @@ desktop.ini
 .buildpath
 .project
 .settings
+.tmpoj
 fuel/app/logs/*/*/*
 fuel/app/cache/*/*
 nbproject/

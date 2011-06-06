@@ -1,7 +1,5 @@
 <?php
 /**
- * Fuel
- *
  * Fuel is a fast, lightweight, community driven PHP5 framework.
  *
  * @package    Fuel
@@ -15,6 +13,19 @@
 return array(
 
 	/**
+	 * base_url - The base URL of the application.
+	 * MUST contain a trailing slash (/)
+	 *
+	 * You can set this to a full or relative URL:
+	 *
+	 *     'base_url' => '/foo',
+	 *     'base_url' => 'http://foo.com/'
+	 *
+	 * Set this to null to have it automatically detected.
+	 */
+	'base_url'		=> null,
+
+	/**
 	 * index_file - The name of the main bootstrap file.
 	 *
 	 * Set this to false or remove if you using mod_rewrite.
@@ -26,10 +37,10 @@ return array(
 	 *
 	 * Fuel::DEVELOPMENT
 	 * Fuel::TEST
-	 * Fuel::QA
+	 * Fuel::STAGE
 	 * Fuel::PRODUCTION
 	 */
-	'environment'	=> Fuel::DEVELOPMENT,
+	'environment'	=> (isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : Fuel::DEVELOPMENT),
 
 	'profiling'		=> false,
 
@@ -52,6 +63,8 @@ return array(
 
 	'locale'		=> 'en_US',
 
+	'encoding'		=> 'UTF-8',
+	
 	/**
 	 * DateTime settings
 	 *
@@ -59,6 +72,8 @@ return array(
 	 * default_timezone		optional, if you want to change the server's default timezone
 	 */
 	'server_gmt_offset'	=> 0,
+	
+	'default_timezone'	=> 'UTC',
 
 	/**
 	 * Logging Threshold.  Can be set to any of the following:
@@ -99,7 +114,38 @@ return array(
 		 * With output encoding switched on all objects passed will be converted to strings or
 		 * throw exceptions unless they are instances of the classes in this array.
 		 */
-		'whitelisted_classes' => array('Fuel\\Core\\View', 'Fuel\\Core\\ViewModel', 'Closure')
+		'whitelisted_classes' => array('stdClass', 'Fuel\\Core\\View', 'Fuel\\Core\\ViewModel', 'Closure')
+	),
+
+	/**
+	 * Cookie settings
+	 */
+	'cookie' => array(
+
+		/**
+		 * Number of seconds before the cookie expires
+		 */
+		'expiration'            => 0,
+
+		/**
+		 * Restrict the path that the cookie is available to
+		 */
+		'path'                  => '/',
+
+		/**
+		 * Restrict the domain that the cookie is available to
+		 */
+		'domain'                => null,
+
+		/**
+		 * Only transmit cookies over secure connections
+		 */
+		'secure'                => false,
+
+		/**
+		 * Only transmit cookies over HTTP, disabling Javascript access
+		 */
+		'http_only'             => false,
 	),
 
 	/**

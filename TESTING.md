@@ -1,6 +1,6 @@
 # Testing Fuel
 
-Fuel uses [PHPUnit](https://github.com/sebastianbergmann/phpunit/) for it's Unit Testing needs.  It must be installed for the tests to run.
+Fuel uses [PHPUnit](https://github.com/sebastianbergmann/phpunit/) for it's Unit Testing needs. It must be installed for the tests to run.
 
 **NOTE: No code will be accepted without tests written.**
 
@@ -8,11 +8,17 @@ Fuel uses [PHPUnit](https://github.com/sebastianbergmann/phpunit/) for it's Unit
 
 Running the unit tests is as simple as navigating to the root install folder on the command line and running the following:
 
-    $ phpunit
+    $ php oil test
 
-That's it!  You can also tell it specific groups (which we will get into in minute) to run.  For example to run only the core tests:
+That's it! You can also tell it specific groups (which we will get into in minute) to run. For example to run only the core tests:
 
-    $ phpunit --group Core
+    $ php oil test --group=Core
+
+As you can see we've wrapped the phpunit command with our own Oil utility which will in time become more and more useful. If you wish to get right at the phpunit tests manually you can point it to our .xml configuration file:
+
+	$ phpunit -c fuel/core/phpunit.xml --group Core
+	
+This may break or change in future versions so it's suggested you stick with using Oil for your testing.
 
 ## Writing Tests
 

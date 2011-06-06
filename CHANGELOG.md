@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.0-RC3
+
+### Core
+
+[Full Changelog](https://github.com/fuel/core/compare/v1.0-rc2.1...v1.0-rc3)
+
+### Auth
+
+[Full Changelog](https://github.com/fuel/auth/compare/v1.0-rc2...v1.0-rc3)
+
+### Oil
+
+[Full Changelog](https://github.com/fuel/oil/compare/v1.0-rc2...v1.0-rc3)
+
+### Orm
+
+[Full Changelog](https://github.com/fuel/orm/compare/v1.0-rc2...v1.0-rc3)
+
+
 ## v1.0-RC2.1
 
 ### Core
