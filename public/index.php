@@ -11,9 +11,9 @@ call_user_func(function() {
 	/**
 	 * Set all the paths here
 	 */
-	$app_path		= '../fuel/app/';
-	$package_path	= '../fuel/packages/';
-	$core_path		= '../fuel/core/';
+	$app_path      = '../fuel/app/';
+	$package_path  = '../fuel/packages/';
+	$core_path     = '../fuel/core/';
 
 
 	/**
@@ -39,7 +39,14 @@ defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 require_once APPPATH.'bootstrap.php';
 
 // Generate the request, execute it and send the output.
-$response = Request::factory()->execute()->response();
+try
+{
+	$response = Request::factory()->execute()->response();
+}
+catch (Request404Exception $e)
+{
+	Request::show_404();
+}
 
 // This will add the execution time and memory usage to the output.
 // Comment this out if you don't use it.
