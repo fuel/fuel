@@ -4,7 +4,7 @@
 * [Documentation](http://fuelphp.com/docs) and in its own [git repo](https://github.com/fuel/docs)
 * [Bugtracker & feature requests](http://dev.fuelphp.com)
 * [Forums](http://fuelphp.com/forums) for comments, discussion and community support
-* Version: 1.0-RC2
+* Version: 1.0
 
 ## Description
 
@@ -13,8 +13,8 @@ Fuel is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a 
 ##Development Team
 
 * Dan Horrigan - Lead Developer ([http://dhorrigan.com](http://dhorrigan.com))
+* Jelmer Schreuder - Senior Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
 * Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
-* Jelmer Schreuder - Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
 * Harro Verton - Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
 
 ##Downloading Fuel
