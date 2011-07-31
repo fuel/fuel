@@ -45,7 +45,14 @@ try
 }
 catch (Request404Exception $e)
 {
-	Request::show_404();
+	if ($route = Config::get('routes._404_'))
+	{
+		$response = Request::factory($route)->execute()->response();
+	}
+	else
+	{
+		throw $e;
+	}
 }
 
 // This will add the execution time and memory usage to the output.
