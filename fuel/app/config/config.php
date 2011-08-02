@@ -91,6 +91,7 @@ return array(
 	 *
 	 * Fuel::L_NONE
 	 * Fuel::L_ERROR
+	 * Fuel::L_WARNING
 	 * Fuel::L_DEBUG
 	 * Fuel::L_INFO
 	 * Fuel::L_ALL
