@@ -18,7 +18,7 @@ return array(
 	 *
 	 * You can set this to a full or relative URL:
 	 *
-	 *     'base_url' => '/foo',
+	 *     'base_url' => '/foo/',
 	 *     'base_url' => 'http://foo.com/'
 	 *
 	 * Set this to null to have it automatically detected.
@@ -91,6 +91,7 @@ return array(
 	 *
 	 * Fuel::L_NONE
 	 * Fuel::L_ERROR
+	 * Fuel::L_WARNING
 	 * Fuel::L_DEBUG
 	 * Fuel::L_INFO
 	 * Fuel::L_ALL
