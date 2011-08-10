@@ -118,6 +118,14 @@ return array(
 		'input_filter'			=> array(),
 
 		/**
+		 * This output filter can be any normal PHP function as well as 'xss_clean'
+		 *
+		 * WARNING: Using xss_clean will cause a performance hit.  How much is
+		 * dependant on how much input data there is.
+		 */
+		'output_filter'			=> array('Security::htmlentities'),
+
+		/**
 		 * Whether to automatically encode (htmlentities) view data
 		 */
 		'auto_encode_view_data'	=> true,
