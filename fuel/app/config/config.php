@@ -59,6 +59,11 @@ return array(
 	'cache_dir'			=> APPPATH.'cache/',
 	'cache_lifetime'	=> 3600, // In Seconds
 
+	/**
+	 * Callback to use with ob_start(), set this to 'ob_gzhandler' for gzip encodign of output
+	 */
+	'ob_callback'  => null,
+
 	'errors'  => array(
 
 		// Which errors should we show, but continue execution?
