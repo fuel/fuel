@@ -43,16 +43,6 @@ return array(
 	 */
 	'index_file'	=> 'index.php',
 
-	/**
-	 * Your environment.  Can be set to any of the following:
-	 *
-	 * Fuel::DEVELOPMENT
-	 * Fuel::TEST
-	 * Fuel::STAGE
-	 * Fuel::PRODUCTION
-	 */
-	'environment'	=> (isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : Fuel::DEVELOPMENT),
-
 	'profiling'		=> false,
 
 	'caching'			=> false,
