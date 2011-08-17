@@ -99,10 +99,10 @@ return array(
 	 * Security settings
 	 */
 	'security' => array(
-		'csrf_autoload'			=> false,
-		'csrf_token_key'		=> 'fuel_csrf_token',
-		'csrf_expiration'		=> 0,
-		'uri_filter'			=> array('htmlentities'),
+		'csrf_token_key'			=> 'fuel_csrf_token',
+		'csrf_tokens_session_key'	=> 'fuel_csrf_tokens_session_key',
+		'csrf_expiration'			=> 0,
+		'uri_filter'				=> array('htmlentities'),
 
 		/**
 		 * This input filter can be any normal PHP function as well as 'xss_clean'
@@ -110,7 +110,7 @@ return array(
 		 * WARNING: Using xss_clean will cause a performance hit.  How much is
 		 * dependant on how much input data there is.
 		 */
-		'input_filter'			=> array(),
+		'input_filter'				=> array(),
 
 		/**
 		 * This output filter can be any normal PHP function as well as 'xss_clean'
@@ -118,18 +118,18 @@ return array(
 		 * WARNING: Using xss_clean will cause a performance hit.  How much is
 		 * dependant on how much input data there is.
 		 */
-		'output_filter'			=> array('Security::htmlentities'),
+		'output_filter'				=> array('Security::htmlentities'),
 
 		/**
 		 * Whether to automatically encode (htmlentities) view data
 		 */
-		'auto_encode_view_data'	=> true,
+		'auto_encode_view_data'		=> true,
 
 		/**
 		 * With output encoding switched on all objects passed will be converted to strings or
 		 * throw exceptions unless they are instances of the classes in this array.
 		 */
-		'whitelisted_classes' => array('stdClass', 'Fuel\\Core\\View', 'Fuel\\Core\\ViewModel', 'Closure')
+		'whitelisted_classes'		=> array('stdClass', 'Fuel\\Core\\View', 'Fuel\\Core\\ViewModel', 'Closure')
 	),
 
 	/**
