@@ -11,7 +11,7 @@
  */
 
 return array(
-	'active' => Config::get('environment'),
+	'active' => Fuel::$env,
 
 	Fuel::DEVELOPMENT => array(
 		'type'			=> 'mysql',
