@@ -47,7 +47,11 @@ catch (Request404Exception $e)
 {
 	if ($route = Config::get('routes._404_'))
 	{
-		$response = Request::factory($route)->execute()->response();
+		// Set the 404 route but set the Uri object to the requested Uri after routes are done
+		$request = Request::factory($route);
+		$request->uri = new Uri();
+
+		$response = $request->execute()->response();
 	}
 	else
 	{
