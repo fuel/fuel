@@ -2,7 +2,7 @@
 /**
  * Set error reporting and display errors settings.  You will want to change these when in production.
  */
-error_reporting(E_ALL | E_STRICT);
+error_reporting(-1);
 ini_set('display_errors', 1);
 
 // Use an anonymous function to keep the global namespace clean
