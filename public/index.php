@@ -41,13 +41,13 @@ require_once APPPATH.'bootstrap.php';
 // Generate the request, execute it and send the output.
 try
 {
-	$response = Request::factory()->execute()->response();
+	$response = Request::forge()->execute()->response();
 }
 catch (Request404Exception $e)
 {
 	if ($route = Config::get('routes._404_'))
 	{
-		$response = Request::factory($route)->execute()->response();
+		$response = Request::forge($route)->execute()->response();
 	}
 	else
 	{
