@@ -1,5 +1,74 @@
 # Changelog
 
+## v1.0.1
+
+### Core
+
+* Fixed #307 - Unrouted URIs could not have a colon in their URI followed by a letter, caused a 404 and multiple warnings. - Dan
+* Removed Controller\_Template::before() param, always called without params thus no reason to expect any. Related #356 - Jelmer
+* Fixed #333 - Html::img src attribute included index.php.  Thanks to @huglester for noticing this. - Dan
+* Fixed an issue in Html::audio() where the source parameter defaulted to an array instead of an empty string. - Dan
+* Fixed an issue with the autoloader where the namespace check was case-sensitive which caused issues with Modules with PascalCase namespaces. - Dan
+* Fixed typo in Upload::process() marking all uploaded files valid. - Harro
+* Added missing static keyword to Upload::get\_errors(). - Harro
+* Upload::is\_valid() would remain false regardless of successful upload. - Jason Lewis
+* Removed left-over email config file. - Harro
+* Fixed a migration issue which would cause a PHP error when a destination version was not set. - Phil
+* Fixed #360 - When no sub-namespace exists it would add a double // to the file path in the autoloader. - Dan
+* Fixed an issue where is certain situations, there is no buffer, which causes notices to be dumped when you don't want them to be. - Dan
+* Fixed #361: reference to Input class without calling it from global. - Jelmer
+* Fixed #374: ensured there is a connection before starting SQL transactions, also fixed a lot of code style issues. - Jelmer
+* Fixed Image resize\_crop() bugs - huglester
+* Fixed typos in Image config - huglester
+* Changed one config value as suggested per image class author - huglester
+* Fixed Imagick class - huglester
+* Fixed "Declaration of Fuel\Core\Image\_\*::\_rounded() should be compatible with..." and similar notices - huglester
+* When doing multiple crops, the actual canvas width gets a little screwy in imagick.php (thanks dudeami) - huglester
+* Bugfix - when using presets for resizing or crop resizing always getting black images because of bcdiv not calculating the ratios correctly due to type cast strangeness. - Rostislav Raykov
+* Better handling of errors prior to Fuel::init() but after core bootstrap. - Dan
+* Added break to switch which fixes a bug when 3 is passed, it returns 3rd3th - nbs
+* Fixed #341 by suffixing a directory separator to all dirnames, making them all strings and preventing renumbering by array_merge and conflicts with file indexes with numeric dirnames.
+* Fixed #338 - Added support for gzip encoding of output. - Jelmer
+* Fixed #393 - Fieldset_Field options were set twice during construction, solved by @DregondRahl - Jelmer
+* Removed the un-used Singleton class - Dan
+* Rest controller response() method can take a string or int as a param but the empty() check makes it 404 on '0'. Fix this. - phil-lavin
+* Fixed #399 - A proper 500 status header is sent back on fatal errors - Dan
+* Added 'HTTP\_X\_CLUSTER\_CLIENT\_IP' to the list of things to check for in Input::real\_ip() to fix #403 - Tom Schlick
+* Changed the way Upload::$valid is determined. is_valid() returns true if a validated file is present. - Harro
+* Added Inflector::words\_to\_upper() that uppercases the words in an underscored classname and made the Router class use it when searching for a controller. - Jelmer
+
+### Auth
+
+* Auth BadFunctionCallException now has included class and function name so we know what's going on. - FrenkyNet
+* Fixes #20 fixed instruction in comment for login driver creating and get\_user\_array. - FrenkyNet
+* Added support for login with email or username instead of just username. Made the login $\_POST keys for login configurable. - FrenkyNet
+
+### Oil
+
+* Adding param to controller generator to stop singularizing class name - Aaron Kuzemchak
+* oil g controller will now take plural or singular name for controller. - Phil
+* Fixed another pluralisation issue. Class names for controllers were being singularised by Inflector::classify when built via Scaffolding. - Phil
+* The standard notice message outputtery thing can now take an array too. - Phil
+
+### Orm
+
+* Empty array inside build_query was causing a notice - David Anderson
+* Fixes #73 - PHP's current() function returns false on a false value and after the end of the array, the key() function can only return null when it's past the end of the array thus this check can't go wrong. (note: PHP accepts null as a key value but converts it to an empty string) - Jelmer
+* DELETE & UPDATE queries ignored nested calls, this has now been fixed. - Jelmer
+* Made Model::from\_array() more efficient. - Jelmer
+* Allowing fetching with partial PK is just weird and shouldn't happen, also added comment to clarify what the first if condition is there for. - Jelmer
+* Added support for hydration via DB::as_object - FrenkyNet
+
+### Docs
+
+* Fixed a lot of example, spelling, grammar and definition mistakes. - FrenkyNet and others
+
+### Main Repo
+
+* Added ob_callback config option, among other things to support gzip encoding of output. - Jelmer
+* Updated error_reporting to -1 which is more future proof than E_ALL | E_STRICT - Jelmer
+
+
 ## v1.0
 
 ### Core
