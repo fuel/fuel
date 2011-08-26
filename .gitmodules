@@ -13,3 +13,6 @@
 [submodule "docs"]
 	path = docs
 	url = git://github.com/fuel/docs.git
+[submodule "fuel/packages/parser"]
+	path = fuel/packages/parser
+	url = git://github.com/fuel/parser.git
