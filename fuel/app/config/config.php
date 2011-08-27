@@ -124,9 +124,9 @@ return array(
 		'output_filter'  => array('Security::htmlentities'),
 
 		/**
-		 * Whether to automatically encode (htmlentities) view data
+		 * Whether to automatically filter view data
 		 */
-		'auto_encode_view_data'  => true,
+		'auto_filter_view_data'  => true,
 
 		/**
 		 * With output encoding switched on all objects passed will be converted to strings or
