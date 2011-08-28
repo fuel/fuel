@@ -126,7 +126,7 @@ return array(
 		/**
 		 * Whether to automatically filter view data
 		 */
-		'auto_filter_view_data'  => true,
+		'auto_filter_output'  => true,
 
 		/**
 		 * With output encoding switched on all objects passed will be converted to strings or
