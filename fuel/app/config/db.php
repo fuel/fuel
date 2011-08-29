@@ -14,10 +14,9 @@ return array(
 	'active' => Fuel::$env,
 
 	Fuel::DEVELOPMENT => array(
-		'type'			=> 'mysql',
+		'type'			=> 'pdo',
 		'connection'	=> array(
-			'hostname'   => 'localhost',
-			'database'   => 'fuel_dev',
+			'dsn'        => 'mysql:host=localhost;dbname=fuel_dev',
 			'username'   => 'root',
 			'password'   => '',
 			'persistent' => false,
@@ -29,10 +28,9 @@ return array(
 	),
 
 	Fuel::PRODUCTION => array(
-		'type'			=> 'mysql',
+		'type'			=> 'pdo',
 		'connection'	=> array(
-			'hostname'   => 'localhost',
-			'database'   => 'fuel_prod',
+			'dsn'        => 'mysql:host=localhost;dbname=fuel_prod',
 			'username'   => 'root',
 			'password'   => '',
 			'persistent' => false,
@@ -44,10 +42,9 @@ return array(
 	),
 
 	Fuel::TEST => array(
-		'type'			=> 'mysql',
+		'type'			=> 'pdo',
 		'connection'	=> array(
-			'hostname'   => 'localhost',
-			'database'   => 'fuel_test',
+			'dsn'        => 'mysql:host=localhost;dbname=fuel_test',
 			'username'   => 'root',
 			'password'   => '',
 			'persistent' => false,
@@ -59,10 +56,9 @@ return array(
 	),
 
 	Fuel::STAGE => array(
-		'type'			=> 'mysql',
+		'type'			=> 'pdo',
 		'connection'	=> array(
-			'hostname'   => 'localhost',
-			'database'   => 'fuel_stage',
+			'dsn'        => 'mysql:host=localhost;dbname=fuel_stage',
 			'username'   => 'root',
 			'password'   => '',
 			'persistent' => false,
