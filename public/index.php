@@ -1,9 +1,52 @@
 <?php
 /**
- * Set error reporting and display errors settings.  You will want to change these when in production.
+ * Set error reporting and display errors settings automatically depending on URI.
  */
-error_reporting(-1);
-ini_set('display_errors', 1);
+if ($_SERVER['SERVER_NAME'])
+{
+	if (strpos($_SERVER['SERVER_NAME'], 'local.') !== false or $_SERVER['SERVER_NAME'] == 'localhost' or strpos($_SERVER['SERVER_NAME'], '.local') !== false)
+	{
+		$env = 'local';
+	} 
+	// Development: dev.example.com
+	elseif (strpos($_SERVER['SERVER_NAME'], 'dev.') === 0)
+	{
+		$env = 'development';
+	}
+	// Quality Assurance: qa.example.com
+	elseif (strpos($_SERVER['SERVER_NAME'], 'qa.') === 0) 
+	{
+		$env = 'qa';
+	}
+	// Live: example.com
+	else 
+	{
+		$env = 'production';
+	}
+} 
+else 
+{
+	$env = 'local';
+}
+
+if ($env) 
+{
+	switch ($env) 
+	{
+		case 'development':
+		case 'local':
+			error_reporting(E_ALL ^ E_NOTICE);
+			ini_set('display_errors',1);
+		break;
+		case 'production':
+			error_reporting(0);
+		break;
+		default:
+			error_reporting(-1);
+			ini_set('display_errors',1);
+		break;
+	}
+}
 
 // Use an anonymous function to keep the global namespace clean
 call_user_func(function() {
