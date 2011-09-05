@@ -133,7 +133,6 @@ return array(
 		 * throw exceptions unless they are instances of the classes in this array.
 		 */
 		'whitelisted_classes' => array(
-			'stdClass',
 			'Fuel\\Core\\Response',
 			'Fuel\\Core\\View',
 			'Fuel\\Core\\ViewModel',
