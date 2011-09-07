@@ -32,7 +32,7 @@ defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 // Boot the app
 require_once APPPATH.'bootstrap.php';
 
-Fuel::add_package('oil');
+Package::load('oil');
 
 // Fire up the command line interfact
 Oil\Command::init($_SERVER['argv']);
