@@ -34,7 +34,6 @@ class Controller_Welcome extends Controller {
 		return Response::forge(ViewModel::forge('welcome/hello'));
 	}
 
-	
 	/**
 	 * The 404 action for the application.
 	 * 
@@ -43,9 +42,6 @@ class Controller_Welcome extends Controller {
 	 */
 	public function action_404()
 	{
-		$messages = array('Aw, crap!', 'Bloody Hell!', 'Uh Oh!', 'Nope, not here.', 'Huh?');
-		$data['title'] = $messages[array_rand($messages)];
-
-		return Response::forge(View::forge('welcome/404', $data), 404);
+		return Response::forge(ViewModel::forge('welcome/404'), 404);
 	}
 }
