@@ -1,7 +1,7 @@
 <?php
 
 // Bootstrap the framework DO NOT edit this
-require_once COREPATH.'bootstrap.php';
+require COREPATH.'bootstrap.php';
 
 
 Autoloader::add_classes(array(
