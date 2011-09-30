@@ -1,36 +1,36 @@
 <?php
 /**
- * Set all the paths
- */
-$app_path		= './fuel/app/';
-$package_path	= './fuel/packages/';
-$core_path		= './fuel/core/';
-
-/**
  * Set error reporting and display errors settings.  You will want to change these when in production.
  */
-error_reporting(E_ALL);
+error_reporting(-1);
 ini_set('display_errors', 1);
 
 /**
- * Website docroot
+ * Website document root
  */
 define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
 
-( ! is_dir($app_path) and is_dir(DOCROOT.$app_path)) and $app_path = DOCROOT.$app_path;
-( ! is_dir($core_path) and is_dir(DOCROOT.$core_path)) and $core_path = DOCROOT.$core_path;
-( ! is_dir($package_path) and is_dir(DOCROOT.$package_path)) and $package_path = DOCROOT.$package_path;
+/**
+ * Path to the application directory.
+ */
+define('APPPATH', realpath(__DIR__.'/fuel/app/').DIRECTORY_SEPARATOR);
 
-define('APPPATH', realpath($app_path).DIRECTORY_SEPARATOR);
-define('PKGPATH', realpath($package_path).DIRECTORY_SEPARATOR);
-define('COREPATH', realpath($core_path).DIRECTORY_SEPARATOR);
+/**
+ * Path to the default packages directory.
+ */
+define('PKGPATH', realpath(__DIR__.'/fuel/packages/').DIRECTORY_SEPARATOR);
+
+/**
+ * The path to the framework core.
+ */
+define('COREPATH', realpath(__DIR__.'/fuel/core/').DIRECTORY_SEPARATOR);
 
 // Get the start time and memory for use later
 defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 
 // Boot the app
-require_once APPPATH.'bootstrap.php';
+require APPPATH.'bootstrap.php';
 
 Package::load('oil');
 

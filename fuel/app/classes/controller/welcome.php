@@ -12,7 +12,7 @@
 class Controller_Welcome extends Controller {
 
 	/**
-	 * The index action.
+	 * The basic welcome message
 	 * 
 	 * @access  public
 	 * @return  Response
@@ -23,6 +23,18 @@ class Controller_Welcome extends Controller {
 	}
 
 	/**
+	 * A typical "Hello, Bob!" type example.  This uses a ViewModel to
+	 * show how to use them.
+	 * 
+	 * @access  public
+	 * @return  Response
+	 */
+	public function action_hello()
+	{
+		return Response::forge(ViewModel::forge('welcome/hello'));
+	}
+
+	/**
 	 * The 404 action for the application.
 	 * 
 	 * @access  public
@@ -30,11 +42,6 @@ class Controller_Welcome extends Controller {
 	 */
 	public function action_404()
 	{
-		$messages = array('Aw, crap!', 'Bloody Hell!', 'Uh Oh!', 'Nope, not here.', 'Huh?');
-		$data['title'] = $messages[array_rand($messages)];
-
-		return Response::forge(View::forge('welcome/404', $data), 404);
+		return Response::forge(ViewModel::forge('welcome/404'), 404);
 	}
 }
-
-/* End of file welcome.php */
