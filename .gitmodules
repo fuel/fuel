@@ -16,3 +16,6 @@
 [submodule "fuel/packages/parser"]
 	path = fuel/packages/parser
 	url = git://github.com/fuel/parser.git
+[submodule "fuel/packages/email"]
+	path = fuel/packages/email
+	url = git://github.com/fuel/email.git
