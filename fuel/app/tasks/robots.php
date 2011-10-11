@@ -24,7 +24,8 @@ namespace Fuel\Tasks;
  * @author		Phil Sturgeon
  */
 
-class Robots {
+class Robots
+{
 
 	/**
 	 * This method gets ran when a valid method name is not used in the command.

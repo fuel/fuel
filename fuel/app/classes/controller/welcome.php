@@ -9,7 +9,8 @@
  * @package  app
  * @extends  Controller
  */
-class Controller_Welcome extends Controller {
+class Controller_Welcome extends Controller
+{
 
 	/**
 	 * The basic welcome message
