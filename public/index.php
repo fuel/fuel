@@ -37,7 +37,7 @@ try
 {
 	$response = Request::forge()->execute()->response();
 }
-catch (Request404Exception $e)
+catch (HttpNotFoundException $e)
 {
 	if ($route = Config::get('routes._404_'))
 	{
