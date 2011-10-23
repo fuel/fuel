@@ -39,7 +39,7 @@ try
 }
 catch (HttpNotFoundException $e)
 {
-	$route = array_key_exist('_404_', Router::$routes) ? Router::$routes['_404_']->translation : Config::get('routes._404_');
+	$route = array_key_exists('_404_', Router::$routes) ? Router::$routes['_404_']->translation : Config::get('routes._404_');
 	if ($route)
 	{
 		$response = Request::forge($route)->execute()->response();
