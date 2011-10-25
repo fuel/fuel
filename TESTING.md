@@ -1,6 +1,6 @@
-# Testing Fuel
+# Testing FuelPHP
 
-Fuel uses [PHPUnit](https://github.com/sebastianbergmann/phpunit/) for it's Unit Testing needs. It must be installed for the tests to run.
+FuelPHP uses [PHPUnit](https://github.com/sebastianbergmann/phpunit/) for it's Unit Testing needs. It must be installed for the tests to run.
 
 **NOTE: No code will be accepted without tests written.**
 
@@ -17,7 +17,7 @@ That's it! You can also tell it specific groups (which we will get into in minut
 As you can see we've wrapped the phpunit command with our own Oil utility which will in time become more and more useful. If you wish to get right at the phpunit tests manually you can point it to our .xml configuration file:
 
 	$ phpunit -c fuel/core/phpunit.xml --group Core
-	
+
 This may break or change in future versions so it's suggested you stick with using Oil for your testing.
 
 ## Writing Tests
@@ -42,7 +42,7 @@ Some example names:
     Tests_Arr in fuel/core/tests/arr.php
     Tests_Image in fuel/core/tests/image.php
     Tests_Fuel in fuel/core/tests/fuel.php
-    
+
     // Bad
     Arrtests
     Somestuff
@@ -55,7 +55,7 @@ Here is an example of a core class test with proper DocBlocks:
 
     /**
      * Arr class tests
-     * 
+     *
      * @group Core
      * @group Arr
      */
@@ -63,7 +63,7 @@ Here is an example of a core class test with proper DocBlocks:
 
     	/**
     	 * Tests Arr::element()
-    	 * 
+    	 *
     	 * @test
     	 */
     	public function test_element()
@@ -71,12 +71,12 @@ Here is an example of a core class test with proper DocBlocks:
     		// Test code here
     	}
     }
-    
+
 All App tests should be in the **app** group.
 
 ### Namespaces
 
-All **core** tests should be in the **Fuel\Core** namespace.  This is so that we are sure we are testing the core classes, 
+All **core** tests should be in the **Fuel\Core** namespace.  This is so that we are sure we are testing the core classes,
 not any extensions that may be in *app*.
 
 App tests can be in any namespace.
@@ -93,7 +93,7 @@ All tests should extend the **Fuel\Core\TestCase** class.
 
     /**
      * Arr class tests
-     * 
+     *
      * @group Core
      * @group Arr
      */
@@ -101,7 +101,7 @@ All tests should extend the **Fuel\Core\TestCase** class.
 
     	/**
     	 * Tests Arr::flatten_assoc()
-    	 * 
+    	 *
     	 * @test
     	 */
     	public function test_flatten_assoc()
