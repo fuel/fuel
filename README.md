@@ -1,10 +1,9 @@
-#Fuel
+#FuelPHP
 
 * [Website](http://fuelphp.com/)
 * [Documentation](http://fuelphp.com/docs) and in its own [git repo](https://github.com/fuel/docs)
-* [Bugtracker & feature requests](http://dev.fuelphp.com)
 * [Forums](http://fuelphp.com/forums) for comments, discussion and community support
-* Version: 1.1-dev
+* Version: 1.1-rc1
 
 ## Description
 
@@ -16,8 +15,9 @@ Fuel is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a 
 * Jelmer Schreuder - Senior Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
 * Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
 * Harro Verton - Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
+* Frank de Jonge - Developer ([http://frenky.net/](http://frenky.net/))
 
-##Downloading Fuel
+##Downloading FuelPHP
 
 Since Fuel uses Submodules and since GitHub Downloads don't support submodules, do not download Fuel using the Downloads link here.
 
@@ -25,7 +25,7 @@ We will be putting a "Download" section on <http://fuelphp.com> soon.
 
 ##Cloning Fuel
 
-Fuel uses submodules for things like the **core** folder.  After you clone the repository you will need to init and update the submodules.
+FuelPHP uses submodules for things like the **core** folder.  After you clone the repository you will need to init and update the submodules.
 
 Here is the basic usage:
 
