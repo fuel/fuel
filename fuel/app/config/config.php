@@ -42,6 +42,13 @@ return array(
 	 * Set this to false or remove if you using mod_rewrite.
 	 */
 	'index_file'  => 'index.php',
+	
+	/**
+	 * public_folder - The public folder of the url.
+	 *
+	 * Set this to true if you want to remove it from the URL.
+	 */
+	'public_folder' => false,
 
 	'profiling'  => false,
 
