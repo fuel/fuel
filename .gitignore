@@ -9,6 +9,7 @@ desktop.ini
 .tmpoj
 fuel/app/logs/*/*/*
 fuel/app/cache/*/*
+build
 nbproject/
 .idea
 
