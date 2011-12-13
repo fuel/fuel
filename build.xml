@@ -4,7 +4,7 @@
 	<property name="basedir" value="${project.basedir}" />
 	<property name="builddir" value="${basedir}/build" />
 	<property name="branch" value="1.1/develop" />
-	<property name="tag" value="v1.1-rc1" />
+	<property name="tag" value="v1.1" />
 
 	<property name="submodules" value="fuel/core,fuel/packages/auth,fuel/packages/email,fuel/packages/oil,fuel/packages/orm,fuel/packages/parser" />
 
