@@ -2,6 +2,8 @@
 
 ## v1.1
 
+[Full List of core changes since 1.0.1](https://github.com/fuel/core/compare/v1.0.1...v1.1)
+
 ### System changes
 
 * Deprication of `Request::show_404()`, replaced with `throw new HttpNotFoundException` that has a handle method to show the 404
