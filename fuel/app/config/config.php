@@ -53,7 +53,7 @@ return array(
 	'cache_lifetime'  => 3600, // In Seconds
 
 	/**
-	 * Callback to use with ob_start(), set this to 'ob_gzhandler' for gzip encodign of output
+	 * Callback to use with ob_start(), set this to 'ob_gzhandler' for gzip encoding of output
 	 */
 	'ob_callback'  => null,
 
