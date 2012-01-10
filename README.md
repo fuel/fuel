@@ -7,7 +7,7 @@
 
 ## Description
 
-Fuel is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a dime a dozen, We believe that Fuel will stand out in the crowd.  It will do this by combining all the things you love about the great frameworks out there, while getting rid of the bad.
+FuelPHP is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a dime a dozen, We believe that FuelPHP will stand out in the crowd.  It will do this by combining all the things you love about the great frameworks out there, while getting rid of the bad.
 
 ##Development Team
 
@@ -19,11 +19,9 @@ Fuel is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a 
 
 ##Downloading FuelPHP
 
-Since Fuel uses Submodules and since GitHub Downloads don't support submodules, do not download Fuel using the Downloads link here.
+Since FuelPHP uses Submodules and since GitHub Downloads don't support submodules, do not download FuelPHP using the Downloads link here. Instead, use the [download links location in the docs](http://docs.fuelphp.com/installation/download.html).
 
-We will be putting a "Download" section on <http://fuelphp.com> soon.
-
-##Cloning Fuel
+##Cloning FuelPHP
 
 FuelPHP uses submodules for things like the **core** folder.  After you clone the repository you will need to init and update the submodules.
 
