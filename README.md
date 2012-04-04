@@ -1,9 +1,10 @@
 #FuelPHP
 
-* [Website](http://fuelphp.com/)
-* [Documentation](http://docs.fuelphp.com) and in its own [git repo](https://github.com/fuel/docs)
-* [Forums](http://fuelphp.com/forums) for comments, discussion and community support
 * Version: 1.1
+* [Website](http://fuelphp.com/)
+* [Release Documentation](http://docs.fuelphp.com)
+* [Development Documentation](http://fueldevdocs.exite.eu) and in its own [git repo](https://github.com/fuel/docs)
+* [Forums](http://fuelphp.com/forums) for comments, discussion and community support
 
 ## Description
 
@@ -11,11 +12,11 @@ FuelPHP is a fast, lightweight PHP 5.3 framework. In an age where frameworks are
 
 ##Development Team
 
-* Dan Horrigan - Lead Developer ([http://dhorrigan.com](http://dhorrigan.com))
-* Jelmer Schreuder - Senior Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
-* Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
-* Harro Verton - Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
+* Harro Verton - Project Manager, Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
+* Jelmer Schreuder - Project Architect, Senior Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
 * Frank de Jonge - Developer ([http://frenky.net/](http://frenky.net/))
+* Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
+* Dan Horrigan - Founder, Developer ([http://dhorrigan.com](http://dhorrigan.com))
 
 ##Downloading FuelPHP
 
@@ -39,9 +40,3 @@ The above command is the same as running:
 You can also shorten the last two commands to one:
 
     git submodule update --init
-
-##Donate
-
-[Donate Here](http://www.pledgie.com/campaigns/14124)
-
-Any donations would help support the framework and pay for software, development and hosting costs. We understand if you cannot, but greatly appreciate anything you can give.
