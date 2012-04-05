@@ -46,10 +46,14 @@ return array(
 	'profiling'  => false,
 
 	/**
-	 * Settings for Cache class
+	 * Default location for the file cache
+	 */
+	'cache_dir'       => APPPATH.'cache/',
+
+	/**
+	 * Setttings for the file finder cache (the Cache class has it's own config!)
 	 */
 	'caching'         => false,
-	'cache_dir'       => APPPATH.'cache/',
 	'cache_lifetime'  => 3600, // In Seconds
 
 	/**
