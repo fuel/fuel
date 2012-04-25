@@ -161,6 +161,17 @@ return array(
 	),
 
 	/**
+	 * Validation settings.
+	 */
+	'validation' => array(
+		/**
+		 * Wether to fallback to global when a
+		 *value is not found in the input array.
+		 */
+		'global_input_fallback' => true,
+	),
+
+	/**
 	 * To enable you to split up your application into modules which can be
 	 * routed by the first uri segment you have to define their basepaths
 	 * here. By default empty, but to use them you can add something
