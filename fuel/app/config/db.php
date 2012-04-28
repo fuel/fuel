@@ -19,7 +19,6 @@ return array(
 		'identifier'   => '`',
 		'table_prefix' => '',
 		'charset'      => 'utf8',
-		'caching'      => false,
 		'profiling'    => false,
 	),
 
