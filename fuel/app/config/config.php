@@ -172,6 +172,16 @@ return array(
 	),
 
 	/**
+	 * Routing settings.
+	 */
+	'routing' => array(
+		/**
+		 * Whether URI routing is case sensitive or not
+		 */
+		'case_sensitive' => true,
+	),
+
+	/**
 	 * To enable you to split up your application into modules which can be
 	 * routed by the first uri segment you have to define their basepaths
 	 * here. By default empty, but to use them you can add something
