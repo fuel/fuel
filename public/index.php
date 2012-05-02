@@ -62,6 +62,3 @@ $response->body(
 );
 
 $response->send(true);
-
-// Fire off the shutdown event
-Event::shutdown();
