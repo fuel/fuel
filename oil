@@ -1,5 +1,13 @@
 <?php
 /**
+ * Refuse to run oil when called from php-cgi !
+ */
+if (substr(php_sapi_name(), 0, 3) == 'cgi')
+{
+    die("The use of oil is not supported when running php-cgi. Oil needs php-cli to function!\n\n");
+}
+
+/**
  * Set error reporting and display errors settings.  You will want to change these when in production.
  */
 error_reporting(-1);
