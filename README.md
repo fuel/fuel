@@ -1,6 +1,6 @@
 #FuelPHP
 
-* Version: 1.1
+* Version: 1.2
 * [Website](http://fuelphp.com/)
 * [Release Documentation](http://docs.fuelphp.com)
 * [Development Documentation](http://fueldevdocs.exite.eu) and in its own [git repo](https://github.com/fuel/docs)
