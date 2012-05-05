@@ -62,11 +62,11 @@ Here is an example of a core class test with proper DocBlocks:
     class Tests_Arr extends TestCase {
 
     	/**
-    	 * Tests Arr::element()
+    	 * Tests Arr::get()
     	 *
     	 * @test
     	 */
-    	public function test_element()
+    	public function test_get()
     	{
     		// Test code here
     	}
