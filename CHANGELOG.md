@@ -74,6 +74,7 @@
 * __Cli__: now supports ANSICON on Windows for colored commandline output.
 * __Config__: is now driver based to support `php`, `ini`, `yaml` and `json` type configs.
 * __Config__: now allow you to load a file by FQFN.
+* __Cookie__: all cookie data can now be fetched like Input class does.
 * __Date__: All fuel notices have been replaced by `UnexpectedValueException`s.
 * __Date__: On windows an extra fallback has been added for the `create_from_string()` method.
 * __Date__: new `display_timezone()' and `get_timezone_abbr()`, and changes to support working with multiple timezones.
@@ -100,6 +101,8 @@ __Fieldset__: added `add_before()` and `add_after()` methods to insert a new fie
 * __Lang__: language files can now be saved (as `php`, `ini`, `yaml` or `json`) using `save()`.
 * __Migrate__: now tracks individual migrations, so they don't have to have a sequence number anymore.
 * __Model_Crud__: now supports `created_at` and `updated_at` fields, like `ORM\Model` does.
+* __Model_Crud__: now has full callback support.
+* __Model_Crud__: you can now run validation separately (`::validates`) and skip validation when saving a model.
 * __Profiler__: profiler logging methods are now NO-OP's when the profiler is not loaded.
 * __Profiler__: now writes it's output under the page content, instead of using an overlay.
 * __Session__: Added session task to create and remove sessions table.
