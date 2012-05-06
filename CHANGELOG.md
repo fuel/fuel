@@ -1,8 +1,132 @@
 # Changelog
 
+## v1.2
+
+[Full List of core changes since 1.1](https://github.com/fuel/core/compare/1.1/master...1.2/master)
+
+### Removed code (because it was deprecated in v1.1)
+
+* All `factory()` methods. The have been replaced by `forge()`.
+* __Agent__::is_mobile(). Replaced by `is_mobiledevice()`.
+* __Arr__::element(). Replaced by `get()`.
+* __Arr__::elements(). Replaced by `get()`.
+* __Arr__::replace_keys(). Replaced by `replace_key()`.
+* __Controller__::render(). Is no longer used as actions need to return a Response object now.
+* __Database_Connection__::transactional(). Was already a NOOP.
+* __DB__::transactional(). Called Database_Connection::transactional().
+* __Fieldset__::errors(). Replaced by `error()`.
+* __Fieldset__::repopulate(). Undocumented parameter was removed, functionality is offered by `populate()`.
+* __Fuel__::find_file(). Replaced by `Finder::search()`.
+* __Fuel__::list_files(). Replaced by `Finder::instance()->list_files()`.
+* __Fuel__::add_path(). Was used by `find_file()`, no longer needed.
+* __Fuel__::get_paths(). Was used by `find_file()`, no longer needed.
+* __Fuel__::add_package(). Replaced by `Package::load()`.
+* __Fuel__::remove_package(). Replaced by `Package::unload()`.
+* __Fuel_Exception__ class. Replaced by `FuelException`.
+* __Input__::get_post(). Replaced by `param()`.
+* __Lang__::line(). Replaced by `get()`.
+* __Request404Exception__ class. Is replaced by `HttpNotFoundException`.
+* __Uri__ properties $uri and $segments are now protected. Use Uri::get() and Uri::get_segment() or Uri::get_segments().
+* __Validation__::errors(). Replaced by `error()`.
+* __Viewmodel__ property $_template. Is replaced by `$_view`.
+* __Viewmodel__::set_template(). Replaced by `set_view()`.
+
+### Code deprecated in v1.2 (to be removed in v1.3)
+
+* __Pagination__: Class will be removed and replaced by a new `Paginate` class.
+* __Fuel__::add_module(). Is replaced by `Module::load()`.
+* __Fuel__::module_exists(). Is replaced by `Module::exists()`.
+* __Theme__::asset(). Replaced by `asset_path()`.
+* __Theme__::info(). Replaced by `get_info()`.
+* __Theme__::all_info(). Replaced by `load_info()`.
+
+### Security related
+
+* Security class now __requires__ you to define the `security.output_filter` application config setting. An exception is thrown if it isn't present.
+* Security::htmlentities() now defaults to use ENT_QUOTES instead of ENT_COMPAT as flag. This is configurable in the second argument for the method and the default can be overwritten in config as `security.htmlentities_flags`.
+
+### System changes
+
+* __Controller__: action methods, or the controllers `after()` method if present, now must return a `Response` object.
+* __Controller__: `before()` and `after()` methods are now optional, as documented.
+* __Controller_Hybrid__: combines `Controller_Template` and `Controller_Rest` in a single base controller for mixed HTTP and REST responses.
+* __Controller_Rest__: added a fallback to `"action_"` when no HTTP method action is found.
+* __Controller_Rest__: you can now define custom HTTP status codes.
+* __Controller_Template__: the `$auto_render` setting has been removed, to prevent rendering return whatever you want to use instead.
+* __Database__: The PDO driver now supports `list_columns()`.
+* __Module__: new `Module` class to load or unload modules.
+* __Uri__: the URL extension is no longer part of the URI. A new `extension()` method allows you to fetch it.
+* __Request__: `Request_Curl` now properly deals with succesful requests that return a 4xx or 5xx HTTP status.
+* __Request__: `Request_Curl` and `Request_Soap` now supports returning header information. A `get_headers()` has been added to fetch them manually.
+* __Router__: can now be configured to treat URI's without regards to case.
+
+### Specific classes
+
+* __Arr__: `Arr::to_assoc()` now throws a BadMethodCallException on bad input.
+* __Arr__: `Arr::assoc_to_keyval()` now requires all parameters and first parameter must be an array or implement `Iterator`.
+* __Arr__: Added `reverse_flatten()`, `is_assoc()` and `insert_before_key()` methods.
+* __Arr__: Added `in_array_recursive()` to do a recursive `in_array()` lookup.
+* __Asset__: Separated into the static front (`Asset`) and dynamic instance (`Asset_Instance`).
+* __Asset__: Separated into the static front (`Asset`) and dynamic instance (`Asset_Instance`).
+* __Asset__: `css()`, `js()` and `img()` methods are now chainable.
+* __Asset__: you can now specify a URL as location, for CDN support.
+* __Asset__: new `fail_silently` config value allows you to skip missing assets.
+* __Cli__: now supports ANSICON on Windows for colored commandline output.
+* __Config__: is now driver based to support `php`, `ini`, `yaml` and `json` type configs.
+* __Config__: now allow you to load a file by FQFN.
+* __Date__: All fuel notices have been replaced by `UnexpectedValueException`s.
+* __Date__: On windows an extra fallback has been added for the `create_from_string()` method.
+* __Date__: new `display_timezone()' and `get_timezone_abbr()`, and changes to support working with multiple timezones.
+* __DB__: `cache()` now has the option not to cache empty resultsets.
+* __DB__: `where()` do now support closures to specify the where clause.
+* __DB__: Update now supports `limit()` and `order_by()`.
+* __DB__: now tries to reconnect when a disconnected DB connection is detected.
+* __DButil__: `create_database()` now supports 'IF NOT EXIST'.
+* __DButil__: Better support for the CONSTRAINT keyword.
+* __DButil__: new `add_foreign_key()` and `drop_foreign_key()` methods.
+* __Event__: shutdown events are now also executed after `exit` and `die` statements.
+* __Fieldset__: added `set_fieldset_tag()` to define the fieldset tag.
+__Fieldset__: added `add_before()` and `add_after()` methods to insert a new field before/after a specific field.
+* __Fieldset_Field__: added `add_description()` method and `{description}` tag to templates.
+* __Fieldset_Field__: added `add_error_message()` method to create error message overwrites per field.
+* __File__: `download()` now allows you to continue processing after calling it.
+* __Form__: Separated into the static front (`Form`) and dynamic instance (`Form_Instance`).
+* __Inflector__: now supports Hungarian accepted characters when converting to ascii.
+* __Input__: `method()` now supports the `X-HTTP-Method-Override` header.
+* __Input__: new `json()` and `xml()` methods to fetch json or xml from the HTTP request body.
+* __Lang__: `load()` method now supports overwriting when merging language files.
+* __Lang__: now allow you to load a file by FQFN.
+* __Lang__: is now driver based to support `php`, `ini`, `yaml` and `json` type language files.
+* __Migrate__: now tracks individual migrations, so they don't have to have a sequence number anymore.
+* __Model_Crud__: now supports `created_at` and `updated_at` fields, like `ORM\Model` does.
+* __Profiler__: profiler logging methods are now NO-OP's when the profiler is not loaded.
+* __Profiler__: now writes it's output under the page content, instead of using an overlay.
+* __Session__: Added session task to create and remove sessions table.
+* __Session__: New sessions are not saved until there is data present in the session.
+* __Theme__: Separated into the static front (`Theme`) and dynamic instance (`Theme_Instance`).
+* __Theme__: now supports installation outside the docroot (for views).
+* __Theme__: now uses the `Asset` class to load theme assets.
+* __Theme__: instances now support templates, template partials and partial chrome templates.
+
+### Packages
+
+* __Auth__: Auth login drivers no have a `validate_user` method to validate a user/password without setting up a logged-in session.
+* __Auth__: SimpleAuth `SimpleUserUpdateException`s are now numbered to be able to identify the exact error after catching the exception.
+* __Email__: Now handles SMTP timeouts properly.
+* __Email__: You can now specify the return address.
+* __Oil__: Use `phpunit.xml` from `APPPATH` if present when running unit tests.
+* __Oil__: Reinstated `oil package` command to install packages from git repositories.
+* __Oil__: You can define the environment the command has to run in using the `-env` commandline switch.
+* __Oil__: Scaffolding now supports both `Model_Crud` and `Orm\Model`.
+* __Oil__: Scaffolding now supports adding created-at and updated-at.
+* __Oil__: Scaffolding now supports skipping the creation of a migration file using `-no-migration`.
+* __Oil__: There is now a core task to generate the table for the database session store.
+* __Orm__: New model method `is_fetched()` checks if relation data is fetched without triggering a new query.
+* __Orm__: Validation section of the properties has a new key `skip` to indicate the field should not be validated.
+
 ## v1.1
 
-[Full List of core changes since 1.0.1](https://github.com/fuel/core/compare/v1.0.1...v1.1)
+[Full List of core changes since 1.0.1](https://github.com/fuel/core/compare/1.0/master...1.1/master)
 
 ### System changes
 

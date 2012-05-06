@@ -110,7 +110,7 @@ keep in mind:
     The best way to do this is to make a branch off of the current version's
     `develop` branch:
 
-        $ git checkout BRANCH_NAME 1.1/develop
+        $ git checkout BRANCH_NAME 1.3/develop
 
     **Note:** If the contribution is submitted to the wrong branch, you will
     be asked to re-submit on the correct branch.
@@ -130,16 +130,16 @@ changes from the original repository.
 When updating your branch, you should use `rebase` and not merge in the
 changes:
 
-1.  Update your `1.1/develop` branch with changes from `upstream`:
+1.  Update your `1.3/develop` branch with changes from `upstream`:
 
-        $ git checkout 1.1/develop
+        $ git checkout 1.3/develop
         $ git fetch upstream
-        $ git merge upstream/1.1/develop
+        $ git merge upstream/1.3/develop
 
-2.  Rebase your branch with the `1.1/develop` branch:
+2.  Rebase your branch with the `1.3/develop` branch:
 
         $ git checkout BRANCH_NAME
-        $ git rebase 1.1/develop
+        $ git rebase 1.3/develop
 
     You may get merge conflicts while running the `rebase` command.  Resolve
     all conflicts, then continue the `rebase`:
@@ -165,9 +165,9 @@ of or do.
 
 1.  After making your changes and committing them locally, you need to
     Rebase your branch with
-    the the `upstream/1.1/develop` branch:
+    the the `upstream/1.3/develop` branch:
 
-        $ git rebase -f upstream/1.1/develop
+        $ git rebase -f upstream/1.3/develop
 
 2.  You will need to Force Push your changes up to GitHub.  This will
     automatically update your Pull Request:
