@@ -97,6 +97,7 @@ __Fieldset__: added `add_before()` and `add_after()` methods to insert a new fie
 * __Lang__: `load()` method now supports overwriting when merging language files.
 * __Lang__: now allow you to load a file by FQFN.
 * __Lang__: is now driver based to support `php`, `ini`, `yaml` and `json` type language files.
+* __Lang__: language files can now be saved (as `php`, `ini`, `yaml` or `json`) using `save()`.
 * __Migrate__: now tracks individual migrations, so they don't have to have a sequence number anymore.
 * __Model_Crud__: now supports `created_at` and `updated_at` fields, like `ORM\Model` does.
 * __Profiler__: profiler logging methods are now NO-OP's when the profiler is not loaded.
@@ -107,12 +108,16 @@ __Fieldset__: added `add_before()` and `add_after()` methods to insert a new fie
 * __Theme__: now supports installation outside the docroot (for views).
 * __Theme__: now uses the `Asset` class to load theme assets.
 * __Theme__: instances now support templates, template partials and partial chrome templates.
+* __Validation__: You can now disable fallback to global input using the 'validation.global_input_fallback' config setting.
 
 ### Packages
 
 * __Auth__: Auth login drivers no have a `validate_user` method to validate a user/password without setting up a logged-in session.
 * __Auth__: SimpleAuth `SimpleUserUpdateException`s are now numbered to be able to identify the exact error after catching the exception.
 * __Email__: Now handles SMTP timeouts properly.
+* __Email__: You can now specify the return address.
+* __Email__: Now handles BCC lists correctly when using SMTP.
+* __Email__: Respects new lines in alt body better.
 * __Email__: You can now specify the return address.
 * __Oil__: Use `phpunit.xml` from `APPPATH` if present when running unit tests.
 * __Oil__: Reinstated `oil package` command to install packages from git repositories.
