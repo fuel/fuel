@@ -45,6 +45,4 @@ Package::load('oil');
 // Fire up the command line interfact
 Oil\Command::init($_SERVER['argv']);
 
-echo PHP_EOL;
-
 /* End of file oil */
