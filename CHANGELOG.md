@@ -82,6 +82,7 @@
 * __DB__: `where()` do now support closures to specify the where clause.
 * __DB__: Update now supports `limit()` and `order_by()`.
 * __DB__: now tries to reconnect when a disconnected DB connection is detected.
+* __DB__: `bind()` automatically prefixes parameter keys with `:`
 * __DButil__: `create_database()` now supports 'IF NOT EXIST'.
 * __DButil__: Better support for the CONSTRAINT keyword.
 * __DButil__: new `add_foreign_key()` and `drop_foreign_key()` methods.
