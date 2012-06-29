@@ -187,9 +187,23 @@ return array(
 	 * here. By default empty, but to use them you can add something
 	 * like this:
 	 *      array(APPPATH.'modules'.DS)
+	 *
+	 * Paths MUST end with a directory separator (the DS constant)!
 	 */
 	'module_paths' => array(
 		//APPPATH.'modules'.DS
+	),
+
+	/**
+	 * To enable you to split up your additions to the framework, packages are
+	 * used. You can define the basepaths for your packages here. By default
+	 * empty, but to use them you can add something like this:
+	 *      array(APPPATH.'modules'.DS)
+	 *
+	 * Paths MUST end with a directory separator (the DS constant)!
+	 */
+	'package_paths' => array(
+		//PKGPATH
 	),
 
 
