@@ -51,7 +51,7 @@ return array(
 	'cache_dir'       => APPPATH.'cache/',
 
 	/**
-	 * Setttings for the file finder cache (the Cache class has it's own config!)
+	 * Settings for the file finder cache (the Cache class has it's own config!)
 	 */
 	'caching'         => false,
 	'cache_lifetime'  => 3600, // In Seconds
@@ -116,16 +116,16 @@ return array(
 		/**
 		 * This input filter can be any normal PHP function as well as 'xss_clean'
 		 *
-		 * WARNING: Using xss_clean will cause a performance hit.  How much is
-		 * dependant on how much input data there is.
+		 * WARNING: Using xss_clean will cause a performance hit.
+		 * How much is dependant on how much input data there is.
 		 */
 		'input_filter'  => array(),
 
 		/**
 		 * This output filter can be any normal PHP function as well as 'xss_clean'
 		 *
-		 * WARNING: Using xss_clean will cause a performance hit.  How much is
-		 * dependant on how much input data there is.
+		 * WARNING: Using xss_clean will cause a performance hit.
+		 * How much is dependant on how much input data there is.
 		 */
 		'output_filter'  => array('Security::htmlentities'),
 
@@ -163,18 +163,17 @@ return array(
 	),
 
 	/**
-	 * Validation settings.
+	 * Validation settings
 	 */
 	'validation' => array(
 		/**
-		 * Wether to fallback to global when a
-		 *value is not found in the input array.
+		 * Wether to fallback to global when a value is not found in the input array.
 		 */
 		'global_input_fallback' => true,
 	),
 
 	/**
-	 * Routing settings.
+	 * Routing settings
 	 */
 	'routing' => array(
 		/**
@@ -215,8 +214,8 @@ return array(
 	'always_load'  => array(
 
 		/**
-		 * These packages are loaded on Fuel's startup.  You can specify them in
-		 * the following manner:
+		 * These packages are loaded on Fuel's startup.
+		 * You can specify them in the following manner:
 		 *
 		 * array('auth'); // This will assume the packages are in PKGPATH
 		 *
@@ -266,5 +265,3 @@ return array(
 	),
 
 );
-
-/* End of file config.php */
