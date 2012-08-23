@@ -54,17 +54,17 @@ By doing this you certify the below:
 #### Quick Tip
 
 If you would like to Sign-Off on all of your commits automatically (not
-recommended unless you are 100% sure).  To do this, you can simply alias
-`git commit` to include the option:
+recommended unless you are 100% sure).  To do this, you can simply create
+an alias for `git commit -s`:
 
-    $ git config --global alias.commit 'commit -s'
+    $ git config --global alias.cs 'commit -s'
 
 If you wish to only include this for your current repository, simply leave
 the `--global` option off:
 
-    $ git config alias.commit 'commit -s'
+    $ git config alias.cs 'commit -s'
 
-Now all of your commits will have the Sign-Off line.
+Now you can Sign-Off on all of your commits if you commit with `git cs`.
 
 Creating and Submitting Contributions
 -------------------------------------
