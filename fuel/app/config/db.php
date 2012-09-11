@@ -15,6 +15,7 @@ return array(
 		'type'        => 'pdo',
 		'connection'  => array(
 			'persistent' => false,
+			'compress'   => false,
 		),
 		'identifier'   => '`',
 		'table_prefix' => '',
