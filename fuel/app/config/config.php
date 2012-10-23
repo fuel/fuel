@@ -180,6 +180,11 @@ return array(
 		 * Whether URI routing is case sensitive or not
 		 */
 		'case_sensitive' => true,
+
+		/**
+		 *  Wether to strip the extension
+		 */
+		'strip_extension' => false,
 	),
 
 	/**
