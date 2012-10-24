@@ -79,6 +79,9 @@ return array(
 	'language_fallback'  => 'en', // Fallback language when file isn't available for default language
 	'locale'             => 'en_US', // PHP set_locale() setting, null to not set
 
+	/**
+	 * Internal string encoding charset
+	 */
 	'encoding'  => 'UTF-8',
 
 	/**
@@ -88,7 +91,7 @@ return array(
 	 * default_timezone		optional, if you want to change the server's default timezone
 	 */
 	'server_gmt_offset'  => 0,
-	'default_timezone'   => 'UTC',
+	'default_timezone'   => null,
 
 	/**
 	 * Logging Threshold.  Can be set to any of the following:
@@ -111,6 +114,13 @@ return array(
 		'csrf_autoload'    => false,
 		'csrf_token_key'   => 'fuel_csrf_token',
 		'csrf_expiration'  => 0,
+
+		/**
+		 * This input filter can be any normal PHP function as well as 'xss_clean'
+		 *
+		 * WARNING: Using xss_clean will cause a performance hit.
+		 * How much is dependant on how much input data there is.
+		 */
 		'uri_filter'       => array('htmlentities'),
 
 		/**
@@ -128,6 +138,16 @@ return array(
 		 * How much is dependant on how much input data there is.
 		 */
 		'output_filter'  => array('Security::htmlentities'),
+
+		/**
+		 * Encoding mechanism to use on htmlentities()
+		 */
+		'htmlentities_flags' => ENT_QUOTES,
+
+		/**
+		 * Wether to encode HTML entities as well
+		 */
+		'htmlentities_double_encode' => false,
 
 		/**
 		 * Whether to automatically filter view data
@@ -171,6 +191,11 @@ return array(
 		 */
 		'global_input_fallback' => true,
 	),
+
+	/**
+	 * Controller class prefix
+	 */
+	 'controller_prefix' => 'Controller_',
 
 	/**
 	 * Routing settings
