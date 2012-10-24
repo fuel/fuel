@@ -184,7 +184,7 @@ return array(
 		/**
 		 *  Wether to strip the extension
 		 */
-		'strip_extension' => false,
+		'strip_extension' => true,
 	),
 
 	/**
