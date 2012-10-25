@@ -1,5 +1,70 @@
 # Changelog
 
+## v1.3
+
+[Full List of core changes since 1.2](https://github.com/fuel/core/compare/1.2/master...1.3/master)
+
+### Removed code (because it was deprecated in v1.2)
+
+* __Controller__: Deprecated `$response` property has been removed from all base controller classes. All controller actions now HAVE TO return their results, either a `Response` object, or something that can be cast to string. If you are still on pre v1.2 controller code, your application will **NO LONGER** work after the upgrade to v1.3.
+
+### Code deprecated in v1.3 (to be removed in v1.4)
+
+* __Orm__: Model method `values()` has been deprecated. Use `set()` instead.
+
+### Security related
+
+* __PHPSecLib__: Has been updated to v0.2.2.
+* __HTMLawed__: Has been updated to v1.1.12.
+
+### System changes
+
+* __Debug___: You can now modify the default display behaviour of `dump()` through `Debug::$js_toggle_open`.
+* __Upload__: Now allows you to set custom messages in validation callbacks.
+* __Config__: `Config::load` now always returns the loaded configuration.
+* __Pagination__: Now uses anchors for all pagination enties, which allows for better styling.
+
+### Specific classes
+
+* __Arr__: `Arr::pluck` has been added.
+* __Arr__: `Arr::remove_prefixed` has been added.
+* __Arr__: `Arr::insert_assoc` has been added.
+* __Asset__: Has been updated to work better on Windows.
+* __Asset__: `Asset::find_file` has been added.
+* __Asset__: `Asset::add_type` has been added.
+* __DB__: `DB::in_transaction` has been added.
+* __DB__: Added support for compressed MySQL connections through the new `compress` config key.
+* __Error__: PHP notices/warnings/errors are now caught and thrown as an Exception.
+* __Event__: The Event class has been converted to be instance based.
+* __Fieldset__: You can now choose to overwrite existing options when using `set_options`.
+* __File__: download() has been made to work when shutdown events are defined that set headers.
+* __Image__: New option on load() to force a file extension.
+* __Format__: CSV file handling has been improved.
+* __Log__: Now supports custom log levels.
+* __Log__: Now allows you to configure an array of specific log levels to log.
+* __Migrate__: Now supports multiple package paths.
+* __Mongo_Db__: `Mongo_Db::get_collection` has been added.
+* __Pagination__: Added `attrs` keys to the configuration to define custom anchor attributes.
+* __Redis__: Added support for connection timeouts through the new `timeout` config key.
+* __Str__: `Str::starts_with` has been added.
+* __Str__: `Str::ends_with` has been added.
+* __Str__: `Str::is_json` has been added.
+* __Str__: `Str::is_html` has been added.
+* __Str__: `Str::is_serialized` has been added.
+
+### Packages
+
+* __Auth__: `get_profile_fields()` now allows you to fetch a single profile field.
+* __Email__: New `NoOp` email driver allows testing without sending emails out.
+* __Oil__: Now returns a non-zero exit code on failures.
+* __Oil__: Added support for PHPunit clover, text and phpformat Code Coverage methods.
+* __Orm__: New model method `register_observer()` and `unregister_observer()` to define new observers at runtime.
+* __Orm__: Added support for `where` and `order_by` clauses to relation conditions.
+* __Orm__: `set()` method has been updated to provide the same API as **Model_Crud**.
+* __Orm__: PK's are now typecast on retrieval if a type has been defined in the properties.
+* __Orm__: Update query code has been improved for better support of PostgreSQL.
+* __Parse__: Smarty driver now supports the `plugin_dir` path.
+
 ## v1.2
 
 [Full List of core changes since 1.1](https://github.com/fuel/core/compare/1.1/master...1.2/master)
