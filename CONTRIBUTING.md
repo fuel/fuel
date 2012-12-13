@@ -2,7 +2,7 @@ Contributing to FuelPHP
 =======================
 
 Any person or company wanting to contribute to FuelPHP should follow the
-following rules to increase the change of the contribution being accepted.
+following rules to increase the chance of the contribution being accepted.
 
 Sign your Work
 --------------
