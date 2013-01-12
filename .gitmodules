@@ -19,3 +19,12 @@
 [submodule "fuel/packages/email"]
 	path = fuel/packages/email
 	url = git://github.com/fuel/email.git
+[submodule "fuel/packages/log"]
+	path = fuel/packages/log
+	url = git@github.com:fuel/log.git
+[submodule "fuel/packages/validation"]
+	path = fuel/packages/validation
+	url = git@github.com:fuel/validation.git
+[submodule "fuel/packages/fieldset"]
+	path = fuel/packages/fieldset
+	url = git@github.com:fuel/fieldset.git
