@@ -21,4 +21,4 @@
 	url = git://github.com/fuel/email.git
 [submodule "fuel/packages/log"]
 	path = fuel/packages/log
-	url = git@github.com:fuel/log.git
+	url = git://github.com/fuel/log.git
