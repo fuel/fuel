@@ -7,10 +7,12 @@ desktop.ini
 .project
 .settings
 *.tmproj
-fuel/app/logs/*/*/*
-fuel/app/cache/*/*
+/composer.lock
 build
-nbproject/
 .idea
-
+/fuel/vendor
+/fuel/app/logs/*/*/*
+/fuel/app/cache/*/*
 /fuel/app/config/crypt.php
+nbproject/
+
