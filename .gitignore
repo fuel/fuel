@@ -7,7 +7,6 @@ desktop.ini
 .project
 .settings
 *.tmproj
-/composer.lock
 build
 .idea
 /fuel/vendor
