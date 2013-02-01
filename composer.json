@@ -25,12 +25,12 @@
         "php": ">=5.3.3",
         "monolog/monolog": "1.3.*",
         "fuelphp/upload": "dev-master",
-        "lukearmstrong/core": "dev-composer-installers",
-        "lukearmstrong/auth": "dev-composer-installers",
-        "lukearmstrong/email": "dev-composer-installers",
-        "lukearmstrong/oil": "dev-composer-installers",
-        "lukearmstrong/orm": "dev-composer-installers",
-        "lukearmstrong/parser": "dev-composer-installers"
+        "fuel/core": "dev-composer-installers",
+        "fuel/auth": "dev-composer-installers",
+        "fuel/email": "dev-composer-installers",
+        "fuel/oil": "dev-composer-installers",
+        "fuel/orm": "dev-composer-installers",
+        "fuel/parser": "dev-composer-installers"
     },
     "suggest": {
         "mustache/mustache": "Allow Mustache templating with the Parser package",
