@@ -15,10 +15,22 @@
         "irc": "irc://irc.freenode.org/fuelphp",
         "forum": "http://fuelphp.com/forums"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://lukearmstrong.co.uk/satis/"
+        }
+    ],
     "require": {
         "php": ">=5.3.3",
         "monolog/monolog": "1.3.*",
-    	"fuelphp/upload": "dev-master"
+        "fuelphp/upload": "dev-master",
+        "fuel/core": "dev-composer-installers",
+        "fuel/auth": "dev-composer-installers",
+        "fuel/email": "dev-composer-installers",
+        "fuel/oil": "dev-composer-installers",
+        "fuel/orm": "dev-composer-installers",
+        "fuel/parser": "dev-composer-installers"
     },
     "suggest": {
         "mustache/mustache": "Allow Mustache templating with the Parser package",
