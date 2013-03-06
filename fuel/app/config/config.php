@@ -111,7 +111,7 @@ return array(
 	/**
 	 * Security settings
 	 */
-	// 'security' => array(
+	'security' => array(
 		// 'csrf_autoload'    => false,
 		// 'csrf_token_key'   => 'fuel_csrf_token',
 		// 'csrf_expiration'  => 0,
@@ -122,7 +122,7 @@ return array(
 		 * WARNING: Using xss_clean will cause a performance hit.
 		 * How much is dependant on how much input data there is.
 		 */
-		// 'uri_filter'       => array(),
+		'uri_filter'       => array('htmlentities'),
 
 		/**
 		 * This input filter can be any normal PHP function as well as 'xss_clean'
@@ -138,7 +138,7 @@ return array(
 		 * WARNING: Using xss_clean will cause a performance hit.
 		 * How much is dependant on how much input data there is.
 		 */
-		// 'output_filter'  => array(),
+		'output_filter'  => array('Security::htmlentities'),
 
 		/**
 		 * Encoding mechanism to use on htmlentities()
@@ -159,8 +159,13 @@ return array(
 		 * With output encoding switched on all objects passed will be converted to strings or
 		 * throw exceptions unless they are instances of the classes in this array.
 		 */
-		// 'whitelisted_classes' => array(),
-	// ),
+		'whitelisted_classes' => array(
+			'Fuel\\Core\\Response',
+			'Fuel\\Core\\View',
+			'Fuel\\Core\\ViewModel',
+			'Closure',
+		),
+	),
 
 	/**
 	 * Cookie settings
