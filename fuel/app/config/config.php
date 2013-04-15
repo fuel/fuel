@@ -71,6 +71,8 @@ return array(
 		// 'throttle'     => 10,
 		// Should notices from Error::notice() be shown?
 		// 'notices'      => true,
+		// Render previous contents or show it as HTML?
+		// 'render_prior' => false,
 	// ),
 
 	/**
