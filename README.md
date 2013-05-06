@@ -1,6 +1,6 @@
 #FuelPHP
 
-* Version: 1.5
+* Version: 1.7
 * [Website](http://fuelphp.com/)
 * [Release Documentation](http://docs.fuelphp.com)
 * [Release API browser](http://api.fuelphp.com)
