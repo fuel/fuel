@@ -119,6 +119,19 @@ return array(
 		// 'csrf_expiration'  => 0,
 
 		/**
+		 * A salt to make sure the generated security tokens are not predictable
+		 */
+		// 'token_salt'            => 'put your salt value here to make the token more secure',
+
+		/**
+		 * Allow the Input class to use X headers when present
+		 *
+		 * Examples of these are HTTP_X_FORWARDED_FOR and HTTP_X_FORWARDED_PROTO, which
+		 * can be faked which could have security implications
+		 */
+		// 'allow_x_headers'       => false,
+
+		/**
 		 * This input filter can be any normal PHP function as well as 'xss_clean'
 		 *
 		 * WARNING: Using xss_clean will cause a performance hit.
