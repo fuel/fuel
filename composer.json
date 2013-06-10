@@ -29,5 +29,10 @@
     "config": {
         "vendor-dir": "fuel/vendor"
     },
+    "scripts": {
+        "post-install-cmd": [
+            "php oil r install"
+        ]
+    },
     "minimum-stability": "dev"
 }
