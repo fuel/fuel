@@ -43,7 +43,7 @@
 		<div class="hero-unit">
 			<h1>Welcome!</h1>
 			<p>You have successfully installed the FuelPHP Framework.</p>
-			<p><a class="btn btn-primary btn-large" href="http://docs.fuelphp.com">Read the Docs</a></p>
+			<p><a class="btn btn-primary btn-large" href="http://fuelphp.com/docs/">Read the Docs</a></p>
 		</div>
 		<div class="row">
 			<div class="span4">
@@ -54,14 +54,14 @@
 			</div>
 			<div class="span4">
 				<h2>Learn</h2>
-				<p>The best way to learn FuelPHP is reading through the <a href="http://docs.fuelphp.com">Documentation</a>.</p>
+				<p>The best way to learn FuelPHP is reading through the <a href="http://fuelphp.com/docs/">Documentation</a>.</p>
 				<p>Another good resource is the <a href="http://fuelphp.com/forums">Forums</a>.  They are fairly active, and you can usually get a response quickly.</p>
 			</div>
 			<div class="span4">
 				<h2>Contribute</h2>
 				<p>FuelPHP wouldn't exist without awesome contributions from the community.  Use the links below to get contributing.</p>
 				<ul>
-					<li><a href="http://docs.fuelphp.com/general/coding_standards.html">Coding Standards</a></li>
+					<li><a href="http://fuelphp.com/docs/general/coding_standards.html">Coding Standards</a></li>
 					<li><a href="http://github.com/fuel/fuel">GitHub Respository</a></li>
 					<li><a href="http://fuelphp.com/contribute/issue-tracker">Issue Tracker</a></li>
 				</ul>
