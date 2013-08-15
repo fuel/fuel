@@ -18,7 +18,7 @@
     "require": {
         "php": ">=5.3.3",
         "monolog/monolog": "1.5.*",
-    	"fuelphp/upload": "dev-master"
+    	"fuelphp/upload": "1.7"
     },
     "suggest": {
         "mustache/mustache": "Allow Mustache templating with the Parser package",
