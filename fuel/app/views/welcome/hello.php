@@ -35,13 +35,13 @@
 </head>
 <body>
 	<div id="header">
-		<div class="row">
+		<div class="container">
 			<div id="logo"></div>
 		</div>
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-16">
+			<div class="col-md-12">
 				<h1>Hello, <?php echo $name; ?>! <small>Congratulations, you just used a ViewModel!</small></h1>
 				<hr>
 				<p>The controller generating this page is found at <code>APPPATH/classes/controller/welcome.php</code>.</p>

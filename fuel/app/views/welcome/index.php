@@ -35,7 +35,7 @@
 </head>
 <body>
 	<div id="header">
-		<div class="row">
+		<div class="container">
 			<div id="logo"></div>
 		</div>
 	</div>
