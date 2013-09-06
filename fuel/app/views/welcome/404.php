@@ -41,7 +41,7 @@
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="span16">
+			<div class="col-md-16">
 				<h1><?php echo $title; ?> <small>We can't find that!</small></h1>
 				<hr>
 				<p>The controller generating this page is found at <code>APPPATH/classes/controller/welcome.php</code>.</p>
