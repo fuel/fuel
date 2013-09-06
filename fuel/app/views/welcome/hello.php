@@ -19,10 +19,6 @@
 			width: 100%;
 			margin-bottom: 40px;
 		}
-		#header .row{
-			width: 940px;
-			margin: 0 auto;
-		}
 		a{
 			color: #883ced;
 		}
