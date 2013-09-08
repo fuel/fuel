@@ -70,6 +70,35 @@ catch (HttpNotFoundException $e)
 		throw $e;
 	}
 }
+catch (Exception $e)
+{
+    if(Fuel::$env === Fuel::PRODUCTION)
+    {
+        $route = array_key_exists('_500_', Router::$routes) ? Router::$routes['_500_']->translation : Config::get('routes._500_');
+
+        if($route instanceof Closure)
+        {
+            $response = $route();
+
+            if( ! $response instanceof Response)
+            {
+                $response = Response::forge($response);
+            }
+        }
+        elseif ($route)
+        {
+            $response = Request::forge($route, false)->execute()->response();
+        }
+        else
+        {
+            throw $e;
+        }
+    }
+    else
+    {
+        throw $e;
+    }
+}
 
 // This will add the execution time and memory usage to the output.
 // Comment this out if you don't use it.

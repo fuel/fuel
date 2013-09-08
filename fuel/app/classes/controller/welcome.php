@@ -55,4 +55,15 @@ class Controller_Welcome extends Controller
 	{
 		return Response::forge(ViewModel::forge('welcome/404'), 404);
 	}
+
+    /**
+     * The 500 action for the application.
+     *
+     * @access  public
+     * @return  Response
+     */
+    public function action_500()
+    {
+        return Response::forge(ViewModel::forge('welcome/500'), 500);
+    }
 }
