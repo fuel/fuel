@@ -73,6 +73,14 @@ catch (HttpNotFoundException $e)
 	}
 }
 
+// Render the output
+$response->body($response->body());
+
+//Response of RESTController is for array
+if (is_array($response->body())) {
+    return $response->send(true);
+}
+
 // This will add the execution time and memory usage to the output.
 // Comment this out if you don't use it.
 if (strpos($response->body(), '{exec_time}') !== false or strpos($response->body(), '{mem_usage}') !== false)
