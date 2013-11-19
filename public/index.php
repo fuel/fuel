@@ -74,7 +74,7 @@ catch (HttpNotFoundException $e)
 }
 
 // Render the output
-$response->body((string) $response->body());
+$response->body((string) $response);
 
 // This will add the execution time and memory usage to the output.
 // Comment this out if you don't use it.
