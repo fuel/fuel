@@ -3,13 +3,14 @@
 
 <IfModule mod_rewrite.c>
 
-    # Make sure directory listing is disabled
-	Options +FollowSymLinks -Indexes
 	RewriteEngine on
 
 	# NOTICE: If you get a 404 play with combinations of the following commented out lines
 	#AllowOverride All
 	#RewriteBase /wherever/fuel/is
+
+    # Make sure directory listing is disabled
+	Options +FollowSymLinks -Indexes
 
 	# Restrict your site to only one domain
 	# !important USE ONLY ONE OPTION
@@ -30,13 +31,19 @@
 	#RewriteCond %{THE_REQUEST}				^[^/]*/index\.php [NC]
 	#RewriteRule ^index\.php(.*)$			$1 [R=301,NS,L]
 
-	# Send request via index.php (again, not if its a real file or folder)
+    # make HTTP Basic Authentication work on php5-fcgi installs
+    <IfModule mod_fcgid.c>
+        RewriteCond %{HTTP:Authorization} .
+        RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    </IfModule>
+
+	# Send request via index.php if not a real file or directory
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 
 	# deal with php5-cgi first
 	<IfModule mod_fcgid.c>
-		RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
+        RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
 	</IfModule>
 
 	<IfModule !mod_fcgid.c>
