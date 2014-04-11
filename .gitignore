@@ -15,4 +15,10 @@ build
 /fuel/app/cache/*/*
 /fuel/app/config/crypt.php
 nbproject/
-
+/docs/
+/fuel/core/
+/fuel/packages/auth/
+/fuel/packages/email/
+/fuel/packages/oil/
+/fuel/packages/orm/
+/fuel/packages/parser/

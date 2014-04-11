@@ -19,8 +19,141 @@
         "php": ">=5.3.3",
         "monolog/monolog": "1.5.*",
         "michelf/php-markdown": "1.4.0",
-    	"fuelphp/upload": "2.0.1"
+        "fuelphp/upload": "2.0.1",
+        "fuel/docs": "1.7.2",
+        "fuel/core": "1.7.2",
+        "fuel/orm": "1.7.2",
+        "fuel/auth": "1.7.2",
+        "fuel/oil": "1.7.2",
+        "fuel/parser": "1.7.2",
+        "fuel/email": "1.7.2"
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "fuel/docs",
+                "type": "fuel-package",
+                "version": "1.7.2",
+                "require": {
+                    "composer/installers": "*"
+                },
+                "source": {
+                    "url": "https://github.com/fuel/docs.git",
+                    "type": "git",
+                    "reference": "v1.7.2"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "fuel/core",
+                "type": "fuel-package",
+                "version": "1.7.2",
+                "require": {
+                    "composer/installers": "*"
+                },
+                "source": {
+                    "url": "https://github.com/fuel/core.git",
+                    "type": "git",
+                    "reference": "v1.7.2"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "fuel/orm",
+                "type": "fuel-package",
+                "version": "1.7.2",
+                "require": {
+                    "composer/installers": "*"
+                },
+                "source": {
+                    "url": "https://github.com/fuel/orm.git",
+                    "type": "git",
+                    "reference": "v1.7.2"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "fuel/auth",
+                "type": "fuel-package",
+                "version": "1.7.2",
+                "require": {
+                    "composer/installers": "*"
+                },
+                "source": {
+                    "url": "https://github.com/fuel/auth.git",
+                    "type": "git",
+                    "reference": "v1.7.2"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "fuel/oil",
+                "type": "fuel-package",
+                "version": "1.7.2",
+                "require": {
+                    "composer/installers": "*"
+                },
+                "source": {
+                    "url": "https://github.com/fuel/oil.git",
+                    "type": "git",
+                    "reference": "v1.7.2"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "fuel/parser",
+                "type": "fuel-package",
+                "version": "1.7.2",
+                "require": {
+                    "composer/installers": "*"
+                },
+                "source": {
+                    "url": "https://github.com/fuel/parser.git",
+                    "type": "git",
+                    "reference": "v1.7.2"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "fuel/email",
+                "type": "fuel-package",
+                "version": "1.7.2",
+                "require": {
+                    "composer/installers": "*"
+                },
+                "source": {
+                    "url": "https://github.com/fuel/email.git",
+                    "type": "git",
+                    "reference": "v1.7.2"
+                }
+            }
+        }
+    ],
+    "extra": {
+        "installer-paths": {
+            "docs": ["fuel/docs"],
+            "fuel/core": ["fuel/core"],
+            "fuel/packages/orm": ["fuel/orm"],
+            "fuel/packages/oil": ["fuel/oil"],
+            "fuel/packages/auth": ["fuel/auth"],
+            "fuel/packages/parser": ["fuel/parser"],
+            "fuel/packages/email": ["fuel/email"]
+        }
+    },
+
     "suggest": {
         "mustache/mustache": "Allow Mustache templating with the Parser package",
         "smarty/smarty": "Allow Smarty templating with the Parser package",
