@@ -41,7 +41,7 @@
                 "source": {
                     "url": "https://github.com/fuel/docs.git",
                     "type": "git",
-                    "reference": "v1.7.2"
+                    "reference": "1.7/master"
                 }
             }
         },
@@ -57,7 +57,7 @@
                 "source": {
                     "url": "https://github.com/fuel/core.git",
                     "type": "git",
-                    "reference": "v1.7.2"
+                    "reference": "1.7/master"
                 }
             }
         },
@@ -73,7 +73,7 @@
                 "source": {
                     "url": "https://github.com/fuel/orm.git",
                     "type": "git",
-                    "reference": "v1.7.2"
+                    "reference": "1.7/master"
                 }
             }
         },
@@ -89,7 +89,7 @@
                 "source": {
                     "url": "https://github.com/fuel/auth.git",
                     "type": "git",
-                    "reference": "v1.7.2"
+                    "reference": "1.7/master"
                 }
             }
         },
@@ -105,7 +105,7 @@
                 "source": {
                     "url": "https://github.com/fuel/oil.git",
                     "type": "git",
-                    "reference": "v1.7.2"
+                    "reference": "1.7/master"
                 }
             }
         },
@@ -121,7 +121,7 @@
                 "source": {
                     "url": "https://github.com/fuel/parser.git",
                     "type": "git",
-                    "reference": "v1.7.2"
+                    "reference": "1.7/master"
                 }
             }
         },
@@ -137,7 +137,7 @@
                 "source": {
                     "url": "https://github.com/fuel/email.git",
                     "type": "git",
-                    "reference": "v1.7.2"
+                    "reference": "1.7/master"
                 }
             }
         }
