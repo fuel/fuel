@@ -16,7 +16,7 @@
  * @package  app
  * @extends  ViewModel
  */
-class View_Welcome_Hello extends ViewModel
+class View_Welcome_Hello extends Viewmodel
 {
 	/**
 	 * Prepare the view data, keeping this in here helps clean up

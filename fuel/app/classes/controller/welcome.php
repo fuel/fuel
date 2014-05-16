@@ -42,7 +42,7 @@ class Controller_Welcome extends Controller
 	 */
 	public function action_hello()
 	{
-		return Response::forge(ViewModel::forge('welcome/hello'));
+		return Response::forge(Viewmodel::forge('welcome/hello'));
 	}
 
 	/**
@@ -53,6 +53,6 @@ class Controller_Welcome extends Controller
 	 */
 	public function action_404()
 	{
-		return Response::forge(ViewModel::forge('welcome/404'), 404);
+		return Response::forge(Viewmodel::forge('welcome/404'), 404);
 	}
 }
