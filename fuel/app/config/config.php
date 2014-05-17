@@ -175,6 +175,7 @@ return array(
 		 * throw exceptions unless they are instances of the classes in this array.
 		 */
 		'whitelisted_classes' => array(
+			'Fuel\\Core\\Presenter',
 			'Fuel\\Core\\Response',
 			'Fuel\\Core\\View',
 			'Fuel\\Core\\ViewModel',
