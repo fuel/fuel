@@ -152,7 +152,7 @@
     "extra": {
         "installer-paths": {
             "fuel/{$name}": ["fuel/core"],
-            "fuel/{$name}": ["fuel/docs"]
+            "{$name}": ["fuel/docs"]
         }
     },
     "scripts": {
