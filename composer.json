@@ -117,7 +117,7 @@
                     "type": "zip"
                 },
                 "source": {
-                    "url": "https://github.com/docs/core.git",
+                    "url": "https://github.com/fuel/docs.git",
                     "type": "git",
                     "reference": "1.8/develop"
                 }
