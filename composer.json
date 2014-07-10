@@ -1,6 +1,7 @@
 {
     "name": "fuel/fuel",
     "type": "project",
+    "description" : "FuelPHP is a simple, flexible, community driven PHP 5.3+ framework, based on the best ideas of other frameworks, with a fresh start!",
     "keywords": ["application", "website", "development", "framework", "PHP"],
     "license": "MIT",
     "repositories": [
