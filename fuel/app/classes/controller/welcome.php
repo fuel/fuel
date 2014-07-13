@@ -6,7 +6,7 @@
  * @version    1.7
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2013 Fuel Development Team
+ * @copyright  2010 - 2014 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -34,7 +34,7 @@ class Controller_Welcome extends Controller
 	}
 
 	/**
-	 * A typical "Hello, Bob!" type example.  This uses a ViewModel to
+	 * A typical "Hello, Bob!" type example.  This uses a Presenter to
 	 * show how to use them.
 	 *
 	 * @access  public
@@ -42,7 +42,7 @@ class Controller_Welcome extends Controller
 	 */
 	public function action_hello()
 	{
-		return Response::forge(ViewModel::forge('welcome/hello'));
+		return Response::forge(Presenter::forge('welcome/hello'));
 	}
 
 	/**
@@ -53,6 +53,6 @@ class Controller_Welcome extends Controller
 	 */
 	public function action_404()
 	{
-		return Response::forge(ViewModel::forge('welcome/404'), 404);
+		return Response::forge(Presenter::forge('welcome/404'), 404);
 	}
 }
