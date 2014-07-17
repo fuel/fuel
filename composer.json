@@ -135,7 +135,7 @@
         "fuel/oil": "1.7.2",
         "fuel/orm": "1.7.2",
         "fuel/parser": "1.7.2",
-        "fuelphp/upload": "2.0.1",
+        "fuelphp/upload": "2.0.2",
         "monolog/monolog": "1.5.*",
         "michelf/php-markdown": "1.4.0"
     },
