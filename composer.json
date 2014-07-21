@@ -152,7 +152,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-1.8/develop": "1.7.x-dev",
+            "dev-1.8/develop": "1.8-dev",
             "dev-1.7/master": "1.7.2"
         },
         "installer-paths": {
