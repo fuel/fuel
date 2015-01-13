@@ -16,7 +16,6 @@
     "require": {
         "php": ">=5.3.3",
         "composer/installers": "~1.0",
-        "fuel/docs": "dev-1.8/develop",
         "fuel/core": "dev-1.8/develop",
         "fuel/auth": "dev-1.8/develop",
         "fuel/email": "dev-1.8/develop",
@@ -26,6 +25,9 @@
         "fuelphp/upload": "2.0.2",
         "monolog/monolog": "1.5.*",
         "michelf/php-markdown": "1.4.0"
+    },
+    "require-dev": {
+        "fuel/docs": "dev-1.8/develop"
     },
     "suggest": {
         "dwoo/dwoo" : "Allow Dwoo templating with the Parser package",
