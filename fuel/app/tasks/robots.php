@@ -26,7 +26,6 @@ namespace Fuel\Tasks;
 
 class Robots
 {
-
 	/**
 	 * This method gets ran when a valid method name is not used in the command.
 	 *
