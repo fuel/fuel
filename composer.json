@@ -41,6 +41,10 @@
         "vendor-dir": "fuel/vendor"
     },
     "extra": {
+        "branch-alias": {
+            "dev-1.8/develop": "1.8-dev",
+            "dev-1.7/master": "1.7.2"
+        },
         "installer-paths": {
             "fuel/{$name}": ["fuel/core"],
             "{$name}": ["fuel/docs"]
