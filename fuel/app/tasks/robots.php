@@ -6,7 +6,7 @@
  * @version    1.7
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2014 Fuel Development Team
+ * @copyright  2010 - 2015 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
@@ -26,7 +26,6 @@ namespace Fuel\Tasks;
 
 class Robots
 {
-
 	/**
 	 * This method gets ran when a valid method name is not used in the command.
 	 *

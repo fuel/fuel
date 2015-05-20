@@ -1,5 +1,6 @@
 # Changelog
 
+<<<<<<< HEAD
 ## v1.7.2
 
 ### Important fixes, changes, notes. Read them carefully.
@@ -172,6 +173,8 @@ Error messages are now escaped, to prevent a possible XSS through the generated 
 * __Parser__: Smarty driver how has the same Fuel interface plugins as Twig.
 * __Parser__: Now supports the "Lex" parser (http://github.com/pyrocms/lex).
 
+=======
+>>>>>>> 1.8/develop
 ## v1.7.1
 
 ### Important fixes, changes, notes. Read them carefully.
