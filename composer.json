@@ -16,12 +16,12 @@
     "require": {
         "php": ">=5.3.3",
         "composer/installers": "~1.0",
-        "fuel/core": "1.7/master",
-        "fuel/auth": "1.7/master",
-        "fuel/email": "1.7/master",
-        "fuel/oil": "1.7/master",
-        "fuel/orm": "1.7/master",
-        "fuel/parser": "1.7/master",
+        "fuel/core": "dev-1.7/master",
+        "fuel/auth": "dev-1.7/master",
+        "fuel/email": "dev-1.7/master",
+        "fuel/oil": "dev-1.7/master",
+        "fuel/orm": "dev-1.7/master",
+        "fuel/parser": "dev-1.7/master",
         "fuelphp/upload": "2.0.2",
         "monolog/monolog": "1.5.*",
         "michelf/php-markdown": "1.4.0"
