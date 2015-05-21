@@ -1,5 +1,93 @@
 # Changelog
 
+## v1.7.3
+
+### Important fixes, changes, notes. Read them carefully.
+
+This release is mainly a bugfix release, although some minor functionality was added as well. The main goal of this release is increased stability of the version 1 code, now that it is approaching the end of it's life-cycle.
+
+The final version will be v1.8, which will be released at the same time the first version of Fuel v2 will be released. It will be an LTS version, no new functionality will be accepted on the codebase anymore, but will will keep releasing bugfixes and security fixes.
+
+### Backward compatibility notes
+
+* The FuelPHP framework is now entirely loaded using composer. A check has been added to the frontloader to make sure composer has run and all components are installed, and die with a proper error message if that is not the case. The default `minimum-stability` is set to `stable`, so you might want to have a look at that if needed.
+* Activating the framework autoloader has been moved from the App bootstrap to the frontloader (oil for cli, public/index.php for web requests). When you upgrade, make sure to update both the frontloaders, otherwise you will get exceptions when the autoloader is loaded twice.
+* When loading multiple modules or packages through the `load()` method, the result will now only be `true` if all could be succesfully loaded.
+* When Fuel is run is CLI mode, output buffering is now disabled. Note that it might still buffer, for example because you have enabled buffering globally in your php.ini.
+* The `match_collection` validation rule now always returns `true` if no collection was passed to match against.
+
+### Security related
+
+* PHPSecLib has been updated to a more recent version.
+* Htmlawed has been updated to version 1.1.19.
+
+### System changes
+
+* The dependency with `FuelPHP\Upload` is now with version 2.0.2.
+* The frontloader now has a generic Exception catching mechanism. For every Exception caught you can have the frontloader route to a route entry of your choice. By default, these are defined: `HttpNotFoundException (_404_ route)`, `HttpNoAccessException (_403_ route)` and the `HttpServerErrorException (_500_ route)`.
+* The finder caching system has been updated to avoid incorrect cache hits when loading files from modules or packages.
+* Module and package paths are now forced to be lowercase to comply with the standards.
+* You can now configure additional paths to be cleaned, to avoid giving away FQFN in error messages.
+* When running migrations, your `up()` or `down()` method can return false to signal it can't execute the method at that point in time. Migrations that use this method are now automatically re-tried in a second migration run. This helps with dependencies, to make sure migrations run in the correct sequence (for example if an app migration requires a package migration to run first because it needs access to its tables).
+
+### Specific classes
+
+* __Cache__: The XCache `delete_all()` method now actually deletes it all.
+* __Config__: when using a database as backend storage, you can now specify the name of the database config that needs to be used to access the "config" table.
+* __Config__: you can now store config information in a memcached backend (think about persistency!).
+* __Controller_Hybrid__: calling a REST method from a browser now returns the correct result.
+* __Crypt__: can now be instantiated, if you need to use multiple crypt keysets in your application.
+* __DB__: `count_last_query()` now correctly handles SQL containing sub-queries.
+* __DB__: database result objects can now be assigned a custom sanitation for specific encoding/decoding logic when results are send to a View. This also means you will no longer get a "database results are read-only" exception when you do.
+* __Error__: the log level used for errors is now configurable.
+* __Form__: the `label()` method now has support for the "for" attribute.
+* __Format__: new parameter for `to_xml()` allows you to specify how booleans must be represented (0/1 vs false/true).
+* __Inflector__: the inflector ruleset has been moved to a lang file, so it can easily be amended, and provide support for introducting non-english language rulesets.
+* __Input__: new `query_string()` method to return the main requests query string.
+* __Input__: a header value lookup is now done in a case-insensitive manner.
+* __Lang__: now allows you to load the same lang filename for different languages concurrently.
+* __Lang__: `load()` now has support for dot-notation when loading into an existing group.
+* __Log__: Monolog initialisation has moved to a separate method, making it easier to overload it.
+* __Migrate__: will now autoload a module or a package before it executes its migrations.
+* __Module__: when unloading a module, the routes defined by the module will be correctly removed.
+* __Pagination__: page and item calculations have been improved, to allow more flexibility in passing page data to the object.
+* __Presenter__: now supports the "::" notation to force loading a presenter from a module.
+* __Response__: now has loop detection for `redirect_back()`.
+* __Session__: driver garbage collection has moved to a separate method, making it easier to overload it.
+* __Session__: the `rotation_time` configuration key can now be set to false to completely disable automatic session id rotation. Use with care!
+* __Theme__: you can now specify the other in which partials must be rendered for output. This allows you to render content before headers and footers, needed to dynamically add assets.
+* __Theme__: the `presenter()` method now allows you to pass a custom view name (like `Presenter::forge()` that is theme aware.
+* __Validation__: the `match_collection` rule can now be run in `strict` mode, which meanly helps when validating booleans.
+* __Validation__: new rule `specials` allows matching against non-latin characters considered alphabetic in unicode.
+* __View__: `get()` and `set()` now supports dot-notation for getting values from stored arrays.
+
+### Packages
+
+* __Auth__: the broken support for separate read- and write DB connections has been fixed.
+* __Auth__: Ormauth now correctly handles uses without any group.
+* __Auth__: Ormauth now keeps the current users effective rights in memory for faster access.
+* __Auth__: the use of `force_login()` now correctly registers the drivers logged-in state, so a global logout will now do what it promises.
+* __Auth__: drivers now force a session id rotation on login.
+* __Auth__: when using "Opauth", related provider records are now deleted when the user is deleted.
+* __Auth__: Orm models now correctly define their properties, to allow overloading.
+* __Auth__: `login()` now has multi-driver support (will attempt to login all drivers if configured)
+* __Auth__: the `opauth` interface class now also supports Opauth packages that are not HTTP based (like [this LDAP driver](https://github.com/FlexCoders/opauth-ldap)).
+* __Email__: header encoding is now disabled for the "Mandrill" driver.
+* __Email__: the "Mailgun" driver now has support for attachments.
+* __Oil__: generated templates can now handle custom Auth drivers, as long as they extend one of the included drivers.
+* __Oil__: the PHP server command has been fixed for use on Windows platforms.
+* __Orm__: The slug observer now also works for Model_Soft models.
+* __Orm__: `to_array()` now handles multi-level relations of different type a lot better.
+* __Orm__: in a "many_many" relation, you can now define an ordering on a column in the "through" table.
+* __Orm__: models now allow you to define separate read- and write database connections.
+* __Orm__: better support for select(). Please not that is it still not advised to use this, and it is still required to have the PK as part of the result.
+* __Orm__: the behaviours `filter_properties` and `array_excludes` for `to-array()` now have getters.
+* __Orm__: `where()` now accepts a single DB::expr() object as argument.
+* __Orm__: `set()` now allows you to pass an array structure that can recursively set relations (currently "has_one" and "belong_to" only).
+* __Parser__: now also handles view files with a ".php" extension correctly.
+* __Parser__: you can now use `Debug::dump()` in a twig template.
+* __Parser__: in Twig templates you can now access the current Asset instance to load css, js or image files.
+
 ## v1.7.2
 
 ### Important fixes, changes, notes. Read them carefully.
