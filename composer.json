@@ -22,7 +22,7 @@
         "fuel/oil": "dev-1.8/develop",
         "fuel/orm": "dev-1.8/develop",
         "fuel/parser": "dev-1.8/develop",
-        "fuelphp/upload": "2.0.3",
+        "fuelphp/upload": "2.0.4",
         "monolog/monolog": "1.5.*",
         "michelf/php-markdown": "1.4.0"
     },
