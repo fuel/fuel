@@ -91,6 +91,10 @@ try
 	// ... and execute the main request
 	$response = $routerequest();
 }
+catch (HttpBadRequestException $e)
+{
+	$response = $routerequest('_400_', $e);
+}
 catch (HttpNoAccessException $e)
 {
 	$response = $routerequest('_403_', $e);
