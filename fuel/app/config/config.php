@@ -113,9 +113,12 @@ return array(
 	 * Security settings
 	 */
 	'security' => array(
-		// 'csrf_autoload'    => false,
-		// 'csrf_token_key'   => 'fuel_csrf_token',
-		// 'csrf_expiration'  => 0,
+		// 'csrf_autoload'            => false,
+		// 'csrf_autoload_methods'    => array('post', 'put', 'delete'),
+		// 'csrf_bad_request_on_fail' => false,
+		// 'csrf_auto_token'          => false,
+		// 'csrf_token_key'           => 'fuel_csrf_token',
+		// 'csrf_expiration'          => 0,
 
 		/**
 		 * A salt to make sure the generated security tokens are not predictable
