@@ -31,7 +31,7 @@
 	#RewriteCond %{THE_REQUEST}				^[^/]*/index\.php [NC]
 	#RewriteRule ^index\.php(.*)$			$1 [R=301,NS,L]
 
-    # make HTTP Basic Authentication work on php5-fcgi installs
+    # make HTTP Basic Authentication work on php-fcgi installs
     <IfModule mod_fcgid.c>
         RewriteCond %{HTTP:Authorization} .
         RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -41,21 +41,31 @@
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 
-	# deal with php5-cgi first
+	# deal with php-fcgi first
 	<IfModule mod_fcgid.c>
         RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
 	</IfModule>
 
+	# no php-fcgi, check for sapi and fpm
 	<IfModule !mod_fcgid.c>
 
-		# for normal Apache installations
+		# for PHP5 sapi installations
 		<IfModule mod_php5.c>
 			RewriteRule ^(.*)$ index.php/$1 [L]
 		</IfModule>
 
-		# for Apache FGCI installations
 		<IfModule !mod_php5.c>
-			RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
+
+			# for PHP7 sapi installations
+			<IfModule mod_php7.c>
+				RewriteRule ^(.*)$ index.php/$1 [L]
+			</IfModule>
+
+			# for fpm installations
+			<IfModule !mod_php7.c>
+				RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
+			</IfModule>
+
 		</IfModule>
 
 	</IfModule>
