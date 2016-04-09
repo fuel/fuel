@@ -16,7 +16,7 @@
     "require": {
         "php": ">=5.3.3",
         "composer/installers": "~1.0",
-        "fuel/core": "dev-1.9/develo",
+        "fuel/core": "dev-1.9/develop",
         "fuel/auth": "dev-1.9/develop",
         "fuel/email": "dev-1.9/develop",
         "fuel/oil": "dev-1.9/develop",
