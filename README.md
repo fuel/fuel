@@ -1,6 +1,6 @@
 #FuelPHP
 
-* Version: 1.7
+* Version: 1.8
 * [Website](http://fuelphp.com/)
 * [Release Documentation](http://docs.fuelphp.com)
 * [Release API browser](http://api.fuelphp.com)
@@ -10,7 +10,9 @@
 
 ## Description
 
-FuelPHP is a fast, lightweight PHP 5.3 framework. In an age where frameworks are a dime a dozen, We believe that FuelPHP will stand out in the crowd.  It will do this by combining all the things you love about the great frameworks out there, while getting rid of the bad.
+FuelPHP is a fast, lightweight PHP 5.3+ framework. In an age where frameworks are a dime a dozen, We believe that FuelPHP will stand out in the crowd.  It will do this by combining all the things you love about the great frameworks out there, while getting rid of the bad.
+
+FuelPHP is fully PHP 7 compatible.
 
 ## More information
 
@@ -19,7 +21,8 @@ For more detailed information, see the [development wiki](https://github.com/fue
 ##Development Team
 
 * Harro Verton - Project Manager, Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
-* Frank de Jonge - Developer ([http://frenky.net/](http://frenky.net/))
+* Steve West - Core Developer, ORM
+* Márk Sági-Kazár - Developer
 
 ### Want to join?
 
@@ -33,6 +36,7 @@ are up to scratch, we will notice you, and will ask you to become a team member.
 
 ### Alumni
 
+* Frank de Jonge - Developer ([http://frenky.net/](http://frenky.net/))
 * Jelmer Schreuder - Developer ([http://jelmerschreuder.nl/](http://jelmerschreuder.nl/))
 * Phil Sturgeon - Developer ([http://philsturgeon.co.uk](http://philsturgeon.co.uk))
 * Dan Horrigan - Founder, Developer ([http://dhorrigan.com](http://dhorrigan.com))

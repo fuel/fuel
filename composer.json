@@ -1,8 +1,8 @@
 {
     "name": "fuel/fuel",
     "type": "project",
-    "description" : "FuelPHP is a simple, flexible, community driven PHP 5.3+ framework, based on the best ideas of other frameworks, with a fresh start!",
-    "keywords": ["application", "website", "development", "framework", "PHP"],
+    "description" : "FuelPHP is a simple, flexible, community driven PHP 5.3.3+ framework, based on the best ideas of other frameworks, with a fresh start!",
+    "keywords": ["application", "website", "development", "framework", "PHP", "PHP7"],
     "license": "MIT",
     "repositories": [
         { "type": "vcs", "url": "https://github.com/fuel/docs" },
@@ -16,19 +16,19 @@
     "require": {
         "php": ">=5.3.3",
         "composer/installers": "~1.0",
-        "fuel/core": "dev-1.8/develop",
-        "fuel/auth": "dev-1.8/develop",
-        "fuel/email": "dev-1.8/develop",
-        "fuel/oil": "dev-1.8/develop",
-        "fuel/orm": "dev-1.8/develop",
-        "fuel/parser": "dev-1.8/develop",
+        "fuel/core": "dev-1.8/master",
+        "fuel/auth": "dev-1.8/master",
+        "fuel/email": "dev-1.8/master",
+        "fuel/oil": "dev-1.8/master",
+        "fuel/orm": "dev-1.8/master",
+        "fuel/parser": "dev-1.8/master",
         "fuelphp/upload": "2.0.6",
         "monolog/monolog": "1.5.*",
         "phpseclib/phpseclib": "2.0.0",
         "michelf/php-markdown": "1.4.0"
     },
     "require-dev": {
-        "fuel/docs": "dev-1.8/develop"
+        "fuel/docs": "dev-1.8/master"
     },
     "suggest": {
         "dwoo/dwoo" : "Allow Dwoo templating with the Parser package",
@@ -52,5 +52,5 @@
             "php oil r install"
         ]
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
