@@ -4,31 +4,22 @@
     "description" : "FuelPHP is a simple, flexible, community driven PHP 5.3.3+ framework, based on the best ideas of other frameworks, with a fresh start!",
     "keywords": ["application", "website", "development", "framework", "PHP", "PHP7"],
     "license": "MIT",
-    "repositories": [
-        { "type": "vcs", "url": "https://github.com/fuel/docs" },
-        { "type": "vcs", "url": "https://github.com/fuel/core" },
-        { "type": "vcs", "url": "https://github.com/fuel/auth" },
-        { "type": "vcs", "url": "https://github.com/fuel/email" },
-        { "type": "vcs", "url": "https://github.com/fuel/oil" },
-        { "type": "vcs", "url": "https://github.com/fuel/orm" },
-        { "type": "vcs", "url": "https://github.com/fuel/parser" }
-    ],
     "require": {
         "php": ">=5.3.3",
         "composer/installers": "~1.0",
-        "fuel/core": "dev-1.8/master",
-        "fuel/auth": "dev-1.8/master",
-        "fuel/email": "dev-1.8/master",
-        "fuel/oil": "dev-1.8/master",
-        "fuel/orm": "dev-1.8/master",
-        "fuel/parser": "dev-1.8/master",
+        "fuel/core": "1.8.*",
+        "fuel/auth": "1.8.*",
+        "fuel/email": "1.8.*",
+        "fuel/oil": "1.8.*",
+        "fuel/orm": "1.8.*",
+        "fuel/parser": "1.8.*",
         "fuelphp/upload": "2.0.6",
         "monolog/monolog": "1.5.*",
         "phpseclib/phpseclib": "2.0.0",
         "michelf/php-markdown": "1.4.0"
     },
     "require-dev": {
-        "fuel/docs": "dev-1.8/master"
+        "fuel/docs": "1.8.*"
     },
     "suggest": {
         "dwoo/dwoo" : "Allow Dwoo templating with the Parser package",
