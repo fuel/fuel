@@ -4,15 +4,6 @@
     "description" : "FuelPHP is a simple, flexible, community driven PHP 5.3.3+ framework, based on the best ideas of other frameworks, with a fresh start!",
     "keywords": ["application", "website", "development", "framework", "PHP", "PHP7"],
     "license": "MIT",
-    "repositories": [
-        { "type": "vcs", "url": "https://github.com/fuel/docs" },
-        { "type": "vcs", "url": "https://github.com/fuel/core" },
-        { "type": "vcs", "url": "https://github.com/fuel/auth" },
-        { "type": "vcs", "url": "https://github.com/fuel/email" },
-        { "type": "vcs", "url": "https://github.com/fuel/oil" },
-        { "type": "vcs", "url": "https://github.com/fuel/orm" },
-        { "type": "vcs", "url": "https://github.com/fuel/parser" }
-    ],
     "require": {
         "php": ">=5.3.3",
         "composer/installers": "~1.0",
