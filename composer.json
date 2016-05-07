@@ -14,7 +14,7 @@
         "fuel/orm": "dev-1.9/develop",
         "fuel/parser": "dev-1.9/develop",
         "fuelphp/upload": "2.0.6",
-        "monolog/monolog": "1.5.*",
+        "monolog/monolog": "1.18.*",
         "phpseclib/phpseclib": "2.0.0",
         "michelf/php-markdown": "1.4.0"
     },
