@@ -51,11 +51,11 @@ require COREPATH.'classes'.DIRECTORY_SEPARATOR.'autoloader.php';
 class_alias('Fuel\\Core\\Autoloader', 'Autoloader');
 
 // Exception route processing closure
-$routerequest = function($route = null, $e = false)
+$routerequest = function($request = null, $e = false)
 {
 	Request::reset_request(true);
 
-	$route = array_key_exists($route, Router::$routes) ? Router::$routes[$route]->translation : Config::get('routes.'.$route);
+	$route = array_key_exists($request, Router::$routes) ? Router::$routes[$request]->translation : Config::get('routes.'.$request);
 
 	if ($route instanceof Closure)
 	{
@@ -73,6 +73,10 @@ $routerequest = function($route = null, $e = false)
 	elseif ($route)
 	{
 		$response = Request::forge($route, false)->execute(array($e))->response();
+	}
+	elseif ($request)
+	{
+		$response = Request::forge($request)->execute(array($e))->response();
 	}
 	else
 	{
