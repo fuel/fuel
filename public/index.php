@@ -104,6 +104,14 @@ catch (HttpServerErrorException $e)
 	$response = $routerequest('_500_', $e);
 }
 
+// Render the output
+$response->body($response->body());
+
+//Response of RESTController is for array
+if (is_array($response->body())) {
+    return $response->send(true);
+}
+
 // This will add the execution time and memory usage to the output.
 // Comment this out if you don't use it.
 $response->body((string) $response);
