@@ -1,4 +1,11 @@
 <?php
+// Load in the Autoloader
+if (!\class_exists('Autoloader')) {
+	require COREPATH . 'classes' . DIRECTORY_SEPARATOR . 'autoloader.php';
+	class_alias('Fuel\\Core\\Autoloader', 'Autoloader');
+}
+
+
 // Bootstrap the framework DO NOT edit this
 require COREPATH.'bootstrap.php';
 
