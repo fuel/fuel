@@ -13,10 +13,7 @@
         "fuel/oil": "1.8.*",
         "fuel/orm": "1.8.*",
         "fuel/parser": "1.8.*",
-        "fuelphp/upload": "2.0.6",
-        "monolog/monolog": "1.18.*",
-        "phpseclib/phpseclib": "2.0.0",
-        "michelf/php-markdown": "1.4.0"
+        "fuelphp/upload": "2.0.6"
     },
     "require-dev": {
         "fuel/docs": "1.8.*"
