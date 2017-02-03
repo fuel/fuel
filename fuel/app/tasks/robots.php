@@ -6,7 +6,7 @@
  * @version    1.8
  * @author     Fuel Development Team
  * @license    MIT License
- * @copyright  2010 - 2016 Fuel Development Team
+ * @copyright  2010 - 2017 Fuel Development Team
  * @link       http://fuelphp.com
  */
 
