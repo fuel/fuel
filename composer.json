@@ -13,6 +13,9 @@
         "fuel/oil": "dev-1.9/develop",
         "fuel/orm": "dev-1.9/develop",
         "fuel/parser": "dev-1.9/develop",
+        "phpseclib/phpseclib": "2.0.*@stable",
+        "monolog/monolog": "1.18.*@stable",
+        "michelf/php-markdown": "1.7.0@stable",
         "fuelphp/upload": "2.0.6"
     },
     "require-dev": {
