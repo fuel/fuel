@@ -1,4 +1,4 @@
-#FuelPHP
+# FuelPHP
 
 * Version: 1.8
 * [Website](http://fuelphp.com/)
@@ -18,7 +18,7 @@ FuelPHP is fully PHP 7 compatible.
 
 For more detailed information, see the [development wiki](https://github.com/fuelphp/fuelphp/wiki).
 
-##Development Team
+## Development Team
 
 * Harro Verton - Project Manager, Developer ([http://wanwizard.eu/](http://wanwizard.eu/))
 * Steve West - Core Developer, ORM
