@@ -27,7 +27,8 @@
         "smarty/smarty": "Allow Smarty templating with the Parser package",
         "twig/twig": "Allow Twig templating with the Parser package",
         "pyrocms/lex": "Allow Lex templating with the Parser package",
-        "mthaml/mthaml": "Allow Haml templating with Twig supports with the Parser package"
+        "mthaml/mthaml": "Allow Haml templating with Twig supports with the Parser package",
+        "zordius/lightncandy": "Allow Handlebars templating with an extremely fast PHP implementation of handlebars"
     },
     "config": {
         "vendor-dir": "fuel/vendor"
