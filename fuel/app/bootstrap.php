@@ -1,10 +1,21 @@
 <?php
-// Bootstrap the framework DO NOT edit this
+/**
+ * Fuel is a fast, lightweight, community driven PHP 5.4+ framework.
+ *
+ * @package    Fuel
+ * @version    1.9-dev
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2018 Fuel Development Team
+ * @link       http://fuelphp.com
+ */
+
+// Bootstrap the framework - THIS LINE NEEDS TO BE FIRST!
 require COREPATH.'bootstrap.php';
 
+// Add framework overload classes here
 \Autoloader::add_classes(array(
-	// Add classes you want to override here
-	// Example: 'View' => APPPATH.'classes/view.php',
+	// Example: 'View' => APPPATH.'classes/myview.php',
 ));
 
 // Register the autoloader
