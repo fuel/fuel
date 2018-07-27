@@ -1,11 +1,11 @@
 {
     "name": "fuel/fuel",
     "type": "project",
-    "description" : "FuelPHP is a simple, flexible, community driven PHP 5.3.3+ framework, based on the best ideas of other frameworks, with a fresh start!",
+    "description" : "FuelPHP is a simple, flexible, community driven PHP 5.4+ framework, based on the best ideas of other frameworks, with a fresh start!",
     "keywords": ["application", "website", "development", "framework", "PHP", "PHP7"],
     "license": "MIT",
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.4",
         "composer/installers": "~1.0",
         "fuel/core": "dev-1.9/develop",
         "fuel/auth": "dev-1.9/develop",
