@@ -7,19 +7,24 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 /**
- * The production database settings. These get merged with the global settings.
+ * -----------------------------------------------------------------------------
+ *  Database settings for production environment
+ * -----------------------------------------------------------------------------
+ *
+ *  These settings get merged with the global settings.
+ *
  */
 
 return array(
 	'default' => array(
-		'connection'  => array(
-			'dsn'        => 'mysql:host=localhost;dbname=fuel_prod',
-			'username'   => 'fuel_app',
-			'password'   => 'super_secret_password',
+		'connection' => array(
+			'dsn'      => 'mysql:host=localhost;dbname=fuel_prod',
+			'username' => 'fuel_app',
+			'password' => 'super_secret_password',
 		),
 	),
 );

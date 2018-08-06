@@ -7,21 +7,27 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 /**
- * The test database settings. These get merged with the global settings.
+ * -----------------------------------------------------------------------------
+ *  Database settings for testing environment
+ * -----------------------------------------------------------------------------
  *
- * This environment is primarily used by unit tests, to run on a controlled environment.
+ *  This environment is primarily used by unit tests, to run on a
+ *  controlled environment.
+ *
+ *  These settings get merged with the global settings.
+ *
  */
 
 return array(
 	'default' => array(
-		'connection'  => array(
-			'dsn'        => 'mysql:host=localhost;dbname=fuel_test',
-			'username'   => 'fuel_app',
-			'password'   => 'super_secret_password',
+		'connection' => array(
+			'dsn'      => 'mysql:host=localhost;dbname=fuel_test',
+			'username' => 'fuel_app',
+			'password' => 'super_secret_password',
 		),
 	),
 );
