@@ -7,13 +7,17 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 /**
- * Use this file to override global defaults.
+ * -----------------------------------------------------------------------------
+ *  Global database settings
+ * -----------------------------------------------------------------------------
  *
- * See the individual environment DB configs for specific config information.
+ *  Set database configurations here to override environment specific
+ *  configurations
+ *
  */
 
 return array(
