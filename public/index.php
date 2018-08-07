@@ -7,50 +7,110 @@
  * @author     Fuel Development Team
  * @license    MIT License
  * @copyright  2010 - 2018 Fuel Development Team
- * @link       http://fuelphp.com
+ * @link       https://fuelphp.com
  */
 
 /**
- * Set error reporting and display errors settings.  You will want to change these when in production.
+ * -----------------------------------------------------------------------------
+ *  Error Reporting
+ * -----------------------------------------------------------------------------
+ *
+ *  Display error details when something is wrong.
+ *
+ *  It is recommended to disable error reporting when in production. To disable
+ *  displaying error reporting, use these settings:
+ *
+ *      error_reporting(0);
+ *
+ *      ini_set('display_errors', 0);
+ *
  */
+
 error_reporting(-1);
+
 ini_set('display_errors', 1);
 
 /**
- * Website document root
+ * -----------------------------------------------------------------------------
+ *  Root Directory
+ * -----------------------------------------------------------------------------
+ *
+ *  Path to website document root
+ *
  */
+
 define('DOCROOT', __DIR__.DIRECTORY_SEPARATOR);
 
 /**
- * Path to the application directory.
+ * -----------------------------------------------------------------------------
+ *  Application Directory
+ * -----------------------------------------------------------------------------
+ *
+ *  Path to the application directory
+ *
  */
+
 define('APPPATH', realpath(__DIR__.'/../fuel/app/').DIRECTORY_SEPARATOR);
 
 /**
- * Path to the default packages directory.
+ * -----------------------------------------------------------------------------
+ *  Package Directory
+ * -----------------------------------------------------------------------------
+ *
+ *  Path to the default packages directory
+ *
  */
+
 define('PKGPATH', realpath(__DIR__.'/../fuel/packages/').DIRECTORY_SEPARATOR);
 
 /**
- * The path to the framework core.
+ * -----------------------------------------------------------------------------
+ *  Framework Directory
+ * -----------------------------------------------------------------------------
+ *
+ *  Path to the framework core
+ *
  */
+
 define('COREPATH', realpath(__DIR__.'/../fuel/core/').DIRECTORY_SEPARATOR);
 
-// Get the start time and memory for use later
+/**
+ * -----------------------------------------------------------------------------
+ *  Performance Monitoring
+ * -----------------------------------------------------------------------------
+ *
+ *  Define start time and memory usage variable. See 'Start Monitoring' below
+ *  for more information.
+ *
+ */
+
 defined('FUEL_START_TIME') or define('FUEL_START_TIME', microtime(true));
 defined('FUEL_START_MEM') or define('FUEL_START_MEM', memory_get_usage());
 
-// Load in the Fuel autoloader
+/**
+ * -----------------------------------------------------------------------------
+ *  Start the Engine
+ * -----------------------------------------------------------------------------
+ *
+ *  Get the application ready
+ *
+ */
+
+// Start the autoloader
+
 if ( ! file_exists(COREPATH.'classes'.DIRECTORY_SEPARATOR.'autoloader.php'))
 {
 	die('No composer autoloader found. Please run composer to install the FuelPHP framework dependencies first!');
 }
 
 // Activate the framework class autoloader
+
 require COREPATH.'classes'.DIRECTORY_SEPARATOR.'autoloader.php';
+
 class_alias('Fuel\\Core\\Autoloader', 'Autoloader');
 
 // Exception route processing closure
+
 $routerequest = function($request = null, $e = false)
 {
 	Request::reset_request(true);
@@ -86,7 +146,8 @@ $routerequest = function($request = null, $e = false)
 	return $response;
 };
 
-// Generate the request, execute it and send the output.
+// Generate the request, execute it and send the output
+
 try
 {
 	// Boot the app...
@@ -112,9 +173,18 @@ catch (HttpServerErrorException $e)
 	$response = $routerequest('_500_', $e);
 }
 
-// This will add the execution time and memory usage to the output.
-// Comment this out if you don't use it.
+/**
+ * -----------------------------------------------------------------------------
+ *  Start Monitoring
+ * -----------------------------------------------------------------------------
+ *
+ *  This will add the execution time and memory usage to the output.
+ *  Comment these out if you don't use it.
+ *
+ */
+
 $response->body((string) $response);
+
 if (strpos($response->body(), '{exec_time}') !== false or strpos($response->body(), '{mem_usage}') !== false)
 {
 	$bm = Profiler::app_total();
@@ -127,5 +197,13 @@ if (strpos($response->body(), '{exec_time}') !== false or strpos($response->body
 	);
 }
 
-// Send the output to the client
+/**
+ * -----------------------------------------------------------------------------
+ *  Start the Application
+ * -----------------------------------------------------------------------------
+ *
+ *  Send the output to the client
+ *
+ */
+
 $response->send(true);
