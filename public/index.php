@@ -17,12 +17,11 @@
  *
  *  Display error details when something is wrong.
  *
- *  It is recommended to disable error reporting when in production. To disable
- *  displaying error reporting, use these settings:
+ *  [!] WARNING:
  *
- *      error_reporting(0);
- *
- *      ini_set('display_errors', 0);
+ *  Disabling this only causes the error handler not being able to log issues.
+ *  Fuel doesn't use these values the PHP way, everything this handled
+ *  in the ErrorHandler.
  *
  */
 
