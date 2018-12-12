@@ -188,6 +188,8 @@ catch (HttpServerErrorException $e)
 	$response = $routerequest('_500_', $e);
 }
 
+$response->body((string) $response);
+
 /**
  * -----------------------------------------------------------------------------
  *  Start profiling
@@ -198,8 +200,6 @@ catch (HttpServerErrorException $e)
  *  Comment these out if you don't use it.
  *
  */
-
-$response->body((string) $response);
 
 if (strpos($response->body(), '{exec_time}') !== false or strpos($response->body(), '{mem_usage}') !== false)
 {
