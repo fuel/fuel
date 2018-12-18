@@ -6,7 +6,7 @@
 * [Release API browser](https://fuelphp.com/api)
 * [Development branch Documentation](https://fuelphp.com/dev-docs)
 * [Development branch API browser](https://fuelphp.com/dev-api)
-* [Support Forum](https://fuelphp.com/forums) for comments, discussion and community support
+* [Support Forum](https://forums.fuelphp.com) for comments, discussion and community support
 
 ## Description
 

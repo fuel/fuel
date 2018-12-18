@@ -51,7 +51,7 @@
 			<div class="col-md-4">
 				<h2>Learn</h2>
 				<p>The best way to learn FuelPHP is reading through the <a href="https://docs.fuelphp.com">Documentation</a>.</p>
-				<p>Another good resource is the <a href="https://fuelphp.com/forums">Forums</a>.  They are fairly active, and you can usually get a response quickly.</p>
+				<p>Another good resource is the <a href="https://forums.fuelphp.com">Forums</a>.  They are fairly active, and you can usually get a response quickly.</p>
 			</div>
 			<div class="col-md-4">
 				<h2>Contribute</h2>
