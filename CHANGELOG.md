@@ -1,5 +1,76 @@
 # Changelog
 
+## v1.8.2
+
+### Security advisories
+
+* [**SEC-CORE-009**]:  Unzip vulnerability to slip-attack!
+
+See [the website](https://fuelphp.com/security-advisories) for more information about reported security issues and their status.
+
+### Important fixes, changes, notes. Read them carefully.
+
+* The code has been scanned for new warnings emitted by PHP 7.2 and 7.3.
+
+### Important fixes, changes, notes. Read them carefully.
+
+* The code has been scanned for new warnings emitted by PHP 7.2. and PHP 7.3. 
+
+### Security related
+
+See the advisories.
+
+### Backward compatibility notes
+
+* `Fieldset`: An exception is thrown if you try to `delete()` a Fieldset field that does not exist.
+
+### System changes
+
+* Htmlawed, used by `Security::clean()`, has been updated to v1.2.4.2, to provide PHP 7.3 compatibility.
+
+### Specific classes
+
+* Fixed a bug in `get_common_path()` returning incorrect results when the first path passed is an empty string.
+* `DB`: Broken database cached results object has been fixed (1.8.1.1 hotfix).
+* `DB`: Fixed `last_query()` no longer returning the last query after a call to `count_last_query()`.
+* `DB`: Fixed database result iteration (1.8.1.4 hotfix). 
+* `DB`: Still capture any PDO errors in the event these have been disabled in the PHP configuration.
+* `DB`: New caching option on `query()` and a new `caching()` method allow you to enable/disable result caching on a per-query basis. NB: you need a result cache object if you need random access to database results.
+* `Config`: You can now use dot-notation when specifying group names, so you can load configuration data at any level in the tree.
+* `DB`: Fixed not being able to generate "ORDER BY group" due to a validation typo.
+* `Crypt`: Replaced a PHP5.6+ function that creeped in by a coded alternative (1.8.1.3 hotfix).
+* `ErrorHandler`: Added specific support for handling and displaying SoapFault error information.
+* `Fieldset`: New `set_name()` allows to you change the fieldname of an existing Fielset field.
+* `Fieldset`: An exception is thrown if you try to `delete()` a Fieldset field that does not exist.
+* `Fieldset`: New `duplicate()` method allows you to clone an existing Fieldset field.
+* `Image`: New `extension()` method returns the extension of the image file.
+* `Input`: Fixed incorrectly parsing multipart/form-data if the boundary contained + signs.
+* `Input`: Fixed a bug that could assign rubbish data to the `put()`, `patch()` or `delete()` data fields.
+* `Input`: URI parsing has been improved to fix issues with URI's containing encoded data.
+* `Input`: Incorrectly parsing multipart/form-data when the form boundary string contains + signs.
+* `Pagination`: Fixed bug which allowed page numbers not to be numeric. This is now enforced.
+* `Session`: Re-initialize if a session is started after it was closed (1.8.1.2 hotfix).
+* `Unzip`: Addressed the zip-slip security vulnerability (1.8.1.6 hotfix).
+
+### Packages
+
+* `Email`: Mailgun driver has been made compatible with the Mailgun v3 API.
+* `Email`: It is now possible to define stream socket options for SMTP connections.
+* `Email`: A bug that failed to strip HTML comments from HTML email bodies correctly has been fixed. 
+* `Oil`: Fixed broken SQL being generated for tables with Unique indexes in migrations.
+* `Oil`: Fixed pagination when generating admin pages for tables.
+* `Oil`: Admin scaffolding has been updated to generate better code.
+* `Oil`: Everything related to Fuel Cells have been removed, it was never properly implemented. 
+* `ORM`: A few PHP warnings have been fixed when calling `to_array()` on an object with relations.
+* `ORM`: `to_array()` now returns related data correctly.
+* `ORM`: `Observer_Typing` no longer truncates float values with more than 6 digits precision.
+* `ORM`: `Observer_Typing` now supports columns of type 'date', 'time' and 'datetime'.
+* `ORM`: Models now have the option to allow PK's to be set. This is required for non-autoincrement PK's.
+* `ORM`: Fixed a NestedSets bug that caused the tree-id not to be set on multi-tree models.
+* `ORM`: Fixed bug that allowed Models derived from a database view to be updated (causing a DB error).
+* `ORM`: Allow `is_changed()` to run observers before comparing, to prevent it always returning True when using the Typing observer bidirectionally.
+* `ORM`: Fixed bug in which not all Model properties were initialized on a `forge()` with partial data.
+
 ## v1.8.1
 
 ### Security advisories
