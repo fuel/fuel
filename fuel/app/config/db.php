@@ -1,8 +1,23 @@
 <?php
 /**
- * Use this file to override global defaults.
+ * Fuel is a fast, lightweight, community driven PHP 5.4+ framework.
  *
- * See the individual environment DB configs for specific config information.
+ * @package    Fuel
+ * @version    1.8.2
+ * @author     Fuel Development Team
+ * @license    MIT License
+ * @copyright  2010 - 2018 Fuel Development Team
+ * @link       https://fuelphp.com
+ */
+
+/**
+ * -----------------------------------------------------------------------------
+ *  Global database settings
+ * -----------------------------------------------------------------------------
+ *
+ *  Set database configurations here to override environment specific
+ *  configurations
+ *
  */
 
 return array(
