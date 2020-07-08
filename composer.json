@@ -33,7 +33,7 @@
     "extra": {
         "installer-paths": {
             "fuel/{$name}": ["fuel/core"],
-            "{$name}": ["fuel/docs"]
+            "public/{$name}": ["fuel/docs"]
         }
     },
     "scripts": {
