@@ -63,7 +63,7 @@
 
 			# for fpm installations
 			<IfModule !mod_php7.c>
-				RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
+				RewriteRule ^(.*)$ index.php?/$1 [L]
 			</IfModule>
 
 		</IfModule>
