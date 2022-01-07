@@ -2,21 +2,21 @@
     "name": "fuel/fuel",
     "type": "project",
     "description" : "FuelPHP is a simple, flexible, community driven PHP 5.4+ framework, based on the best ideas of other frameworks, with a fresh start!",
-    "keywords": ["application", "website", "development", "framework", "PHP", "PHP7"],
+    "keywords": ["application", "website", "development", "framework", "PHP", "PHP5", "PHP7", "PHP8"],
     "license": "MIT",
     "require": {
         "php": ">=5.4",
         "composer/installers": "~1.0",
-        "fuel/core": "dev-1.9/develop",
-        "fuel/auth": "dev-1.9/develop",
-        "fuel/email": "dev-1.9/develop",
-        "fuel/oil": "dev-1.9/develop",
-        "fuel/orm": "dev-1.9/develop",
-        "fuel/parser": "dev-1.9/develop",
+        "fuel/core": "dev-develop",
+        "fuel/auth": "dev-develop",
+        "fuel/email": "dev-develop",
+        "fuel/oil": "dev-develop",
+        "fuel/orm": "dev-develop",
+        "fuel/parser": "dev-develop",
         "fuelphp/upload": "2.0.6"
     },
     "require-dev": {
-        "fuel/docs": "dev-1.9/develop"
+        "fuel/docs": "dev-develop"
     },
     "suggest": {
         "dwoo/dwoo" : "Allow Dwoo templating with the Parser package",
