@@ -13,7 +13,7 @@
         "fuel/oil": "dev-develop",
         "fuel/orm": "dev-develop",
         "fuel/parser": "dev-develop",
-        "fuelphp/upload": "2.0.6"
+        "fuelphp/upload": "2.0.7"
     },
     "require-dev": {
         "fuel/docs": "dev-develop"
