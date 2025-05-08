@@ -96,7 +96,7 @@ return array(
 		 *  Which errors should we show, but continue execution? You can add
 		 *  the following:
 		 *
-		 *      E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT
+		 *      E_NOTICE, E_WARNING, E_DEPRECATED, E_STRICT (< PHP 8.4)
 		 *
 		 *  to mimic PHP's default behaviour (which is to continue
 		 *  on non-fatal errors). We consider this bad practice.
