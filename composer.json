@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "php": ">=5.4",
-        "composer/installers": "~1.0",
+        "composer/installers": "^2.3.0",
         "fuel/core": "dev-1.9/develop",
         "fuel/auth": "dev-1.9/develop",
         "fuel/email": "dev-1.9/develop",
