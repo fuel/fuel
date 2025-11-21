@@ -113,7 +113,7 @@ class_alias('Fuel\\Core\\Autoloader', 'Autoloader');
  *
  */
 
-$routerequest = function($request = null, $e = false)
+$routerequest = function($request = '', $e = false)
 {
 	Request::reset_request(true);
 
